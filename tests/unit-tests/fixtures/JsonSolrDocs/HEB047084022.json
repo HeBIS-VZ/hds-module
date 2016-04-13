@@ -1,0 +1,15 @@
+{
+  "record": {
+    "id": "HEB047084022",
+    "fullrecord": "00986cas a2200289 c 4500001001000000003000700010005001700017006001900034008004100053016002000094016002000114022001400134029001400148035002200162035002300184035002100207040003900228084002700267084001700294084001300311245003600324260008300360362001600443363002200459775006600481787014900547#30;047084022#30;DE-603#30;20151120160932.0#30;su  p       0    1#30;960618c19859999xx u  p       0    1und c#30;7 #31;2DE-600#31;a56806-5#30;7 #31;2DE-600#31;a56806-5#30;  #31;a0334-5114#30;ac#31;a1878-7665#30;  #31;a(NL-LiSWE)1409255#30;  #31;a(DE-599)ZDB56806-5#30;  #31;a(OCoLC)612220248#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;a570#31;a580#31;qDE-600#31;2sdnb#30;  #31;aWN 4200#31;2rvk#30;  #31;a12#31;2ssgn#30;10#31;aSymbiosis#31;ban internat. journal#30;3 #31;aDordrecht#31;bSpringer Netherlands#31;aPhiladelphia, Pa.#31;bBalaban Publ.#31;c1985, 1985-#30;0 #31;a1.1985/86 -#30;01#31;81.1\\x#31;a1#31;i1985/86#30;08#31;iOnline-Ausg.#31;tSymbiosis#31;w(DE-603)220042462#31;w(DE-600)2535332-9#30;08#31;i2,1/3=30 von#31;aSociété Française de Phytopathologie#31;tMeeting of the Société Francaise de Phytopathologie#31;w(DE-603)054702577#31;w(DE-600)56803-x#30;#29;",
+    "raw_recordtype": "hebis_pp",
+    "raw_fullrecord": "alg: 4708402\n001@    $03,205 \n001A    $06050:18-06-96 \n001B    $06050:20-11-15 $t16:09:32.000 \n001D    $06050:09-10-15 \n001U    $0utf8 \n001X    $00 \n002@    $0Abvc \n003@    $0047084022 \n003O    $0612220248 $aOCoLC \n005A    $00334-5114 \n005P    $01878-7665 $So \n006N    $001409255 \n006N    $002858503 \n006Z    $056806-5 \n007A    $056806-5 $aZDB \n011@    $a1985 $n1985- \n018@    $0u \n021A    $aSymbiosis $dan internat. journal \n031@    $a1.1985/86 - \n031N    $d1 $j1985/86 \n033A    $pDordrecht $nSpringer Netherlands \n033A    $pPhiladelphia, Pa. $hanfangs $zf $nBalaban Publ. \n039D    $aOnline-Ausg. $8--Obvc--: Symbiosis $9220042462 \n039S    $a2,1/3=30 von $8--Abvc--Société Française de Phytopathologie: Meeting of the Société Francaise de Phytopathologie $9054702577 \n045T    $a12 \n045U    $e570 $e580 \n045Z    $aWN 4200 \n\nlok: 4708402 3\n101B    $009-08-06 $t09:52:12.000 \n101U    $0utf8 \n145S/06 $a121 \n145S/07 $a120 \n\nexp: 4708402 3 1 #EPN\n201B/01 $022-02-16 $t09:00:37.000 \n201U/01 $0utf8 \n203@/01 $0036584088 \n208@/01 $a06-10-98 $bpBa \n209A/01 $aSZ 5427 $f000 $x00 \n209E/01 $a1.1985/86 - 67.2015 $x02 \n231@/01 $d1 $j1985 $k2015 $n67 \n247C/01 $8601000-3 <30>Frankfurt, Universitätsbibliothek J. C. Senckenberg, Zentralbibliothek (ZB) $9102598258 \n\nlok: 4708402 205\n\nexp: 4708402 205 1 #EPN\n201B/01 $028-07-10 $t22:56:35.000 \n201C/01 $030-08-04 \n201U/01 $0utf8 \n203@/01 $021884946X \n208@/01 $a30-08-04 $bp \n209A/01 $a/ $f151 $x00 \n209E/01 $a34.2003 - 42.2006 $x02 \n231@/01 $d34 $j2003 $k2006 $n42 \n247C/01 $8351151-0 <4/151>Marburg, Universität Marburg, Bibliothek Biologie $9102594880 \n\n",
+    "_version_": 1527248785498963972,
+    "marctyp": "ok",
+    "recordtype": "marc"
+  }
+  .
+  "expected_results": {
+    "issn": "0334-5114 ; 1878-7665"
+  }
+}

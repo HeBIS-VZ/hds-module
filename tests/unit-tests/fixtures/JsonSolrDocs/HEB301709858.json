@@ -1,0 +1,15 @@
+{
+  "record": {
+    "id": "HEB301709858",
+    "fullrecord": "00809cam a2200241 c 4500001001000000003000700010005001700017006001900034008004100053015001600094016002300110035002500133040003900158041000800197084002200205090000600227100007000233245013800303260003300441260002700474300002500501502004100526#30;301709858#30;DE-603#30;20120816192754.0#30;a          u00  u #30;120531s2012    xx           u00  u ger c#30;  #31;a12,H08#31;2dnb#30;7 #31;2DE-101#31;a1022936719#30;  #31;a(DE-599)HEB301709858#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;ager#30;  #31;a610#31;qDE-101#31;2sdnb#30;  #31;nu#30;1 #31;0(DE-588)1022925016#31;0(DE-603)301709319#31;aPicard, Eileen#31;d1983-#31;4aut#30;10#31;aVasorelaxierender Effekt des G-Protein gekoppelten Calcium-sensitiven Rezeptors in der diabetischen Maus und Ratte#31;cvon Eileen Picard#30;3 #31;c2012, 2011 [erschienen] 2012#30;3 #31;c2011 [erschienen] 2012#30;  #31;a73 S.#31;bgraph. Darst.#30;  #31;aFrankfurt (Main), Univ., Diss., 2012#30;#29;",
+    "raw_recordtype": "hebis_pp",
+    "raw_fullrecord": "alg: 30170985\n001@    $03 \n001A    $00030:31-05-12 \n001B    $06000:16-08-12 $t19:27:54.000 \n001C    $00030:31-05-12 $t17:07:59.000 \n001D    $00030:31-05-12 \n001U    $0utf8 \n001X    $00 \n002@    $0Aau \n003@    $0301709858 \n006G    $01022936719 \n006U    $012,H08 $f20120601 \n007A    $0301709858 $aHEB \n010@    $ager \n011@    $a2012 $n2011 [erschienen] 2012 \n013H    $0u \n021A    $aVasorelaxierender Effekt des G-Protein gekoppelten Calcium-sensitiven Rezeptors in der diabetischen Maus und Ratte $hvon Eileen Picard \n028A    $71022925016 $8Picard, Eileen $9301709319 \n034D    $a73 S. \n034M    $agraph. Darst. \n037C    $bFrankfurt (Main) $cUniv., Diss., 2012 \n045E    $c610 \n\nlok: 30170985 3\n\nexp: 30170985 3 1 #EPN\n201B/01 $031-05-12 $t17:07:59.000 \n201C/01 $031-05-12 \n201U/01 $0utf8 \n203@/01 $0643776311 \n208@/01 $a31-05-12 $bzAa \n209A/01 $aD 121/234 $du $f000 $hD 121 234 $x00 \n209G/01 $a66652289 $x00 \n247C/01 $8601000-3 <30>Frankfurt, Universitätsbibliothek J. C. Senckenberg, Zentralbibliothek (ZB) $9102598258 \n\nexp: 30170985 3 2 #EPN\n201B/02 $031-05-12 $t17:07:59.000 \n201C/02 $031-05-12 \n201U/02 $0utf8 \n203@/02 $064377632X \n208@/02 $a31-05-12 $bzAa \n209A/02 $aD 121/235 $di $f000 $hD 121 235 $x00 \n209G/02 $a66652297 $x00 \n247C/02 $8601000-3 <30>Frankfurt, Universitätsbibliothek J. C. Senckenberg, Zentralbibliothek (ZB) $9102598258 \n\n",
+    "_version_": 1527282653899784192,
+    "marctyp": "ok",
+    "recordtype": "marc"
+  },
+  "expected_results": {
+    "dissertation_note": "Frankfurt (Main), Univ., Diss., 2012",
+    "publication_distribution": "2011 [erschienen] 2012."
+  }
+}
