@@ -44,7 +44,6 @@ define("PICA_TEXTLINES_DEPARTMENT", "114");
 
 // Define for Driver Debug outputs
 define("DRIVER_DEBUG", "deadbeaf");
-use VuFind\ILS\Driver\PICA;
 use VuFind\Exception\ILS as ILSException;
 
 class Hebis extends PICA
