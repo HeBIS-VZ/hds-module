@@ -5,8 +5,12 @@
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
  * 
+<<<<<<< HEAD
  * Copyright (C) 2016 
  * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+=======
+ * Copyright (C) 2016
+>>>>>>> devel
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -27,10 +31,16 @@
  */
 
 namespace Hebis\ILS\Driver;
+<<<<<<< HEAD
 use VuFind\ILS\Driver\DAIA;
 use DOMDocument;
 use VuFind\Exception\ILS as ILSException;
 
+=======
+
+use DOMDocument;
+use VuFind\ILS\Driver\DAIA;
+>>>>>>> devel
 
 /**
  * Class PICA
@@ -93,7 +103,11 @@ class PICA extends DAIA
             $user = $ldap->authenticate($request);
         }
         $_SESSION['picauser'] = $user;
+<<<<<<< HEAD
         return [
+=======
+        return array(
+>>>>>>> devel
             'id' => $user->id,
             'firstname' =>  $user->firstname,
             'lastname' => $user->lastname,
@@ -102,7 +116,11 @@ class PICA extends DAIA
             'password' => $password,
             'cat_username' => $barcode,
             'cat_password' => $password
+<<<<<<< HEAD
         ];
+=======
+        );
+>>>>>>> devel
     }
     /**
      * Get Patron Profile
@@ -153,12 +171,20 @@ class PICA extends DAIA
         $recordList['status'] = $userinfo->borrowerStatus;
         // Get the LOANS-Page to extract a message for the user
         $URL = "/loan/DB={$this->dbsid}/USERINFO";
+<<<<<<< HEAD
         $POST = [
+=======
+        $POST = array(
+>>>>>>> devel
             "ACT" => "UI_DATA",
             "LNG" => "DU",
             "BOR_U" => $_SESSION['picauser']->username,
             "BOR_PW" => $_SESSION['picauser']->getCatPassword()
+<<<<<<< HEAD
         ];
+=======
+        );
+>>>>>>> devel
         $postit = $this->postit($URL, $POST);
         // How many messages are there?
         $messages = substr_count($postit, '<strong class="alert">');
@@ -187,28 +213,48 @@ class PICA extends DAIA
      * @throws \VuFind\Exception\Date
      * @throws ILSException
      * @return array        Array of the patron's transactions on success.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> devel
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getMyTransactions($patron)
     {
         $URL = "/loan/DB={$this->dbsid}/USERINFO";
+<<<<<<< HEAD
         $POST = [
+=======
+        $POST = array(
+>>>>>>> devel
             "ACT" => "UI_LOL",
             "LNG" => "DU",
             "BOR_U" => $_SESSION['picauser']->username,
             "BOR_PW" => $_SESSION['picauser']->getCatPassword()
+<<<<<<< HEAD
         ];
+=======
+        );
+>>>>>>> devel
         $postit = $this->postit($URL, $POST);
         // How many items are there?
         $holds = substr_count($postit, 'input type="checkbox" name="VB"');
         $iframes = $holdsByIframe = substr_count($postit, '<iframe');
+<<<<<<< HEAD
         $ppns = [];
         $expiration = [];
         $transList = [];
         $barcode = [];
         $reservations = [];
         $titles = [];
+=======
+        $ppns = array();
+        $expiration = array();
+        $transList = array();
+        $barcode = array();
+        $reservations = array();
+        $titles = array();
+>>>>>>> devel
         if ($holdsByIframe >= $holds) {
             $position = strpos($postit, '<iframe');
             for ($i = 0; $i < $iframes; $i++) {
@@ -245,7 +291,11 @@ class PICA extends DAIA
                     $expiration[] = substr($postit, $position_expire+24, 10);
                     $renewals[] = $this->getRenewals($completeValue);
                     $closing_title = strpos($postit, '</td>', $position_title);
+<<<<<<< HEAD
                     $titles[] = $completeValue . " " . substr(
+=======
+                    $titles[] = $completeValue." ".substr(
+>>>>>>> devel
                             $postit, $position_title+24,
                             ($closing_title-$position_title-24)
                         );
@@ -280,25 +330,41 @@ class PICA extends DAIA
         }
         for ($i = 0; $i < $holds; $i++) {
             if ($ppns[$i] !== false) {
+<<<<<<< HEAD
                 $transList[] = [
+=======
+                $transList[] = array(
+>>>>>>> devel
                     'id'      => $ppns[$i],
                     'duedate' => $expiration[$i],
                     'renewals' => $renewals[$i],
                     'reservations' => $reservations[$i],
                     'vb'      => $barcode[$i],
                     'title'   => $titles[$i]
+<<<<<<< HEAD
                 ];
             } else {
                 // There is a problem: no PPN found for this item... lets take id 0
                 // to avoid serious error (that will just return an empty title)
                 $transList[] = [
+=======
+                );
+            } else {
+                // There is a problem: no PPN found for this item... lets take id 0
+                // to avoid serious error (that will just return an empty title)
+                $transList[] = array(
+>>>>>>> devel
                     'id'      => 0,
                     'duedate' => $expiration[$i],
                     'renewals' => $renewals[$i],
                     'reservations' => $reservations[$i],
                     'vb'      => $barcode[$i],
                     'title'   => $titles[$i]
+<<<<<<< HEAD
                 ];
+=======
+                );
+>>>>>>> devel
             }
         }
         return $transList;
@@ -329,7 +395,11 @@ class PICA extends DAIA
         return $position_netto;
     }
     /**
+<<<<<<< HEAD
      * Get the number of renewals
+=======
+     * get the number of renewals
+>>>>>>> devel
      *
      * @param string $barcode Barcode of the medium
      *
@@ -340,11 +410,19 @@ class PICA extends DAIA
     {
         $renewals = false;
         if (isset($this->renewalsScript) === true) {
+<<<<<<< HEAD
             $POST = [
                 "DB" => '1',
                 "VBAR" => $barcode,
                 "U" => $_SESSION['picauser']->username
             ];
+=======
+            $POST = array(
+                "DB" => '1',
+                "VBAR" => $barcode,
+                "U" => $_SESSION['picauser']->username
+            );
+>>>>>>> devel
             $URL = $this->renewalsScript;
             $postit = $this->postit($URL, $POST);
             $renewalsString = $postit;
@@ -359,7 +437,10 @@ class PICA extends DAIA
      * @param string $recordId Record identifier
      *
      * @return bool            True on success
+<<<<<<< HEAD
      *
+=======
+>>>>>>> devel
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function renew($recordId)
@@ -393,12 +474,16 @@ class PICA extends DAIA
      * @throws \VuFind\Exception\Date
      * @throws ILSException
      * @return mixed        Array of the patron's fines on success.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> devel
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getMyFines($patron)
     {
         $URL = "/loan/DB={$this->dbsid}/LNG=DU/USERINFO";
+<<<<<<< HEAD
         $POST = [
             "ACT" => "UI_LOC",
             "BOR_U" => $_SESSION['picauser']->username,
@@ -410,6 +495,19 @@ class PICA extends DAIA
         $fineDate = [];
         $description = [];
         $fine = [];
+=======
+        $POST = array(
+            "ACT" => "UI_LOC",
+            "BOR_U" => $_SESSION['picauser']->username,
+            "BOR_PW" => $_SESSION['picauser']->getCatPassword()
+        );
+        $postit = $this->postit($URL, $POST);
+        // How many items are there?
+        $holds = substr_count($postit, '<td class="plain"')/3;
+        $fineDate = array();
+        $description = array();
+        $fine = array();
+>>>>>>> devel
         $position = strpos($postit, '<td class="infotab2" align="left">Betrag<td>');
         for ($i = 0; $i < $holds; $i++) {
             $pos = strpos($postit, '<td class="plain"', $position);
@@ -432,15 +530,25 @@ class PICA extends DAIA
             $fine[$i] = (double) implode('', $feeString);
             $position = $pos + 1;
         }
+<<<<<<< HEAD
         $fineList = [];
         for ($i = 0; $i < $holds; $i++) {
             $fineList[] = [
+=======
+        $fineList = array();
+        for ($i = 0; $i < $holds; $i++) {
+            $fineList[] = array(
+>>>>>>> devel
                 "amount"   => $fine[$i],
                 "checkout" => "",
                 "fine"     => $fineDate[$i] . ': ' .
                     utf8_encode(html_entity_decode($description[$i])),
                 "duedate"  => ""
+<<<<<<< HEAD
             ];
+=======
+            );
+>>>>>>> devel
             // id should be the ppn of the book resulting the fine but there's
             // currently no way to find out the PPN (we have neither barcode nor
             // signature...)
@@ -457,12 +565,16 @@ class PICA extends DAIA
      * @throws \VuFind\Exception\Date
      * @throws ILSException
      * @return array        Array of the patron's holds on success.
+<<<<<<< HEAD
      *
+=======
+>>>>>>> devel
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getMyHolds($patron)
     {
         $URL = "/loan/DB={$this->dbsid}/LNG=DU/USERINFO";
+<<<<<<< HEAD
         $POST = [
             "ACT" => "UI_LOR",
             "BOR_U" => $_SESSION['picauser']->username,
@@ -473,6 +585,18 @@ class PICA extends DAIA
         $holds = substr_count($postit, 'input type="checkbox" name="VB"');
         $ppns = [];
         $creation = [];
+=======
+        $POST = array(
+            "ACT" => "UI_LOR",
+            "BOR_U" => $_SESSION['picauser']->username,
+            "BOR_PW" => $_SESSION['picauser']->getCatPassword()
+        );
+        $postit = $this->postit($URL, $POST);
+        // How many items are there?
+        $holds = substr_count($postit, 'input type="checkbox" name="VB"');
+        $ppns = array();
+        $creation = array();
+>>>>>>> devel
         $position = strpos($postit, 'input type="checkbox" name="VB"');
         for ($i = 0; $i < $holds; $i++) {
             $pos = strpos($postit, 'value=', $position);
@@ -502,7 +626,11 @@ class PICA extends DAIA
             // so its not a valid identifier
             // we need to calculate the checksum
             $checksum = 0;
+<<<<<<< HEAD
             for ($i = 0; $i<strlen($value);$i++) {
+=======
+            for ($i=0; $i<strlen($value);$i++) {
+>>>>>>> devel
                 $checksum += $value[$i]*(9-$i);
             }
             if ($checksum%11 === 1) {
@@ -512,7 +640,11 @@ class PICA extends DAIA
             } else {
                 $checksum = 11 - $checksum%11;
             }
+<<<<<<< HEAD
             $ppns[] = $value . $checksum;
+=======
+            $ppns[] = $value.$checksum;
+>>>>>>> devel
             $position = $pos + 1;
             $position_create = $position;
             for ($n = 0; $n<3; $n++) {
@@ -527,11 +659,19 @@ class PICA extends DAIA
          * requested above... we need to do another request and filter the
          * UI_LOL-page for requests
          */
+<<<<<<< HEAD
         $POST_LOL = [
             "ACT" => "UI_LOL",
             "BOR_U" => $_SESSION['picauser']->username,
             "BOR_PW" => $_SESSION['picauser']->getCatPassword()
         ];
+=======
+        $POST_LOL = array(
+            "ACT" => "UI_LOL",
+            "BOR_U" => $_SESSION['picauser']->username,
+            "BOR_PW" => $_SESSION['picauser']->getCatPassword()
+        );
+>>>>>>> devel
         $postit_lol = $this->postit($URL, $POST_LOL);
         $requests = substr_count(
             $postit_lol, '<td class="value-small">bestellt</td>'
@@ -548,10 +688,17 @@ class PICA extends DAIA
             $creation[] = date('d.m.Y');
         }
         for ($i = 0; $i < ($holds+$moreholds+$requests); $i++) {
+<<<<<<< HEAD
             $holdList[] = [
                 "id"       => $ppns[$i],
                 "create"   => $creation[$i]
             ];
+=======
+            $holdList[] = array(
+                "id"       => $ppns[$i],
+                "create"   => $creation[$i]
+            );
+>>>>>>> devel
         }
         return $holdList;
     }
@@ -582,11 +729,19 @@ class PICA extends DAIA
     public function getFunds()
     {
         // TODO
+<<<<<<< HEAD
         return [];
     }
     // protected functions to connect to PICA
     /**
      * Post something to a foreign host
+=======
+        return array();
+    }
+    // protected functions to connect to PICA
+    /**
+     * post something to a foreign host
+>>>>>>> devel
      *
      * @param string $file         POST target URL
      * @param string $data_to_send POST data
@@ -599,15 +754,24 @@ class PICA extends DAIA
         // Parameter verarbeiten
         foreach ($data_to_send as $key => $dat) {
             $data_to_send[$key]
+<<<<<<< HEAD
                 = "$key=" . rawurlencode(utf8_encode(stripslashes($dat)));
+=======
+                = "$key=".rawurlencode(utf8_encode(stripslashes($dat)));
+>>>>>>> devel
         }
         $postData = implode("&", $data_to_send);
         // HTTP-Header vorbereiten
         $out  = "POST $file HTTP/1.1\r\n";
         $out .= "Host: " . $this->catalogHost . "\r\n";
         $out .= "Content-type: application/x-www-form-urlencoded\r\n";
+<<<<<<< HEAD
         $out .= "Content-length: " . strlen($postData) . "\r\n";
         $out .= "User-Agent: " . $_SERVER["HTTP_USER_AGENT"] . "\r\n";
+=======
+        $out .= "Content-length: ". strlen($postData) ."\r\n";
+        $out .= "User-Agent: ".$_SERVER["HTTP_USER_AGENT"]."\r\n";
+>>>>>>> devel
         $out .= "Connection: Close\r\n";
         $out .= "\r\n";
         $out .= $postData;
@@ -624,7 +788,11 @@ class PICA extends DAIA
         return $data;
     }
     /**
+<<<<<<< HEAD
      * Gets a PPN by its barcode
+=======
+     * gets a PPN by its barcode
+>>>>>>> devel
      *
      * @param string $barcode Barcode to use for lookup
      *
@@ -647,7 +815,11 @@ class PICA extends DAIA
         return $ppn;
     }
     /**
+<<<<<<< HEAD
      * Gets holdings of magazine and journal exemplars
+=======
+     * gets holdings of magazine and journal exemplars
+>>>>>>> devel
      *
      * @param string $ppn PPN identifier
      *
@@ -661,7 +833,11 @@ class PICA extends DAIA
         $doc = new DOMDocument();
         $doc->load($searchUrl);
         $itemlist = $doc->getElementsByTagName('SHORTTITLE');
+<<<<<<< HEAD
         $ppn = [];
+=======
+        $ppn = array();
+>>>>>>> devel
         for ($n = 0; $itemlist->item($n); $n++) {
             if (count($itemlist->item($n)->attributes) > 0) {
                 $ppn[] = $itemlist->item($n)->attributes->getNamedItem('PPN')
