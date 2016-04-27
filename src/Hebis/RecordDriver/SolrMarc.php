@@ -945,45 +945,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     }
 
     /**
-     * Return an array of all values extracted from the specified field/subfield
-     * combination.  If multiple subfields are specified and $concat is true, they
-     * will be concatenated together in the order listed -- each entry in the array
-     * will correspond with a single MARC field.  If $concat is false, the return
-     * array will contain separate entries for separate subfields.
-     *
-     * @param string $field The MARC field number to read
-     * @param array $subfields The MARC subfield codes to read
-     * @param bool $concat Should we concatenate subfields?
-     *
-     * @return array
-     */
-    protected function getFieldArray($field, $subfields = null, $concat = true)
-    {
-        // Default to subfield a if nothing is specified.
-        if (!is_array($subfields)) {
-            $subfields = ['a'];
-        }
-
-        // Initialize return array
-        $matches = [];
-
-        // Try to look up the specified field, return empty array if it doesn't
-        // exist.
-        $fields = $this->marcRecord->getFields($field);
-        if (!is_array($fields)) {
-            return $matches;
-        }
-
-        // Extract all the requested subfields, if applicable.
-        foreach ($fields as $currentField) {
-            $next = $this->getSubfieldArray($currentField, $subfields, $concat);
-            $matches = array_merge($matches, $next);
-        }
-
-        return $matches;
-    }
-
-    /**
      * Get notes on finding aids related to the record.
      *
      * @return array
@@ -1307,57 +1268,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             }
         }
 
-        return $matches;
-    }
-
-    /**
-     * Return an array of non-empty subfield values found in the provided MARC
-     * field.  If $concat is true, the array will contain either zero or one
-     * entries (empty array if no subfields found, subfield values concatenated
-     * together in specified order if found).  If concat is false, the array
-     * will contain a separate entry for each subfield value found.
-     *
-     * @param object $currentField Result from File_MARC::getFields.
-     * @param array $subfields The MARC subfield codes to read
-     * @param bool $concat Should we concatenate subfields?
-     *
-     * @return array
-     */
-    protected function getSubfieldArray($currentField, $subfields, $concat = true)
-    {
-        // Start building a line of text for the current field
-        $matches = [];
-        $currentLine = '';
-
-        // Loop through all subfields, collecting results that match the whitelist;
-        // note that it is important to retain the original MARC order here!
-        $allSubfields = $currentField->getSubfields();
-        if (count($allSubfields) > 0) {
-            foreach ($allSubfields as $currentSubfield) {
-                if (in_array($currentSubfield->getCode(), $subfields)) {
-                    // Grab the current subfield value and act on it if it is
-                    // non-empty:
-                    $data = trim($currentSubfield->getData());
-                    if (!empty($data)) {
-                        // Are we concatenating fields or storing them separately?
-                        if ($concat) {
-                            $currentLine .= $data . ' ';
-                        } else {
-                            $matches[] = $data;
-                        }
-                    }
-                }
-            }
-        }
-
-        // If we're in concat mode and found data, it will be in $currentLine and
-        // must be moved into the matches array.  If we're not in concat mode,
-        // $currentLine will always be empty and this code will be ignored.
-        if (!empty($currentLine)) {
-            $matches[] = trim($currentLine);
-        }
-
-        // Send back our result array:
         return $matches;
     }
 

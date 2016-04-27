@@ -14,12 +14,7 @@ $config = [
                     'hebis' => 'Hebis\ILS\Driver\Hebis'
                 ]
             ],
-            'auth' => [
-                'invokables' => [
-                ]
-            ]
         ]
-
     ],
     'service_manager' => [
         'factories' => [
