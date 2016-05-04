@@ -1,9 +1,29 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sebastian
- * Date: 03.02.16
- * Time: 10:02
+
+/*
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an
+ * extension of the open source library search engine VuFind, that
+ * allows users to search and browse beyond resources. More
+ * Information about VuFind you will find on http://www.vufind.org
+ *
+ * Copyright (C) 2016
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * Goethe-Universität Frankfurt / Goethe University of Frankfurt
+ * http://www.hebis.de
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 namespace Hebis\RecordDriver;
@@ -15,233 +35,7 @@ class PicaRecordUtils
     const PICA_TIT_SEARCH_PATTERN = '/--.+--:/';
 
     const PICA_TIT_SEARCH_PATTERN2 = '/--.+--/';
-
-
-    /**
-     *
-     */
-    private static function _processPicaExp(PicaRecordInterface $picaRecord)
-    {
-        // Proxy falls eingestellt
-        $proxyUrlBuilder = new ProxyUrlBuilder();
-        $withProxy = ($proxyUrlBuilder->hasProxy() && $proxyUrlBuilder->isRestricted());
-
-        // Qualified name
-        $label = "Fulltext";
-
-        $urls = [];
-
-        foreach ($picaRecord->getLevel2() as $key => $level2Array) {
-
-            // With ILN find exact EPN + ILN combinations, without ILN find matching EPNs
-            $lok = $picaRecord->getIln() ? $picaRecord->getEpn() . ' ' . $picaRecord->getIln() . ' ' : $picaRecord->getEpn();
-
-            if (strpos($key, $lok) > -1) {
-
-                $komArray = array();
-                $bemArray = array();
-                $klassArray = array();
-                $schlagArray = array();
-                $verlauf = array();
-                $sig = array();
-                $provenance = array();
-                $buchNr = '';
-                $epn = '';
-                $retroUrl = '';
-                $retroTitle = '';
-                $retro = array();
-
-                foreach ($level2Array as $field => $fieldArray) {
-
-                    if (strpos($field, '201') === false) {
-
-                        foreach ($fieldArray as $subField) {
-                            // getURLs
-                            // DOI
-                            if ($field === '204P') {
-
-
-                                /* $subField['$S']['0'] !== null can never be false, if $subField['$S']['0'] === '0' results in true!
-                                   Thus, we can reduce the condition to $subField['$S']['0'] === '0' */
-                                if ( /*$subField['$S']['0'] !== null &&*/ $subField['$S']['0'] === '0') {
-                                    $withProxy = false;
-                                }
-
-                                if ($withProxy) {
-                                    //TODO: it's not a good idea to add language dependent strings. Find another solution
-                                    $urls[$proxyUrlBuilder->addProxy('http://dx.doi.org/' . $subField['$0']['0'])] = isset($label) ? $label : 'Volltext DOI';
-                                } else {
-                                    $urls['http://dx.doi.org/' . $subField['$0']['0']] = isset($label) ? $label : 'Volltext DOI';
-                                }
-
-                                break;
-                            }
-
-                            // Handle
-                            if ($field === '204R') {
-
-                                if ($subField['$S']['0'] === '0') {
-                                    $withProxy = false;
-                                }
-
-                                if ($withProxy) {
-                                    //TODO: it's not a good idea to add language dependent strings. Find another solution
-                                    $urls[$proxyUrlBuilder->addProxy('http://hdl.handle.net/' . $subField['$0']['0'])] = isset($label) ? $label : 'Volltext Handle';
-                                } else {
-                                    $urls['http://hdl.handle.net/' . $subField['$0']['0']] = isset($label) ? $label : 'Volltext Handle';
-                                }
-                                break;
-                            }
-
-                            // URN
-                            if ($field === '204U') {
-
-                                if ($subField['$S']['0'] === '0') {
-                                    $withProxy = false;
-                                }
-
-                                if ($withProxy) {
-                                    //TODO: it's not a good idea to add language dependent strings. Find another solution
-                                    $urls[$proxyUrlBuilder->addProxy('http://nbn-resolving.de/urn/resolver.pl?urn=' . $subField['$0']['0'])] = isset($label) ? $label : 'Volltext URN';
-                                } else {
-                                    $urls['http://nbn-resolving.de/urn/resolver.pl?urn=' . $subField['$0']['0']] = isset($label) ? $label : 'Volltext URN';
-                                }
-                                break;
-                            }
-
-                            // für die ILN/Abt. gültige Volltext-URL
-                            if ($field === '209S') {
-                                if ($subField['$S']['0'] === '0') {
-                                    $withProxy = false;
-                                }
-                                if ($withProxy && !isset($free)) {
-                                    //TODO: it's not a good idea to add language dependent strings. Find another solution
-                                    $urls[$proxyUrlBuilder->addProxy($subField['$u']['0'])] = isset($label) ? $label : 'Volltext';
-                                } else {
-                                    $urls[$subField['$u']['0']] = isset($label) ? $label : 'Volltext';
-                                }
-                                break;
-                            }
-
-                            // getCopies
-                            // EPN
-                            if ($field === '203@') {
-                                $epn = $subField['$0']['0'];
-                                break;
-                            }
-
-                            // Buchnummer
-                            if ($field === '209G' && strpos($subField['$x']['0'], '00') === 0) {
-                                $buchNr = $subField['$a']['0'];
-                                break;
-                            }
-
-                            // Retro URL
-                            if ($field === '209U') {
-                                $retroTmp = [];
-                                $retroTmp["url"] = $subField['$u']['0'];
-                                $retroTmp["title"] = $subField['$3']['0'];
-                                $retroUrl = $subField['$u']['0'];
-                                $retroTitle = $subField['$3']['0'];
-                                $retro[] = $retroTmp;
-                                //break;
-                            }
-
-                            // Provenienz
-                            if ($field === '220D') {
-                                $provenance['anmerkung'] = $subField['$a']['0'] . "<br>"; //TODO: no markup in data!!!
-                            }
-
-                            if ($field === '244Z') {
-                                $subFelder = self::f244z($subField);
-
-                                if (!empty($subFelder)) {
-                                    $provenance['244Z'][] = $subFelder;
-                                }
-                            }
-
-                            if ($field === '209T') {
-                                $provenance['209Tu'] = $subField['$u']['0'];
-                                $provenance['209T3'] = $subField['$3']['0'];
-                            }
-
-                            if (preg_match('/^209[AE]/', $field) || $field === '237A' || preg_match('/^24[45]Z/', $field) || $field === '247D') {
-                                if (isset($subField['$a'])) {
-                                    foreach ($subField['$a'] as $index => &$value) {
-                                        // Klassifikation
-                                        if ($field === '245Z') {
-                                            $klassArray[] = $value;
-                                            continue;
-                                        }
-
-                                        if ($field === '244Z') {
-                                            // Schlagworte
-                                            if ($subField['$x']['0'] >= 1 && $subField['$x']['0'] <= 79) {
-                                                $schlagArray[] = "#;#;#" . $value;
-                                            }
-                                            continue;
-                                        }
-
-
-                                        // Bemerkung
-                                        if ($field === '247D') {
-                                            $bemArray[] = $value;
-                                            continue;
-                                        }
-
-                                        if ($field === '237A') {
-                                            $bemArray[] = $value;
-                                            continue;
-                                        }
-
-                                        // Bestand
-                                        if ($field === '209E') {
-                                            if (strpos($subField['$x'][$index], '01') === 0)
-                                                $verlauf[$subField['count']]['01'] = $value;
-
-                                            if (strpos($subField['$x'][$index], '02') === 0)
-                                                $verlauf[$subField['count']]['02'] = $value;
-
-                                            if (strpos($subField['$x'][$index], '03') === 0)
-                                                $verlauf[$subField['count']]['03'] = $value;
-
-                                            // Kommentar
-                                            if (strpos($subField['$x'][$index], '04') === 0)
-                                                $komArray[] = $value;
-
-                                            continue;
-                                        }
-
-                                        //Signatur
-                                        if ($field === '209A') {
-                                            $sig[] = $value;
-                                            continue;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (strlen($epn) > 0) {
-                    $copies[$epn] = [
-                        'kommentare' => $komArray,
-                        'bemerkungen' => $bemArray,
-                        'klassifikationen' => $klassArray,
-                        'schlagworte' => $schlagArray,
-                        'verlauf' => $verlauf,
-                        'buchnr' => $buchNr,
-                        'retrourl' => $retroUrl,
-                        'retrotitel' => $retroTitle,
-                        'retro' => $retro,
-                        'signatur' => $sig,
-                        'provenance' => $provenance
-                    ];
-                }
-            }
-        }
-    }
+    
 
     /**
      * Process level1 data
