@@ -46,6 +46,8 @@ class PICA extends DAIA
     protected $catalogHost;
     protected $renewalsScript;
     protected $dbsid;
+
+
     /**
      * Initialize the driver.
      *
@@ -58,8 +60,13 @@ class PICA extends DAIA
     public function init()
     {
         parent::init();
+
         $this->catalogHost = $this->config['Catalog']['Host'];
-        $this->renewalsScript = $this->config['Catalog']['renewalsScript'];
+
+        if (array_key_exists('renewalsScript', $this->config['Catalog'])) {
+            $this->renewalsScript = $this->config['Catalog']['renewalsScript'];
+        }
+
         $this->dbsid = isset($this->config['Catalog']['DB'])
             ? $this->config['Catalog']['DB'] : 1;
     }
@@ -339,16 +346,18 @@ class PICA extends DAIA
     protected function getRenewals($barcode)
     {
         $renewals = false;
-        if (isset($this->renewalsScript) === true) {
+        if ( !empty($this->renewalsScript)) {
             $POST = [
                 "DB" => '1',
                 "VBAR" => $barcode,
                 "U" => $_SESSION['picauser']->username
             ];
+
             $URL = $this->renewalsScript;
-            $postit = $this->postit($URL, $POST);
-            $renewalsString = $postit;
-            $pos = strpos($postit, '<span');
+            $postIt = $this->postit($URL, $POST);
+            $renewalsString = $postIt;
+            $pos = strpos($postIt, '<span');
+
             $renewals = strip_tags(substr($renewalsString, $pos));
         }
         return $renewals;
