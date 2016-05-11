@@ -1,6 +1,8 @@
 <?php
 namespace Hebis\Module\Configuration;
 
+use Zend\ServiceManager\ServiceManager;
+
 $config = [
     'vufind' => [
         'plugin_managers' => [
@@ -12,9 +14,15 @@ $config = [
             'ils_driver' => [
                 'invokables' => [
                     'hebis' => 'Hebis\ILS\Driver\Hebis'
-                ]
+                ],
+                'daia' => function(ServiceManager $sm) {
+                    return new \Hebis\ILS\Driver\DAIA(
+                        $sm->getServiceLocator()->get('VuFind\DateConverter')
+                    );
+                }
             ],
-        ]
+        ],
+
     ],
     'service_manager' => [
         'factories' => [
@@ -24,6 +32,7 @@ $config = [
             'Zend\Session\Config\ConfigInterface' => 'Zend\Session\Service\SessionConfigFactory',
         ]
     ],
+
     'session_config' => [
         'remember_me_seconds' => 2419200,
         'use_cookies' => true,

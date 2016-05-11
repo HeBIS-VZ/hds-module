@@ -43,7 +43,7 @@ define("PICA_TEXTLINES_DEPARTMENT", "114");
 define("DRIVER_DEBUG", "deadbeaf");
 use VuFind\Exception\ILS as ILSException;
 
-class Hebis extends PICA
+class Hebis extends DAIA
 {
     // DATA for use in class
     private $link;
