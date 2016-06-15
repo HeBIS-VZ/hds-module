@@ -43,7 +43,7 @@ define("PICA_TEXTLINES_DEPARTMENT", "114");
 define("DRIVER_DEBUG", "deadbeaf");
 use VuFind\Exception\ILS as ILSException;
 
-class Hebis extends PICA
+class Hebis extends DAIA
 {
     // DATA for use in class
     private $link;
@@ -571,7 +571,7 @@ class Hebis extends PICA
             $link = mssql_connect(
                 $this->config['DB-Auth']['SybaseHost'],
                 $this->config['DB-Auth']['SybaseUser'],
-                $this->config['DB-Auth']['SybasePass']);
+                $this->config['DB-Auth']['SybasePass'], true);
             // falls das schief läuft Fehlermeldung
             if ($link == false) {
                 // sonst keine gute Fehlermeldung
@@ -682,13 +682,13 @@ class Hebis extends PICA
     public function patronLogin($barcode, $password)
     {
         //Credentials provided by Shibboleth
-        $username = $_SERVER['cat_username'];
-        $password = $_SERVER['cat_password'];
+        $username = $barcode;
+        //$password = $_SERVER['cat_password'];
 
         //TODO: User object and stuff (return value)
 
         $sql_query = "ous_borrower_select_002 '" . $username . "'," . $this->picaIln;
-        $ret = mssql_query($sql_query, $this->_getLink());
+        $ret = \mssql_query($sql_query, $this->_getLink());
         if ($ret === false) {
             echo __METHOD__ . ":" . __LINE__;
             echo(mssql_get_last_message());
@@ -836,7 +836,7 @@ class Hebis extends PICA
                 }
 
                 $transactions[] = array(
-                    'id' => $this->_picaPPNPZ($row['ppn']),  // PPN
+                    'id' => PICAUtils::picaPPNPZ($row['ppn']),  // PPN
                     'duedate' => $this->_sybaseDateToLocalDate($row['expiry_date_loan']),
                     'volume' => $row['volume_bar'],              // Buchnr.
                     'barcode' => substr($row['signature'], 3),              // Signatur
@@ -965,7 +965,7 @@ UNION
                 "PICA_TEXTLINES_FINES" => PICA_TEXTLINES_FINES,
                 "fine" => PICACharsetMapping::toUTF8($this->_picaGetTextString(PICA_TEXTLINES_FINES, $row['costs_code'])),
                 "duedate" => $this->_sybaseDateToLocalDate($row['date_of_creation']),
-                "id" => $this->_picaPPNPZ($row['ppn']),
+                "id" => PICAUtils::picaPPNPZ($row['ppn']),
                 "department" => $departments[$row['department_group_nr']]['textline'],
                 "departmentnames" => $departments,
                 "is_volume" => (($row['costs_code'] > 0) && ($row['costs_code'] <= 4))
@@ -1057,7 +1057,7 @@ UNION
             }
 
             $holdList[trim($row['reservation_date_time']) . $i] = array(
-                'id' => $this->_picaPPNPZ($row['ppn']),  // PPN
+                'id' => PICAUtils::picaPPNPZ($row['ppn']),  // PPN
                 'create' => $row['reservation_date_time'],
                 //'expire_res'  => ($row['period_of_loan_ks']>0)?date('d.m.Y',(3600*24*$row['period_of_loan_ks'])+(int)date_timestamp_get(date_create_from_format('d.m.Y',trim($row['reservation_date_time'])))):'-',
                 'expire_loan' => ($row['period_of_loan'] > 0) ? date('d.m.Y', (3600 * 24 * $row['period_of_loan']) + (int)date_timestamp_get(date_create_from_format('d.m.Y', trim($row['reservation_date_time'])))) : '-',
@@ -1080,7 +1080,7 @@ UNION
         while ($row = mssql_fetch_array($ret)) {
             if (($row['loan_status'] != '5')) {
                 $holdList[$this->_sybaseDateToLocalDate($row['date_time_of_loans_request']) . $i] = array(
-                    'id' => $this->_picaPPNPZ($row['ppn']),
+                    'id' => PICAUtils::picaPPNPZ($row['ppn']),
                     'volume' => $row['volume_bar'],
 //                               'location' => $row['destination_counter_desc'],
                     'location' => $row['counter_nr_destination'],

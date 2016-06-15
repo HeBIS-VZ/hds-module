@@ -50,7 +50,7 @@ class Factory extends \VuFind\Service\Factory
         $config = $sm->get('VuFind\Config')->get('config');
 
         //global i18n files located in vendor folder
-        $additionalGlobalLangFolders = $config->LanguageConfiguration->additional_global_language_folders;
+        $additionalGlobalLangFolders = $config->LanguageConfiguration->additional_vendor_language_folders;
         $globalLangFolderArr = explode(',',$additionalGlobalLangFolders);
         array_walk($globalLangFolderArr, function(&$item, $key) {
             $item = sprintf("%s/%s", APPLICATION_PATH . '/vendor', $item);
