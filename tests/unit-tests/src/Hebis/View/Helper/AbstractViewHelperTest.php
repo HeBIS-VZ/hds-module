@@ -28,7 +28,12 @@
 
 namespace Hebis\View\Helper;
 
+use Box\Spout\Common\Type;
+use Box\Spout\Reader\ReaderFactory;
+use Box\Spout\Reader\ReaderInterface;
 use Hebis\RecordDriver\SolrMarc;
+use VuFindSearch\Backend\Exception\HttpErrorException;
+use Zend\Http\Client;
 
 abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCase
 {
@@ -38,7 +43,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
     /**
      * @var array;
      */
-    protected $testRecordIds;
+    protected $testRecordIds = [];
 
     /**
      * @var string
@@ -55,6 +60,11 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
     protected $fixtures = [];
 
     protected $expections = [];
+
+    /**
+     * @var ReaderInterface
+     */
+    protected $spreadsheetReader;
 
     /**
      * @param $className
@@ -101,10 +111,42 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
     }
 
+    /**
+     * @param $ppn
+     * @return SolrMarc|null
+     * @throws \HttpException
+     */
+    protected function getRecordFromIndex($ppn)
+    {
+        $url = 'http://solr.hebis.de/verbund/select?wt=json&q=id:HEB'.$ppn;
+        $client = new Client($url, array(
+            'maxredirects' => 3,
+            'timeout'      => 10
+        ));
+        $response = $client->send();
+
+        if ($response->getStatusCode() > 299) {
+            throw new \HttpException("Status code ". $response->getStatusCode()." for $url.");
+        }
+        $jsonString = trim($response->getBody());
+        $jsonObject = json_decode($jsonString, true);
+        $marcObject = new SolrMarc();
+        try {
+            $marcObject->setRawData($jsonObject['response']['docs'][0]);
+        } catch (\File_MARC_Exception $e) {
+            echo "Record HEB$ppn: " . $e->getMessage() . "\n";
+            return null;
+        }
+        return $marcObject;
+    }
+
     public function setUp()
     {
         $this->viewHelper = self::factory($this->viewHelperClass);
         $this->viewHelper->setView($this->getPhpRenderer($this->getPlugins()));
+        $this->spreadsheetReader = ReaderFactory::create(Type::ODS);
+        $this->spreadsheetReader->open(PHPUNIT_FIXTURES_HEBIS."/spreadsheet/rda.ods");
+        
         $this->initFixtures();
     }
 
@@ -124,7 +166,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
             $this->assertEquals($expected, $actual, $message);
         }
-        echo "\n";
+
     }
 
 
