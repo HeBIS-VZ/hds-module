@@ -151,6 +151,13 @@ class Module
                 },
                 'single_record_international_standard_serial_number' => function($sm) {
                     return new View\Helper\SingleRecordInternationalStandardSerialNumber();
+                },
+
+
+
+                // Other View Helper
+                'bibtip' => function($sm) {
+                    return new View\Helper\BibTip();
                 }
 
             )

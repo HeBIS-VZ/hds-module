@@ -28,7 +28,13 @@
 
 namespace Hebis\View\Helper;
 
+use Box\Spout\Common\Type;
+use Box\Spout\Reader\IteratorInterface;
+use Box\Spout\Reader\ReaderFactory;
+use Box\Spout\Reader\ReaderInterface;
 use Hebis\RecordDriver\SolrMarc;
+use VuFindSearch\Backend\Exception\HttpErrorException;
+use Zend\Http\Client;
 
 abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCase
 {
@@ -38,7 +44,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
     /**
      * @var array;
      */
-    protected $testRecordIds;
+    protected $testRecordIds = [];
 
     /**
      * @var string
@@ -57,12 +63,21 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
     protected $expections = [];
 
     /**
+     * @var ReaderInterface
+     */
+    protected $spreadsheetReader;
+
+    /** @var string $testSheetName  */
+    protected $testSheetName;
+
+
+    /**
      * @param $className
      * @return AbstractRecordViewHelper
      */
     private static function factory($className)
     {
-        $className = self::VIEW_HELPER_NAMESPACE."\\".$className;
+        $className = self::VIEW_HELPER_NAMESPACE . "\\" . $className;
 
         /** @var AbstractRecordViewHelper $helper */
         $helper = new $className();
@@ -80,10 +95,10 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
         foreach ($this->testRecordIds as $testRecordFile) {
 
-            $fileName = PHPUNIT_FIXTURES_HEBIS."/JsonSolrDocs/".$testRecordFile.".json";
+            $fileName = PHPUNIT_FIXTURES_HEBIS . "/JsonSolrDocs/" . $testRecordFile . ".json";
 
             if (!is_file($fileName)) {
-                throw new \Exception("File '".$testRecordFile.".json' not found for Test ". $this->viewHelperClass);
+                throw new \Exception("File '" . $testRecordFile . ".json' not found for Test " . $this->viewHelperClass);
             }
 
             $file = file_get_contents($fileName);
@@ -101,14 +116,95 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
     }
 
+    /**
+     * @param $ppn
+     * @return SolrMarc|null
+     * @throws \HttpException
+     */
+    protected function getRecordFromIndex($ppn)
+    {
+        $url = 'http://solr.hebis.de/verbund/select?wt=json&q=id:HEB' . $ppn;
+        $client = new Client($url, array(
+            'maxredirects' => 3,
+            'timeout' => 10
+        ));
+        $response = $client->send();
+
+        if ($response->getStatusCode() > 299) {
+            throw new \HttpException("Status code " . $response->getStatusCode() . " for $url.");
+        }
+        $jsonString = trim($response->getBody());
+        $jsonObject = json_decode($jsonString, true);
+        $marcObject = new SolrMarc();
+        try {
+            $marcObject->setRawData($jsonObject['response']['docs'][0]);
+        } catch (\File_MARC_Exception $e) {
+            echo "Record HEB$ppn: " . $e->getMessage() . "\n";
+            return null;
+        }
+        return $marcObject;
+    }
+
     public function setUp()
     {
         $this->viewHelper = self::factory($this->viewHelperClass);
         $this->viewHelper->setView($this->getPhpRenderer($this->getPlugins()));
-        $this->initFixtures();
+        $this->spreadsheetReader = ReaderFactory::create(Type::XLSX);
+        $this->spreadsheetReader->open(PHPUNIT_FIXTURES_HEBIS . "/spreadsheet/rda.xlsx");
+        if (empty($this->testSheetName)) {
+            $this->initFixtures();
+        }
+
     }
 
     public function test__invoke()
+    {
+        if (!empty($this->testSheetName)) {
+            $this->spreadsheetTest();
+        } else {
+            $this->fixtureTest();
+        }
+    }
+
+
+    protected function stripTags($string)
+    {
+        $string = preg_replace('/<br(\ ?\/?)>/', '', $string); //remove line breaks <br>
+        $string = preg_replace('/<(p|a)[^>]*?>([^<\/]*)<\/\1>/', '$2', $string);
+        return trim($string);
+
+    }
+
+    /**
+     * @param IteratorInterface $rows
+     */
+    protected function runTests($rows)
+    {
+        foreach ($rows as $row) {
+            list(
+                $comment,
+                $ppn,
+                $testData,
+                $expectedSingleRecordResult,
+                $expectedRecordListResult) = array_slice($row, 0, 5);
+
+            $record = $this->getRecordFromIndex($ppn);
+            if (empty($record)) {
+                if (empty($testData)) {
+
+                    throw new \PHPUnit_Framework_IncompleteTestError('no data found');
+                }
+                //$record = $this->getRecordFromTestData($testData); TODO: implement
+            }
+
+            $actual = trim(strip_tags($this->viewHelper->__invoke($record)));
+
+            $this->assertEquals($expectedSingleRecordResult, $actual, $comment);
+
+        }
+    }
+
+    public function fixtureTest()
     {
         foreach ($this->testRecordIds as $k) {
             if (!array_key_exists($k, $this->expections)) {
@@ -124,17 +220,37 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
             $this->assertEquals($expected, $actual, $message);
         }
-        echo "\n";
     }
 
-
-    protected function stripTags($string)
+    public function spreadsheetTest()
     {
+        //parent::test__invoke(); // TODO: Change the autogenerated stub
 
-        $string = preg_replace('/<br(\ ?\/?)>/', '', $string); //remove line breaks <br>
-        $string = preg_replace( '/<(p|a)[^>]*?>([^<\/]*)<\/\1>/', '$2', $string);
-        return trim( $string );
+        /** @var Sheet $sheet */
+        foreach ($this->spreadsheetReader->getSheetIterator() as $sheet) {
 
+            if ($sheet->getName() === $this->testSheetName) {
+                $isRelevantRow = false;
+                $relevantRows = [];
+                /** @var array $row */
+                foreach ($sheet->getRowIterator() as $row) {
+
+                    if (strpos($row[0], "Genutzte Felder") !== false) {
+                        $isRelevantRow = true;
+                        continue;
+                    }
+                    if ($isRelevantRow) {
+                        if (empty($row[0])) {
+                            $isRelevantRow = false;
+                            break;
+                        }
+                        $relevantRows[] = array_slice($row, 0, 6);
+                    }
+                }
+                $this->runTests($relevantRows);
+                break;
+            }
+        }
     }
 
     /**

@@ -28,6 +28,7 @@
 
 namespace Hebis\RecordDriver;
 
+use HAB\Pica\Reader\PicaPlainReader;
 use HAB\Pica\Record\TitleRecord;
 use VuFind\Exception\ILS as ILSException,
     VuFind\View\Helper\Root\RecordLink,
@@ -56,7 +57,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      */
     public static function extractPPN($rawRecord)
     {
-        /*
         $array = explode("\n", trim($rawRecord['raw_fullrecord']));
 
         $ppnLine = array_filter($array, function ($item) {
@@ -69,7 +69,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         preg_match($pattern, $ppnLine[0], $matches);
 
         return $matches[1];
-        */
     }
 
 
@@ -178,6 +177,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 
             $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
         }
+        $picaParser = PicaRecordParser::getInstance();
+        $this->picaRecord = $picaParser->parse($data['raw_fullrecord'])->getRecord();
 
         $this->marcRecord = $marc->next();
 
@@ -185,6 +186,27 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             throw new \File_MARC_Exception('Cannot Process MARC Record');
         }
         //$this->processPicaRecord($data);
+    }
+
+    /**
+     * @param PicaRecord $picaRecord
+     */
+    public function setPicaRecord(PicaRecord $picaRecord)
+    {
+        $this->picaRecord = $picaRecord;
+    }
+
+    /**
+     * @return PicaRecord
+     */
+    public function getPicaRecord()
+    {
+        return $this->picaRecord;
+    }
+    
+    public function getPPN()
+    {
+        return $this->fields['id'];
     }
 
     /**
@@ -278,18 +300,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 
     }*/
 
-    /**
-     * @param PicaRecord $picaRecord
-     */
-    public function setPicaRecord(PicaRecord $picaRecord)
-    {
-        $this->picaRecord = $picaRecord;
-    }
 
-    public function getPicaRecord()
-    {
-        return $this->picaRecord;
-    }
+
 
     /**
      * Get access restriction notes for the record.
@@ -1320,7 +1332,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      *
      * @return string
      * @access public
-     */
+     *
     public function getTitle()
     {
         // 245 $a
@@ -1338,6 +1350,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 
         return $tmp;
     }
+    */
 
     /**
      * Get the short (pre-subtitle) title of the record.
