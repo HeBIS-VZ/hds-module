@@ -27,40 +27,15 @@
  */
 
 namespace Hebis\View\Helper;
-use Box\Spout\Reader\ODS\RowIterator;
-use Box\Spout\Reader\ODS\Sheet;
-use Box\Spout\Reader\ODS\SheetIterator;
-use Iterator;
 
 
 /**
- * Class SingleRecordSectionOfAWorkTest
+ * Class BibTipTest
  * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordSectionOfAWorkTest extends AbstractViewHelperTest
+class BibTipTest
 {
-    public function setUp()
-    {
-        $this->viewHelperClass = "SingleRecordSectionOfAWork";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
-
-        $this->testSheetName = "Teil";
-        parent::setUp(); 
-    }
-
-    
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        return [];
-    }
-
 
 }
