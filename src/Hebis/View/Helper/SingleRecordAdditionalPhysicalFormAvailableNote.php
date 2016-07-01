@@ -45,7 +45,7 @@ class SingleRecordAdditionalPhysicalFormAvailableNote extends AbstractRecordView
 
         if (($_6 = $marcRecord->getLeader()['6']) == "a" && ($_7 = $marcRecord->getLeader()['7']) == "s") {
             foreach ($fields as $field) {
-                $arr[] = $this->getSubFieldDataOfGivenField($field, 'a');
+                $arr[] = htmlentities($this->getSubFieldDataOfGivenField($field, 'a'));
             }
         }
 

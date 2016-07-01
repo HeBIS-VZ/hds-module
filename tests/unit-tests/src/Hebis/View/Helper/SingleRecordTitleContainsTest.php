@@ -29,15 +29,15 @@
 namespace Hebis\View\Helper;
 
 
-class SingleRecordMainEntryPersonalNameTest extends AbstractViewHelperTest
+class SingleRecordTitleContainsTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "SingleRecordMainEntryPersonalName";
+        $this->viewHelperClass = "SingleRecordTitleContains";
         $this->testResultField = "";
         $this->testRecordIds = [];
-        $this->testSheetName = "Autor";
+        $this->testSheetName = "Darin_enthalten";
         parent::setUp();
     }
 
@@ -48,12 +48,6 @@ class SingleRecordMainEntryPersonalNameTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $basePath = $this->getMock('Zend\View\Helper\BasePath');
-        $basePath->expects($this->any())->method('__invoke')
-            ->will($this->returnValue('/vufind2'));
-
-        return [
-            'basepath' => $basePath
-        ];
+        return [];
     }
 }

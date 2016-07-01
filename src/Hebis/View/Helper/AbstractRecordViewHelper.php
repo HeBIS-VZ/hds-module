@@ -155,4 +155,19 @@ class AbstractRecordViewHelper extends AbstractHelper
         $href = $this->getView()->basePath() . "/" . $href;
         return sprintf('<a href="%s" title="%s">%s</a>', $href, htmlentities($title), htmlentities($linkText));
     }
+
+    /**
+     * returns $str without control signs i.e. '@'
+     * @param string $str
+     * @return string
+     */
+    protected function removeControlSigns($str)
+    {
+        $len = strlen($str);
+        if (strpos($str, '@') === 0) {
+            $str = substr($str, 1, $len-1);
+        }
+        $ret = str_replace(" @", " ", $str);
+        return $ret;
+    }
 }

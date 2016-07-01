@@ -31,6 +31,12 @@ namespace Hebis\View\Helper;
 
 use Hebis\RecordDriver\SolrMarc;
 
+/**
+ * Class SingleRecordAddedEntryPersonalName
+ * @package Hebis\View\Helper
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordAddedEntryPersonalName extends AbstractRecordViewHelper
 {
 
@@ -47,11 +53,14 @@ class SingleRecordAddedEntryPersonalName extends AbstractRecordViewHelper
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
-
-        $fields = array_filter($marcRecord->getFields('700'), function(\File_MARC_Data_Field $field) {
-            $subField = $field->getSubfield('4');
-            return !empty($subField) && !in_array($subField->getData(), ['aut', 'hnr', 'prf']);
-        });
+        $_700 = $marcRecord->getFields('700');
+        $fields = array_filter(
+            $_700,
+            function(\File_MARC_Data_Field $field) {
+                $subField = $field->getSubfield('4');
+                return !empty($subField) && !in_array($subField->getData(), ['aut', 'hnr', 'prf']);
+            }
+        );
 
         return implode(" ; ", $this->extractContents($fields));
     }
@@ -70,8 +79,7 @@ class SingleRecordAddedEntryPersonalName extends AbstractRecordViewHelper
             /** @var string $ret */
             $ret = "";
 
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $b = $this->getSubFieldDataOfGivenField($field, 'b');
+            list($a, $b) = $this->extractDataFromSubFields($field, ['a', 'b']);
             $c = $this->getSubFieldDataOfGivenField($field, 'c');
             $e = $this->getSubFieldDataOfGivenField($field, 'e');
 
@@ -85,6 +93,23 @@ class SingleRecordAddedEntryPersonalName extends AbstractRecordViewHelper
 
         }
 
+        return $arr;
+    }
+
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @param array
+     * @return array
+     */
+    private function extractDataFromSubFields($field, $subFieldNos)
+    {
+        $arr = [];
+
+        foreach ($subFieldNos as $subFieldNo) {
+
+            $subField = $field->getSubfield($subFieldNo);
+            $arr[] = $subField ? $subField->getData() : null;
+        }
         return $arr;
     }
 

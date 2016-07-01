@@ -43,22 +43,38 @@ class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
+        $leader = $marcRecord->getLeader();
 
-        $fields = $marcRecord->getFields('245');
-        
-        $ret = "";
-        
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($fields as $field)
-        {
-            $n = $field->getSubfield('n')->getData();
-            $p = $field->getSubfield('p')->getData();
-            if ((!empty($n) && strpos($n, "[...]")) === false && !empty($p)) {
-                $ret .=  "$n. $p";
-            }
+        $char = $leader{19};
+        $arr = [];
 
+        if (preg_match("/\s/", $char)) {
+            $arr = $this->createOutput($marcRecord, $arr);
         }
-        
-        return $ret;
+        return implode("<br />", $arr);
+    }
+
+    /**
+     * @param $marcRecord
+     * @param $arr
+     * @return array
+     */
+    protected function createOutput($marcRecord, $arr)
+    {
+        $fields = $marcRecord->getFields('245');
+        /** @var \File_MARC_Data_Field $field */
+        foreach ($fields as $field) {
+            $n_s = $field->getSubfields('n');
+            $p_s = $field->getSubfields('p');
+            for ($i = 0; $i < count($n_s); ++$i) {
+
+                if ((!empty($n_s[$i]) && strpos($n_s[$i]->getData(), "[...]")) === false) {
+                    $n = htmlentities($n_s[$i]->getData() . ". ");
+                }
+                $p = htmlentities($p_s[$i]->getData());
+                $arr[] = "$n$p";
+            }
+        }
+        return $arr;
     }
 }

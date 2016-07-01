@@ -35,8 +35,9 @@ class SingleRecordFestschriftTest extends AbstractViewHelperTest
     public function setUp()
     {
         $this->viewHelperClass = "SingleRecordFestschrift";
-        $this->testRecordIds = ['HEB363755683'];
-        $this->testResultField = 'festschrift_for';
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+        $this->testSheetName = "Festschrift_für";
 
         parent::setUp();
 
@@ -51,7 +52,7 @@ class SingleRecordFestschriftTest extends AbstractViewHelperTest
     {
         $basePath = $this->getMock('Zend\View\Helper\BasePath');
         $basePath->expects($this->any())->method('__invoke')
-            ->will($this->returnValue('/vufind2'));
+            ->will($this->returnValue($this->getConfig('Site')->get('url')));
 
         return [
             'basepath' => $basePath

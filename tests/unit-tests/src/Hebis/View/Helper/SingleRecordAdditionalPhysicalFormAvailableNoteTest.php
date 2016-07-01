@@ -35,12 +35,9 @@ class SingleRecordAdditionalPhysicalFormAvailableNoteTest extends AbstractViewHe
     public function setUp()
     {
         $this->viewHelperClass = "SingleRecordAdditionalPhysicalFormAvailableNote";
-        $this->testRecordIds = [
-            'HEB047322551',
-            'HEB047688181',
-            'HEB04683429X'
-        ];
-        $this->testResultField = 'additional_physical_form_available_note';
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+        $this->testSheetName = "Auch_als";
         parent::setUp();
     }
 

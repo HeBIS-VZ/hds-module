@@ -41,50 +41,72 @@ class SingleRecordInterpreter extends SingleRecordAddedEntryPersonalName
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
+        $arr = [];
 
-        $fields = array_merge(
-            $marcRecord->getFields('700'),
-            $marcRecord->getFields('710')
-        );
+        $fields = $marcRecord->getFields('700');
 
         $fields_ = array_filter($fields, function(\File_MARC_Data_Field $field) {
             $subField = $field->getSubfield('4');
             return !empty($subField) && in_array($subField->getData(), ['prf', 'mus']);
         });
 
-        $arr = [];
+
 
         /** @var \File_MARC_Data_Field $field */
         foreach ($fields_ as $field) {
-            $ret = "";
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $b = $this->getSubFieldDataOfGivenField($field, 'b');
+            $_700 = "";
+            list($a, $b) = $this->extractDataFromSubFieldAB($field);
 
+            $c = $this->getSubFieldDataOfGivenField($field, 'c');
+            $e = $this->getSubFieldDataOfGivenField($field, 'e');
+            $_700 .= $a ? $a : "";
+            $_700 .= $b ? " $b" : "";
+            $_700 .= $c ? " <$c>" : "";
+            $_700 .= $e ? " ($e)" : "";
 
-            switch($field->getTag()) {
-                case '700':
-                    $c = $this->getSubFieldDataOfGivenField($field, 'c');
-                    $e = $this->getSubFieldDataOfGivenField($field, 'e');
-                    $ret .= $a ? $a : "";
-                    $ret .= $b ? " $b" : "";
-                    $ret .= $c ? " <$c>" : "";
-                    $ret .= $e ? " ($e)" : "";
-                    break;
-                case '710':
-                    $g = $this->getSubFieldDataOfGivenField($field, 'g');
-                    $n = $this->getSubFieldDataOfGivenField($field, 'n');
-                    $ret .= $a ? $a : "";
-                    $ret .= $b ? " / $b" : "";
-                    $ret .= $g ? " <$g>" : "";
-                    $ret .= $n ? " <$n>" : "";
-                    break;
-            }
-
-            $arr[] = $this->authorSearchLink($ret);
+            $arr[] = $this->authorSearchLink($_700);
         }
 
 
-        return implode("<br>\n", $arr);
+        $ret = implode("; ", $arr);
+
+        $arr = []; //reset array
+
+        $fields = $marcRecord->getFields('710');
+
+        $fields_ = array_filter($fields, function(\File_MARC_Data_Field $field) {
+            $subField = $field->getSubfield('4');
+            return !empty($subField) && in_array($subField->getData(), ['prf', 'mus']);
+        });
+
+        /** @var \File_MARC_Data_Field $field */
+        foreach ($fields_ as $field) {
+            $_710 = "";
+            list($a, $b) = $this->extractDataFromSubFieldAB($field);
+            $g = $this->getSubFieldDataOfGivenField($field, 'g');
+            $n = $this->getSubFieldDataOfGivenField($field, 'n');
+            $_710 .= $a ? $a : "";
+            $_710 .= $b ? " / $b" : "";
+            $_710 .= $g ? " <$g>" : "";
+            $_710 .= $n ? " <$n>" : "";
+
+            $arr[] = $this->authorSearchLink($_710);
+        }
+        
+        $ret .= "<br />" . implode("; ", $arr);
+
+        return $ret;
+    }
+
+    /**
+     * @param $field
+     * @return array
+     */
+    private function extractDataFromSubFieldAB($field)
+    {
+        $a = $this->getSubFieldDataOfGivenField($field, 'a');
+        $b = $this->getSubFieldDataOfGivenField($field, 'b');
+        return array($a, $b);
     }
 
 

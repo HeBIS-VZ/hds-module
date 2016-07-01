@@ -27,40 +27,30 @@
  */
 
 namespace Hebis\View\Helper;
-use Box\Spout\Reader\ODS\RowIterator;
-use Box\Spout\Reader\ODS\Sheet;
-use Box\Spout\Reader\ODS\SheetIterator;
-use Iterator;
+use Hebis\RecordDriver\SolrMarc;
 
 
 /**
- * Class SingleRecordSectionOfAWorkTest
+ * Class SingleRecordSectionOfAWork
  * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordSectionOfAWorkTest extends AbstractViewHelperTest
+class SingleRecordPartOfAWork extends SingleRecordSectionOfAWork
 {
-    public function setUp()
+
+    public function __invoke(SolrMarc $record)
     {
-        $this->viewHelperClass = "SingleRecordSectionOfAWork";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
+        $leader = $marcRecord->getLeader();
 
-        $this->testSheetName = "Unterreihe";
-        parent::setUp(); 
+        $char = $leader{19};
+        $arr = [];
+
+        if (preg_match("/c/", $char)) {
+            $this->createOutput($marcRecord, $arr);
+        }
+        return implode("<br />", $arr);
     }
-
-    
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        return [];
-    }
-
-
 }

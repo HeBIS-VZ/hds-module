@@ -27,40 +27,39 @@
  */
 
 namespace Hebis\View\Helper;
-use Box\Spout\Reader\ODS\RowIterator;
-use Box\Spout\Reader\ODS\Sheet;
-use Box\Spout\Reader\ODS\SheetIterator;
-use Iterator;
+use Hebis\RecordDriver\SolrMarc;
 
 
 /**
- * Class SingleRecordSectionOfAWorkTest
+ * Class SingleRecordDatesOfPublicationOrSequentialDesignation
  * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordSectionOfAWorkTest extends AbstractViewHelperTest
+class SingleRecordPhysicalDescription extends AbstractRecordViewHelper
 {
-    public function setUp()
+    public function __invoke(SolrMarc $record)
     {
-        $this->viewHelperClass = "SingleRecordSectionOfAWork";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
+        $arr = [];
 
-        $this->testSheetName = "Unterreihe";
-        parent::setUp(); 
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
+        $_362 = $marcRecord->getFields('300');
+
+        /** @var \File_MARC_Data_Field $field */
+        foreach ($_362 as $field) {
+            $ret = "";
+            $a = $this->getSubFieldDataOfGivenField($field, 'a');
+            $b = $this->getSubFieldDataOfGivenField($field, 'b');
+            $c = $this->getSubFieldDataOfGivenField($field, 'c');
+            $e = $this->getSubFieldDataOfGivenField($field, 'e');
+            $ret .= ($a) ? htmlentities($a) : "";
+            $ret .= ($b) ? " : " . htmlentities($b) : "";
+            $ret .= ($c) ? " ; " . htmlentities($c) : "";
+            $ret .= ($e) ? " + " . htmlentities($e) : "";
+            $arr[] =  $ret;
+        }
+
+        return implode("<br />", $arr);
     }
-
-    
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        return [];
-    }
-
-
 }

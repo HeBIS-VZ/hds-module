@@ -33,9 +33,9 @@ class SingleRecordInterpreterTest extends AbstractViewHelperTest
     public function setUp() {
 
         $this->viewHelperClass = "SingleRecordInterpreter";
-        $this->testRecordIds = ['HEB277913128'];
-        $this->testResultField = 'interpreter';
-
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+        $this->testSheetName = "Interpret";
         parent::setUp();
     }
 

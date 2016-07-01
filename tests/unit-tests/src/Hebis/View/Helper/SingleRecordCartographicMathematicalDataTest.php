@@ -1,16 +1,16 @@
 <?php
-
 /*
- * This file is a part of HDS (HeBIS Discovery System). HDS is an
- * extension of the open source library search engine VuFind, that
- * allows users to search and browse beyond resources. More
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an 
+ * extension of the open source library search engine VuFind, that 
+ * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
- *
- * Copyright (C) 2016
- * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * 
+ * Copyright (C) 2016 
+ * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
- *
+ * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -29,15 +29,21 @@
 namespace Hebis\View\Helper;
 
 
-class SingleRecordMainEntryPersonalNameTest extends AbstractViewHelperTest
+/**
+ * Class DatesOfPublicationOrSequentialDesignation
+ * @package Hebis\View\Helper
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
+class SingleRecordCartographicMathematicalDataTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "SingleRecordMainEntryPersonalName";
+        $this->viewHelperClass = "SingleRecordCartographicMathematicalData";
         $this->testResultField = "";
         $this->testRecordIds = [];
-        $this->testSheetName = "Autor";
+        $this->testSheetName = "Maßstab";
         parent::setUp();
     }
 
@@ -48,12 +54,6 @@ class SingleRecordMainEntryPersonalNameTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $basePath = $this->getMock('Zend\View\Helper\BasePath');
-        $basePath->expects($this->any())->method('__invoke')
-            ->will($this->returnValue('/vufind2'));
-
-        return [
-            'basepath' => $basePath
-        ];
+        // TODO: Implement getPlugins() method.
     }
 }

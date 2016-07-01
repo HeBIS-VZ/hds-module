@@ -29,31 +29,36 @@
 namespace Hebis\View\Helper;
 
 
-class SingleRecordMainEntryPersonalNameTest extends AbstractViewHelperTest
+use Hebis\RecordDriver\SolrMarc;
+
+/**
+ * Class SingleRecordAddedEntryPersonalName
+ * @package Hebis\View\Helper
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
+class SingleRecordTitleContains extends AbstractRecordViewHelper
 {
 
-    public function setUp()
+    public function __invoke(SolrMarc $record)
     {
-        $this->viewHelperClass = "SingleRecordMainEntryPersonalName";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
-        $this->testSheetName = "Autor";
-        parent::setUp();
+
+        $arr = [];
+
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
+        $_249 = $marcRecord->getFields('249');
+
+        /** @var \File_MARC_Data_Field $field */
+        foreach ($_249 as $field) {
+            $a = $this->getSubFieldDataOfGivenField($field, 'a');
+            $b = $this->getSubFieldDataOfGivenField($field, 'b');
+
+            if ($a) $arr[] = htmlentities($this->removeControlSigns($a));
+            if ($b) $arr[] = htmlentities($this->removeControlSigns($b));
+        }
+
+        return implode("<br />", $arr);
     }
 
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        $basePath = $this->getMock('Zend\View\Helper\BasePath');
-        $basePath->expects($this->any())->method('__invoke')
-            ->will($this->returnValue('/vufind2'));
-
-        return [
-            'basepath' => $basePath
-        ];
-    }
 }

@@ -34,13 +34,11 @@ class SingleRecordAddedEntryPersonalNameTest extends AbstractViewHelperTest
     public function setUp()
     {
         $this->viewHelperClass = "SingleRecordAddedEntryPersonalName";
-        $this->testRecordIds = [
-            'HEB300617305',
-            'HEB078893151',
-            'HEB212696629',
-            'HEB095212299'
-        ];
-        $this->testResultField = 'added_entry_personal_name';
+
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+
+        $this->testSheetName = "Beteiligt";
         parent::setUp();
     }
 
@@ -59,4 +57,5 @@ class SingleRecordAddedEntryPersonalNameTest extends AbstractViewHelperTest
             'basepath' => $basePath
         ];
     }
+
 }

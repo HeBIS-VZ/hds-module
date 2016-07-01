@@ -70,6 +70,10 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
     /** @var string $testSheetName  */
     protected $testSheetName;
 
+    /**
+     * @var \VuFind\Config\PluginFactory
+     */
+    protected $pluginFactory;
 
     /**
      * @param $className
@@ -136,6 +140,11 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
         $jsonString = trim($response->getBody());
         $jsonObject = json_decode($jsonString, true);
         $marcObject = new SolrMarc();
+
+        if ($jsonObject['response']['numFound'] < 1) {
+            $this->markTestIncomplete("No document found with ppn \"$ppn\". Skipping this test case...");
+        }
+
         try {
             $marcObject->setRawData($jsonObject['response']['docs'][0]);
         } catch (\File_MARC_Exception $e) {
@@ -147,10 +156,12 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
     public function setUp()
     {
+        $this->pluginFactory = new \VuFind\Config\PluginFactory();
         $this->viewHelper = self::factory($this->viewHelperClass);
         $this->viewHelper->setView($this->getPhpRenderer($this->getPlugins()));
         $this->spreadsheetReader = ReaderFactory::create(Type::XLSX);
         $this->spreadsheetReader->open(PHPUNIT_FIXTURES_HEBIS . "/spreadsheet/rda.xlsx");
+        
         if (empty($this->testSheetName)) {
             $this->initFixtures();
         }
@@ -180,7 +191,9 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     protected function runTests($rows)
     {
-        foreach ($rows as $row) {
+        
+        for ($i = 0; $i < count($rows); ++$i) {
+            $row = $rows[$i];
             list(
                 $comment,
                 $ppn,
@@ -197,10 +210,10 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
                 //$record = $this->getRecordFromTestData($testData); TODO: implement
             }
 
-            $actual = trim(strip_tags($this->viewHelper->__invoke($record)));
+            $actual = trim(strip_tags(str_replace("<br />", "\n", $this->viewHelper->__invoke($record))));
+            $_comment = "Test: \"".$this->testSheetName."\", Class: \"".$this->viewHelperClass."\", Test Case: $i / PPN: ".$row[1]."; Comment: $comment\n";
 
-            $this->assertEquals($expectedSingleRecordResult, $actual, $comment);
-
+            $this->assertEquals(htmlentities(trim($expectedSingleRecordResult)), $actual, $_comment);
         }
     }
 
@@ -241,16 +254,36 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
                     }
                     if ($isRelevantRow) {
                         if (empty($row[0])) {
-                            $isRelevantRow = false;
                             break;
                         }
                         $relevantRows[] = array_slice($row, 0, 6);
                     }
                 }
-                $this->runTests($relevantRows);
+
                 break;
             }
         }
+
+        if (empty($relevantRows)) {
+            $this->fail("No test case found!");
+        }
+
+        $this->runTests($relevantRows);
+    }
+
+    /**
+     * Wrapper around factory
+     *
+     * @param string $name Configuration to load
+     *
+     * @return \Zend\Config\Config
+     */
+    public function getConfig($name)
+    {
+        return $this->pluginFactory->createServiceWithName(
+            $this->getMock('Zend\ServiceManager\ServiceLocatorInterface'),
+            $name, $name
+        );
     }
 
     /**
