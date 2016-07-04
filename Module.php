@@ -107,6 +107,9 @@ class Module
                 'record_get_sub_fields_of_field_type' => function($sm) {
                     return new View\Helper\RecordGetSubFieldsOfFieldType();
                 },
+                'result_list_title_statement' => function($sm) {
+                    return new View\Helper\ResultListTitleStatement();
+                },
                 'single_record_title_statement' => function($sm) {
                     return new View\Helper\SingleRecordTitleStatement();
                 },
