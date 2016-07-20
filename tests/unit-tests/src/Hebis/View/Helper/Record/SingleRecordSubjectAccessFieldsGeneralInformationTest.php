@@ -30,21 +30,21 @@ namespace Hebis\View\Helper\Record;
 
 
 /**
- * Class BibTipTest
- * @package Hebis\View\Helper
+ * Class SingleRecordSubjectAccessFieldsGeneralInformationTest
+ * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordSubjectAccessFieldsGeneralInformationTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "BibTip";
+        $this->viewHelperClass = "SingleRecordSubjectAccessFieldsGeneralInformation";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "BibTip";
+        $this->testSheetName = "Schlagworte";
         parent::setUp();
     }
 
@@ -55,9 +55,6 @@ class BibTipTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+        return [];
     }
 }

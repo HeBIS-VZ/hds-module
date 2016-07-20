@@ -30,21 +30,21 @@ namespace Hebis\View\Helper\Record;
 
 
 /**
- * Class BibTipTest
+ * Class ResultListTitleStatementTest
  * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipTest extends AbstractViewHelperTest
+class ResultListTitleStatementTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "BibTip";
+        $this->viewHelperClass = "ResultListTitleStatement";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "BibTip";
+        $this->testSheetName = "Titel";
         parent::setUp();
     }
 
@@ -55,9 +55,6 @@ class BibTipTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+        return [];
     }
 }

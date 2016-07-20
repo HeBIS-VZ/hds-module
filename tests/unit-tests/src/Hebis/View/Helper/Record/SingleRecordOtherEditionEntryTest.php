@@ -4,9 +4,8 @@
  * extension of the open source library search engine VuFind, that 
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
- * 
- * Copyright (C) 2016 
- * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ *
+ * Copyright (C) 2016
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -29,22 +28,18 @@
 namespace Hebis\View\Helper\Record;
 
 
-/**
- * Class BibTipTest
- * @package Hebis\View\Helper
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordOtherEditionEntryTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "BibTip";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
+        $this->viewHelperClass = "SingleRecordOtherEditionEntry";
+        $this->testResultField = "other_edition_entry";
+        $this->testRecordIds = [
+            'HEB046828966',
+            'HEB120899825',
+        ];
 
-        $this->testSheetName = "BibTip";
         parent::setUp();
     }
 
@@ -55,9 +50,15 @@ class BibTipTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
+        $basePath = $this->getMock('Zend\View\Helper\BasePath');
+        $basePath->expects($this->any())->method('__invoke')
+            ->will($this->returnValue('/vufind2'));
+
+        $transEsc = $this->getMock('VuFind\View\Helper\Root\TransEsc');
+
         return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
+            'basepath' => $basePath,
+            'transesc' => $transEsc
         ];
     }
 }

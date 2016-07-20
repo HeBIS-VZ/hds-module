@@ -30,21 +30,20 @@ namespace Hebis\View\Helper\Record;
 
 
 /**
- * Class BibTipTest
+ * Class DatesOfPublicationOrSequentialDesignation
  * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordDatesOfPublicationOrSequentialDesignationTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "BibTip";
+        $this->viewHelperClass = "SingleRecordDatesOfPublicationOrSequentialDesignation";
         $this->testResultField = "";
         $this->testRecordIds = [];
-
-        $this->testSheetName = "BibTip";
+        $this->testSheetName = "Erscheinungsverlauf";
         parent::setUp();
     }
 
@@ -55,9 +54,6 @@ class BibTipTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+        // TODO: Implement getPlugins() method.
     }
 }

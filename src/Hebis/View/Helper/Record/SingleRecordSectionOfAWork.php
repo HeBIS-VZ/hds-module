@@ -27,37 +27,62 @@
  */
 
 namespace Hebis\View\Helper\Record;
+use Hebis\RecordDriver\SolrMarc;
 
 
 /**
- * Class BibTipTest
+ * Class SingleRecordSectionOfAWork
  * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
 {
 
-    public function setUp()
+    public function __invoke(SolrMarc $record)
     {
-        $this->viewHelperClass = "BibTip";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
+        $leader = $marcRecord->getLeader();
 
-        $this->testSheetName = "BibTip";
-        parent::setUp();
+        $char = $leader{19};
+        $arr = [];
+
+        if (preg_match("/\s/", $char)) {
+            $arr = $this->createOutput($marcRecord, $arr);
+        }
+        return implode("<br />", $arr);
     }
 
     /**
-     * Get plugins to register to support view helper being tested
-     *
+     * @param $marcRecord
+     * @param $arr
      * @return array
      */
-    protected function getPlugins()
+    protected function createOutput($marcRecord, $arr)
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+        $arr = [];
+        $fields = $marcRecord->getFields('245');
+        /** @var \File_MARC_Data_Field $field */
+        foreach ($fields as $field) {
+
+            /** @var \File_MARC_Subfield $subField */
+            foreach ($field->getSubfields() as $subField) {
+                $key = $subField->getCode();
+
+                switch ($key) {
+                    case 'n':
+                        $n = htmlentities($subField->getData());
+                        break;
+                    case 'p':
+                        $p = htmlentities($subField->getData());
+                        break;
+                }
+                $np = !empty($n) ? "$n. " : "";
+                $np .= !empty($p) ? "$p" : "";
+                $arr[] = $np;
+            }
+        }
+        return $arr;
     }
 }

@@ -4,9 +4,8 @@
  * extension of the open source library search engine VuFind, that 
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
- * 
- * Copyright (C) 2016 
- * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ *
+ * Copyright (C) 2016
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -28,24 +27,24 @@
 
 namespace Hebis\View\Helper\Record;
 
-
-/**
- * Class BibTipTest
- * @package Hebis\View\Helper
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordTitleStatementTest extends AbstractViewHelperTest
 {
+    public function setUp() {
 
-    public function setUp()
-    {
-        $this->viewHelperClass = "BibTip";
-        $this->testResultField = "";
+        $this->viewHelperClass = "SingleRecordTitleStatement";
         $this->testRecordIds = [];
+        $this->testResultField = 'title';
+        $this->testSheetName = "Titel";
+        parent::setUp(); 
+    }
 
-        $this->testSheetName = "BibTip";
-        parent::setUp();
+    public function testRemoveSpecialChars() {
+
+        $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("@The Result of a Equation"));
+        $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("The @Result of a Equation"));
+        $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("@The @Result of a Equation"));
+        $this->assertEquals("Eine Übersicht ist wichtig", $this->viewHelper->removeSpecialChars("Eine @Übersicht ist wichtig"));
+        $this->assertEquals("E-M@il für dich", $this->viewHelper->removeSpecialChars("E-M@il für dich"));
     }
 
     /**
@@ -55,9 +54,12 @@ class BibTipTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
+        $basePath = $this->getMock('Zend\View\Helper\BasePath');
+        $basePath->expects($this->any())->method('__invoke')
+            ->will($this->returnValue('/vufind2'));
+
         return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
+            'basepath' => $basePath
         ];
     }
 }

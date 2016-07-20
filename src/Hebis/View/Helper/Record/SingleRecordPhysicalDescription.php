@@ -27,37 +27,39 @@
  */
 
 namespace Hebis\View\Helper\Record;
+use Hebis\RecordDriver\SolrMarc;
 
 
 /**
- * Class BibTipTest
+ * Class SingleRecordDatesOfPublicationOrSequentialDesignation
  * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordPhysicalDescription extends AbstractRecordViewHelper
 {
-
-    public function setUp()
+    public function __invoke(SolrMarc $record)
     {
-        $this->viewHelperClass = "BibTip";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
+        $arr = [];
 
-        $this->testSheetName = "BibTip";
-        parent::setUp();
-    }
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
+        $_362 = $marcRecord->getFields('300');
 
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+        /** @var \File_MARC_Data_Field $field */
+        foreach ($_362 as $field) {
+            $ret = "";
+            $a = $this->getSubFieldDataOfGivenField($field, 'a');
+            $b = $this->getSubFieldDataOfGivenField($field, 'b');
+            $c = $this->getSubFieldDataOfGivenField($field, 'c');
+            $e = $this->getSubFieldDataOfGivenField($field, 'e');
+            $ret .= ($a) ? $a : "";
+            $ret .= ($b) ? " : " . $b : "";
+            $ret .= ($c) ? " ; " . $c : "";
+            $ret .= ($e) ? " + " . $e : "";
+            $arr[] =  $ret;
+        }
+
+        return implode("<br />", $arr);
     }
 }

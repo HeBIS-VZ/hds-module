@@ -27,37 +27,39 @@
  */
 
 namespace Hebis\View\Helper\Record;
+use Hebis\RecordDriver\SolrMarc;
 
 
 /**
- * Class BibTipTest
- * @package Hebis\View\Helper
+ * Class SingleRecordLanguageCode
+ * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordLanguageCode extends AbstractRecordViewHelper
 {
 
-    public function setUp()
+    public function __invoke(SolrMarc $record)
     {
-        $this->viewHelperClass = "BibTip";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
+        $arr = [];
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
 
-        $this->testSheetName = "BibTip";
-        parent::setUp();
-    }
+        $fields = $marcRecord->getFields('041');
 
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+        for ($i = 0; $i < count($fields); ++$i) {
+            
+            /** @var \File_MARC_Data_Field $field */
+            $field = $fields[$i];
+            $subFields = $field->getSubfields('a');
+            for ($j = 0; $j < count($subFields); ++$j) {
+                $subField = $subFields[$j];
+                $lang = $subField->getData();
+                $arr[] = htmlentities($this->getView()->translate($lang));
+            }
+
+        }
+
+        return implode("; ", $arr);
     }
 }

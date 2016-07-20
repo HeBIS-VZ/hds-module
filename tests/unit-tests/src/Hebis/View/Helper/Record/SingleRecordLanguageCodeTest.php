@@ -1,16 +1,16 @@
 <?php
+
 /*
- * This file is a part of HDS (HeBIS Discovery System). HDS is an 
- * extension of the open source library search engine VuFind, that 
- * allows users to search and browse beyond resources. More 
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an
+ * extension of the open source library search engine VuFind, that
+ * allows users to search and browse beyond resources. More
  * Information about VuFind you will find on http://www.vufind.org
- * 
- * Copyright (C) 2016 
- * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- * HeBIS Verbundzentrale des HeBIS-Verbundes 
+ *
+ * Copyright (C) 2016
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -28,24 +28,21 @@
 
 namespace Hebis\View\Helper\Record;
 
-
-/**
- * Class BibTipTest
- * @package Hebis\View\Helper
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordLanguageCodeTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "BibTip";
+        $this->viewHelperClass = "SingleRecordLanguageCode";
         $this->testResultField = "";
         $this->testRecordIds = [];
+        $this->testSheetName = "Sprache";
 
-        $this->testSheetName = "BibTip";
         parent::setUp();
+    }
+
+    protected function getTranslator() {
+
     }
 
     /**
@@ -55,9 +52,25 @@ class BibTipTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
+
+        $stub = $this->getMock('VuFind\View\Helper\Root\Translate', ['translate'], [], "TranslateMock");
+        $stub->expects($this->any())->method('translate')
+            ->will($this->returnCallback(function($a, $b, $c){
+                //echo "\n\n$a\n".print_r($b)."\n$c\n\n";
+                $map = [
+                    'ger' => 'Deutsch',
+                    'fre' => 'Französisch',
+                    'eng' => 'Englisch',
+                    'por' => 'Portugiesisch'
+                ];
+                return $map[$a];
+            }));
+
+        $this->assertEquals('Deutsch', $stub->translate('ger'));
+        $this->assertEquals('Französisch', $stub->translate('fre'));
+
         return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
+            'translate' => $stub
         ];
     }
 }

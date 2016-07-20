@@ -1,16 +1,16 @@
 <?php
+
 /*
- * This file is a part of HDS (HeBIS Discovery System). HDS is an 
- * extension of the open source library search engine VuFind, that 
- * allows users to search and browse beyond resources. More 
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an
+ * extension of the open source library search engine VuFind, that
+ * allows users to search and browse beyond resources. More
  * Information about VuFind you will find on http://www.vufind.org
- * 
- * Copyright (C) 2016 
- * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- * HeBIS Verbundzentrale des HeBIS-Verbundes 
+ *
+ * Copyright (C) 2016
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -29,23 +29,18 @@
 namespace Hebis\View\Helper\Record;
 
 
-/**
- * Class BibTipTest
- * @package Hebis\View\Helper
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordFestschriftTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "BibTip";
+        $this->viewHelperClass = "SingleRecordFestschrift";
         $this->testResultField = "";
         $this->testRecordIds = [];
+        $this->testSheetName = "Festschrift_für";
 
-        $this->testSheetName = "BibTip";
         parent::setUp();
+
     }
 
     /**
@@ -55,9 +50,12 @@ class BibTipTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
+        $basePath = $this->getMock('Zend\View\Helper\BasePath');
+        $basePath->expects($this->any())->method('__invoke')
+            ->will($this->returnValue($this->getConfig('Site')->get('url')));
+
         return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
+            'basepath' => $basePath
         ];
     }
 }

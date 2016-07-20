@@ -27,37 +27,30 @@
  */
 
 namespace Hebis\View\Helper\Record;
+use Hebis\RecordDriver\SolrMarc;
 
 
 /**
- * Class BibTipTest
+ * Class SingleRecordSectionOfAWork
  * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordPartOfAWork extends SingleRecordSectionOfAWork
 {
 
-    public function setUp()
+    public function __invoke(SolrMarc $record)
     {
-        $this->viewHelperClass = "BibTip";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
+        $leader = $marcRecord->getLeader();
 
-        $this->testSheetName = "BibTip";
-        parent::setUp();
-    }
+        $char = $leader{19};
+        $arr = [];
 
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+        if (preg_match("/c/", $char)) {
+            $this->createOutput($marcRecord, $arr);
+        }
+        return implode("<br />", $arr);
     }
 }

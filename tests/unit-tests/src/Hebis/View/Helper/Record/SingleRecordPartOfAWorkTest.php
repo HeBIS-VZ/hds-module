@@ -27,27 +27,31 @@
  */
 
 namespace Hebis\View\Helper\Record;
+use Box\Spout\Reader\ODS\RowIterator;
+use Box\Spout\Reader\ODS\Sheet;
+use Box\Spout\Reader\ODS\SheetIterator;
+use Iterator;
 
 
 /**
- * Class BibTipTest
+ * Class SingleRecordSectionOfAWorkTest
  * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipTest extends AbstractViewHelperTest
+class SingleRecordPartOfAWorkTest extends AbstractViewHelperTest
 {
-
     public function setUp()
     {
-        $this->viewHelperClass = "BibTip";
+        $this->viewHelperClass = "SingleRecordPartOfAWork";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "BibTip";
-        parent::setUp();
+        $this->testSheetName = "Teil";
+        parent::setUp(); 
     }
 
+    
     /**
      * Get plugins to register to support view helper being tested
      *
@@ -55,9 +59,8 @@ class BibTipTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+        return [];
     }
+
+
 }
