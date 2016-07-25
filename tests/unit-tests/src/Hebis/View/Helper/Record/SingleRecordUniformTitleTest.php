@@ -27,7 +27,12 @@
 
 namespace Hebis\View\Helper\Record;
 
-
+/**
+ * Class SingleRecordUniformTitleTest
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordUniformTitleTest extends AbstractViewHelperTest
 {
 

@@ -32,6 +32,12 @@ use \File_MARC_Record;
 use Hebis\RecordDriver\SolrMarc;
 use Zend\View\Helper\AbstractHelper;
 
+/**
+ * Class SingleRecordTitleStatementSectionOfWork
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordTitleStatementSectionOfWork extends SingleRecordTitleStatement
 {
     public function __invoke(SolrMarc $record)

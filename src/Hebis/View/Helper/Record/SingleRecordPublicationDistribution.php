@@ -30,6 +30,12 @@ namespace Hebis\View\Helper\Record;
 
 use Hebis\RecordDriver\SolrMarc;
 
+/**
+ * Class SingleRecordPublicationDistribution
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordPublicationDistribution extends \Hebis\View\Helper\Record\AbstractRecordViewHelper
 {
     /**

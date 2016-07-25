@@ -29,10 +29,14 @@
 namespace Hebis\View\Helper\Record;
 
 use Hebis\RecordDriver\SolrMarc;
-
 use Zend\Navigation;
 
-
+/**
+ * Class ResultListTitleStatement
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class ResultListTitleStatement extends SingleRecordTitleStatement
 {
 

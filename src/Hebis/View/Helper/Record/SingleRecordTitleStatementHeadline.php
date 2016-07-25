@@ -1,16 +1,15 @@
 <?php
-
 /*
- * This file is a part of HDS (HeBIS Discovery System). HDS is an
- * extension of the open source library search engine VuFind, that
- * allows users to search and browse beyond resources. More
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an 
+ * extension of the open source library search engine VuFind, that 
+ * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
- *
- * Copyright (C) 2016
- * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * 
+ * Copyright (C) 2016 
+ * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
- *
+ * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -27,38 +26,26 @@
  */
 
 namespace Hebis\View\Helper\Record;
+use Hebis\RecordDriver\SolrMarc;
+
 
 /**
- * Class SingleRecordInterpreterTest
+ * Class SingleRecordTitleStatementHeadline
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordInterpreterTest extends AbstractViewHelperTest
+class SingleRecordTitleStatementHeadline extends AbstractRecordViewHelper
 {
-    public function setUp() {
 
-        $this->viewHelperClass = "SingleRecordInterpreter";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
-        $this->testSheetName = "Interpret";
-        parent::setUp();
-    }
-
-
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
+    public function __invoke(SolrMarc $record)
     {
-        $basePath = $this->getMock('Zend\View\Helper\BasePath');
-        $basePath->expects($this->any())->method('__invoke')
-            ->will($this->returnValue('/vufind2'));
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
 
-        return [
-            'basepath' => $basePath
-        ];
+        /** @var \File_MARC_Data_Field $_245 */
+        $_245 = $marcRecord->getField('245');
+
+        return $this->removeControlSigns($_245->getSubfield('a')->getData());
     }
 }

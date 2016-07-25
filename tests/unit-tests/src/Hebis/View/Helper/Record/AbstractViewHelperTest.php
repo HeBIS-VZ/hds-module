@@ -37,6 +37,12 @@ use Hebis\RecordDriver\SolrMarc;
 use VuFindSearch\Backend\Exception\HttpErrorException;
 use Zend\Http\Client;
 
+/**
+ * Class AbstractViewHelperTest
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCase
 {
 

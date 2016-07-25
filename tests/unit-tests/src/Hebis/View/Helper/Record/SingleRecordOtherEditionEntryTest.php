@@ -27,7 +27,12 @@
 
 namespace Hebis\View\Helper\Record;
 
-
+/**
+ * Class SingleRecordOtherEditionEntryTest
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordOtherEditionEntryTest extends AbstractViewHelperTest
 {
 

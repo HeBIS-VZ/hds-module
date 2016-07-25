@@ -34,7 +34,7 @@ use Hebis\RecordDriver\SolrMarc;
 
 /**
  * Class SingleRecordAddedEntryPersonalName
- * @package Hebis\View\Helper
+ * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
@@ -76,22 +76,8 @@ class SingleRecordAddedEntryPersonalName extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $field */
         foreach ($fields as $field) {
-
-            /** @var string $ret */
-            $ret = "";
-
-            list($a, $b) = $this->extractDataFromSubFields($field, ['a', 'b']);
-            $c = $this->getSubFieldDataOfGivenField($field, 'c');
-            $e = $this->getSubFieldDataOfGivenField($field, 'e');
-
-            $ret .= $a ? $a : "";
-            $ret .= $b ? " $b" : "";
-            $ret .= $c ? " &lt;$c&gt;" : "";
-
-            $ret .= $e ? " ($e)" : "";
-
+            $ret = $this->extractItem($field);
             $arr[] = $this->authorSearchLink($ret);
-
         }
 
         return $arr;
@@ -112,6 +98,27 @@ class SingleRecordAddedEntryPersonalName extends AbstractRecordViewHelper
             $arr[] = $subField ? htmlentities($subField->getData()) : null;
         }
         return $arr;
+    }
+
+    /**
+     * @param $field
+     * @return string
+     */
+    protected function extractItem($field)
+    {
+        /** @var string $ret */
+        $ret = "";
+
+        list($a, $b) = $this->extractDataFromSubFields($field, ['a', 'b']);
+        $c = $this->getSubFieldDataOfGivenField($field, 'c');
+        $e = $this->getSubFieldDataOfGivenField($field, 'e');
+
+        $ret .= $a ? $a : "";
+        $ret .= $b ? " $b" : "";
+        $ret .= $c ? " &lt;$c&gt;" : "";
+
+        $ret .= $e ? " ($e)" : "";
+        return $ret;
     }
 
 }

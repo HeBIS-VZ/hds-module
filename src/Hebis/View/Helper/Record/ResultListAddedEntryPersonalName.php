@@ -33,8 +33,8 @@ namespace Hebis\View\Helper\Record;
 use Hebis\RecordDriver\SolrMarc;
 
 /**
- * Class SingleRecordAddedEntryPersonalName
- * @package Hebis\View\Helper
+ * Class ResultListAddedEntryPersonalName
+ * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
@@ -62,6 +62,10 @@ class ResultListAddedEntryPersonalName extends SingleRecordAddedEntryPersonalNam
             }
         );
 
-        return implode(" ; ", $this->extractContents([$fields[0]]));
+        if (count($fields) <= 0) {
+            return "";
+        }
+
+        return $this->extractItem($fields[0]);
     }
 }

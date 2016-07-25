@@ -28,18 +28,21 @@
 
 namespace Hebis\View\Helper\Record;
 
-
+/**
+ * Class SingleRecordDissertationNoteTest
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordDissertationNoteTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
         $this->viewHelperClass = "SingleRecordDissertationNote";
-        $this->testRecordIds = [
-            'HEB226204618',
-            'HEB301709858'
-        ];
-        $this->testResultField = 'dissertation_note';
+        $this->testRecordIds = [];
+        $this->testResultField = '';
+        $this->testSheetName = "Hochschulschrift";
 
         parent::setUp();
     }

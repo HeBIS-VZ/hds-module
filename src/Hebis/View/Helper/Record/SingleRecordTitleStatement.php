@@ -48,7 +48,8 @@ use Zend\View\Helper\AbstractHelper;
  * - Zusätzlich gelabeltes Feld "Titel", darin Wiederholung von Mac 245 $a + Anzeige der restlichen Subfelder  wie bereits umgesetzt.
  *
  *
- * @package Hebis\View\Helper
+ * @package Hebis\View\Helper\Record
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
 class SingleRecordTitleStatement extends AbstractRecordViewHelper
 {

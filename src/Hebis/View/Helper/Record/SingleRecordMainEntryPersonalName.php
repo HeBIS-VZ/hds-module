@@ -28,9 +28,14 @@
 
 namespace Hebis\View\Helper\Record;
 
-
 use Hebis\RecordDriver\SolrMarc;
 
+/**
+ * Class SingleRecordMainEntryPersonalName
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordMainEntryPersonalName extends AbstractRecordViewHelper
 {
 
@@ -40,7 +45,44 @@ class SingleRecordMainEntryPersonalName extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
+        $aut = $this->getField100Contents($marcRecord);
 
+
+        $arr[] = $this->authorSearchLink($record, $aut);
+        /** @var \File_MARC_Data_Field $field */
+        foreach ($marcRecord->getFields('700') as $field) {
+            if ($field->getSubfield('4')->getData() !== 'aut') {
+                continue;
+            }
+            $aut = "";
+            $a = $this->getSubFieldDataOfGivenField($field, 'a');
+            $b = $this->getSubFieldDataOfGivenField($field, 'b');
+            $c = $this->getSubFieldDataOfGivenField($field, 'c');
+            $aut .= $a ? $a : "";
+            $aut .= $b ? " $b" : "";
+            $aut .= $c ? " <$c>" : "";
+            $arr[] = $this->authorSearchLink($record, $aut);
+        }
+
+        return implode("; ", $arr);
+    }
+
+    private function authorSearchLink($record, $author)
+    {
+        if (empty($author)) {
+            return $author;
+        }
+
+        $href = $this->getView()->record($record)->getLink("author", html_entity_decode($author));
+        return $this->generateLink($href, $author, $author);
+    }
+
+    /**
+     * @param $marcRecord
+     * @return array
+     */
+    protected function getField100Contents($marcRecord)
+    {
         /** @var string $aut */
         $aut = "";
 
@@ -54,32 +96,7 @@ class SingleRecordMainEntryPersonalName extends AbstractRecordViewHelper
         $aut .= $a ? $a : "";
         $aut .= $b ? " $b" : "";
         $aut .= $c ? " &lt;$c&gt;" : "";
-        $arr[] = $this->authorSearchLink($aut);
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($marcRecord->getFields('700') as $field) {
-            if ($field->getSubfield('4')->getData() !== 'aut') {
-                continue;
-            }
-            $aut = "";
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $b = $this->getSubFieldDataOfGivenField($field, 'b');
-            $c = $this->getSubFieldDataOfGivenField($field, 'c');
-            $aut .= $a ? $a : "";
-            $aut .= $b ? " $b" : "";
-            $aut .= $c ? " <$c>" : "";
-            $arr[] = $this->authorSearchLink($aut);
-        }
-
-        return implode("; ", $arr);
-    }
-
-    private function authorSearchLink($author)
-    {
-        if (empty($author)) {
-            return $author;
-        }
-        $href = sprintf(parent::URL_AUTHOR_SEARCH_PATTERN, urlencode(trim($author)));
-        return $this->generateLink($href, $author, $author);
+        return $aut;
     }
 
 

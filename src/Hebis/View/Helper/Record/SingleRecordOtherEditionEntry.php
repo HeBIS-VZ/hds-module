@@ -34,8 +34,10 @@ use Hebis\RecordDriver\SolrMarc;
 use Zend\View\Helper\AbstractHelper;
 
 /**
+ * Class SingleRecordOtherEditionEntry
+ * @package Hebis\View\Helper\Record
  *
- * @package Hebis\View\Helper
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
 class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
 {

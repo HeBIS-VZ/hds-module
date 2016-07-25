@@ -28,17 +28,22 @@
 
 namespace Hebis\View\Helper\Record;
 
-
 use \File_MARC_Data_Field;
 use \File_MARC_Record;
 use Hebis\RecordDriver\SolrMarc;
 
+/**
+ * Class SingleRecordDissertationNote
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordDissertationNote extends AbstractRecordViewHelper
 {
 
     public function __invoke(SolrMarc $record)
     {
-        $ret = "";
+        $arr = [];
 
         /** @var File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
@@ -49,11 +54,15 @@ class SingleRecordDissertationNote extends AbstractRecordViewHelper
         /** @var \File_MARC_Data_Field $field */
         foreach ($fields as $field) {
             $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $ret .= $a ? $a : "";
+            $arr[] = $a ? $a : "";
+            $str = !empty($b_ = $this->getSubFieldDataOfGivenField($field, 'b')) ? $b_ : "";
+            $str .= !empty($c_ = $this->getSubFieldDataOfGivenField($field, 'c')) ? ", $c_" : "";
+            $str .= !empty($d_ = $this->getSubFieldDataOfGivenField($field, 'd')) ? ", $d_" : "";
+
+            if (!empty($str)) {
+                $arr[] = $str;
+            }
         }
-
-        return $ret;
+        return implode("<br />", $arr);
     }
-
-
 }

@@ -27,6 +27,12 @@
 
 namespace Hebis\View\Helper\Record;
 
+/**
+ * Class SingleRecordPublicationDistributionTest
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordPublicationDistributionTest extends AbstractViewHelperTest
 {
 

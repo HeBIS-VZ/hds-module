@@ -28,6 +28,12 @@
 
 namespace Hebis\View\Helper\Record;
 
+/**
+ * Class SingleRecordLanguageCodeTest
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordLanguageCodeTest extends AbstractViewHelperTest
 {
 

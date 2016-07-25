@@ -33,6 +33,12 @@ use Hebis\View\Helper\FieldArray;
 use \File_MARC_Data_Field;
 use Zend\View\Helper\AbstractHelper;
 
+/**
+ * Class AbstractRecordViewHelper
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class AbstractRecordViewHelper extends AbstractHelper
 {
     use FieldArray;
@@ -195,7 +201,10 @@ class AbstractRecordViewHelper extends AbstractHelper
      */
     protected function generateLink($href, $title, $linkText)
     {
-        $href = $this->getView()->basePath() . "/" . $href;
+
+        if (strpos($href, $this->getView()->basePath()) !== 0) { //basePath not part of href
+            $href = $this->getView()->basePath() . "/" . $href; //prepend bathPath
+        }
         return sprintf('<a href="%s" title="%s">%s</a>', $href, $title, $linkText);
     }
 

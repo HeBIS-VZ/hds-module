@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an 
  * extension of the open source library search engine VuFind, that 
@@ -6,8 +7,7 @@
  * Information about VuFind you will find on http://www.vufind.org
  * 
  * Copyright (C) 2016 
- * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- * HeBIS Verbundzentrale des HeBIS-Verbundes 
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
  * 
@@ -27,8 +27,8 @@
  */
 
 namespace Hebis\View\Helper\Record;
-use Hebis\RecordDriver\SolrMarc;
 
+use Hebis\RecordDriver\SolrMarc;
 
 /**
  * Class SingleRecordLanguageCode

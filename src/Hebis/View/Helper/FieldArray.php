@@ -28,7 +28,12 @@
 
 namespace Hebis\View\Helper;
 
-
+/**
+ * trait FieldArray
+ * @package Hebis\View\Helper
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 trait FieldArray
 {
 

@@ -31,6 +31,12 @@ namespace Hebis\View\Helper\Record;
 
 use Hebis\RecordDriver\SolrMarc;
 
+/**
+ * Class RecordGetSubFieldDataOfField
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class RecordGetSubFieldDataOfField extends AbstractRecordViewHelper
 {
 

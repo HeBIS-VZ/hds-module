@@ -28,9 +28,14 @@
 
 namespace Hebis\View\Helper\Record;
 
-
 use Hebis\RecordDriver\SolrMarc;
 
+/**
+ * Class SingleRecordInterpreter
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordInterpreter extends SingleRecordAddedEntryPersonalName
 {
     /**
@@ -93,8 +98,8 @@ class SingleRecordInterpreter extends SingleRecordAddedEntryPersonalName
             $arr[] = $this->authorSearchLink($_710);
         }
         
-        $ret .= "<br />" . implode("; ", $arr);
-
+        $ret .= !empty($ret) ? "<br />" : "";
+        $ret .= implode("; ", $arr);
         return $ret;
     }
 

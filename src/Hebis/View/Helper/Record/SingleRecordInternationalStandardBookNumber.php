@@ -28,9 +28,14 @@
 
 namespace Hebis\View\Helper\Record;
 
-
 use Hebis\RecordDriver\SolrMarc;
 
+/**
+ * Class SingleRecordInternationalStandardBookNumber
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordInternationalStandardBookNumber extends AbstractRecordViewHelper
 {
     public function __invoke(SolrMarc $record)

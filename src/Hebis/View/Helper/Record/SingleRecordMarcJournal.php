@@ -27,9 +27,14 @@
  */
 namespace Hebis\View\Helper\Record;
 
-
 use Hebis\RecordDriver\SolrMarc;
 
+/**
+ * Class SingleRecordMarcJournal
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class SingleRecordMarcJournal extends AbstractRecordViewHelper
 {
     public function __invoke(SolrMarc $record)

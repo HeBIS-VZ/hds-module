@@ -102,65 +102,77 @@ class Module
         return array(
             'factories' => array(
                 'record_get_sub_field_data_of_field' => function($sm) {
-                    return new View\Helper\RecordGetSubFieldDataOfField();
+                    return new View\Helper\Record\RecordGetSubFieldDataOfField();
                 },
                 'record_get_sub_fields_of_field_type' => function($sm) {
-                    return new View\Helper\RecordGetSubFieldsOfFieldType();
+                    return new View\Helper\Record\RecordGetSubFieldsOfFieldType();
                 },
                 'result_list_title_statement' => function($sm) {
-                    return new View\Helper\ResultListTitleStatement();
+                    return new View\Helper\Record\ResultListTitleStatement();
+                },
+                'single_record_title_statement_headline' => function($sm) {
+                    return new View\Helper\Record\SingleRecordTitleStatementHeadline();
                 },
                 'single_record_title_statement' => function($sm) {
-                    return new View\Helper\SingleRecordTitleStatement();
+                    return new View\Helper\Record\SingleRecordTitleStatement();
                 },
                 'single_record_title_statement_section_of_work' => function($sm) {
-                    return new View\Helper\SingleRecordTitleStatementSectionOfWork();
+                    return new View\Helper\Record\SingleRecordTitleStatementSectionOfWork();
+                },
+                'result_list_main_entry_personal_name' => function($sm) {
+                    return new View\Helper\Record\ResultListMainEntryPersonalName();
                 },
                 'single_record_main_entry_personal_name' => function($sm) {
-                    return new View\Helper\SingleRecordMainEntryPersonalName();
+                    return new View\Helper\Record\SingleRecordMainEntryPersonalName();
+                },
+                'result_list_added_entry_personal_name' => function($sm) {
+                    return new View\Helper\Record\ResultListAddedEntryPersonalName();
                 },
                 'single_record_added_entry_personal_name' => function($sm) {
-                    return new View\Helper\SingleRecordAddedEntryPersonalName();
+                    return new View\Helper\Record\SingleRecordAddedEntryPersonalName();
+                },
+                'single_record_dates_of_publication_sequential_designation' => function($sm) {
+                    return new View\Helper\Record\SingleRecordDatesOfPublicationSequentialDesignation();
                 },
                 'single_record_festschrift' => function($sm) {
-                    return new View\Helper\SingleRecordFestschrift();
+                    return new View\Helper\Record\SingleRecordFestschrift();
                 },
                 'single_record_interpreter' => function($sm) {
-                    return new View\Helper\SingleRecordInterpreter();
+                    return new View\Helper\Record\SingleRecordInterpreter();
                 },
                 'single_record_marc_journal' => function($sm) {
-                    return new View\Helper\SingleRecordMarcJournal();
+                    return new View\Helper\Record\SingleRecordMarcJournal();
                 },
                 'single_record_publication_distribution' => function($sm) {
-                    return new View\Helper\SingleRecordPublicationDistribution();
+                    return new View\Helper\Record\SingleRecordPublicationDistribution();
                 },
                 'single_record_uniform_title' => function($sm) {
-                    return new View\Helper\SingleRecordUniformTitle();
+                    return new View\Helper\Record\SingleRecordUniformTitle();
                 },
                 'single_record_dissertation_note' => function($sm) {
-                    return new View\Helper\SingleRecordDissertationNote();
+                    return new View\Helper\Record\SingleRecordDissertationNote();
                 },
                 'single_record_other_edition_entry' => function($sm) {
-                    return new View\Helper\SingleRecordOtherEditionEntry();
+                    return new View\Helper\Record\SingleRecordOtherEditionEntry();
                 },
-                'single_record_subject_added_keywords' => function($sm) {
-                    return new View\Helper\SingleRecordSubjectAddedKeywords();
+                'single_record_subject_access_fields_general_information' => function($sm) {
+                    return new View\Helper\Record\SingleRecordSubjectAccessFieldsGeneralInformation();
                 },
                 'single_record_additional_physical_form_available_note' => function($sm) {
-                    return new View\Helper\SingleRecordAdditionalPhysicalFormAvailableNote();
+                    return new View\Helper\Record\SingleRecordAdditionalPhysicalFormAvailableNote();
                 },
                 'single_record_international_standard_book_number' => function($sm) {
-                    return new View\Helper\SingleRecordInternationalStandardBookNumber();
+                    return new View\Helper\Record\SingleRecordInternationalStandardBookNumber();
                 },
                 'single_record_international_standard_serial_number' => function($sm) {
-                    return new View\Helper\SingleRecordInternationalStandardSerialNumber();
+                    return new View\Helper\Record\SingleRecordInternationalStandardSerialNumber();
                 },
 
 
 
                 // Other View Helper
                 'bibtip' => function($sm) {
-                    return new View\Helper\BibTip();
+                    return new View\Helper\Record\BibTip();
                 }
 
             )

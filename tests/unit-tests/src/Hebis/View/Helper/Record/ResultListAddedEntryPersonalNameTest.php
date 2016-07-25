@@ -28,7 +28,12 @@
 
 namespace Hebis\View\Helper\Record;
 
-
+/**
+ * Class ResultListAddedEntryPersonalNameTest
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class ResultListAddedEntryPersonalNameTest extends AbstractViewHelperTest
 {
     public function setUp()
