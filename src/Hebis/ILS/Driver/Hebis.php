@@ -43,7 +43,7 @@ define("PICA_TEXTLINES_DEPARTMENT", "114");
 define("DRIVER_DEBUG", "deadbeaf");
 use VuFind\Exception\ILS as ILSException;
 
-class Hebis extends DAIA
+class Hebis extends \VuFind\ILS\Driver\DAIA
 {
     // DATA for use in class
     private $link;
@@ -613,6 +613,7 @@ class Hebis extends DAIA
                     $this->picaIln=$this->mainConfigArray['HeBIS']['ILN'];
                     //printf( "------------ ILN: %s",$this->picaIln);
         */
+	var_dump($this->config);
         $this->picaIln = $this->config['HeBIS']['ILN'];
         $this->catalogHost = $this->config['Catalog']['Host'];
 
