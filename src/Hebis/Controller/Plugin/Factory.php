@@ -1,15 +1,15 @@
 <?php
 /*
- * This file is a part of HDS (HeBIS Discovery System). HDS is an
- * extension of the open source library search engine VuFind, that
- * allows users to search and browse beyond resources. More
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an 
+ * extension of the open source library search engine VuFind, that 
+ * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
- *
- * Copyright (C) 2016
- * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * 
+ * Copyright (C) 2016 
+ * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
- *
+ * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -24,31 +24,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+use Zend\ServiceManager\ServiceManager;
 
-
-/*
-require_once 'Interface.php';
-require_once 'DAIA.php';
-require_once 'sys/User.php';
-*/
-
-namespace Hebis\ILS\Driver;
-
-// PICA defined numbers for textline types
-use Zend\Session\SessionManager;
-
-define("PICA_TEXTLINES_LOAN", "74");
-define("PICA_TEXTLINES_FINES", "75");
-define("PICA_TEXTLINES_DEPARTMENT", "114");
-
-// Define for Driver Debug outputs
-define("DRIVER_DEBUG", "deadbeaf");
-
-class Hebis extends PAIA
+/**
+ * Class Factory
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
+class Factory
 {
 
-    public function __construct(\VuFind\Date\Converter $converter, \Zend\Session\SessionManager $sessionManager)
+    /**
+     * Construct the FlashMessenger plugin.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \Hebis\Controller\Plugin\OAuthCallback
+     */
+    public static function getOAuthCallback(ServiceManager $sm)
     {
-        parent::__construct($converter, $sessionManager);
+        /** @var \Zend\Session\SessionManager $sessionManager */
+        $sessionManager = $sm->getServiceLocator()->get('VuFind\SessionManager');
+
+        return new \Hebis\Controller\Plugin\OAuthCallback($sessionManager);
     }
 }

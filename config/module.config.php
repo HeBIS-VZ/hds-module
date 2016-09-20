@@ -4,6 +4,7 @@ namespace Hebis\Module\Configuration;
 use Zend\ServiceManager\ServiceManager;
 
 $config = [
+
     'vufind' => [
         'plugin_managers' => [
             'recorddriver' => [
@@ -11,15 +12,17 @@ $config = [
                     'solrmarc' => 'Hebis\RecordDriver\Factory::getSolrMarc',
                 ]
             ],
+            'db_table' => [
+                'abstract_factories' => ['VuFind\Db\Table\PluginFactory'],
+                'factories' => [
+                    'user_oauth' => 'Hebis\Db\Table\Factory::getUserOAuth'
+                ]
+            ],
             'ils_driver' => [
-                'invokables' => [
-                    'hebis' => 'Hebis\ILS\Driver\Hebis'
-                ],
-                'daia' => function(ServiceManager $sm) {
-                    return new \Hebis\ILS\Driver\DAIA(
-                        $sm->getServiceLocator()->get('VuFind\DateConverter')
-                    );
-                }
+
+                'factories' => [
+                    'hebis' => 'Hebis\ILS\Driver\Factory::getHebis',
+                ]
             ],
         ],
 
@@ -39,6 +42,25 @@ $config = [
         'cookie_httponly' => true,
     ],
 
+    'controllers' => [
+        'invokables' => [
+            'OAuth' => 'Hebis\Controller\OAuthController'
+        ]
+    ],
+    'router' => [
+        'routes' => [
+            'oauth' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route'    => '/oauth/callback[/]',
+                    'defaults' => [
+                        'controller' => 'OAuth',
+                        'action'     => 'Callback',
+                   ],
+                ],
+            ],
+        ],
+    ],
 ];
 
 return $config;
