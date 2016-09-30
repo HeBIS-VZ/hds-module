@@ -36,6 +36,7 @@ use VuFind\Exception\ILS as ILSException,
     VuFindCode\ISBN;
 use Hebis\RecordDriver\PicaRecordInterface, Hebis\RecordDriver\ProxyUrlBuilder;
 use VuFind\RecordDriver\SolrDefault;
+use Zend\Session\SessionManager;
 
 /**
  * Model for MARC records in Solr.
@@ -48,6 +49,17 @@ use VuFind\RecordDriver\SolrDefault;
  */
 class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 {
+
+    static protected $currentPicaRecord;
+
+    /**
+     * @return TitleRecord
+     */
+    public static function getCurrentPicaRecord()
+    {
+        return self::$currentPicaRecord;
+    }
+
 
     /**
      * Extracts PPN (003@ $0) from a raw record
@@ -177,15 +189,21 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 
             $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
         }
-        $picaParser = PicaRecordParser::getInstance();
-        $this->picaRecord = $picaParser->parse($data['raw_fullrecord'])->getRecord();
-
+        try {
+            $picaParser = PicaRecordParser::getInstance();
+            $this->picaRecord = $picaParser->parse($data['raw_fullrecord'])->getRecord();
+            self::$currentPicaRecord = $this->picaRecord;
+        } catch (\Exception $e) {
+            /** @var  \Zend\Log\LoggerInterface$logger */
+            $logger = $this->getLogger();
+            $logger->err("Could not parse pica record ".$data['id']." in class ". __CLASS__ . ", line: " . __LINE__);
+        }
         $this->marcRecord = $marc->next();
 
         if (!$this->marcRecord) {
             throw new \File_MARC_Exception('Cannot Process MARC Record');
         }
-        //$this->processPicaRecord($data);
+
     }
 
     /**
@@ -1270,7 +1288,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      * Get a link for placing a title level hold.
      *
      * @return mixed A url if a hold is possible, boolean false if not
-     */
+     *
     public function getRealTimeTitleHold()
     {
         if ($this->hasILS()) {
@@ -1284,7 +1302,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 
         return false;
     }
-
+    */
     /**
      * Returns true if the record supports real-time AJAX status lookups.
      *
@@ -2963,5 +2981,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     {
         return $this->getFieldArray('502', array('a'));
     }
+
 
 }

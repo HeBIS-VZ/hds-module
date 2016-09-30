@@ -102,10 +102,12 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         '5' => 'rejected',
     ];
 
+    protected $sessionManager;
+
     /**
      * @var \League\OAuth2\Client\Provider\GenericProvider $provider
      */
-    private $provider;
+    protected $provider;
 
     /**
      * @var string
@@ -150,12 +152,12 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     {
         parent::init();
 
-        /*
-        if (!(isset()) {
+
+        if (!isset($this->config['PAIA']['baseUrl'])) {
             throw new ILSException('PAIA/baseUrl configuration needs to be set.');
         }
-        */
-        $this->paiaURL = "http://127.0.0.1:8000/";
+
+        $this->paiaURL = $this->config['PAIA']['baseUrl'];
 
         // do we have caching enabled for PAIA
         if (isset($this->config['PAIA']['paiaCache'])) {
@@ -163,17 +165,6 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         } else {
             $this->debug('Caching not enabled, disabling it by default.');
         }
-
-        $session = $this->getSession();
-        $this->provider = new GenericProvider([
-            'clientId'                => '2_1k0zp6xffye8kkwsgg48oso08w8wgosg0okkwcoc0cwg4cck88',    // The client ID assigned to you by the provider
-            'clientSecret'            => '59dvzfje9okkowgcos4wgcs0gcooww4k0w8k4c8wc8gs44skkc',   // The client password assigned to you by the provider
-            'redirectUri'             => 'http://sbpc2.hebis.uni-frankfurt.de/vufind2/oauth/callback',
-            'urlAuthorize'            => 'http://localhost:8000/oauth/v2/auth',
-            'urlAccessToken'          => 'http://localhost:8000/oauth/v2/token',
-            'urlResourceOwnerDetails' => 'http://localhost:8000/core/',
-            'scope'                   => 'read_patron,read_fees,read_items,write_items',
-        ]);
     }
 
     // public functions implemented to satisfy Driver Interface
@@ -759,7 +750,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      */
     public function placeHold($holdDetails)
     {
-        $item = $holdDetails['item_id'];
+        $item = $holdDetails['item_id'].":ban:".$holdDetails['doc_id'];
         $patron = $holdDetails['patron'];
 
         $doc = [];
@@ -771,7 +762,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
 
         try {
             $array_response = $this->paiaPostAsArray(
-                'core/'.$patron['cat_username'].'/request', $post_data
+                'core/'.$patron['id'].'/request', $post_data
             );
         } catch (ILSException $e) {
             $this->debug($e->getMessage());
@@ -1038,11 +1029,14 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         $user['major']     = null;
         $user['college']   = null;
         // add other information from PAIA - we don't want anything to get lost while parsing
-        foreach ($user_response as $key => $value) {
-            if (!isset($user[$key])) {
-                $user[$key] = $value;
+        if (!empty($user_response)) {
+            foreach ($user_response as $key => $value) {
+                if (!isset($user[$key])) {
+                    $user[$key] = $value;
+                }
             }
         }
+
         return $user;
     }
 
@@ -1366,9 +1360,11 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      */
     protected function paiaGetRequest($file, $access_token)
     {
+        $userAgent = "VuFind 3.0.1";//$this->config['Site']['generator'];
         $http_headers = [
+            'User-Agent' =>    $userAgent,
             'Authorization' => 'Bearer ' .$access_token,
-            'Content-type' => 'application/json; charset=UTF-8',
+            'Content-type' =>  'application/json; charset=UTF-8',
         ];
 
         try {
@@ -1483,8 +1479,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
             "username"   => $username,
             "password"   => $password,
             "grant_type" => "password",
-            "scope"      => "read_patron read_fees read_items write_items " .
-                "change_password"
+            "scope"      => "read_patron read_fees read_items write_items"
         ];
         $responseJson = $this->paiaPostRequest('auth/login', $post_data);
 
@@ -1623,6 +1618,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
             $session->oauth2state = serialize($state);
             //$session->
             $authorizationUrl = $this->provider->getAuthorizationUrl();
+            $session->getManager()->writeClose();
             header('Location: ' . $authorizationUrl);
             exit;
         }

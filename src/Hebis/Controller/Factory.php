@@ -39,13 +39,14 @@ class Factory
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return \Hebis\Controller\Plugin\OAuthCallback
+     * @return \Hebis\Controller\OAuthController
      */
-    public static function getOAuthCallback(ServiceManager $sm)
+    public static function getOAuthController(ServiceManager $sm)
     {
-        /** @var \Zend\Session\SessionManager $sessionManager */
-        $sessionManager = $sm->getServiceLocator()->get('VuFind\SessionManager');
+        $oauthController = new Hebis\Controller\OAuthController();
+        $oauthController->setServiceLocator($sm->getServiceLocator());
+        $oauthController->init();
+        return $oauthController;
 
-        return new \Hebis\Controller\Plugin\OAuthCallback($sessionManager);
     }
 }
