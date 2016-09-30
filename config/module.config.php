@@ -43,8 +43,16 @@ $config = [
     ],
 
     'controllers' => [
+        'factories' => [
+            'OAuth' => function(ServiceManager $sm) {
+                $oauthController = new \Hebis\Controller\OAuthController();
+                $oauthController->setServiceLocator($sm->getServiceLocator());
+                $oauthController->init();
+                return $oauthController;
+            }
+        ],
         'invokables' => [
-            'OAuth' => 'Hebis\Controller\OAuthController'
+            'my-research' => 'Hebis\Controller\MyResearchController',
         ]
     ],
     'router' => [
@@ -59,6 +67,16 @@ $config = [
                    ],
                 ],
             ],
+            'oauth-token-renew' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route'    => '/oauth/renew[/]',
+                    'defaults' => [
+                        'controller'    => 'OAuth',
+                        'action'        => 'renew'
+                    ]
+                ]
+            ]
         ],
     ],
 ];

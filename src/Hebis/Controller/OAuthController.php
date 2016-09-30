@@ -49,11 +49,6 @@ class OAuthController extends AbstractBase
 
     private $provider;
 
-    /**
-     * @var Container
-     */
-    private $session;
-
 
     private $sessionOAuth;
 
@@ -64,44 +59,43 @@ class OAuthController extends AbstractBase
      */
     protected $sessionManager;
 
-
-    public function __construct()
+    public function init()
     {
-        parent::__construct();
-
+        //parent::init();
+        $config = $this->getConfig('HEBIS');
         $this->sessionManager = new SessionManager();
 
-        if (null === $this->session) {
+        if (null === $this->sessionOAuth) {
             $this->sessionOAuth = new Container('PAIA', $this->sessionManager);
         }
 
         $this->provider = new GenericProvider([
-            'clientId'                => '2_1k0zp6xffye8kkwsgg48oso08w8wgosg0okkwcoc0cwg4cck88',    // The client ID assigned to you by the provider
-            'clientSecret'            => '59dvzfje9okkowgcos4wgcs0gcooww4k0w8k4c8wc8gs44skkc',   // The client password assigned to you by the provider
-            'redirectUri'             => 'http://sbpc2.hebis.uni-frankfurt.de/vufind2/oauth/callback',
-            'urlAuthorize'            => 'http://localhost:8000/oauth/v2/auth',
-            'urlAccessToken'          => 'http://localhost:8000/oauth/v2/token',
-            'urlResourceOwnerDetails' => 'http://localhost:8000/core/',
-            'scope'                   => ''
+            'clientId'                => $config['PAIA']['client_id'],    // The client ID assigned to you by the provider
+            'clientSecret'            => $config['PAIA']['client_secret'],   // The client password assigned to you by the provider
+            'redirectUri'             => $config['PAIA']['callback_url'],
+            'urlAuthorize'            => $config['PAIA']['baseUrl'] . 'oauth/v2/auth',
+            'urlAccessToken'          => $config['PAIA']['baseUrl'] . 'oauth/v2/token',
+            'urlResourceOwnerDetails' => $config['PAIA']['baseUrl'] . 'core/',
+            'scopes'                  => 'read_patron read_fees read_items write_items',
         ]);
     }
 
-    public function tokenExchangeAction()
+    public function renewAction()
     {
-        $this->redirect()->toUrl($this->provider->getAuthorizationUrl());
+        return $this->redirect()->toUrl($this->provider->getAuthorizationUrl());
     }
 
     public function callbackAction()
     {
         $state = $this->params()->fromQuery('state');
         $code = $this->params()->fromQuery('code');
-        $session = $this->getSession();
+
         if (empty($code)) {
             throw new \OAuthException("Invalid or empty authorize code.");
         }
         //$oauth2state = unserialize($_SESSION['oauth2state']);
 
-        $oauth2state = unserialize($session->oauth2state);
+        $oauth2state = unserialize($this->sessionOAuth->oauth2state);
 
         if ($oauth2state !== $state) {
             //throw new \OAuthException("Invalid state.");
@@ -110,15 +104,13 @@ class OAuthController extends AbstractBase
 
         // Try to get an access token using the authorization code grant.
         $accessToken = $this->provider->getAccessToken('authorization_code', [
-            'code' => $code
+            'code' => $code,
+            'scope' => "read_patron read_fees read_items write_items"
         ]);
 
         // We have an access token, which we may use in authenticated
         // requests against the service provider's API.
-        echo $accessToken->getToken() . "\n";
-        echo $accessToken->getRefreshToken() . "\n";
-        echo $accessToken->getExpires() . "\n";
-        echo ($accessToken->hasExpired() ? 'expired' : 'not expired') . "\n";
+
 
         /** @var UserOAuthTable $table */
         $table = $this->getTable('user_oauth');
@@ -133,17 +125,18 @@ class OAuthController extends AbstractBase
         $expires->setTimestamp($accessToken->getExpires());
 
 
+        $config = $this->getConfig('HEBIS');
 
         $userOAuthRow->user_id = $user->id;
         $userOAuthRow->username = $user->username;
         $userOAuthRow->access_token = $accessToken->getToken();
         $userOAuthRow->refresh_token = $accessToken->getRefreshToken();
         $userOAuthRow->expires = $expires->format("Y-m-d H:i:s");
-        $userOAuthRow->provider = "http://localhost:8000/oauth/v2/auth";
+        $userOAuthRow->provider = $config['PAIA']['callback_url'];
 
         $userOAuthRow->save();
 
-        return $this->redirect()->toRoute('MyResearch');
+        return $this->redirect()->toRoute('my-research');
 
         /*
 
@@ -212,9 +205,9 @@ class OAuthController extends AbstractBase
     protected function getSession()
     {
         // SessionContainer not defined yet? Build it now:
-        if (null === $this->session) {
-            $this->session = new Container('PAIA', $this->sessionManager);
+        if (null === $this->sessionOAuth) {
+            $this->sessionOAuth = new Container('PAIA', $this->sessionManager);
         }
-        return $this->session;
+        return $this->sessionOAuth;
     }
 }
