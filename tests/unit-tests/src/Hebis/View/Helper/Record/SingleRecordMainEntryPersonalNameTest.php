@@ -57,8 +57,14 @@ class SingleRecordMainEntryPersonalNameTest extends AbstractViewHelperTest
         $basePath->expects($this->any())->method('__invoke')
             ->will($this->returnValue('/vufind2'));
 
+        $record = $this->getMock('VuFind\View\Helper\Root\Record');
+        $record->expects($this->any())->method('__invoke')->will($this->returnValue($record));
+
+        $record->expects($this->any())->method('getLink')->will($this->returnValue('/vufind2/Record/F00'));
+
         return [
-            'basepath' => $basePath
+            'basepath' => $basePath,
+            'record' => $record
         ];
     }
 }

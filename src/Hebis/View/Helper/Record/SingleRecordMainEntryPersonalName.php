@@ -36,7 +36,7 @@ use Hebis\RecordDriver\SolrMarc;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordMainEntryPersonalName extends AbstractRecordViewHelper
+class SingleRecordMainEntryPersonalName extends SingleRecordPersonalName
 {
 
     public function __invoke(SolrMarc $record)
@@ -72,31 +72,9 @@ class SingleRecordMainEntryPersonalName extends AbstractRecordViewHelper
         if (empty($author)) {
             return $author;
         }
-
-        $href = $this->getView()->record($record)->getLink("author", html_entity_decode($author));
+        $view = $this->getView();
+        $href = $view->record($record)->getLink("author", html_entity_decode($author));
         return $this->generateLink($href, $author, $author);
-    }
-
-    /**
-     * @param $marcRecord
-     * @return array
-     */
-    protected function getField100Contents($marcRecord)
-    {
-        /** @var string $aut */
-        $aut = "";
-
-        /** @var \File_MARC_Data_Field $field100 */
-        $field100 = $marcRecord->getField('100');
-
-        $a = $this->getSubFieldDataOfGivenField($field100, 'a');
-        $b = $this->getSubFieldDataOfGivenField($field100, 'b');
-        $c = $this->getSubFieldDataOfGivenField($field100, 'c');
-
-        $aut .= $a ? $a : "";
-        $aut .= $b ? " $b" : "";
-        $aut .= $c ? " &lt;$c&gt;" : "";
-        return $aut;
     }
 
 
