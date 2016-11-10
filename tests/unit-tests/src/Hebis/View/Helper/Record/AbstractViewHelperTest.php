@@ -139,7 +139,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     protected function getRecordFromIndex($ppn)
     {
-        $url = 'http://solr.hebis.de/verbund/select?wt=json&q=id:HEB' . $ppn;
+        $url = 'http://silbendrechsler.hebis.uni-frankfurt.de:8986/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
         $client = new Client($url, array(
             'maxredirects' => 3,
             'timeout' => 10
