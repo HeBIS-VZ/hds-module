@@ -36,7 +36,7 @@ use Hebis\RecordDriver\SolrMarc;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordPublicationDistribution extends \Hebis\View\Helper\Record\AbstractRecordViewHelper
+class SingleRecordPublicationDistribution extends AbstractRecordViewHelper
 {
     /**
      * @param SolrMarc $record
@@ -92,21 +92,6 @@ class SingleRecordPublicationDistribution extends \Hebis\View\Helper\Record\Abst
         }
 
         return implode("<br />", $arr);
-    }
-
-    /**
-     * @param array $_264s
-     * @param string|int $ind indicator name
-     * @param string|int $x indicator value
-     * @return array
-     */
-    protected function filterByIndicator(array $_264s, $ind, $x)
-    {
-
-        return array_filter($_264s, function($a) use ($ind, $x) {
-            /** @var \File_MARC_Data_Field $a */
-            return $a->getIndicator($ind) === $x;
-        });
     }
 
     /**

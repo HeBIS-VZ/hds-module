@@ -222,4 +222,21 @@ class AbstractRecordViewHelper extends AbstractHelper
         $ret = str_replace(" @", " ", $str);
         return $ret;
     }
+
+    /**
+     * @param array $_264s
+     * @param string|int $ind indicator name
+     * @param string|int $x indicator value
+     * @return array
+     */
+    protected function filterByIndicator(array $_264s, $ind, $x)
+    {
+        return array_filter($_264s, function($a) use ($ind, $x) {
+            /** @var \File_MARC_Data_Field $a */
+            if (empty($x) || $x == " ") {
+                return ord($a->getIndicator($ind)) == 32;
+            }
+            return $a->getIndicator($ind) === $x;
+        });
+    }
 }

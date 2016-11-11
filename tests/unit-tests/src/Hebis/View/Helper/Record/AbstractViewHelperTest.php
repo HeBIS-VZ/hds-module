@@ -139,7 +139,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     protected function getRecordFromIndex($ppn)
     {
-        $url = 'http://silbendrechsler.hebis.uni-frankfurt.de:8986/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
+        $url = 'http://silbendrechsler.hebis.uni-frankfurt.de:8982/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
         $client = new Client($url, array(
             'maxredirects' => 3,
             'timeout' => 10
@@ -211,7 +211,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     protected function runTests($rows)
     {
-        
+        $failures = [];
         for ($i = 0; $i < count($rows); ++$i) {
             $row = $rows[$i];
             list(
@@ -233,8 +233,20 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
             $actual = trim(strip_tags(str_replace("<br />", "\n", $this->viewHelper->__invoke($record))));
             $_comment = "Test: \"".$this->testSheetName."\", Class: \"".$this->viewHelperClass."\", Test Case: $i / PPN: ".$row[1]."; Comment: $comment\n";
 
-            $this->executeTest($expectedSingleRecordResult, $actual, $_comment, $expectedRecordListResult);
+            try {
+                $this->executeTest($expectedSingleRecordResult, $actual, $_comment, $expectedRecordListResult);
+            } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
+                $failures[] = $e;
+            }
 
+        }
+
+        foreach ($failures as $e) {
+            fwrite(STDERR, $e->toString()."\n".$e->getComparisonFailure()->getDiff()."\n\n");
+        }
+
+        if (count($failures) > 0) {
+            $this->fail("This Test has failed!");
         }
     }
 

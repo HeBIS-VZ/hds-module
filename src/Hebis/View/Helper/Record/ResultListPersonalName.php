@@ -50,7 +50,67 @@ class ResultListPersonalName extends SingleRecordPersonalName
         sofern vorhanden, sonst zuerst genannte 700 mit Indikator 2 = #:
         700 $a_$b_<$c>_($e,_$e) */
 
+        /** @var \File_MARC $marcRecord */
         $marcRecord = $record->getMarcRecord();
-        $aut = $this->getField100Contents($marcRecord);
+        $aut = $this->getFieldContentsByFieldNo($marcRecord, 100);
+
+        if (empty($aut)) {
+            $f700 = $marcRecord->getFields(700);
+            if (!empty($f700)) {
+                if (!empty($filteredFields = $this->filterByIndicator($f700, 2, ""))) {
+                    $addedEntryPN = $this->getFieldContents(current($filteredFields));
+                    $aut .= (!empty($addedEntryPN)) ? "$addedEntryPN" : "";
+                }
+            }
+        }
+        return $aut;
     }
+
+    /**
+     * @param $marcRecord
+     * @param $fieldNo
+     * @return array
+     */
+    protected function getFieldContentsByFieldNo($marcRecord, $fieldNo)
+    {
+        /** @var \File_MARC_Data_Field $field */
+        $field = $marcRecord->getField($fieldNo);
+        return $this->getFieldContents($field);
+    }
+
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @return string
+     */
+    protected function getFieldContents($field)
+    {
+        $ret = "";
+        $a = $this->getSubFieldDataOfGivenField($field, 'a');
+        $b = $this->getSubFieldDataOfGivenField($field, 'b');
+        $c = $this->getSubFieldDataOfGivenField($field, 'c');
+        //$d = $this->getSubFieldDataOfGivenField($field, 'd');
+        //$e = $this->getSubFieldDataOfGivenField($field, 'e');
+        $eArray = !is_bool($field) ? $field->getSubfields("e") : [];
+        $ret .= $a ? $a : "";
+        $ret .= $b ? " $b" : "";
+        $ret .= $c ? " &lt;$c&gt;" : "";
+        if (count($eArray) > 0) {
+            $ret .= " (";
+            $i = 0;
+            /** @var \File_MARC_Subfield $e_ */
+            foreach ($eArray as $e_) {
+                $e = $e_->getData();
+                if ($i++ > 0) {
+                    $ret .= ", ";
+                }
+                //$ret .= $d ? $d : "";
+                $ret .= $e ? "$e" : "";
+            }
+            $ret .= ")";
+        }
+
+
+        return $ret;
+    }
+
 }
