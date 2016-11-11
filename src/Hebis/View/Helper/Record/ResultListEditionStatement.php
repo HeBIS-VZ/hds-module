@@ -30,20 +30,42 @@ use Hebis\RecordDriver\SolrMarc;
 
 
 /**
- * Class ResultListMainEntryPersonalName
+ * Class ResultListEditionStatement
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class ResultListMainEntryPersonalName extends SingleRecordMainEntryPersonalName
+class ResultListEditionStatement extends AbstractRecordViewHelper
 {
+    /**
+     *
+     * @param SolrMarc $record
+     * @return string
+     */
     public function __invoke(SolrMarc $record)
     {
+        $ret = "";
+        $_533_n = false;
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $aut = $this->getField100Contents($marcRecord);
-        
-        return $aut;
+        $_533_ = $marcRecord->getFields('533');
+
+        if (!empty($_533_)) {
+            /** @var \File_MARC_Data_Field $_533 */
+            $_533 = current($_533_);
+            $n_ = $_533->getSubfields('n');
+            if (!empty($n_)) {
+                $_533_n = end($n_)->getData();
+            }
+        }
+
+        $_250 = $marcRecord->getField('250');
+
+        $_250_a = !empty($_250) ? (!empty($a = $_250->getSubfield("a")) ? $a->getData() : "") : "";
+
+        return $_533_n ? $_533_n : (!empty($_250_a) ? $_250_a : "");
+
     }
+
 }

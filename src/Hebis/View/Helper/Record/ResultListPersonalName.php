@@ -88,13 +88,14 @@ class ResultListPersonalName extends SingleRecordPersonalName
         $a = $this->getSubFieldDataOfGivenField($field, 'a');
         $b = $this->getSubFieldDataOfGivenField($field, 'b');
         $c = $this->getSubFieldDataOfGivenField($field, 'c');
-        //$d = $this->getSubFieldDataOfGivenField($field, 'd');
-        //$e = $this->getSubFieldDataOfGivenField($field, 'e');
         $eArray = !is_bool($field) ? $field->getSubfields("e") : [];
+
         $ret .= $a ? $a : "";
         $ret .= $b ? " $b" : "";
         $ret .= $c ? " &lt;$c&gt;" : "";
+
         if (count($eArray) > 0) {
+
             $ret .= " (";
             $i = 0;
             /** @var \File_MARC_Subfield $e_ */
@@ -103,14 +104,12 @@ class ResultListPersonalName extends SingleRecordPersonalName
                 if ($i++ > 0) {
                     $ret .= ", ";
                 }
-                //$ret .= $d ? $d : "";
+
                 $ret .= $e ? "$e" : "";
             }
             $ret .= ")";
         }
 
-
         return $ret;
     }
-
 }
