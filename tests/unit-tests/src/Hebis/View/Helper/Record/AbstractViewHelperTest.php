@@ -139,7 +139,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     protected function getRecordFromIndex($ppn)
     {
-        $url = 'http://silbendrechsler.hebis.uni-frankfurt.de:8982/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
+        $url = SOLR_HOST_TEST.'/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
         $client = new Client($url, array(
             'maxredirects' => 3,
             'timeout' => 10
@@ -341,5 +341,23 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     abstract protected function getPlugins();
 
+
+    /**
+     * Get mock translator.
+     *
+     * @param array $translations Key => value translation map.
+     *
+     * @return \VuFind\View\Helper\Root\Translate
+     */
+    protected function getMockTranslator($translations)
+    {
+        $callback = function ($str, $tokens, $default) use ($translations) {
+            $m = $translations[$str];
+            return !empty($m) ? $m : $str;
+        };
+        $translator = $this->getMock('VuFind\View\Helper\Root\Translate');
+        $translator->method('translate')->will($this->returnCallback($callback));
+        return $translator;
+    }
 
 }
