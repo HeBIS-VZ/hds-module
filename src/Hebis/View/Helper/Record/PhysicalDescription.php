@@ -44,6 +44,7 @@ class PhysicalDescription extends AbstractRecordViewHelper
     public function initMap()
     {
         $this->physicalDescription = [];
+        $this->physicalDescription["a"]["a"]["xxx"]="article";
         $this->physicalDescription["a"]["m"]["xxx"]="book";
         $this->physicalDescription["a"]["m"]["co"]="dvd";
         $this->physicalDescription["a"]["m"]["cocd"]="cd";
@@ -53,6 +54,7 @@ class PhysicalDescription extends AbstractRecordViewHelper
         $this->physicalDescription["a"]["m"]["h"]="microfilm";
         $this->physicalDescription["a"]["m"]["f"]="sensorimage";
         $this->physicalDescription["a"]["m"]["o"]="kit";
+        $this->physicalDescription["a"]["m"]["r"]="retro";
         $this->physicalDescription["a"]["s"]["xxx"]="journal";
         $this->physicalDescription["a"]["s"]["t"]="journal";
         $this->physicalDescription["a"]["s"]["h"]="journal";
@@ -140,6 +142,15 @@ class PhysicalDescription extends AbstractRecordViewHelper
         if ($_338_b === "vd") {
             $z = "co";
         }
+
+        /* Falls in 856 $3 der Inhalt "Katalogkarte" vorhanden ist UND Art=a, Level=m und Phys=xxx, dann Phys = r. */
+        if ($x == "a" && $y == "m" && $z == "xxx") {
+            $_856_3 = $this->getSubFieldDataOfField($record, 856, '3');
+            if (is_string($_856_3) && strpos($_856_3, "Katalogkarte") !== false) {
+                $z = "r";
+            }
+        }
+
 
         $className = isset($this->physicalDescription[$x][$y][$z]) ? $this->physicalDescription[$x][$y][$z] : "";
 
