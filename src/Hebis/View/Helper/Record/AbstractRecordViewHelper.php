@@ -130,6 +130,26 @@ class AbstractRecordViewHelper extends AbstractHelper
     }
 
     /**
+     * returns either array in form $arr[code] => data or false, if field empty or has no subfields
+     * @param File_MARC_Data_Field $field
+     * @return array|bool
+     */
+    protected function getSubfieldsAsArray(\File_MARC_Data_Field $field)
+    {
+
+        if (!empty($field) && !empty($field->getSubfields())) {
+            $arr = [];
+            /** @var \File_MARC_Subfield $subfield */
+            foreach ($field->getSubfields() as $subfield) {
+                $arr[$subfield->getCode()] = $subfield->getData();
+            }
+            return $arr;
+        }
+        return false;
+    }
+
+
+    /**
      * if field of type \File_MARC_Data_Field and it has a subField with $subFieldCode this function returns the data
      * string of the subField, otherwise false.
      *
