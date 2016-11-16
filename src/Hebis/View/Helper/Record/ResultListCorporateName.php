@@ -50,7 +50,7 @@ class ResultListCorporateName extends AbstractRecordViewHelper
 
         /* Nur anzeigen, wenn kein Marc 100 oder 700 vorhanden */
 
-        if (!empty($marcRecord->getField(100)) || !empty($marcRecord->getField(100))) {
+        if (!empty($marcRecord->getField(100)) || !empty($marcRecord->getField(700))) {
             return $ret;
         }
 
@@ -76,7 +76,7 @@ class ResultListCorporateName extends AbstractRecordViewHelper
 
             $ndc = $this->getNdc($subFields);
 
-            $ret .= "(".implode(" : ", $ndc).")";
+            $ret .= " (".implode(" : ", $ndc).")";
             return $ret;
         }
 
@@ -85,7 +85,7 @@ class ResultListCorporateName extends AbstractRecordViewHelper
         $_710_ = $marcRecord->getFields(710); //710 wiederholbar
         /** @var \File_MARC_Data_Field $_710 */
         foreach ($_710_ as $_710) {
-            if (!empty($_710) && $_710->getIndicator(2) == "") {
+            if (!empty($_710) && ord($_710->getIndicator(2)) == "") {
                 $subFields = $this->getSubfieldsAsArray($_710);
                 $ret .= $this->getAbgn($subFields);
                 return $ret;
@@ -94,13 +94,13 @@ class ResultListCorporateName extends AbstractRecordViewHelper
 
         $_711_ = $marcRecord->getFields(711); //711 wiederholbar
         foreach ($_711_ as $_711) {
-            if (!empty($_711) && $_711->getIndicator(2) == "") {
+            if (!empty($_711) && ord($_711->getIndicator(2)) == 32) {
                 $subFields = $this->getSubfieldsAsArray($_711);
                 $ret = $this->getAeg($subFields);
 
                 $ndc = $this->getNdc($subFields);
 
-                $ret .= "(" . implode(" : ", $ndc) . ")";
+                $ret .= " (" . implode(" : ", $ndc) . ")";
                 return $ret;
             }
         }
@@ -108,6 +108,27 @@ class ResultListCorporateName extends AbstractRecordViewHelper
         return "";
     }
 
+    /**
+     * @param $subFields
+     * @return string
+     */
+    protected function getAeg($subFields)
+    {
+        $ret = "";
+        foreach ($subFields as $key => $subField) {
+            switch ((string) $key) {
+                case 'a':
+                    $ret .= htmlentities($subField);
+                    break;
+                case 'e':
+                    $ret .= ". " . htmlentities($subField);
+                    break;
+                case 'g':
+                    $ret .= " (".htmlentities($subField).")";
+            }
+        }
+        return $ret;
+    }
 
     /**
      * @param $subFields
@@ -116,10 +137,19 @@ class ResultListCorporateName extends AbstractRecordViewHelper
     protected function getAbgn($subFields)
     {
         $ret = "";
-        $ret .= array_key_exists('a', $subFields) ? htmlentities($subFields['a']) . ". " : "";
-        $ret .= array_key_exists('b', $subFields) ? htmlentities($subFields['b']) . " " : "";
-        $ret .= array_key_exists('g', $subFields) ? "(" . htmlentities($subFields['g']) . ") " : "";
-        $ret .= array_key_exists('n', $subFields) ? "(" . htmlentities($subFields['n']) . ")" : "";
+        foreach ($subFields as $key => $subField) {
+            switch ((string) $key) {
+                case 'a':
+                    $ret .= htmlentities($subField);
+                    break;
+                case 'b':
+                    $ret .= ". " . htmlentities($subField);
+                    break;
+                case 'g':
+                case 'n':
+                    $ret .= " (".htmlentities($subField).")";
+            }
+        }
         return $ret;
     }
 
@@ -133,7 +163,7 @@ class ResultListCorporateName extends AbstractRecordViewHelper
         $keys = ['n', 'd', 'c'];
 
         $ndc_ = array_filter($subFields, function ($key) use ($keys) {
-            return in_array($key, $keys);
+            return in_array($key, $keys, true);
         }, ARRAY_FILTER_USE_KEY);
 
         /* sortiere ndc so dass ndc = ['n' => ...,'d' => ...,'c' => ...] */
@@ -145,16 +175,5 @@ class ResultListCorporateName extends AbstractRecordViewHelper
         return $ndc;
     }
 
-    /**
-     * @param $subFields
-     * @return string
-     */
-    protected function getAeg($subFields)
-    {
-        $ret = "";
-        $ret .= array_key_exists('a', $subFields) ? htmlentities($subFields['a']) . ". " : "";
-        $ret .= array_key_exists('e', $subFields) ? htmlentities($subFields['e']) . " " : "";
-        $ret .= array_key_exists('g', $subFields) ? "(" . htmlentities($subFields['g']) . ") " : "";
-        return $ret;
-    }
+
 }
