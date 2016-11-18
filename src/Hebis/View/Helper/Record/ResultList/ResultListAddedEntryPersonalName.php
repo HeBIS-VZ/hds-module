@@ -1,15 +1,16 @@
 <?php
+
 /*
- * This file is a part of HDS (HeBIS Discovery System). HDS is an 
- * extension of the open source library search engine VuFind, that 
- * allows users to search and browse beyond resources. More 
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an
+ * extension of the open source library search engine VuFind, that
+ * allows users to search and browse beyond resources. More
  * Information about VuFind you will find on http://www.vufind.org
- * 
- * Copyright (C) 2016 
- * HeBIS Verbundzentrale des HeBIS-Verbundes 
+ *
+ * Copyright (C) 2016
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -25,47 +26,46 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+namespace Hebis\View\Helper\Record\ResultList;
+
+
 namespace Hebis\View\Helper\Record;
 use Hebis\RecordDriver\SolrMarc;
 
-
 /**
- * Class ResultListEditionStatement
+ * Class ResultListAddedEntryPersonalName
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class ResultListEditionStatement extends AbstractRecordViewHelper
+class ResultListAddedEntryPersonalName extends SingleRecordAddedEntryPersonalName
 {
-    /**
-     *
-     * @param SolrMarc $record
-     * @return string
-     */
+
     public function __invoke(SolrMarc $record)
     {
-        $ret = "";
-        $_533_n = false;
+
+
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
+        $_100 = $marcRecord->getField('100');
 
-        $_533_ = $marcRecord->getFields('533');
-
-        if (!empty($_533_)) {
-            /** @var \File_MARC_Data_Field $_533 */
-            $_533 = current($_533_);
-            $n_ = $_533->getSubfields('n');
-            if (!empty($n_)) {
-                $_533_n = end($n_)->getData();
-            }
+        if (!empty($_100)) {
+            return "";
         }
 
-        $_250 = $marcRecord->getField('250');
+        $_700 = $marcRecord->getFields('700');
+        $fields = array_filter(
+            $_700,
+            function(\File_MARC_Data_Field $field) {
+                $subField = $field->getSubfield('4');
+                return !empty($subField) && !in_array($subField->getData(), ['aut', 'hnr', 'prf']);
+            }
+        );
 
-        $_250_a = !empty($_250) ? (!empty($a = $_250->getSubfield("a")) ? $a->getData() : "") : "";
+        if (count($fields) <= 0) {
+            return "";
+        }
 
-        return $_533_n ? $_533_n : (!empty($_250_a) ? $_250_a : "");
-
+        return $this->extractItem($fields[0]);
     }
-
 }

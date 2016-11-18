@@ -259,4 +259,15 @@ class AbstractRecordViewHelper extends AbstractHelper
             return $a->getIndicator($ind) === $x;
         });
     }
+
+    /**
+     * removes @ at the beginning of the string or an @ where a blank as prefix exist and followed by a word a digit
+     * @param $string
+     * @return mixed
+     */
+    public function removeSpecialChars($string)
+    {
+        $string = preg_replace('/^@/', "", $string);
+        return preg_replace('/\s\@([\w\däöü])/i', " $1", $string);
+    }
 }

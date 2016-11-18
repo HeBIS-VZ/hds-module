@@ -25,19 +25,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\ResultList;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
 
 
 /**
- * Class ResultListPublicationDistribution
+ * Class ResultListEditionStatement
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class ResultListPublicationDistribution extends SingleRecordPublicationDistribution
+class ResultListEditionStatement extends AbstractRecordViewHelper
 {
-
     /**
      *
      * @param SolrMarc $record
@@ -45,43 +45,28 @@ class ResultListPublicationDistribution extends SingleRecordPublicationDistribut
      */
     public function __invoke(SolrMarc $record)
     {
-        /* wenn 264 Indikator 2 = 1, dann anzeigen wie folgt:
-        264 $a_:_$b,_$c
-        Wenn 533 $d vorhanden, dann wie folgt anzeigen:
-        264 $a_:_$b,_533 $d
-
-        Bei mehr als eine 264 mit Indikator 2 = 1 nur eine anzeigen; Priorisierung wie folgt:
-
-        264 Indikator 1 = 3 und Indikator 2 = 1
-        264 Indikator 1 = # und Indikator 2 = 1
-
-        Kommen $a und/oder $b mehrfach vor, dann Trennzeichen: ";_" (in Worten: Semikolon Blank)
-        */
         $ret = "";
-
+        $_533_n = false;
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        /** @var \File_MARC_Data_Field $_264 */
-        $_264 = $marcRecord->getFields('264');
+        $_533_ = $marcRecord->getFields('533');
 
-        $_264 = $this->filterByIndicator($_264, 2, "1");
-
-        $_533d = $this->getSubFieldDataOfField($record, '533', 'd');
-
-        if (count($_264) == 1) {
-            $ret .= $this->concatSubfields(current($_264), $_533d);
-        } else {
-            $_264_ = $this->filterByIndicator($_264, 1, "3");
-            $_264_ = current($_264_);
-            $ret .= $this->concatSubfields($_264_, $_533d);
-
-            $_264_ = $this->filterByIndicator($_264, 1, "");
-            $_264_ = current($_264_);
-            $ret .= $this->concatSubfields($_264_, $_533d);
+        if (!empty($_533_)) {
+            /** @var \File_MARC_Data_Field $_533 */
+            $_533 = current($_533_);
+            $n_ = $_533->getSubfields('n');
+            if (!empty($n_)) {
+                $_533_n = end($n_)->getData();
+            }
         }
 
-        return $ret;
+        $_250 = $marcRecord->getField('250');
+
+        $_250_a = !empty($_250) ? (!empty($a = $_250->getSubfield("a")) ? $a->getData() : "") : "";
+
+        return $_533_n ? $_533_n : (!empty($_250_a) ? $_250_a : "");
 
     }
+
 }

@@ -25,7 +25,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\ResultList;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use VuFind\RecordDriver\SolrMarc;
 
 
@@ -35,7 +36,7 @@ use VuFind\RecordDriver\SolrMarc;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class ResultListPersonalName extends SingleRecordPersonalName
+class ResultListPersonalName extends AbstractRecordViewHelper
 {
 
     /**
@@ -57,7 +58,7 @@ class ResultListPersonalName extends SingleRecordPersonalName
         if (empty($aut)) {
             $f700 = $marcRecord->getFields(700);
             if (!empty($f700)) {
-                if (!empty($filteredFields = $this->filterByIndicator($f700, 2, ""))) {
+                if (!empty($filteredFields = $this->filterByIndicator($f700, 2, " "))) {
                     $addedEntryPN = $this->getFieldContents(current($filteredFields));
                     $aut .= (!empty($addedEntryPN)) ? "$addedEntryPN" : "";
                 }

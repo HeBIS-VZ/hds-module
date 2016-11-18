@@ -30,8 +30,9 @@ $pathParts[] = get_include_path();
 set_include_path(implode(PATH_SEPARATOR, $pathParts));
 
 // Composer autoloading
-if (file_exists('vendor/autoload.php')) {
-    $loader = include 'vendor/autoload.php';
+$autoload = __DIR__.'/../../../vendor/autoload.php';
+if (file_exists($autoload)) {
+    $loader = include __DIR__.'/../../../vendor/autoload.php';
     $loader = new Composer\Autoload\ClassLoader();
     $loader->add('Hebis', realpath(__DIR__ . '/unit-tests/src'));
     $loader->add('Hebis', realpath(__DIR__ . '/../src'));

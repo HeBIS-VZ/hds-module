@@ -25,18 +25,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\ResultList;
+use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
-
-class ResultListEditionStatementTest extends AbstractViewHelperTest
+class ResultListPersonalNameTest extends AbstractViewHelperTest
 {
+
     public function setUp()
     {
-        $this->viewHelperClass = "ResultListEditionStatement";
+        $this->viewHelperClass = "ResultListPersonalName";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "Ausgabe";
+        $this->testSheetName = "Verantwortlich";
         parent::setUp();
     }
 

@@ -93,7 +93,15 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     private static function factory($className)
     {
-        $className = self::VIEW_HELPER_NAMESPACE . "\\" . $className;
+        if (strpos($className, "ResultList") !== false) {
+            $type = "ResultList\\";
+        } else if (strpos($className, "SingleRecord") !== false) {
+            $type = "SingleRecord\\";
+        } else {
+            $type = "";
+        }
+
+        $className = self::VIEW_HELPER_NAMESPACE . "\\" . $type . $className;
 
         /** @var AbstractRecordViewHelper $helper */
         $helper = new $className();

@@ -96,6 +96,7 @@ class PhysicalDescription extends AbstractRecordViewHelper
      */
     public function __invoke(SolrMarc $record)
     {
+        $id = $record->getUniqueID();
         $this->initMap();
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
@@ -127,7 +128,7 @@ class PhysicalDescription extends AbstractRecordViewHelper
         }
         if ($x == "a" && $y == "m") {
             if ($z == "co") {
-                if (strpos($_300_a, "DVD") === false) {
+                if (strpos($_300_a, "DVD") === false && strpos($_300_a, "Blu-Ray") === false) {
                     $z = "c ";
                 }
             }

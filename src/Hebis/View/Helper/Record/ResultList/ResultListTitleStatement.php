@@ -26,10 +26,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
-
+namespace Hebis\View\Helper\Record\ResultList;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
-use Zend\Navigation;
 
 /**
  * Class ResultListTitleStatement
@@ -37,7 +36,7 @@ use Zend\Navigation;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class ResultListTitleStatement extends SingleRecordTitleStatement
+class ResultListTitleStatement extends AbstractRecordViewHelper
 {
 
     public function __invoke(SolrMarc $record)
@@ -46,25 +45,27 @@ class ResultListTitleStatement extends SingleRecordTitleStatement
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $_856 = $marcRecord->getField('856');
-        if (!empty($_856) && !empty($this->getSubFieldsDataOfField($_856, ['3']))) {
-            $tmp = $this->getSubFieldsDataOfField($_856, ['3']);
-            $tmp = array_key_exists(3, $tmp) && count($tmp[3]) > 0 ? $tmp[3][0] : "";
-            if (!empty($tmp) && strpos($tmp, "Katalogkarte") !== false) {
-                /** @var \File_MARC_Data_Field $_246 */
-                $_246_ = $marcRecord->getFields('246');
-                if (!empty($_246_)) {
-                    foreach ($_246_ as $_246) {
-                        //if ($_246->getIndicator(2) == 3) {
-                            foreach ($this->getSubFieldDataArrayOfGivenField($_246, 'a') as $a) {
-                                $ret .= "[$a]<br />";
-                            }
+        $retro = strpos($this->getSubFieldDataOfField($record, 856, '3'), "Katalogkarte") !== false;
 
-                        //}
-                    }
+        $id = $record->getUniqueID();
+        if ($retro) {
+            $_246_ = $marcRecord->getFields(246);
+            $arr = [];
+            /** @var \File_MARC_Data_Field $_246 */
+            foreach ($_246_ as $_246) {
+                if ($_246->getIndicator(2) == 3) {
+                    $arr[] = $this->getSubFieldDataOfGivenField($_246, 'a');
                 }
             }
+            if (!empty($arr)) {
+                $ret .= "[".implode(" ", $arr)."]<br />";
+            }
         }
+
+
+        $_245 = $marcRecord->getField(245);
+
+        $subFields = $this->getSubfieldsAsArray($_245);
 
 
 
@@ -72,18 +73,38 @@ class ResultListTitleStatement extends SingleRecordTitleStatement
         $field = $marcRecord->getField('245');
 
         $a = $this->getSubFieldDataArrayOfGivenField($field, 'a')[0];
-        $a = $this->removeSpecialChars($a);
         $b = $this->getSubFieldDataArrayOfGivenField($field, 'b');
         $h = $this->getSubFieldDataArrayOfGivenField($field, 'h');
+
+        $a = $this->removeSpecialChars($a);
         $b = array_key_exists(0, $b) ? $this->getSubFieldDataArrayOfGivenField($field, 'b')[0] : "";
         $h = array_key_exists(0, $h) ? $this->getSubFieldDataArrayOfGivenField($field, 'h')[0] : "";
 
+        $n_p = $this->getNp($field);
+        $ret .= !empty($a) ? trim($a) : "";
+        $ret .= !empty($h) ? " ".trim($h) : "";
+        $ret .= !empty($b) ? " : ".trim($b) : "";
+
+        if (!empty($n_p)) {
+            $ret .= "<br />";
+            $ret .= $n_p;
+        }
+
+
+        $str = str_replace("  ", " ", $ret);
+
+        return $str;
+    }
+
+    /**
+     * @param $field
+     * @return string
+     */
+    protected function getNp($field)
+    {
         $n_s = $field->getSubfields('n');
         $p_s = $field->getSubfields('p');
         $n_p = "";
-        if (!empty($n_s) || !empty($p_s)) {
-            $n_p .= "<br />";
-        }
 
 
         for ($i = 0; $i < count($n_s); ++$i) {
@@ -95,23 +116,18 @@ class ResultListTitleStatement extends SingleRecordTitleStatement
             }
 
             if (!empty($p)) {
-                if (!in_array(substr(trim($n_p), -1), ['.', ','])) {
+                if (!in_array(substr(trim($n_p), -1), ['.', ',','[',']']) && !empty($n_p)) {
                     $n_p .= ". ";
                 }
                 $n_p .= htmlentities(trim($p));
             }
 
-            if ($i < count($n_s)-1) {
+            if ($i < count($n_s) - 1) {
                 if (!empty($n_s[$i]->getData()) || !empty($p_s[$i]->getData())) {
                     $n_p .= "<br />";
                 }
             }
         }
-        $ret .= !empty($a) ? trim($a) : "";
-        $ret .= !empty($h) ? " ".trim($h) : "";
-        $ret .= !empty($b) ? " : ".trim($b) : "";
-        $ret .= $n_p;
-
-        return str_replace("  ", " ", $ret);
+        return $n_p;
     }
 }

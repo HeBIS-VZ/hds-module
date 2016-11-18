@@ -101,15 +101,28 @@ class Module
     {
         return array(
             'factories' => array(
-                'record_get_sub_field_data_of_field' => function($sm) {
-                    return new View\Helper\Record\RecordGetSubFieldDataOfField();
-                },
-                'record_get_sub_fields_of_field_type' => function($sm) {
-                    return new View\Helper\Record\RecordGetSubFieldsOfFieldType();
+                'physical_description' => function($sm) {
+                    return new View\Helper\Record\PhysicalDescription();
                 },
                 'result_list_title_statement' => function($sm) {
-                    return new View\Helper\Record\ResultListTitleStatement();
+                    return new View\Helper\Record\ResultList\ResultListTitleStatement();
                 },
+                'result_list_personal_name' => function($sm) {
+                    return new View\Helper\Record\ResultList\ResultListPersonalName();
+                },
+                'result_list_corporate_name' => function($sm) {
+                    return new View\Helper\Record\ResultList\ResultListCorporateName();
+                },
+                'result_list_edition_statement' => function($sm) {
+                    return new View\Helper\Record\ResultList\ResultListEditionStatement();
+                },
+                'result_list_publication_distribution' => function($sm) {
+                    return new View\Helper\Record\ResultList\ResultListPublicationDistribution();
+                },
+                'result_list_host_item_entry' => function($sm) {
+                    return new View\Helper\Record\ResultList\ResultListHostItemEntry();
+                },
+
                 'single_record_title_statement_headline' => function($sm) {
                     return new View\Helper\Record\SingleRecordTitleStatementHeadline();
                 },

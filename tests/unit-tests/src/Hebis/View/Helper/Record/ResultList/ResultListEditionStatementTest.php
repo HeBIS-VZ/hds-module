@@ -6,7 +6,7 @@
  * Information about VuFind you will find on http://www.vufind.org
  * 
  * Copyright (C) 2016 
- * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
  * 
@@ -25,25 +25,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\ResultList;
+use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
-
-/**
- * Class ResultListTitleStatementTest
- * @package Hebis\View\Helper
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class ResultListTitleStatementTest extends AbstractViewHelperTest
+class ResultListEditionStatementTest extends AbstractViewHelperTest
 {
-
     public function setUp()
     {
-        $this->viewHelperClass = "ResultListTitleStatement";
+        $this->viewHelperClass = "ResultListEditionStatement";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "Titel";
+        $this->testSheetName = "Ausgabe";
         parent::setUp();
     }
 

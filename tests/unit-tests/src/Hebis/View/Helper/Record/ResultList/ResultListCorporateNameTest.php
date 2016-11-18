@@ -25,19 +25,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\ResultList;
+use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
-
-class ResultListPublicationDistributionTest extends AbstractViewHelperTest
+class ResultListCorporateNameTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "ResultListPublicationDistribution";
+        $this->viewHelperClass = "ResultListCorporateName";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "Veröffentlicht";
+        $this->testSheetName = "Körperschaft";
         parent::setUp();
     }
 
@@ -48,6 +48,6 @@ class ResultListPublicationDistributionTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        return []; //no plugins needed
+        return [];
     }
 }

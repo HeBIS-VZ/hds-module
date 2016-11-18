@@ -94,27 +94,5 @@ class SingleRecordPublicationDistribution extends AbstractRecordViewHelper
         return implode("<br />", $arr);
     }
 
-    /**
-     * @param $field
-     * @param string $_533_d
-     * @return string
-     */
-    protected function concatSubfields($field, $_533_d)
-    {
-        $ret = "";
-        $a = $this->getSubFieldDataOfGivenField($field, 'a');
-        $b = $this->getSubFieldDataOfGivenField($field, 'b');
-        $c = $this->getSubFieldDataOfGivenField($field, 'c');
-
-        $ret .= !empty($a) ? "$a" : "";
-        $ret .= !empty($b) ? " : $b" : ""; //append $b
-
-        if (!empty($_533_d)) {
-            $ret .= ", $_533_d";
-        } else if (!empty($c)) {
-            $ret .= ", $c";
-        }
-        return $ret;
-    }
 
 }
