@@ -25,8 +25,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
-
+namespace Hebis\View\Helper\Record\SingleRecord;
+use Hebis\View\Helper\Record\AbstractViewHelperTest;
 /**
  * Class SingleRecordOtherEditionEntryTest
  * @package Hebis\View\Helper\Record
@@ -39,13 +39,11 @@ class SingleRecordOtherEditionEntryTest extends AbstractViewHelperTest
     public function setUp()
     {
         $this->viewHelperClass = "SingleRecordOtherEditionEntry";
-        $this->testResultField = "other_edition_entry";
-        $this->testRecordIds = [
-            'HEB046828966',
-            'HEB120899825',
-        ];
-
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+        $this->testSheetName = "Andere Ausgaben";
         parent::setUp();
+
     }
 
     /**
