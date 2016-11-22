@@ -25,58 +25,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record\ResultList;
-use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\ResultList\ResultListEditionStatement;
 
 
 /**
- * Class ResultListEditionStatement
- * @package Hebis\View\Helper\Record
+ * Class SingleRecordEditionStatement
+ * @package Hebis\View\Helper\Record\SingleRecord
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class ResultListEditionStatement extends AbstractRecordViewHelper
+class SingleRecordEditionStatement extends ResultListEditionStatement
 {
+
     /**
-     *
      * @param SolrMarc $record
      * @return string
      */
     public function __invoke(SolrMarc $record)
     {
-        $ret = "";
-        $_533_n = false;
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
-
-        $_533_ = $marcRecord->getFields('533');
-
-        if (!empty($_533_)) {
-            /** @var \File_MARC_Data_Field $_533 */
-            $_533 = current($_533_);
-            $n_ = $_533->getSubfields('n');
-            if (!empty($n_)) {
-                $_533_n = end($n_)->getData();
-            }
-        }
-
-        $_250_a = $this->generate250aContent($marcRecord);
-
-        return $_533_n ? $_533_n : (!empty($_250_a) ? $_250_a : "");
-
+        return $this->generate250aContent($marcRecord);
     }
-
-    /**
-     * @param \File_MARC_Record $marcRecord
-     * @return string
-     */
-    public function generate250aContent(\File_MARC_Record $marcRecord)
-    {
-        /** @var \File_MARC_Data_Field $_250 */
-        $_250 = $marcRecord->getField('250');
-        return !empty($_250) ? (!empty($a = $_250->getSubfield("a")) ? $a->getData() : "") : "";
-    }
-
-
 }
