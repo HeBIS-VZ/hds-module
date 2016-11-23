@@ -26,11 +26,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
 
-use \File_MARC_Data_Field;
-use \File_MARC_Record;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 /**
  * Class SingleRecordDissertationNote
@@ -45,7 +44,7 @@ class SingleRecordDissertationNote extends AbstractRecordViewHelper
     {
         $arr = [];
 
-        /** @var File_MARC_Record $marcRecord */
+        /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
         /** @var \File_MARC_List $field */
