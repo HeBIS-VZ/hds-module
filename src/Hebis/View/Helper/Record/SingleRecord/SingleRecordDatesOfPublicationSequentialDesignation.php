@@ -25,37 +25,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
+use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 
 /**
- * Class SingleRecordDatesOfPublicationSequentialDesignationTest
+ * Class SingleRecordDatesOfPublicationOrSequentialDesignation
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordDatesOfPublicationSequentialDesignationTest extends AbstractViewHelperTest
+class SingleRecordDatesOfPublicationSequentialDesignation extends AbstractRecordViewHelper
 {
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp() {
-
-        $this->viewHelperClass = "SingleRecordDatesOfPublicationSequentialDesignation";
-        $this->testRecordIds = [];
-        $this->testResultField = '';
-        $this->testSheetName = "Erscheinungsverlauf";
-        parent::setUp();
-    }
-
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
+    public function __invoke(SolrMarc $record)
     {
-        return [];
+
+        $arr = [];
+
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
+        $_362 = $marcRecord->getFields('362');
+
+        /** @var \File_MARC_Data_Field $field */
+        foreach ($_362 as $field) {
+            $a = $this->getSubFieldDataOfGivenField($field, 'a');
+            if ($a) $arr[] = htmlentities($a);
+
+        }
+
+        return implode("<br />", $arr);
     }
 }
