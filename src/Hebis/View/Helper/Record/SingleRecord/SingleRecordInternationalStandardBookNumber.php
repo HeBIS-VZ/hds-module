@@ -26,36 +26,47 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
+
+use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 /**
- * Class SingleRecordInternationalStandardSerialNumberTest
+ * Class SingleRecordInternationalStandardBookNumber
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordInternationalStandardSerialNumberTest extends AbstractViewHelperTest
+class SingleRecordInternationalStandardBookNumber extends AbstractRecordViewHelper
 {
-
-    public function setUp()
+    public function __invoke(SolrMarc $record)
     {
-        $this->viewHelperClass = "SingleRecordInternationalStandardSerialNumber";
-        $this->testRecordIds = [
-            'HEB047084022',
-            'HEB048613398'
-        ];
-        $this->testResultField = 'issn';
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
 
-        parent::setUp();
-    }
+        $arr = [];
+        $fields = $marcRecord->getFields('020');
 
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        return [];
+        foreach ($fields as $field) {
+            if (!empty($a = $this->getSubFieldDataOfGivenField($field, 'a'))) {
+                $arr[] = $a;
+            }
+            if (!empty($z = $this->getSubFieldDataOfGivenField($field, 'z'))) {
+                $arr[] = $z;
+            }
+        }
+
+        $fields = $marcRecord->getFields('776');
+
+        foreach ($fields as $field) {
+            if ($field->getIndicator(1) === "1") {
+                $z = $this->getSubFieldDataOfGivenField($field, 'z');
+                if (!empty($z)) {
+                    $arr[] = $z;
+                }
+            }
+        }
+
+        return implode(" ; ", $arr);
     }
 }
