@@ -46,6 +46,7 @@ class ResultListHostItemEntry extends AbstractRecordViewHelper
      */
     public function __invoke(SolrMarc $record)
     {
+        $id = $record->getUniqueID();
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
@@ -53,29 +54,71 @@ class ResultListHostItemEntry extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $field */
         $fields = $marcRecord->getFields(773);
-        $arr = [];
-        $str = "";
+        $ret = "";
+
         foreach ($fields as $field) {
-            /** @var \File_MARC_Subfield $subfield */
-            foreach ($field->getSubfields() as $subfield) {
-                if (!in_array($subfield->getCode(), ['a', 't', 'b', 'd', 'g', 'h', 'z', 'o', 'x'])) {
-                    continue;
-                }
-                switch ($subfield->getCode()) {
-                    case 'a':
-                        $str .= $subfield->getData().". ";
-                        break;
-                    case 'x':
-                        $arr[] = 'ISBN '.htmlentities($subfield->getData());
-                        break;
-                    case 'z':
-                        $arr[] = 'ISBN '.htmlentities($subfield->getData());
-                        break;
-                    default:
-                        $arr[] = htmlentities($subfield->getData());
-                }
+
+            $ret .= !empty($a = $field->getSubfield('a')) ? htmlentities($a->getData()).". " : "";
+
+            $ret .= $this->generateSubfields($field);
+        }
+        return $ret;
+    }
+
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @return string
+     * @internal param $ret
+     */
+    protected function generateSubfields(\File_MARC_Data_Field $field)
+    {
+
+        $arr = [];
+        $subFields = $field->getSubfields();
+        $w = $field->getSubfields("w");
+
+        $w = array_filter($w, function ($field) {
+            return strpos($field->getData(), "(DE-603)") !== false;
+        });
+
+        /** @var \File_MARC_Subfield $subField */
+        foreach ($subFields as $subField) {
+            $c = $subField->getCode();
+            $v = $subField->getData();
+
+            if (!in_array($c, ['t', 'b', 'd', 'g', 'h', 'z', 'o', 'x'])) {
+                continue;
+            }
+
+            switch ($c) {
+                case 'x':
+                    $arr[] = 'ISBN ' . htmlentities($v);
+                    break;
+                case 'z':
+                    $arr[] = 'ISBN ' . htmlentities($v);
+                    break;
+                case 't': //search link?
+                    if (!empty($w)) {
+                        $arr[] = $this->addLink($subField, current($w));
+                    } else {
+                        $arr[] = htmlentities($v);
+                    }
+                    break;
+                default:
+                    $arr[] = htmlentities($v);
+                    break;
             }
         }
-        return $str.implode(". - ", $arr);
+        return implode(". - ", $arr);
+    }
+
+    /**
+     * @param \File_MARC_Subfield $subfield
+     * @param \File_MARC_Subfield $w
+     * @return string
+     */
+    protected function addLink($subfield, $w)
+    {
+        return htmlentities($subfield->getData());
     }
 }

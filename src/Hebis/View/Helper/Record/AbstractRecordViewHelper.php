@@ -50,6 +50,9 @@ class AbstractRecordViewHelper extends AbstractHelper
     const URL_AUTHOR_SEARCH_PATTERN = 'Search/Results?lookfor0[]=&type0[]=author&lastposition';
 
 
+    const URL_SEARCH_PPN = 'Record/HEB%s';
+
+
     /**
      * checks if subField exists, if true it returns the subField containing data
      * otherwise it returns an empty string
