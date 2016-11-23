@@ -26,17 +26,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 /**
- * Class SingleRecordInternationalStandardBookNumber
+ * Class SingleRecordInternationalStandardSerialNumber
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordInternationalStandardBookNumber extends AbstractRecordViewHelper
+class SingleRecordInternationalStandardSerialNumber extends AbstractRecordViewHelper
 {
     public function __invoke(SolrMarc $record)
     {
@@ -45,30 +46,30 @@ class SingleRecordInternationalStandardBookNumber extends AbstractRecordViewHelp
 
         $arr = [];
 
-        $fields = $marcRecord->getFields('020');
-
-        //Wenn in 020 $a "(Sekundärausgabe)" enthalten ist, an Inhalt aus $9 anhängen: _(Sekundärausgabe)
-
+        $fields = $marcRecord->getFields('022');
 
         foreach ($fields as $field) {
-            $str = "";
-            $_9 = $this->getSubFieldDataOfGivenField($field, '9');
-            $z = $this->getSubFieldDataOfGivenField($field, 'z');
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
 
-            if ($_9) {
-                $str = $_9 ? $_9 : "";
-                if (strpos($a, "Sekund&auml;rausgabe") !== false) {
-                    $str .= " (Sekund&auml;rausgabe)";
+            $subFields = $this->getSubfieldsAsArray($field);
+            foreach ($subFields as $code => $subField) {
+                switch ($code) {
+                    case 'a':
+                    case 'y':
+                        if (array_key_exists($code, $arr)) {
+                            $arr[$code] = array_merge($arr, [htmlentities($subField)]);
+                        } else {
+                            $arr[$code] = htmlentities($subField);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
-            else if ($z) {
-                $str = $z ? $z : "";
-            }
 
-            $arr[] = $str;
         }
+        $return = [];
+        array_walk_recursive($arr, function($elem) use (&$return) { $return[] = $elem; });
 
-        return implode(" ; ", $arr);
+        return implode(" ; ", $return);
     }
 }

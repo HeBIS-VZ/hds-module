@@ -28,48 +28,32 @@
 
 namespace Hebis\View\Helper\Record;
 
-use Hebis\RecordDriver\SolrMarc;
-
 /**
- * Class SingleRecordInternationalStandardSerialNumber
+ * Class SingleRecordInternationalStandardSerialNumberTest
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordInternationalStandardSerialNumber extends AbstractRecordViewHelper
+class SingleRecordInternationalStandardSerialNumberTest extends AbstractViewHelperTest
 {
-    public function __invoke(SolrMarc $record)
+
+    public function setUp()
     {
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
+        $this->viewHelperClass = "SingleRecordInternationalStandardSerialNumber";
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+        $this->testSheetName = "ISSN";
 
-        $arr = [];
+        parent::setUp();
+    }
 
-        $fields = $marcRecord->getFields('022');
-
-        foreach ($fields as $field) {
-
-            $subFields = $field->getSubfields();
-            foreach ($subFields as $subField) {
-                switch ($subField->getCode()) {
-                    case 'a':
-                    case 'y':
-                        $arr[] = htmlentities($subField->getData());
-                        break;
-                }
-            }
-        }
-
-        $fields = $marcRecord->getFields('029');
-
-        foreach ($fields as $field) {
-            $str = "";
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $str .= $a ? htmlentities($a) : "";
-
-            $arr[] = $str;
-        }
-
-        return implode(" ; ", $arr);
+    /**
+     * Get plugins to register to support view helper being tested
+     *
+     * @return array
+     */
+    protected function getPlugins()
+    {
+        return [];
     }
 }
