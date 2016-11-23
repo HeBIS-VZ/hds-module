@@ -79,7 +79,7 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
      * @param \File_MARC_Data_Field $field
      * @return string
      */
-    private function generateContents($field)
+    protected function generateContents($field)
     {
         $subFieldKeys = ['t', 'b', 'd', 'g', 'h', 'z', 'o', 'x'];
         $subFields = $this->getSubfieldsAsArray($field);
@@ -131,13 +131,13 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
             } else if (array_key_exists('n', $subFields)) {
                 $prefix .= htmlentities($subFields['n']) . ": ";
             }
-            $prefix .= $subFields['a'] . ". "; // a nachtragen
+            $prefix .= htmlentities($subFields['a']) . ". "; // a nachtragen
         }
 
         return $prefix . implode(". - ", $arr);
     }
 
-    private function link($w) {
+    protected function link($w) {
         return $this->getView()->basePath().'/Search/Results?lookfor0[]=HEB'.$this->removePrefix($w, "(DE-603)").'&type0[]=isn';
     }
 }

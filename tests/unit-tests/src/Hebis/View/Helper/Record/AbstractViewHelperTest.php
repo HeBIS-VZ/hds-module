@@ -33,6 +33,7 @@ use Box\Spout\Reader\IteratorInterface;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Reader\ReaderInterface;
 use Box\Spout\Writer\Common\Sheet;
+use Hebis\Exception\HebisException;
 use Hebis\RecordDriver\SolrMarc;
 use VuFindSearch\Backend\Exception\HttpErrorException;
 use Zend\Http\Client;
@@ -102,6 +103,10 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
         }
 
         $className = self::VIEW_HELPER_NAMESPACE . "\\" . $type . $className;
+
+        if (!class_exists($className)) {
+            throw new HebisException("Class '$className' not found");
+        }
 
         /** @var AbstractRecordViewHelper $helper */
         $helper = new $className();
