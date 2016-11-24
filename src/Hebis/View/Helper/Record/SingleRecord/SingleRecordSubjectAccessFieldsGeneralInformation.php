@@ -26,8 +26,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 
 /**
@@ -230,13 +231,13 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     {
         $arr = [];
         foreach ($record->getMarcRecord()->getFields(650) as $field) {
-            $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'c', 'x', '9']);
+            $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'c', 'x', 'g']);
             $line = "";
             foreach ($sf_ as $sf) {
                 $line .= !empty($sf['a']) ? $sf['a'] : "";
                 $line .= !empty($sf['c']) ? " &lt;" . $sf['c'] . "&gt;" : "";
                 $line .= !empty($sf['x']) ? ", " . $sf['x'] : "";
-                $line .= !empty($sf['9']) ? " &lt;" . str_replace("g:", "", $sf['9']) . "&gt;" : "";
+                $line .= !empty($sf['g']) ? " &lt;" . str_replace("g:", "", $sf['g']) . "&gt;" : "";
                 $arr[] = $line;
             }
             
@@ -268,12 +269,9 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     {
         $arr = [];
         foreach ($record->getMarcRecord()->getFields(655) as $field) {
-            $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'z']);
+            $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'x', 'y', 'z']);
             foreach ($sf_ as $sf) {
-                $line = "";
-                $line .= !empty($sf['a']) ? $sf['a'] : "";
-                $line .= !empty($sf['z']) ? " " . $sf['z'] : "";
-                $arr[] = $line;
+                $arr[] = implode(", ", $sf);
             }
         }
         return implode("<br />", $arr);
