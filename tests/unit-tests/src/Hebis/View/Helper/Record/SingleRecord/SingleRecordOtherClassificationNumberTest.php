@@ -4,8 +4,8 @@
  * extension of the open source library search engine VuFind, that 
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
- *
- * Copyright (C) 2016
+ * 
+ * Copyright (C) 2016 
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -26,22 +26,19 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
+
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
-/**
- * Class SingleRecordOtherEditionEntryTest
- * @package Hebis\View\Helper\Record
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class SingleRecordOtherEditionEntryTest extends AbstractViewHelperTest
+
+class SingleRecordOtherClassificationNumberTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "SingleRecordOtherEditionEntry";
+        $this->viewHelperClass = "SingleRecordOtherClassificationNumber";
         $this->testResultField = "";
         $this->testRecordIds = [];
-        $this->testSheetName = "Andere Ausgaben";
+        $this->testSheetName = "RVK-Notation";
         parent::setUp();
     }
 
@@ -52,15 +49,6 @@ class SingleRecordOtherEditionEntryTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $basePath = $this->getMock('Zend\View\Helper\BasePath');
-        $basePath->expects($this->any())->method('__invoke')
-            ->will($this->returnValue('/vufind2'));
-
-        $transEsc = $this->getMock('VuFind\View\Helper\Root\TransEsc');
-
-        return [
-            'basepath' => $basePath,
-            'transesc' => $transEsc
-        ];
+        return [];
     }
 }
