@@ -4,8 +4,8 @@
  * extension of the open source library search engine VuFind, that 
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
- *
- * Copyright (C) 2016
+ * 
+ * Copyright (C) 2016 
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -26,41 +26,30 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
-use Hebis\View\Helper\Record\AbstractViewHelperTest;
+use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+
+
 /**
- * Class SingleRecordOtherEditionEntryTest
- * @package Hebis\View\Helper\Record
+ * Class SingleRecordOtherClassificationNumber
+ * @package Hebis\View\Helper\Record\SingleRecord
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordOtherEditionEntryTest extends AbstractViewHelperTest
+class SingleRecordOtherClassificationNumber extends AbstractRecordViewHelper
 {
 
-    public function setUp()
+    public function __invoke(SolrMarc $record)
     {
-        $this->viewHelperClass = "SingleRecordOtherEditionEntry";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
-        $this->testSheetName = "Andere Ausgaben";
-        parent::setUp();
-    }
+        $marcRecord = $record->getMarcRecord();
 
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        $basePath = $this->getMock('Zend\View\Helper\BasePath');
-        $basePath->expects($this->any())->method('__invoke')
-            ->will($this->returnValue('/vufind2'));
-
-        $transEsc = $this->getMock('VuFind\View\Helper\Root\TransEsc');
-
-        return [
-            'basepath' => $basePath,
-            'transesc' => $transEsc
-        ];
+        $_084_ = $marcRecord->getFields('084');
+        $arr = [];
+        foreach ($_084_ as $field) {
+            if ($field->getSubfield(2)->getData() === "rvk" && !empty($a = $field->getSubfield("a"))) {
+                $arr[] = $a->getData();
+            }
+        }
+        return implode(" ; ", $arr);
     }
 }
