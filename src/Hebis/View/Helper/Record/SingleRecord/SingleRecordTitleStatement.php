@@ -26,14 +26,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\View\Helper\FieldArray;
-
-use File_MARC_Record;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-use Zend\View\Helper\AbstractHelper;
 
 /**
  * Class SingleRecordTitle
@@ -58,7 +55,7 @@ class SingleRecordTitleStatement extends AbstractRecordViewHelper
 
     public function __invoke(SolrMarc $record)
     {
-        /** @var File_MARC_Record $marcRecord */
+        /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
         //$fields245 = $marcRecord->getFields();//$this->getFieldArray($marcRecord, '245', ['a', 'h', 'b', 'c'], false);
