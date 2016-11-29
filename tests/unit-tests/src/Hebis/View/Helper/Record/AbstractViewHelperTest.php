@@ -255,7 +255,8 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
         }
 
         foreach ($failures as $e) {
-            fwrite(STDERR, $e->toString()."\n".$e->getComparisonFailure()->getDiff()."\n\n");
+            fwrite(STDERR, $e->toString()."\n".$e->getComparisonFailure()->getDiff()."\n\n-----\nActual:\n".$e->getComparisonFailure()->getActual()."\n\n");
+            fwrite(STDERR, "------------------------------------------------------------------------------------------------------------------------------------------------------\n\n");
         }
 
         if (count($failures) > 0) {

@@ -25,27 +25,38 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
-use Hebis\RecordDriver\SolrMarc;
+namespace Hebis\View\Helper\Record\SingleRecord;
+use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
 
 /**
- * Class SingleRecordTitleStatementHeadline
+ * Class SingleRecordTitleStatementHeadlineTest
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordTitleStatementHeadline extends AbstractRecordViewHelper
+class SingleRecordTitleStatementHeadlineTest extends AbstractViewHelperTest
 {
 
-    public function __invoke(SolrMarc $record)
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp() {
+
+        $this->viewHelperClass = "SingleRecordTitleStatementHeadline";
+        $this->testRecordIds = [];
+        $this->testResultField = 'title';
+        $this->testSheetName = "Titel-Ueberschrift";
+        parent::setUp();
+    }
+
+    /**
+     * Get plugins to register to support view helper being tested
+     *
+     * @return array
+     */
+    protected function getPlugins()
     {
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
-
-        /** @var \File_MARC_Data_Field $_245 */
-        $_245 = $marcRecord->getField('245');
-
-        return $this->removeControlSigns($_245->getSubfield('a')->getData());
+        return [];
     }
 }

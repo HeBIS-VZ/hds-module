@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an 
  * extension of the open source library search engine VuFind, that 
@@ -26,40 +25,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 
 /**
- * Class SingleRecordPhysicalDescription
+ * Class SingleRecordTitleStatementHeadline
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordPhysicalDescription extends AbstractRecordViewHelper
+class SingleRecordTitleStatementHeadline extends AbstractRecordViewHelper
 {
+
     public function __invoke(SolrMarc $record)
     {
-        $arr = [];
-
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
-        $_362 = $marcRecord->getFields('300');
 
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($_362 as $field) {
-            $ret = "";
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $b = $this->getSubFieldDataOfGivenField($field, 'b');
-            $c = $this->getSubFieldDataOfGivenField($field, 'c');
-            $e = $this->getSubFieldDataOfGivenField($field, 'e');
-            $ret .= ($a) ? $a : "";
-            $ret .= ($b) ? " : " . $b : "";
-            $ret .= ($c) ? " ; " . $c : "";
-            $ret .= ($e) ? " + " . $e : "";
-            $arr[] =  $ret;
-        }
+        /** @var \File_MARC_Data_Field $_245 */
+        $_245 = $marcRecord->getField('245');
 
-        return implode("<br />", $arr);
+        return $this->removeControlSigns($_245->getSubfield('a')->getData());
     }
 }

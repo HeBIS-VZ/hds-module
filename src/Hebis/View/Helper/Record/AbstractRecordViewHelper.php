@@ -104,6 +104,25 @@ class AbstractRecordViewHelper extends AbstractHelper
         return $arr;
     }
 
+    /**
+     * @param File_MARC_Data_Field $field
+     * @param array $subFieldCodes
+     * @return array
+     */
+    protected function getSubFieldsDataArrayOfField(\File_MARC_Data_Field $field, $subFieldCodes = [])
+    {
+        $arr = [];
+
+        foreach ($subFieldCodes as $subFieldCode) {
+            $ar = $this->getSubFieldDataArrayOfGivenField($field, $subFieldCode);
+            if (empty($ar)) {
+                continue;
+            }
+            $arr[$subFieldCode] = $ar[0];
+        }
+
+        return $arr;
+    }
 
     /**
      * if field of type \File_MARC_Data_Field and it has at least one subField with $subFieldCode this function returns the data of

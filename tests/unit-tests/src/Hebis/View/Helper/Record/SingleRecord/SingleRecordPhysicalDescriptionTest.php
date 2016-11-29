@@ -4,8 +4,8 @@
  * extension of the open source library search engine VuFind, that 
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
- *
- * Copyright (C) 2016
+ * 
+ * Copyright (C) 2016 
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -25,32 +25,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
+use Hebis\View\Helper\Record\AbstractViewHelperTest;
+
 
 /**
- * Class SingleRecordTitleStatementTest
+ * Class SingleRecordPhysicalDescriptionTest
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordTitleStatementTest extends AbstractViewHelperTest
+class SingleRecordPhysicalDescriptionTest extends AbstractViewHelperTest
 {
-    public function setUp() {
 
-        $this->viewHelperClass = "SingleRecordTitleStatement";
+    public function setUp()
+    {
+        $this->viewHelperClass = "SingleRecordPhysicalDescription";
+        $this->testResultField = "";
         $this->testRecordIds = [];
-        $this->testResultField = 'title';
-        $this->testSheetName = "Titel";
-        parent::setUp(); 
-    }
-
-    public function testRemoveSpecialChars() {
-
-        $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("@The Result of a Equation"));
-        $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("The @Result of a Equation"));
-        $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("@The @Result of a Equation"));
-        $this->assertEquals("Eine Übersicht ist wichtig", $this->viewHelper->removeSpecialChars("Eine @Übersicht ist wichtig"));
-        $this->assertEquals("E-M@il für dich", $this->viewHelper->removeSpecialChars("E-M@il für dich"));
+        $this->testSheetName = "Umfang";
+        parent::setUp();
     }
 
     /**
@@ -60,12 +54,6 @@ class SingleRecordTitleStatementTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $basePath = $this->getMock('Zend\View\Helper\BasePath');
-        $basePath->expects($this->any())->method('__invoke')
-            ->will($this->returnValue('/vufind2'));
-
-        return [
-            'basepath' => $basePath
-        ];
+        return [];
     }
 }
