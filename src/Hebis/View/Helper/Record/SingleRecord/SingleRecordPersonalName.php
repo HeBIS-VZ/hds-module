@@ -25,63 +25,61 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\ResultList\ResultListPersonalName;
 
 
 /**
- * Class SingleRecordSectionOfAWork
- * @package Hebis\View\Helper\Record
+ * Class SingleRecordPersonalName
+ * @package Hebis\View\Helper\Record\SingleRecord
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
+class SingleRecordPersonalName extends ResultListPersonalName
 {
 
     public function __invoke(SolrMarc $record)
     {
+        $arr = [];
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
-        $leader = $marcRecord->getLeader();
+        $aut = $this->getFieldContentsByFieldNo($marcRecord, 100);
 
-        $char = $leader{19};
-        $arr = [];
-
-        if (preg_match("/\s/", $char)) {
-            $arr = $this->createOutput($marcRecord, $arr);
+        if (!empty($aut)) {
+            $arr[] = $aut;
         }
-        return implode("<br />", $arr);
-    }
 
-    /**
-     * @param $marcRecord
-     * @param $arr
-     * @return array
-     */
-    protected function createOutput($marcRecord, $arr)
-    {
-        $arr = [];
-        $fields = $marcRecord->getFields('245');
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($fields as $field) {
+        $f700_ = $marcRecord->getFields(700);
+        $filteredFields = $this->filterByIndicator($f700_, 2, " ");
 
-            /** @var \File_MARC_Subfield $subField */
-            foreach ($field->getSubfields() as $subField) {
-                $key = $subField->getCode();
-
-                switch ($key) {
-                    case 'n':
-                        $n = htmlentities($subField->getData());
-                        break;
-                    case 'p':
-                        $p = htmlentities($subField->getData());
-                        break;
-                }
-                $np = !empty($n) ? "$n. " : "";
-                $np .= !empty($p) ? "$p" : "";
-                $arr[] = $np;
+        foreach ($filteredFields as $field) {
+            if (empty($field->getSubfields('e'))) {
+                $this->appendMissingESubfields($field);
+            }
+            $addedEntryPN = $this->getFieldContents($field);
+            if (!empty($addedEntryPN)) {
+                $arr[] = $addedEntryPN;
             }
         }
-        return $arr;
+
+        return implode("; ", $arr);
+    }
+
+
+    private function appendMissingESubfields(\File_MARC_Data_Field &$field)
+    {
+        $types = [
+            'aut' => 'Verfasser',
+            'hnr' => 'Gefeierter',
+            'prf' => 'Ausf&uuml;hrender'
+        ];
+
+        /** @var \File_MARC_Subfield $_4 */
+        foreach ($field->getSubfields('4') as $_4) {
+            if (in_array($_4->getData(), array_keys($types))) {
+                $field->appendSubfield(new \File_MARC_Subfield("e", $types[$_4->getData()]));
+            }
+        }
     }
 }

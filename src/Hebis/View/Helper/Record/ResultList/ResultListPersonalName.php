@@ -27,7 +27,7 @@
 
 namespace Hebis\View\Helper\Record\ResultList;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-use VuFind\RecordDriver\SolrMarc;
+use Hebis\RecordDriver\SolrMarc;
 
 
 /**
@@ -106,7 +106,7 @@ class ResultListPersonalName extends AbstractRecordViewHelper
                     $ret .= ", ";
                 }
 
-                $ret .= $e ? "$e" : "";
+                $ret .= $e ? htmlentities($e) : "";
             }
             $ret .= ")";
         }

@@ -26,8 +26,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
 
+use Hebis\View\Helper\Record\ResultList\ResultListPublicationDistribution;
 use Hebis\RecordDriver\SolrMarc;
 
 /**
@@ -36,7 +37,7 @@ use Hebis\RecordDriver\SolrMarc;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordPublicationDistribution extends AbstractRecordViewHelper
+class SingleRecordPublicationDistribution extends ResultListPublicationDistribution
 {
     /**
      * @param SolrMarc $record

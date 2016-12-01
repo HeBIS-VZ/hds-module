@@ -168,6 +168,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
         if ($jsonObject['response']['numFound'] < 1) {
             $this->markTestIncomplete("No document found with ppn \"$ppn\". Skipping this test case...");
+
         }
 
         try {

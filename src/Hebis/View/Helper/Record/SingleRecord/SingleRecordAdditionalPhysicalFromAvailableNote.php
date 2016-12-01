@@ -26,60 +26,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
-
-use File_MARC_Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 use Hebis\RecordDriver\SolrMarc;
-use Zend\View\Helper\AbstractHelper;
 
 /**
- * Class SingleRecordUniformTitle
+ * Class SingleRecordAdditionalPhysicalFormAvailableNote
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordUniformTitle extends AbstractRecordViewHelper
+class SingleRecordAdditionalPhysicalFromAvailableNote extends AbstractRecordViewHelper
 {
 
     public function __invoke(SolrMarc $record)
     {
-        /** @var File_MARC_Record $marcRecord */
+        /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $ret = "";
-        $fields = [];
+        $arr = [];
 
-        foreach (['240', '243', '730'] as $fieldCode) {
-            $fields[] = $marcRecord->getField($fieldCode);
-        }
+        $fields = $marcRecord->getFields('530');
 
-        $a = $g = $r = false;
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($fields as $field) {
-            if ($field) {
-                $a = $this->getSubFieldDataOfGivenField($field, 'a');
-                $g = $this->getSubFieldDataOfGivenField($field, 'g');
-                $r = $this->getSubFieldDataOfGivenField($field, 'r');
-                $ret .= $a ? $a : "";
-                $ret .= $g ? " &lt;$g&gt;" : "";
-                $ret .= $r ? " &lt;$r&gt;" : "";
-                $ret .= "<br />\n"; //newline
-                $a = $g = $r = false;
+        if (($_6 = $marcRecord->getLeader()['6']) == "a" && ($_7 = $marcRecord->getLeader()['7']) == "s") {
+            foreach ($fields as $field) {
+                $arr[] = $this->getSubFieldDataOfGivenField($field, 'a');
             }
         }
 
-        return $ret;
-    }
-
-    /**
-     * removes @ at the beginning of the string or an @ where a blank as prefix exist and followed by a word a digit
-     * @param $string
-     * @return mixed
-     */
-    public function removeSpecialChars($string)
-    {
-        $string = preg_replace('/^@/', "", $string);
-        return preg_replace('/\s\@([\w\däöü])/', " $1", $string);
+        return implode("<br>\n", $arr);
     }
 }
