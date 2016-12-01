@@ -35,12 +35,12 @@ use Hebis\View\Helper\Record\AbstractViewHelperTest;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordAdditionalPhysicalFormAvailableNoteTest extends AbstractViewHelperTest
+class SingleRecordAdditionalPhysicalFromAvailableNoteTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "SingleRecordAdditionalPhysicalFormAvailableNote";
+        $this->viewHelperClass = "SingleRecordAdditionalPhysicalFromAvailableNote";
         $this->testResultField = "";
         $this->testRecordIds = [];
         $this->testSheetName = "Auch_als";

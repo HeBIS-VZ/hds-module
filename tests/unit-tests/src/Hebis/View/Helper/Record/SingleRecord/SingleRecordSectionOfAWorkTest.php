@@ -26,28 +26,32 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+use Box\Spout\Reader\ODS\RowIterator;
+use Box\Spout\Reader\ODS\Sheet;
+use Box\Spout\Reader\ODS\SheetIterator;
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
+use Iterator;
 
 
 /**
- * Class SingleRecordSubjectAccessFieldsGeneralInformationTest
+ * Class SingleRecordSectionOfAWorkTest
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordSubjectAccessFieldsGeneralInformationTest extends AbstractViewHelperTest
+class SingleRecordSectionOfAWorkTest extends AbstractViewHelperTest
 {
-
     public function setUp()
     {
-        $this->viewHelperClass = "SingleRecordSubjectAccessFieldsGeneralInformation";
+        $this->viewHelperClass = "SingleRecordSectionOfAWork";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "Schlagworte";
-        parent::setUp();
+        $this->testSheetName = "Unterreihe";
+        parent::setUp(); 
     }
 
+    
     /**
      * Get plugins to register to support view helper being tested
      *
@@ -57,4 +61,6 @@ class SingleRecordSubjectAccessFieldsGeneralInformationTest extends AbstractView
     {
         return [];
     }
+
+
 }

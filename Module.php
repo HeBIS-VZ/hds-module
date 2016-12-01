@@ -104,6 +104,9 @@ class Module
                 'physical_description' => function($sm) {
                     return new View\Helper\Record\PhysicalDescription();
                 },
+                'bib_tip' => function($sm) {
+                    return new View\Helper\Record\BibTip();
+                },
                 'result_list_title_statement' => function($sm) {
                     return new View\Helper\Record\ResultList\ResultListTitleStatement();
                 },
@@ -122,74 +125,78 @@ class Module
                 'result_list_host_item_entry' => function($sm) {
                     return new View\Helper\Record\ResultList\ResultListHostItemEntry();
                 },
-
-                'single_record_title_statement_headline' => function($sm) {
-                    return new View\Helper\Record\SingleRecordTitleStatementHeadline();
+                'single_record_additional_physical_from_available_note' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordAdditionalPhysicalFromAvailableNote();
                 },
-                'single_record_title_statement' => function($sm) {
-                    return new View\Helper\Record\SingleRecordTitleStatement();
-                },
-                'single_record_title_statement_section_of_work' => function($sm) {
-                    return new View\Helper\Record\SingleRecordTitleStatementSectionOfWork();
-                },
-                'result_list_main_entry_personal_name' => function($sm) {
-                    return new View\Helper\Record\ResultListMainEntryPersonalName();
-                },
-                'single_record_main_entry_personal_name' => function($sm) {
-                    return new View\Helper\Record\SingleRecordMainEntryPersonalName();
-                },
-                'result_list_added_entry_personal_name' => function($sm) {
-                    return new View\Helper\Record\ResultListAddedEntryPersonalName();
-                },
-                'single_record_added_entry_personal_name' => function($sm) {
-                    return new View\Helper\Record\SingleRecordAddedEntryPersonalName();
+                'single_record_cartographic_mathematical_data' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordCartographicMathematicalData();
                 },
                 'single_record_dates_of_publication_sequential_designation' => function($sm) {
-                    return new View\Helper\Record\SingleRecordDatesOfPublicationSequentialDesignation();
-                },
-                'single_record_festschrift' => function($sm) {
-                    return new View\Helper\Record\SingleRecordFestschrift();
-                },
-                'single_record_interpreter' => function($sm) {
-                    return new View\Helper\Record\SingleRecordInterpreter();
-                },
-                'single_record_marc_journal' => function($sm) {
-                    return new View\Helper\Record\SingleRecordMarcJournal();
-                },
-                'single_record_publication_distribution' => function($sm) {
-                    return new View\Helper\Record\SingleRecordPublicationDistribution();
-                },
-                'single_record_uniform_title' => function($sm) {
-                    return new View\Helper\Record\SingleRecordUniformTitle();
+                    return new View\Helper\Record\SingleRecord\SingleRecordDatesOfPublicationSequentialDesignation();
                 },
                 'single_record_dissertation_note' => function($sm) {
-                    return new View\Helper\Record\SingleRecordDissertationNote();
+                    return new View\Helper\Record\SingleRecord\SingleRecordDissertationNote();
                 },
-                'single_record_other_edition_entry' => function($sm) {
-                    return new View\Helper\Record\SingleRecordOtherEditionEntry();
+                'single_record_edition_statement' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordEditionStatement();
                 },
-                'single_record_subject_access_fields_general_information' => function($sm) {
-                    return new View\Helper\Record\SingleRecordSubjectAccessFieldsGeneralInformation();
-                },
-                'single_record_additional_physical_form_available_note' => function($sm) {
-                    return new View\Helper\Record\SingleRecordAdditionalPhysicalFormAvailableNote();
+                'single_record_host_item_entry' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordHostItemEntry();
                 },
                 'single_record_international_standard_book_number' => function($sm) {
-                    return new View\Helper\Record\SingleRecordInternationalStandardBookNumber();
+                    return new View\Helper\Record\SingleRecord\SingleRecordInternationalStandardBookNumber();
+                },
+                'single_record_international_standard_music_number' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordInternationalStandardMusicNumber();
                 },
                 'single_record_international_standard_serial_number' => function($sm) {
-                    return new View\Helper\Record\SingleRecordInternationalStandardSerialNumber();
+                    return new View\Helper\Record\SingleRecord\SingleRecordInternationalStandardSerialNumber();
                 },
-                'single_record_title' => function($sm) {
-                    return new View\Helper\Record\SingleRecordTitle();
-
+                'single_record_other_classification_number' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordOtherClassificationNumber();
                 },
-
-                // Other View Helper
-                'bibtip' => function($sm) {
-                    return new View\Helper\Record\BibTip();
+                'single_record_other_edition_entry' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordOtherEditionEntry();
+                },
+                'single_record_personal_name' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordPersonalName();
+                },
+                'single_record_physical_description' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordPhysicalDescription();
+                },
+                'single_record_preceding_succeeding_entry' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordPrecedingSucceedingEntry();
+                },
+                'single_record_production' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordProduction();
+                },
+                'single_record_publication_distribution' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordPublicationDistribution();
+                },
+                'single_record_section_of_a_work' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordSectionOfAWork();
+                },
+                'single_record_series_statement_added_entry' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordSeriesStatementAddedEntry();
+                },
+                'single_record_subject_access_fields_general_information' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordSubjectAccessFieldsGeneralInformation();
+                },
+                'single_record_target_audience_note' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordTargetAudienceNote();
+                },
+                'single_record_title_contains' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordTitleContains();
+                },
+                'single_record_title_statement' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordTitleStatement();
+                },
+                'single_record_title_statement_headline' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordTitleStatementHeadline();
+                },
+                'single_record_uniform_title' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordUniformTitle();
                 }
-
             )
         );
     }

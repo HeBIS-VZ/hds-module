@@ -26,25 +26,19 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
+
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
-
-/**
- * Class SingleRecordSubjectAccessFieldsGeneralInformationTest
- * @package Hebis\View\Helper\Record
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class SingleRecordSubjectAccessFieldsGeneralInformationTest extends AbstractViewHelperTest
+class SingleRecordProductionTest extends AbstractViewHelperTest
 {
 
-    public function setUp()
-    {
-        $this->viewHelperClass = "SingleRecordSubjectAccessFieldsGeneralInformation";
+    public function setUp() {
+        $this->viewHelperClass = "SingleRecordProduction";
         $this->testResultField = "";
         $this->testRecordIds = [];
+        $this->testSheetName = "Entstehung";
 
-        $this->testSheetName = "Schlagworte";
         parent::setUp();
     }
 

@@ -25,7 +25,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
+use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
 /**
  * Class SingleRecordUniformTitleTest
@@ -39,14 +40,9 @@ class SingleRecordUniformTitleTest extends AbstractViewHelperTest
     public function setUp()
     {
         $this->viewHelperClass = "SingleRecordUniformTitle";
-        $this->testResultField = "uniform_title";
-        $this->testRecordIds = [
-            'HEB307231089',
-            'HEB305235362',
-            'HEB311395252',
-            'HEB095019537'
-        ];
-
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+        $this->testSheetName = "Werktitel";
         parent::setUp();
     }
 

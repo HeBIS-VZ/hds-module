@@ -25,32 +25,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
-use Box\Spout\Reader\ODS\RowIterator;
-use Box\Spout\Reader\ODS\Sheet;
-use Box\Spout\Reader\ODS\SheetIterator;
-use Iterator;
+namespace Hebis\View\Helper\Record\SingleRecord;
 
+use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
-/**
- * Class SingleRecordSectionOfAWorkTest
- * @package Hebis\View\Helper\Record
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class SingleRecordSectionOfAWorkTest extends AbstractViewHelperTest
+class SingleRecordPersonalNameTest extends AbstractViewHelperTest
 {
     public function setUp()
     {
-        $this->viewHelperClass = "SingleRecordSectionOfAWork";
+        $this->viewHelperClass = "SingleRecordPersonalName";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "Unterreihe";
-        parent::setUp(); 
+        $this->testSheetName = "Verantwortlich";
+        parent::setUp();
     }
 
-    
     /**
      * Get plugins to register to support view helper being tested
      *
@@ -60,6 +50,4 @@ class SingleRecordSectionOfAWorkTest extends AbstractViewHelperTest
     {
         return [];
     }
-
-
 }
