@@ -93,15 +93,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     private static function factory($className)
     {
-        if (strpos($className, "ResultList") !== false) {
-            $type = "ResultList\\";
-        } else if (strpos($className, "SingleRecord") !== false) {
-            $type = "SingleRecord\\";
-        } else {
-            $type = "";
-        }
-
-        $className = self::VIEW_HELPER_NAMESPACE . "\\" . $type . $className;
+        $className = self::VIEW_HELPER_NAMESPACE . "\\" . $className;
 
         /** @var AbstractRecordViewHelper $helper */
         $helper = new $className();
@@ -147,7 +139,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     protected function getRecordFromIndex($ppn)
     {
-        $url = SOLR_HOST_TEST.'/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
+        $url = 'http://silbendrechsler.hebis.uni-frankfurt.de:8986/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
         $client = new Client($url, array(
             'maxredirects' => 3,
             'timeout' => 10
@@ -219,7 +211,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     protected function runTests($rows)
     {
-        $failures = [];
+        
         for ($i = 0; $i < count($rows); ++$i) {
             $row = $rows[$i];
             list(
@@ -241,20 +233,8 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
             $actual = trim(strip_tags(str_replace("<br />", "\n", $this->viewHelper->__invoke($record))));
             $_comment = "Test: \"".$this->testSheetName."\", Class: \"".$this->viewHelperClass."\", Test Case: $i / PPN: ".$row[1]."; Comment: $comment\n";
 
-            try {
-                $this->executeTest($expectedSingleRecordResult, $actual, $_comment, $expectedRecordListResult);
-            } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
-                $failures[] = $e;
-            }
+            $this->executeTest($expectedSingleRecordResult, $actual, $_comment, $expectedRecordListResult);
 
-        }
-
-        foreach ($failures as $e) {
-            fwrite(STDERR, $e->toString()."\n".$e->getComparisonFailure()->getDiff()."\n\n");
-        }
-
-        if (count($failures) > 0) {
-            $this->fail("This Test has failed!");
         }
     }
 
@@ -349,23 +329,5 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     abstract protected function getPlugins();
 
-
-    /**
-     * Get mock translator.
-     *
-     * @param array $translations Key => value translation map.
-     *
-     * @return \VuFind\View\Helper\Root\Translate
-     */
-    protected function getMockTranslator($translations)
-    {
-        $callback = function ($str, $tokens, $default) use ($translations) {
-            $m = $translations[$str];
-            return !empty($m) ? $m : $str;
-        };
-        $translator = $this->getMock('VuFind\View\Helper\Root\Translate');
-        $translator->method('translate')->will($this->returnCallback($callback));
-        return $translator;
-    }
 
 }

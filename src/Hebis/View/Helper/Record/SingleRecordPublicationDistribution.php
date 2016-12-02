@@ -36,7 +36,7 @@ use Hebis\RecordDriver\SolrMarc;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordPublicationDistribution extends AbstractRecordViewHelper
+class SingleRecordPublicationDistribution extends \Hebis\View\Helper\Record\AbstractRecordViewHelper
 {
     /**
      * @param SolrMarc $record
@@ -94,5 +94,42 @@ class SingleRecordPublicationDistribution extends AbstractRecordViewHelper
         return implode("<br />", $arr);
     }
 
+    /**
+     * @param array $_264s
+     * @param string|int $ind indicator name
+     * @param string|int $x indicator value
+     * @return array
+     */
+    protected function filterByIndicator(array $_264s, $ind, $x)
+    {
+
+        return array_filter($_264s, function($a) use ($ind, $x) {
+            /** @var \File_MARC_Data_Field $a */
+            return $a->getIndicator($ind) === $x;
+        });
+    }
+
+    /**
+     * @param $field
+     * @param string $_533_d
+     * @return string
+     */
+    protected function concatSubfields($field, $_533_d)
+    {
+        $ret = "";
+        $a = $this->getSubFieldDataOfGivenField($field, 'a');
+        $b = $this->getSubFieldDataOfGivenField($field, 'b');
+        $c = $this->getSubFieldDataOfGivenField($field, 'c');
+
+        $ret .= !empty($a) ? "$a" : "";
+        $ret .= !empty($b) ? " : $b" : ""; //append $b
+
+        if (!empty($_533_d)) {
+            $ret .= ", $_533_d";
+        } else if (!empty($c)) {
+            $ret .= ", $c";
+        }
+        return $ret;
+    }
 
 }
