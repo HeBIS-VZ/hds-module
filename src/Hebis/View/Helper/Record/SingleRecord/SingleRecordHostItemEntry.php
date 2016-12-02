@@ -54,7 +54,7 @@ class SingleRecordHostItemEntry extends ResultListHostItemEntry
         $view = $this->getView();
 
         $title = htmlentities($subfield->getData());
-        $href = $view->basePath().sprintf(parent::URL_SEARCH_PPN, $this->removePrefix($w->getData(), "(DE-603)"));
+        $href = $view->basePath()."/".sprintf(parent::URL_SEARCH_PPN, $this->removePrefix($w->getData(), "(DE-603)"));
 
         return sprintf('<a href="%s" title="%s">%s</a>', $href, $title, $title);
     }
