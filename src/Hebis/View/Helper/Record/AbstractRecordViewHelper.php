@@ -51,7 +51,7 @@ class AbstractRecordViewHelper extends AbstractHelper
     const URL_AUTHOR_SEARCH_PATTERN = 'Search/Results?lookfor0[]=&type0[]=author&lastposition';
 
 
-    const URL_SEARCH_PPN = 'Record/HEB%s';
+    const URL_SEARCH_PPN = 'RecordFinder/HEB%s';
 
 
     /**

@@ -49,6 +49,11 @@ $config = [
                 $oauthController->setServiceLocator($sm->getServiceLocator());
                 $oauthController->init();
                 return $oauthController;
+            },
+            'recordfinder' => function(ServiceManager $sm) {
+                return new \Hebis\Controller\RecordFinderController(
+                    $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+                );
             }
         ],
         'invokables' => [
@@ -80,5 +85,11 @@ $config = [
         ],
     ],
 ];
+
+$recordRoutes = ['recordfinder' => 'RecordFinder'];
+
+$routeGenerator = new \VuFind\Route\RouteGenerator();
+$routeGenerator->addRecordRoutes($config, $recordRoutes);
+
 
 return $config;
