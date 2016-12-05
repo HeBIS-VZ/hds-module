@@ -163,14 +163,16 @@ class Hebis extends PAIA
                     $copyRecord = $picaLevel2[0]->getCopyRecords()[0];
                     /** @var Field $field */
                     $field = $copyRecord->getFirstMatchingField("209G");
-                    /** @var SubField $subField */
-                    $subField = $field->getNthSubField("x", 0);
-                    if ("00" == trim($subField->getValue())) {
-                        /** @var SubField $volNoSubField */
-                        $volNoSubField = $field->getNthSubField("a", 0);
-                        $result_item['doc_id'] = trim($volNoSubField->getValue());
-                    }
+                    if (!empty($field)) {
+                        /** @var SubField $subField */
+                        $subField = $field->getNthSubField("x", 0);
 
+                        if ("00" == trim($subField->getValue())) {
+                            /** @var SubField $volNoSubField */
+                            $volNoSubField = $field->getNthSubField("a", 0);
+                            $result_item['doc_id'] = trim($volNoSubField->getValue());
+                        }
+                    }
                 }
                 //$copyRecord->
                 $result[] = $result_item;
