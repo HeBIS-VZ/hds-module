@@ -25,31 +25,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
-use Hebis\RecordDriver\SolrMarc;
+namespace Hebis\View\Helper\Record\SingleRecord;
+use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
 
 /**
- * Class SingleRecordPartOfAWork
+ * Class SingleRecordReportNumberTest
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordPartOfAWork extends SingleRecordSectionOfAWork
+class SingleRecordReportNumberTest extends AbstractViewHelperTest
 {
 
-    public function __invoke(SolrMarc $record)
+    public function setUp()
     {
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
-        $leader = $marcRecord->getLeader();
+        $this->viewHelperClass = "SingleRecordReportNumber";
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+        $this->testSheetName = "Reportnummer";
+        parent::setUp();
+    }
 
-        $char = $leader{19};
-        $arr = [];
-
-        if (preg_match("/c/", $char)) {
-            $this->createOutput($marcRecord, $arr);
-        }
-        return implode("<br />", $arr);
+    /**
+     * Get plugins to register to support view helper being tested
+     *
+     * @return array
+     */
+    protected function getPlugins()
+    {
+        return [];
     }
 }

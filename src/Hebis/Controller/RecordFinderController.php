@@ -61,5 +61,7 @@ class RecordFinderController extends AbstractRecord
             $this->redirect()->toUrl($request->getBaseUrl().'/Record/'.$id);
 
         }
+
+        return $this->createViewModel();
     }
 }

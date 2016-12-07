@@ -49,11 +49,6 @@ class ResultListCorporateName extends AbstractRecordViewHelper
         $marcRecord = $record->getMarcRecord();
         $ret = "";
 
-        /* Nur anzeigen, wenn kein Marc 100 oder 700 vorhanden */
-
-        if (!empty($marcRecord->getField(100)) || !empty($marcRecord->getField(700))) {
-            return $ret;
-        }
 
         /*  Nur das erste der aufgeführten Felder anzeigen, das besetzt ist
             110 $a._$b_($g)_($n)
@@ -61,48 +56,49 @@ class ResultListCorporateName extends AbstractRecordViewHelper
             710 $a._$b_($g)_($n)
             711 $a._$e_($g)_($n_:_$d_:_$c) */
 
-        $_110 = $marcRecord->getField(110);
-
-        if (!empty($_110)) {
-            $subFields = $this->getSubfieldsAsArray($_110);
-            $ret .= $this->getAbgn($subFields);
-            return $ret;
-        }
-
-        $_111 = $marcRecord->getField(111);
-
-        if (!empty($_111)) {
-            $subFields = $this->getSubfieldsAsArray($_111);
-            $ret = $this->getAeg($subFields);
-
-            $ndc = $this->getNdc($subFields);
-
-            $ret .= " (".implode(" : ", $ndc).")";
-            return $ret;
-        }
-
-        /* 710 und 711 nur auswerten wenn Indikator 2 = # */
-
-        $_710_ = $marcRecord->getFields(710); //710 wiederholbar
-        /** @var \File_MARC_Data_Field $_710 */
-        foreach ($_710_ as $_710) {
-            if (!empty($_710) && ord($_710->getIndicator(2)) == "") {
-                $subFields = $this->getSubfieldsAsArray($_710);
+        if ( ! ( !empty($marcRecord->getFields(100)) || !empty($marcRecord->getFields(700))) ) {
+            $_110 = $marcRecord->getField(110);
+            if (!empty($_110)) {
+                $subFields = $this->getSubfieldsAsArray($_110);
                 $ret .= $this->getAbgn($subFields);
                 return $ret;
             }
-        }
 
-        $_711_ = $marcRecord->getFields(711); //711 wiederholbar
-        foreach ($_711_ as $_711) {
-            if (!empty($_711) && ord($_711->getIndicator(2)) == 32) {
-                $subFields = $this->getSubfieldsAsArray($_711);
+            $_111 = $marcRecord->getField(111);
+
+            if (!empty($_111)) {
+                $subFields = $this->getSubfieldsAsArray($_111);
                 $ret = $this->getAeg($subFields);
 
                 $ndc = $this->getNdc($subFields);
 
-                $ret .= " (" . implode(" : ", $ndc) . ")";
+                $ret .= " (".implode(" : ", $ndc).")";
                 return $ret;
+            }
+
+            /* 710 und 711 nur auswerten wenn Indikator 2 = # */
+
+            $_710_ = $marcRecord->getFields(710); //710 wiederholbar
+            /** @var \File_MARC_Data_Field $_710 */
+            foreach ($_710_ as $_710) {
+                if (!empty($_710) && ord($_710->getIndicator(2)) == 32) {
+                    $subFields = $this->getSubfieldsAsArray($_710);
+                    $ret .= $this->getAbgn($subFields);
+                    return $ret;
+                }
+            }
+
+            $_711_ = $marcRecord->getFields(711); //711 wiederholbar
+            foreach ($_711_ as $_711) {
+                if (!empty($_711) && ord($_711->getIndicator(2)) == 32) {
+                    $subFields = $this->getSubfieldsAsArray($_711);
+                    $ret = $this->getAeg($subFields);
+
+                    $ndc = $this->getNdc($subFields);
+
+                    $ret .= " (" . implode(" : ", $ndc) . ")";
+                    return $ret;
+                }
             }
         }
 

@@ -44,21 +44,33 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
      */
     public function __invoke(SolrMarc $record)
     {
+
+        $id = $record->getUniqueID();
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
         /* Wenn  Leader Pos. 19 = c:
         245 $a_:_$b_/_$c
         + Zusatzregeln (s. Anmerkungen) */
-        $str = "";
+        $arr = [];
         $leader = $marcRecord->getLeader();
         if (substr($leader, 19, 1) === "c") {
             $fields = $marcRecord->getFields(245);
             foreach ($fields as $field) {
-                $str .= implode(" : ", $this->getSubFieldsDataArrayOfField($field, ['a', 'b']));
+                $str = "";
+                $ab = $this->getSubFieldsDataArrayOfField($field, ['a', 'b']);
+                $glue = " : ";
+                if (substr(trim($ab['b']), 0, 1) === "=") {
+                    //$ab['b'] = substr(trim($ab['b']),2);
+                    $glue = " ";
+                }
+                $str .= implode($glue, $ab);
+
                 if (!empty($c = $this->getSubFieldDataOfGivenField($field, 'c'))) {
                     $str .= " / $c";
                 }
+                $arr[] = $str;
+
             }
         }
 
@@ -70,43 +82,50 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
         830 $a_:_$n,_$p_;_$v
         + Zusatzregeln (s. Anmerkungen) */
 
+
         if (substr($leader, 19, 1) === "c" || substr($leader, 19, 1) === "b") {
             $fields = $marcRecord->getFields(800);
             foreach ($fields as $field) {
-                $str .= $this->generate800($field);
+                $arr[] = $this->generate800($field);
             }
 
             $fields = $marcRecord->getFields(810);
             foreach ($fields as $field) {
-                $str .= "\n".$this->generate810($field);
+                $arr[] = $this->generate810($field);
             }
 
             $fields = $marcRecord->getFields(811);
             foreach ($fields as $field) {
-                $str .= "\n".$this->generate811($field);
+                $arr[] = $this->generate811($field);
             }
 
             $fields = $marcRecord->getFields(830);
             foreach ($fields as $field) {
-                $str .= "\n".$this->generate830($field);
+                $arr[] = $this->generate830($field);
             }
         }
+
         /*
         Wenn Leader Pos. 19 = # oder a:
         490 $a,_$x_;_$v
         "ISSN_" vor $x ergänzen */
         if (substr($leader, 19, 1) === " " || substr($leader, 19, 1) === "a") {
             $fields = $marcRecord->getFields(490);
-            $str .= "\n";
             foreach ($fields as $field) {
-                $str .= implode(" , ", $this->getSubFieldsDataArrayOfField($field, ['a', 'x']));
-                if (!empty($v = $this->getSubFieldDataOfGivenField($field, 'v'))) {
-                    $str .= " ; ISSN $v";
+                $ax = $this->getSubFieldsDataArrayOfField($field, ['a', 'x']);
+                if (array_key_exists('x', $ax)) {
+                    $ax['x'] = "ISSN ".$ax['x'];
                 }
+                $str = implode(", ", $ax);
+
+                if (!empty($v = $this->getSubFieldDataOfGivenField($field, 'v'))) {
+                    $str .= " ; $v";
+                }
+                $arr[] = trim($str);
             }
         }
 
-        return $str;
+        return implode("<br />", $arr);
     }
 
 
@@ -114,12 +133,19 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
     {
         $ret = "";
         //800 $a_$b,_$c:_$t_:_$n,_$p_;_$v
-        $ret .= implode(" ", $this->getSubFieldsDataArrayOfField($field, ['a', 'x']));
+        $ret .= implode(" ", $this->getSubFieldsDataArrayOfField($field, ['a', 'b']));
 
         $c_t = implode(": ", $this->getSubFieldsDataArrayOfField($field, ['c', 't']));
         $ret .= (!empty($c_t)) ? ", $c_t" : "";
 
-        $ret .= !empty($n = $this->getSubFieldDataOfGivenField($field, 'n')) && strpos($n, "[...]") !== false ? " : $n" : "";
+        $n = $this->getSubFieldDataOfGivenField($field, 'n');
+        if (strpos($n, "[...]") === false) {
+            $n = " : $n";
+        } else {
+            $n = "";
+        }
+
+        $ret .= $n;
         $ret .= !empty($p = $this->getSubFieldDataOfGivenField($field, 'p')) ? ", $p" : "";
 
 
@@ -129,57 +155,168 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
         return $ret;
     }
 
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @return string
+     */
     private function generate810($field)
     {
-        //810 $a._$b_($g)_($n):_$t_:_$n,_$p_;_$v
-
+        $tCalled = false;
         $ret = "";
-        //800 $a_$b,_$c:_$t_:_$n,_$p_;_$v
-        $ret .= !empty($a = $this->getSubFieldDataOfGivenField($field, 'a')) ? "$a" : "";
-        $ret .= !empty($b = $this->getSubFieldDataOfGivenField($field, 'b')) ? ". $b" : "";
-        $ret .= !empty($g = $this->getSubFieldDataOfGivenField($field, 'g')) ? " ($g)" : "";
-        $ret .= !empty($n = $this->getSubFieldDataOfGivenField($field, 'n')) && strpos($n, "[...]") !== false ? " ($n)" : "";
-
-        $ret .= ": ".implode(" : ", $this->getSubFieldsDataArrayOfField($field, ['t', 'n']));
-
-        $ret .= !empty($p = $this->getSubFieldDataOfGivenField($field, 'p')) ? ", $p" : "";
-        $ret .= !empty($v = $this->getSubFieldDataOfGivenField($field, 'v')) ? " ; $v" : "";
+        foreach ($field->getSubfields() as $code => $subfield) {
+            switch($code) {
+                case 'a':
+                    $ret .= $subfield->getData();
+                    break;
+                case 'b':
+                    $ret .= ". " . $subfield->getData();
+                    break;
+                case 'g':
+                    $ret.= " (".$subfield->getData().")";
+                    break;
+                case 'n':
+                    if (!$tCalled) { //vor dem t
+                        $ret.= " (".$subfield->getData().")";
+                    } else {
+                        if (strpos($subfield->getData(), "[...]") === false) {
+                            $ret.= " : ".$subfield->getData();
+                        }
+                    }
+                    break;
+                case 't':
+                    $tCalled = true;
+                    $ret.= ": " . $subfield->getData();
+                    break;
+                case 'p':
+                    $ret .= ", " . $subfield->getData();
+                    break;
+                case 'v':
+                    $ret .= " ; " . $subfield->getData();
+                    break;
+            }
+        }
 
         return $ret;
     }
 
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @return string
+     */
     private function generate811($field)
     {
-        //811 $a_($g)_($n_:_$c_:_$d):_$t_:_$n,_$p_;_$v
         $ret = "";
 
-        $ret .= !empty($a = $this->getSubFieldDataOfGivenField($field, 'a')) ? "$a" : "";
-        $ret .= !empty($g = $this->getSubFieldDataOfGivenField($field, 'g')) ? " ($g)" : "";
+        $n_ = $this->getSubfieldsOfN($field);
+        $c = $field->getSubfields('c');
+        $d = $field->getSubfields('d');
+        $tCalled = false;
+        $ncdCalled = false;
+        /**
+         * @var string $code
+         * @var \File_MARC_Subfield $subfield
+         */
+        foreach ($field->getSubfields() as $code => $subfield) {
+            switch($code) {
+                case 'a':
+                    $ret .= $subfield->getData();
+                    break;
+                case 'g':
+                    $ret.= " (".$subfield->getData().")";
+                    break;
+                case 'n':
+                case 'c':
+                case 'd':
+                    if ($ncdCalled) {
+                        continue;
+                    }
+                    $ncd = [];
+                    if (($code == "n" && !$tCalled) || ($code == "c" || $code == "d")) { //vor dem t
+                        if (!$tCalled) {
+                            $ncd[] = $n_[0]->getData();
+                        }
+                        if (!empty($c)) {
+                            $ncd[] = $c[0]->getData();
+                        }
+                        if (!empty($d)) {
+                            $ncd[] = $d[0]->getData();
+                        }
+                        if (!empty($ncd)) {
+                            $ret .= " (".implode(" : ", $ncd).")";
+                        }
+                        $ncdCalled = true;
 
-        $cd = $this->getSubFieldsDataArrayOfField($field, ['c', 'd']);
-        !empty($n = $this->getSubFieldDataOfGivenField($field, 'n')) && strpos($n, "[...]") === false ? $ncd = array_merge([$n], $cd) : $ncd = $cd;
-
-        $n_c_d = "(".implode(" : ", $ncd).")";
-        $ret .= !empty($n_c_d) ? " $n_c_d" : "";
-
-        $t_n = implode(" : ", $this->getSubFieldsDataArrayOfField($field, ['t', 'n']));
-        $ret .= !empty($t_n) ? ": $t_n" : "";
-
-        $ret .= !empty($p = $this->getSubFieldDataOfGivenField($field, 'p')) ? ", $p" : "";
-        $ret .= !empty($v = $this->getSubFieldDataOfGivenField($field, 'v')) ? " ; $v" : "";
+                    } else if ($code == "n" && $tCalled) {
+                        $ret .= " : ".$subfield->getData();
+                    }
+                    break;
+                case 't':
+                    $tCalled = true;
+                    $ret .= ": " . $subfield->getData();
+                    break;
+                case 'p':
+                    $ret .= ", " . $subfield->getData();
+                    break;
+                case 'v':
+                    $ret .= " ; " . $subfield->getData();
+                    break;
+            }
+        }
 
         return $ret;
+
     }
 
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @return string
+     */
     private function generate830($field)
     {
-        // 830 $a_:_$n,_$p_;_$v
         $ret = "";
-        $ret .= implode(" : ", $this->getSubFieldsDataArrayOfField($field, ['a', 'n']));
-
-        $ret .= !empty($p = $this->getSubFieldDataOfGivenField($field, 'p')) ? ", $p" : "";
-        $ret .= !empty($v = $this->getSubFieldDataOfGivenField($field, 'v')) ? " ; $v" : "";
-
+        foreach ($field->getSubfields() as $code => $subfield) {
+            switch ($code) {
+                case 'a':
+                    $ret .= htmlentities($subfield->getData());
+                    break;
+                case 'n':
+                    if (strpos($subfield->getData(), "[...]") === false) {
+                        $ret .= " : " . htmlentities($subfield->getData());
+                    }
+                    break;
+                case 'p':
+                    $ret .= ", " . htmlentities($subfield->getData());
+                    break;
+                case 'v':
+                    $ret .= " ; " . htmlentities($subfield->getData());
+            }
+        }
         return $ret;
     }
+
+    protected function getSubFieldsDataArrayOfField(\File_MARC_Data_Field $field, $subFieldCodes = [])
+    {
+        $arr = [];
+
+        foreach ($subFieldCodes as $subFieldCode) {
+            $ar = $this->getSubFieldDataArrayOfGivenField($field, $subFieldCode);
+            if (empty($ar)) {
+                continue;
+            }
+            $arr[$subFieldCode] = $ar[0];
+        }
+
+        return $arr;
+    }
+
+    private function getSubfieldsOfN($field)
+    {
+        return $field->getSubfields('n');
+        /*
+        return array_filter($n_, function($elem) {
+            return (strpos($elem->getData(), "[...]") !== false);
+        });
+        */
+    }
+
 }

@@ -120,7 +120,7 @@ class Module
                     return new View\Helper\Record\ResultList\ResultListEditionStatement();
                 },
                 'result_list_publication_distribution' => function($sm) {
-                    return new View\Helper\Record\ResultList\ResultListPublicationDistribution();
+                    return new View\Helper\Record\ResultList\ResultListPublication();
                 },
                 'result_list_host_item_entry' => function($sm) {
                     return new View\Helper\Record\ResultList\ResultListHostItemEntry();
@@ -171,7 +171,7 @@ class Module
                     return new View\Helper\Record\SingleRecord\SingleRecordProduction();
                 },
                 'single_record_publication_distribution' => function($sm) {
-                    return new View\Helper\Record\SingleRecord\SingleRecordPublicationDistribution();
+                    return new View\Helper\Record\SingleRecord\SingleRecordPublication();
                 },
                 'single_record_section_of_a_work' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordSectionOfAWork();

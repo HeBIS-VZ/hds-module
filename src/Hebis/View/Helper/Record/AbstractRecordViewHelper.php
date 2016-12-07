@@ -119,7 +119,7 @@ class AbstractRecordViewHelper extends AbstractHelper
             if (empty($ar)) {
                 continue;
             }
-            $arr[$subFieldCode] = $ar[0];
+            $arr[$subFieldCode] = count($ar) > 1 ? $ar : $ar[0];
         }
 
         return $arr;

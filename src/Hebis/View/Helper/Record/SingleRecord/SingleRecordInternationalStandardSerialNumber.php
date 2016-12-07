@@ -41,6 +41,7 @@ class SingleRecordInternationalStandardSerialNumber extends AbstractRecordViewHe
 {
     public function __invoke(SolrMarc $record)
     {
+        $id = $record->getUniqueID();
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
@@ -48,28 +49,19 @@ class SingleRecordInternationalStandardSerialNumber extends AbstractRecordViewHe
 
         $fields = $marcRecord->getFields('022');
 
+        /** @var \File_MARC_Data_Field $field */
         foreach ($fields as $field) {
 
-            $subFields = $this->getSubfieldsAsArray($field);
-            foreach ($subFields as $code => $subField) {
-                switch ($code) {
-                    case 'a':
-                    case 'y':
-                        if (array_key_exists($code, $arr)) {
-                            $arr[$code] = array_merge($arr, [htmlentities($subField)]);
-                        } else {
-                            $arr[$code] = htmlentities($subField);
-                        }
-                        break;
-                    default:
-                        break;
-                }
+            $a_ = $field->getSubfields('a');
+            $y_ = $field->getSubfields('y');
+            $subfields = array_merge($a_, $y_);
+
+            /** @var \File_MARC_Subfield $subfield */
+            foreach ($subfields as $subfield) {
+                $arr[] = $subfield->getData();
             }
-
         }
-        $return = [];
-        array_walk_recursive($arr, function($elem) use (&$return) { $return[] = $elem; });
 
-        return implode(" ; ", $return);
+        return implode(" ; ", $arr);
     }
 }

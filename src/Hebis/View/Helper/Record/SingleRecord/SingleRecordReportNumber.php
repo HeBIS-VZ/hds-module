@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an 
  * extension of the open source library search engine VuFind, that 
@@ -6,7 +7,7 @@
  * Information about VuFind you will find on http://www.vufind.org
  * 
  * Copyright (C) 2016 
- * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
  * 
@@ -25,34 +26,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
+use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 
 /**
- * Class SingleRecordDatesOfPublicationOrSequentialDesignationTest
+ * Class SingleRecordReportNumber
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordDatesOfPublicationOrSequentialDesignationTest extends AbstractViewHelperTest
+class SingleRecordReportNumber extends AbstractRecordViewHelper
 {
-
-    public function setUp()
+    public function __invoke(SolrMarc $record)
     {
-        $this->viewHelperClass = "SingleRecordDatesOfPublicationOrSequentialDesignation";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
-        $this->testSheetName = "Erscheinungsverlauf";
-        parent::setUp();
-    }
 
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        // TODO: Implement getPlugins() method.
+        $arr = [];
+
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
+        $_362 = $marcRecord->getFields('088');
+
+        /** @var \File_MARC_Data_Field $field */
+        foreach ($_362 as $field) {
+            $a = $this->getSubFieldDataOfGivenField($field, 'a');
+            if ($a) $arr[] = htmlentities($a);
+
+        }
+
+        return implode("<br />", $arr);
     }
 }

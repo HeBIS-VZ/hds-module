@@ -63,27 +63,35 @@ class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
     {
         $arr = [];
         $fields = $marcRecord->getFields('245');
+
+
         /** @var \File_MARC_Data_Field $field */
         foreach ($fields as $field) {
-
+            $n = $p = "";
             /** @var \File_MARC_Subfield $subField */
             foreach ($field->getSubfields() as $subField) {
+
                 $key = $subField->getCode();
 
                 switch ($key) {
                     case 'n':
-                        $n = htmlentities($subField->getData());
+                        //if (strpos($subField->getData(), "[...]") === false) {
+                            $n = htmlentities($subField->getData());
+                        //}
                         break;
                     case 'p':
                         $p = htmlentities($subField->getData());
                         break;
                 }
-                $np = !empty($n) ? "$n. " : "";
-                $np .= !empty($p) ? "$p" : "";
 
-                if (!empty($np)) {
+                if ($n && $p) {
+                    $np = "$n. $p";
+                    $n = $p = "";
                     $arr[] = $np;
                 }
+
+
+
             }
         }
         return $arr;

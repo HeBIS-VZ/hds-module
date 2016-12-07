@@ -26,39 +26,52 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
+
+use Hebis\View\Helper\Record\ResultList\ResultListPublication;
+use Hebis\RecordDriver\SolrMarc;
 
 /**
- * Class SingleRecordInterpreterTest
+ * Class SingleRecordPublicationDistribution
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordInterpreterTest extends AbstractViewHelperTest
+class SingleRecordPublication extends ResultListPublication
 {
-    public function setUp() {
-
-        $this->viewHelperClass = "SingleRecordInterpreter";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
-        $this->testSheetName = "Interpret";
-        parent::setUp();
-    }
-
-
     /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
+     * @param SolrMarc $record
+     * @return string
      */
-    protected function getPlugins()
+    public function __invoke(SolrMarc $record)
     {
-        $basePath = $this->getMock('Zend\View\Helper\BasePath');
-        $basePath->expects($this->any())->method('__invoke')
-            ->will($this->returnValue('/vufind2'));
+        $ret = "";
+        $id = $record->getUniqueID();
 
-        return [
-            'basepath' => $basePath
-        ];
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
+
+        $_264__ = $this->filterByIndicator($marcRecord->getFields('264'), 2, "1");
+
+        usort($_264__, function (\File_MARC_Data_Field $a, \File_MARC_Data_Field $b) {
+            return $a->getIndicator(1) > $b->getIndicator(1) ? -1 : 1;
+        });
+
+        $arr = [];
+
+        foreach ($_264__ as $_264) {
+
+            $_264_ = empty($_264) ? [] : $this->getSubFieldsDataArrayOfField($_264, ['a', 'b']);
+
+            $_264c = empty($_264) ? "" : $this->getSubFieldDataOfGivenField($_264, 'c');
+
+            $r = implode(" : ", $_264_);
+            $r .= empty($_264c) ? "" : !empty($r) ? ", $_264c" : $_264c;
+            $arr[] = $r;
+        }
+
+        return implode("<br />", $arr);
     }
+
+
 }

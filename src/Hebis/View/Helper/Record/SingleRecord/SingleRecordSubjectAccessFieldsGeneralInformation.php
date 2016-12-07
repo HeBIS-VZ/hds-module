@@ -136,7 +136,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             /** @var \File_MARC_Subfield $sf */
             $line = "";
             foreach ($field->getSubfields() as $sf) {
-                if (!in_array($sf->getCode(), ['a', 'b', 'c', 'g', 't', 'x'])) {
+                if (!in_array($sf->getCode(), ['a', 'b', 'g', 't', 'f', 'x'])) {
                     continue;
                 }
 
@@ -147,14 +147,14 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                     case 'b':
                         $line .= !empty($sf) ? " / " . htmlentities($sf->getData()) : "";
                         break;
-                    case 'c':
-                        $line .= !empty($sf) ? " &lt;" . htmlentities($sf->getData()) . "&gt;" : "";
-                        break;
                     case 'g':
                         $line .= !empty($sf) ? " &lt;" . htmlentities($sf->getData()) . "&gt;" : "";
                         break;
                     case 't':
                         $line .= !empty($sf) ? " / " . htmlentities($sf->getData()) : "";
+                        break;
+                    case 'f':
+                        $line .= !empty($sf) ? " (" . htmlentities($sf->getData()).")" : "";
                         break;
                     case 'x':
                         $line .= !empty($sf) ? ", " . htmlentities($sf->getData()) : "";

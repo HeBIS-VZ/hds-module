@@ -43,34 +43,19 @@ use Zend\View\Helper\AbstractHelper;
 class SingleRecordUniformTitle extends AbstractRecordViewHelper
 {
 
+    /**
+     * @param SolrMarc $record
+     * @return string
+     */
     public function __invoke(SolrMarc $record)
     {
+        $id = $record->getUniqueID();
+
         /** @var File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
         $ret = [];
         $fields = [];
-        /*
-        Detailanzeige:
-        240 $a <$g>
-Wenn 240 + 040 $e = rda, dann:
-240 $a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
-130 $a <$g>
-Wenn 130 + 040 $e = rda, dann:
-130 $a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
-243 $a <$g>
-730 $a <$g>
-Wenn 730 + 040 $e = rda, dann:
-730 $a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
-Wenn 700, 710, 711 Indikator 2 = 2:
-700 $t_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
-710 $t_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
-711 $t_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
-
-        -> Reihenfolge der Subfelder wie im Datensatz hinterlegt
-*/
-
-
 
         foreach (['040', '130', '240', '243', '700', '710', '711', '730'] as $fieldCode) {
             $field = $marcRecord->getFields($fieldCode);
@@ -83,20 +68,16 @@ Wenn 700, 710, 711 Indikator 2 = 2:
             }
         }
 
-        if (array_key_exists('240', $fields)) {
-            $ret[] = $this->generateAG($fields['240']);
-        }
-
         //Wenn 240 + 040 $e = rda, dann:
         //240 $a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
         //130 $a <$g>
         if (array_key_exists('040', $fields) && array_key_exists('240', $fields)
-            && strpos($this->getSubFieldDataOfGivenField($fields['040'], "e"), "rda") !== false
-            && strpos($this->getSubFieldDataOfGivenField($fields['240'], "e"), "rda") !== false) {
-            $ret[] = $this->generateContent($fields['240']);
+            && strpos($this->getSubFieldDataOfGivenField($fields['040'], "e"), "rda") !== false) {
 
-            if (array_key_exists('130', $fields)) {
-                $ret[] = $this->generateAG($fields['130']);
+            $ret[] = $this->generateContent($fields['240']);
+        } else {
+            if (array_key_exists('240', $fields)) {
+                $ret[] = $this->generateAG($fields['240']);
             }
         }
 
@@ -105,17 +86,22 @@ Wenn 700, 710, 711 Indikator 2 = 2:
         //243 $a <$g>
         //730 $a <$g>
         if (array_key_exists('040', $fields) && array_key_exists('130', $fields)
-            && strpos($this->getSubFieldDataOfGivenField($fields['040'], 'e'), "rda") !== false
-            && strpos($this->getSubFieldDataOfGivenField($fields['130'], "e"), "rda") !== false) {
+            && strpos($this->getSubFieldDataOfGivenField($fields['040'], 'e'), "rda") !== false) {
+
             $ret[] = $this->generateContent($fields['130']);
-            if (array_key_exists('243', $fields)) {
-                $ret[] = $this->generateAG($fields['243']);
-            }
-            if (array_key_exists('730', $fields)) {
-                $ret[] = $this->generateAG($fields['730']);
+
+        } else {
+            if (array_key_exists('130', $fields)) {
+                $ret[] = $this->generateAG($fields['130']);
             }
         }
 
+        if (array_key_exists('243', $fields)) {
+            //Hack for wrong marc conversion
+            $fields['243'] = is_array($fields['243']) ? current($fields['243']) : $fields['243'];
+
+            $ret[] = $this->generateAG($fields['243']);
+        }
 
         //Wenn 730 + 040 $e = rda, dann:
         //730 $a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
@@ -124,14 +110,15 @@ Wenn 700, 710, 711 Indikator 2 = 2:
 
             if (is_array($fields['730']) || $fields['730'] instanceof \File_MARC_List) {
                 foreach ($fields['730'] as $field) {
-                    if (strpos($this->getSubFieldDataOfGivenField($field, "e"), "rda") !== false) {
-                        $ret[] = $this->generateContent($field);
-                    }
+                    $ret[] = $this->generateContent($field);
                 }
             } else {
-                if (strpos($this->getSubFieldDataOfGivenField($fields['730'], "e"), "rda") !== false) {
-                    $ret[] = $this->generateContent($fields['730']);
-                }
+                $ret[] = $this->generateContent($fields['730']);
+
+            }
+        } else {
+            if (array_key_exists('730', $fields)) {
+                $ret[] = $this->generateAG($fields['730']);
             }
         }
 
@@ -140,44 +127,47 @@ Wenn 700, 710, 711 Indikator 2 = 2:
         //710 $t_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
         //711 $t_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
         if (array_key_exists('700', $fields)) {
-            if (is_array($fields['700']) || $fields['700'] instanceof \File_MARC_List) {
+            if (is_array($fields['700'])) {
                 foreach ($fields['700'] as $field) {
                     if ($field->getIndicator(2) == "2") {
-                        $ret[] = $this->generateContent($field);
+                        $ret[] = $this->generate7xx($field);
                     }
                 }
             } else {
                 if ($fields['700']->getIndicator(2) == "2") {
-                    $ret[] = $this->generateContent($fields['700']);
+                    $ret[] = $this->generate7xx($fields['700']);
                 }
             }
 
         }
 
         if (array_key_exists('710', $fields)) {
-            if (is_array($fields['710']) || $fields['710'] instanceof \File_MARC_List) {
+            if (is_array($fields['710'])) {
                 foreach ($fields['710'] as $field) {
                     if ($field->getIndicator(2) == "2") {
-                        $ret[] = $this->generateContent($field);
+                        $ret[] = $this->generate7xx($field);
                     }
                 }
             } else {
                 if ($fields['710']->getIndicator(2) == "2") {
-                    $ret[] = $this->generateContent($fields['710']);
+                    $ret[] = $this->generate7xx($fields['710']);
                 }
             }
         }
 
         if (array_key_exists('711', $fields)) {
-            if (is_array($fields['711']) || $fields['711'] instanceof \File_MARC_List) {
+            if (is_array($fields['711'])) {
                 foreach ($fields['711'] as $field) {
                     if ($field->getIndicator(2) == "2") {
-                        $ret[] = $this->generateContent($field);
+                        //$this->removeAllSubfieldsBeforeT($field);
+                        $ret[] = $this->generate7xx($field);
                     }
                 }
             } else {
                 if ($fields['711']->getIndicator(2) == "2") {
-                    $ret[] = $this->generateContent($fields['711']);
+                    $field = $fields['711'];
+                    //$this->removeAllSubfieldsBeforeT($field);
+                    $ret[] = $this->generate7xx($field);
                 }
             }
         }
@@ -210,17 +200,44 @@ Wenn 700, 710, 711 Indikator 2 = 2:
                     break;
                 case "f":
                 case "g":
-                    $str .= " ($subField)";
+                    $r = [];
+                    if (is_array($subField)) {
+
+                        foreach ($subField as $sub) {
+                            $r[] = " ($sub)";
+                        }
+                    } else {
+                        $r[] = "($subField)";
+                    }
+                    $str .= " ".implode(" ", $r);
                     break;
                 case "k":
                 case "p":
                 case "s":
-                    $str .= ". $subField";
+                    $r = [];
+                    if (is_array($subField)) {
+
+                        foreach ($subField as $sub) {
+                            $r[] = $sub;
+                        }
+                    } else {
+                        $r[] = $subField;
+                    }
+                    $str .= ". ".implode(". ", $r);
                     break;
                 case "m":
                 case "n":
                 case "r":
-                    $str .= ", $subField";
+                    $r = [];
+                    if (is_array($subField)) {
+
+                        foreach ($subField as $sub) {
+                            $r[] = $sub;
+                        }
+                    } else {
+                        $r[] = $subField;
+                    }
+                    $str .= ", ".implode(", ", $r);
                     break;
                 case "o":
                     $str .= "; $subField";
@@ -237,9 +254,88 @@ Wenn 700, 710, 711 Indikator 2 = 2:
         $a = $this->getSubFieldDataOfGivenField($field, 'a');
         $g = $this->getSubFieldDataOfGivenField($field, 'g');
 
-        $ret .= !empty($a) ? $a : "";
-        $ret .= !empty($g) ? " &lt;$g&gt;" : "";
+        $ret .= !empty($a) ? trim($a) : "";
+        $ret .= !empty($g) ? " &lt;".trim($g)."&gt;" : "";
 
         return $ret;
+    }
+
+    private function generate7xx($field)
+    {
+        //$t_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
+        $str = "";
+        $subFields = $this->getSubFieldsDataArrayOfField($field, ['t', 'f', 'g', 'k', 'm', 'n', 'o', 'p', 'r', 's']);
+
+        foreach ($subFields as $code => $subField)
+        {
+            switch ($code) {
+                case "t":
+                    $str .= $subField;
+                    break;
+                case "f":
+                case "g":
+                    $r = [];
+                    if (is_array($subField)) {
+
+                        foreach ($subField as $sub) {
+                            $r[] = " ($sub)";
+                        }
+                    } else {
+                        $r[] = "($subField)";
+                    }
+                    $str .= " ".implode(" ", $r);
+                    break;
+                case "k":
+                case "p":
+                case "s":
+                    $r = [];
+                    if (is_array($subField)) {
+                        foreach ($subField as $sub) {
+                            $r[] = $sub;
+                        }
+                    } else {
+                        $r[] = $subField;
+                    }
+                    $str .= ". ".implode(". ", $r);
+                    break;
+                case "m":
+                case "n":
+                case "r":
+                    $r = [];
+                    if (is_array($subField)) {
+
+                        foreach ($subField as $sub) {
+                            $r[] = $sub;
+                        }
+                    } else {
+                        $r[] = $subField;
+                    }
+                    $str .= ", ".implode(", ", $r);
+                    break;
+                case "o":
+                    $str .= "; $subField";
+                default:
+            }
+        }
+
+        return $str;
+    }
+
+
+    public function removeAllSubfieldsBeforeT(\File_MARC_Data_Field &$field)
+    {
+        $subfields = $field->getSubfields();
+        $toDelete = [];
+        /** @var \File_MARC_Subfield $subfield */
+        foreach ($subfields as $key => $subfield) {
+            if ($subfield->getCode() === "t") {
+                break;
+            }
+            $toDelete[] = $subfield;
+        }
+
+        foreach ($toDelete as $item) {
+            $field->getSubfields()->deleteNode($item);
+        }
     }
 }
