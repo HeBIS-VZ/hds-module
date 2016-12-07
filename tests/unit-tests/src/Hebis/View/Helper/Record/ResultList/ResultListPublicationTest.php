@@ -28,12 +28,12 @@
 namespace Hebis\View\Helper\Record\ResultList;
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
-class ResultListPublicationDistributionTest extends AbstractViewHelperTest
+class ResultListPublicationTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "ResultListPublicationDistribution";
+        $this->viewHelperClass = "ResultListPublication";
         $this->testResultField = "";
         $this->testRecordIds = [];
 

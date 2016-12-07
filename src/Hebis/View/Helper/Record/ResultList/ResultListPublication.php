@@ -36,7 +36,7 @@ use Hebis\RecordDriver\SolrMarc;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class ResultListPublicationDistribution extends AbstractRecordViewHelper
+class ResultListPublication extends AbstractRecordViewHelper
 {
 
     /**
@@ -59,30 +59,17 @@ class ResultListPublicationDistribution extends AbstractRecordViewHelper
         Kommen $a und/oder $b mehrfach vor, dann Trennzeichen: ";_" (in Worten: Semikolon Blank)
         */
         $ret = "";
+        $id = $record->getUniqueID();
 
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        /** @var \File_MARC_Data_Field $_264 */
-        $_264 = $marcRecord->getFields('264');
-
-        $_264 = $this->filterByIndicator($_264, 2, "1");
-
-        $_533d = $this->getSubFieldDataOfField($record, '533', 'd');
-
-        if (count($_264) == 1) {
-            $ret .= $this->concatSubfields(current($_264), $_533d);
-        } else {
-            $_264_ = $this->filterByIndicator($_264, 1, "3");
-            $_264_ = current($_264_);
-            $ret .= $this->concatSubfields($_264_, $_533d);
-
-            $_264_ = $this->filterByIndicator($_264, 1, "");
-            $_264_ = current($_264_);
-            $ret .= $this->concatSubfields($_264_, $_533d);
+        $_264__ = $this->filterByIndicator($marcRecord->getFields('264'), 1, "3");
+        if (empty($_264__)) {
+            $_264__ = $this->filterByIndicator($marcRecord->getFields('264'), 1, "");
         }
 
-        return $ret;
+        return $this->generateContents($record, $_264__);
 
     }
 
@@ -101,11 +88,31 @@ class ResultListPublicationDistribution extends AbstractRecordViewHelper
         $ret .= !empty($a) ? "$a" : "";
         $ret .= !empty($b) ? " : $b" : ""; //append $b
 
-        if (!empty($_533_d)) {
-            $ret .= ", $_533_d";
-        } else if (!empty($c)) {
-            $ret .= ", $c";
+        return $ret;
+    }
+
+    /**
+     * @param SolrMarc $record
+     * @return string
+     */
+    protected function generateContents(SolrMarc $record, $_264__)
+    {
+        $ret = "";
+        $_264 = current($_264__);
+
+        $_533d = $this->getSubFieldDataOfField($record, '533', 'd');
+        $_264_ = empty($_264) ? [] : $this->getSubFieldsDataArrayOfField($_264, ['a', 'b']);
+
+        if (!empty($_533d)) {
+            $ret .= implode(" : ", $_264_);
+            $ret .= !empty($ret) ? ", $_533d" : $_533d;
+        } else {
+            $_264c = empty($_264) ? "" : $this->getSubFieldDataOfGivenField($_264, 'c');
+
+            $ret .= implode(" : ", $_264_);
+            $ret .= empty($_264c) ? "" : !empty($ret) ? ", $_264c" : $_264c;
         }
+
         return $ret;
     }
 
