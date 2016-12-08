@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an 
  * extension of the open source library search engine VuFind, that 
@@ -7,7 +6,7 @@
  * Information about VuFind you will find on http://www.vufind.org
  * 
  * Copyright (C) 2016 
- * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
  * 
@@ -28,38 +27,24 @@
 
 namespace Hebis\View\Helper\Record;
 
-use Hebis\RecordDriver\SolrMarc;
 
-/**
- * Class SingleRecordLanguageCode
- * @package Hebis\View\Helper\Record
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class SingleRecordLanguageCode extends AbstractRecordViewHelper
+trait MarcSubfieldManipulationTrait
 {
 
-    public function __invoke(SolrMarc $record)
-    {
+    protected function getSubFieldsStringArrayOfGivenField(\File_MARC_Data_Field $field, $subFieldCodes = []) {
         $arr = [];
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
-
-        $fields = $marcRecord->getFields('041');
-
-        for ($i = 0; $i < count($fields); ++$i) {
-            
-            /** @var \File_MARC_Data_Field $field */
-            $field = $fields[$i];
-            $subFields = $field->getSubfields('a');
-            for ($j = 0; $j < count($subFields); ++$j) {
-                $subField = $subFields[$j];
-                $lang = $subField->getData();
-                $arr[] = htmlentities($this->getView()->translate($lang));
-            }
-
+        foreach ($subFieldCodes as $code) {
+            $arr = array_merge($arr, $this->toStringArray($field->getSubfields($code)));
         }
+        return $arr;
+    }
 
-        return implode("; ", $arr);
+    public function toStringArray($subFields) {
+        $arr = [];
+        /** @var \File_MARC_Subfield $subfield */
+        foreach ($subFields as $subfield) {
+            $arr[] = htmlentities($subfield->getData());
+        }
+        return $arr;
     }
 }

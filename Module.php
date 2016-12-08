@@ -152,6 +152,9 @@ class Module
                 'single_record_international_standard_serial_number' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordInternationalStandardSerialNumber();
                 },
+                'single_record_language_code' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordLanguageCode();
+                },
                 'single_record_other_classification_number' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordOtherClassificationNumber();
                 },

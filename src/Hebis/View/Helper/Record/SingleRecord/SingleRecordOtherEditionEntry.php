@@ -89,39 +89,47 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
         });
 
         $arr = [];
+        $tCalled = false;
         foreach ($subFieldKeys as $pos => $key) {
             switch ($key) {
                 case 'a':
-                    foreach ($field->getSubfields('w') as $w) {
-                        if (strpos($w->getData(), "(DE-603)") !== false) {
-                            $arr[$key] = '<a href="' . $this->link($w->getData()) . '">' . htmlentities($subFields[$key]) . '</a>';
-                            break;
+                    if (!empty($w_)) { // mit link
+                        $str = '<a href="' . $this->link($w_[0]->getData()) . '">';
+                        $str .= $subFields[$key] . ". ";
+                        if (array_key_exists("t", $subFields)) { //mit link?
+                            $str .= htmlentities($subFields['t']);
+                            $tCalled = true;
                         }
+                        $str .= '</a>';
+                        $arr[] = $str;
+                    } else {
+                        $arr[] = htmlentities($subFields[$key]);
                     }
                     break;
+
                 case 'z':
                     if (array_key_exists($key, $subFields)) {
                         $arr[$key] = "ISBN " . htmlentities($subFields[$key]);
                     }
                     break;
+
                 case 'x':
                     if (array_key_exists($key, $subFields)) {
                         $arr[$key] = "ISSN " . htmlentities($subFields[$key]);
                     }
                     break;
-                case 't':
-                    if (array_key_exists($key, $subFields)) { //mit link?
-                        //array_key_exists('w', $subFields);
-                        foreach ($field->getSubfields('w') as $w) {
-                            if (strpos($w->getData(), "(DE-603)") !== false) {
-                                $arr[$key] = '<a href="' . $this->link($w->getData()) . '">' . htmlentities($subFields[$key]) . '</a>';
-                            }
-                        }
 
-                    } else if (array_key_exists($key, $subFields)) { //wenn kein link, dann text ohne link
-                        $arr[$key] = htmlentities($subFields[$key]);
+                case 't':
+                    if (!$tCalled && array_key_exists($key, $subFields)) {
+                        if (!empty($w_) && !array_key_exists('a', $subFields)) {
+                            $str = '<a href="' . $this->link($w_[0]->getData()) . '">'.htmlentities($subFields[$key]).'</a>';
+                        } else {
+                            $str = htmlentities($subFields[$key]);
+                        }
+                        $arr[$key] = $str;
                     }
                     break;
+
                 default:
                     if (array_key_exists($key, $subFields)) {
                         $arr[$key] = htmlentities($subFields[$key]);

@@ -25,34 +25,54 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record;
+namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use Hebis\View\Helper\Record\MarcSubfieldManipulationTrait;
 
 
 /**
- * Class SingleRecordCartographicMathematicalData
- * @package Hebis\View\Helper\Record
+ * Class SingleRecordProduction
+ * @package Hebis\View\Helper\Record\SingleRecord
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordCartographicMathematicalData extends AbstractRecordViewHelper
+class SingleRecordProduction extends AbstractRecordViewHelper
 {
+    use MarcSubfieldManipulationTrait;
+    /**
+     * @param SolrMarc $record
+     * @return string
+     */
     public function __invoke(SolrMarc $record)
     {
-
-        $arr = [];
+        $id = $record->getUniqueID();
 
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
-        $_362 = $marcRecord->getFields('255');
 
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($_362 as $field) {
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            if ($a) $arr[] = htmlentities($a);
+        $fields = $marcRecord->getFields('264');
 
+        $fields = array_filter($fields, function($field) {
+            $ind2 = $field->getIndicator(2);
+            $ind1 = $field->getIndicator(1);
+            return $ind2 === "3" && in_array($ind1, ["3", "2", " ", ""]);
+        });
+
+        usort($fields, function(\File_MARC_Data_Field $fieldA, \File_MARC_Data_Field $fieldB) {
+            return (-1) * strcmp($fieldA->getIndicator(1), $fieldB->getIndicator(1));
+        });
+
+        $arr = [];
+        foreach ($fields as $field) {
+            $a = implode("; ", $this->getSubFieldsStringArrayOfGivenField($field, ['a']));
+            $b = implode("; ", $this->getSubFieldsStringArrayOfGivenField($field, ['b']));
+            $str = $a;
+            $str .= (!empty($b) ? " : $b" : "");
+            $str .= (!empty($c) ? ", $c" : "");
+            $arr[] = $str;
         }
-
         return implode("<br />", $arr);
     }
+
 }
