@@ -45,6 +45,7 @@ class PhysicalDescription extends AbstractRecordViewHelper
     {
         $this->physicalDescription = [];
         $this->physicalDescription["a"]["a"]["xxx"]="article";
+        $this->physicalDescription["a"]["a"]["cr"]="article";
         $this->physicalDescription["a"]["m"]["xxx"]="book";
         $this->physicalDescription["a"]["m"]["co"]="dvd";
         $this->physicalDescription["a"]["m"]["cocd"]="cd";

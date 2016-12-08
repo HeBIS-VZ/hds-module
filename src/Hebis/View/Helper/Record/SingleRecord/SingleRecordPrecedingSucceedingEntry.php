@@ -78,6 +78,10 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
     {
         $subFields = $this->getSubfieldsAsArray($field);
 
+        $w_ = array_filter($field->getSubfields('w'), function(\File_MARC_Subfield $elem){
+            return strpos($elem->getData(), "(DE-603)") !== false;
+        });
+
         $ret = "";
         /* Wenn kein $a vorhanden, dann nach Inhalt aus
         $i bzw. $n ":_" (Doppelpunkt Blank) ergänzen statt
@@ -86,14 +90,32 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
         if (array_key_exists('i', $subFields)) {
             $ret .= htmlentities($subFields['i']) . ": ";
         }
-        if (array_key_exists('a', $subFields)) {
+
+        if (array_key_exists('a', $subFields) && array_key_exists('t', $subFields) && !empty($w_)) {
+            $link = $this->link($w_[0]->getData());
+            $ret .= '<a href="'.$link.'">';
             $ret .= htmlentities($subFields['a']) . ": ";
-        }
-
-        if (array_key_exists('t', $subFields)) {
             $ret .= htmlentities($subFields['t']);
-        }
+            $ret .= '</a>';
+        } else {
+            if (array_key_exists('a', $subFields)) {
+                if (!empty($w_)) {
+                    $link = $this->link($w_[0]->getData());
+                    $ret .= '<a href="'.$link.'">' . htmlentities($subFields['a']) . '</a>' . ": ";
+                } else {
+                    $ret .= htmlentities($subFields['a']) . ": ";
+                }
+            }
 
+            if (array_key_exists('t', $subFields)) {
+                if (!empty($w_)) {
+                    $link = $this->link($w_[0]->getData());
+                    $ret .= '<a href="'.$link.'">' . htmlentities($subFields['t']) . '</a>';
+                } else {
+                    $ret .= htmlentities($subFields['t']);
+                }
+            }
+        }
         return $ret;
     }
 
@@ -118,5 +140,9 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
             return $arr;
         }
         return false;
+    }
+
+    protected function link($w) {
+        return $this->getView()->basePath().'/RecordFinder/HEB'.$this->removePrefix($w, "(DE-603)");
     }
 }

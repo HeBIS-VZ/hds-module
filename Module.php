@@ -167,8 +167,8 @@ class Module
                 'single_record_preceding_succeeding_entry' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordPrecedingSucceedingEntry();
                 },
-                'single_record_production' => function($sm) {
-                    return new View\Helper\Record\SingleRecord\SingleRecordProduction();
+                'single_record_manufacture' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordManufacture();
                 },
                 'single_record_publication_distribution' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordPublication();

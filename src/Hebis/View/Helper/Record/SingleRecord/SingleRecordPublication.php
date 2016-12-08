@@ -58,20 +58,36 @@ class SingleRecordPublication extends ResultListPublication
         });
 
         $arr = [];
-
+        /** @var \File_MARC_Data_Field $_264 */
         foreach ($_264__ as $_264) {
-
-            $_264_ = empty($_264) ? [] : $this->getSubFieldsDataArrayOfField($_264, ['a', 'b']);
-
             $_264c = empty($_264) ? "" : $this->getSubFieldDataOfGivenField($_264, 'c');
-
-            $r = implode(" : ", $_264_);
-            $r .= empty($_264c) ? "" : !empty($r) ? ", $_264c" : $_264c;
+            $r = implode(" : ", $this->getSubFieldsDataArrayOfField($_264, ['a', 'b']));
+            $r .= empty($_264c) ? "" : (!empty($r) ? ", $_264c" : $_264c);
             $arr[] = $r;
         }
 
         return implode("<br />", $arr);
     }
 
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @param $subFieldCodes
+     * @return array
+     */
+    protected function getSubFieldsDataArrayOfField(\File_MARC_Data_Field $field, $subFieldCodes = []) {
+        $arr = [];
+        foreach ($subFieldCodes as $code) {
+            $arr = array_merge($arr, $field->getSubfields($code));
+        }
+        return $arr;
+    }
 
+    public function toStringArray($subFields) {
+        $arr = [];
+        /** @var \File_MARC_Subfield $subfield */
+        foreach ($subFields as $subfield) {
+            $arr[] = $subfield->getData();
+        }
+        return $arr;
+    }
 }

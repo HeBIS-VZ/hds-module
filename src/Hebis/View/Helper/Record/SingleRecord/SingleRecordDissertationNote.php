@@ -53,12 +53,14 @@ class SingleRecordDissertationNote extends AbstractRecordViewHelper
         /** @var \File_MARC_Data_Field $field */
         foreach ($fields as $field) {
             $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $arr[] = $a ? $a : "";
+            if ($a) {
+                $arr[] = $a;
+            }
             $str = !empty($b_ = $this->getSubFieldDataOfGivenField($field, 'b')) ? $b_ : "";
             $str .= !empty($c_ = $this->getSubFieldDataOfGivenField($field, 'c')) ? ", $c_" : "";
             $str .= !empty($d_ = $this->getSubFieldDataOfGivenField($field, 'd')) ? ", $d_" : "";
 
-            if (!empty($str)) {
+            if (!empty(trim($str))) {
                 $arr[] = $str;
             }
         }

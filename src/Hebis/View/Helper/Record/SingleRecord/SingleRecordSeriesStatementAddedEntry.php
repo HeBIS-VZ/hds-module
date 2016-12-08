@@ -294,11 +294,11 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
         return $ret;
     }
 
-    protected function getSubFieldsDataArrayOfField(\File_MARC_Data_Field $field, $subFieldCodes = [])
+    protected function getSubFieldsDataArrayOfField(\File_MARC_Data_Field $field, $subFieldSubFieldCodes = [])
     {
         $arr = [];
 
-        foreach ($subFieldCodes as $subFieldCode) {
+        foreach ($subFieldSubFieldCodes as $subFieldCode) {
             $ar = $this->getSubFieldDataArrayOfGivenField($field, $subFieldCode);
             if (empty($ar)) {
                 continue;

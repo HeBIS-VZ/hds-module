@@ -36,7 +36,7 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordProduction extends AbstractRecordViewHelper
+class SingleRecordManufacture extends AbstractRecordViewHelper
 {
 
     /**
@@ -45,19 +45,6 @@ class SingleRecordProduction extends AbstractRecordViewHelper
      */
     public function __invoke(SolrMarc $record)
     {
-        /* wenn 264 Indikator 2 = 0, dann anzeigen wie folgt:
-        264 $a_:_$b,_$c
-        Reihenfolge der Anzeige:
-        264 Indikator 1 = 3 und Indikator 2 = 0
-        264 Indikator 1 = 2 und Indikator 2 = 0
-        264 Indikator 1 = # und Indikator 2 = 0
-        -> jeweils in neuer Zeile anzeigen
-
-        Kommen $a und/oder $b mehrfach vor, dann Trennzeichen: ";_" (in Worten: Semikolon Blank)
-
-        264 ist wiederholbar
-        */
-
 
         $marcRecord = $record->getMarcRecord();
 

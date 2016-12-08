@@ -83,9 +83,22 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
     {
         $subFieldKeys = ['t', 'b', 'd', 'g', 'h', 'z', 'o', 'x'];
         $subFields = $this->getSubfieldsAsArray($field);
+
+        $w_ = array_filter($field->getSubfields('w'), function(\File_MARC_Subfield $elem){
+            return strpos($elem->getData(), "(DE-603)") !== false;
+        });
+
         $arr = [];
         foreach ($subFieldKeys as $pos => $key) {
             switch ($key) {
+                case 'a':
+                    foreach ($field->getSubfields('w') as $w) {
+                        if (strpos($w->getData(), "(DE-603)") !== false) {
+                            $arr[$key] = '<a href="' . $this->link($w->getData()) . '">' . htmlentities($subFields[$key]) . '</a>';
+                            break;
+                        }
+                    }
+                    break;
                 case 'z':
                     if (array_key_exists($key, $subFields)) {
                         $arr[$key] = "ISBN " . htmlentities($subFields[$key]);
@@ -97,8 +110,14 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
                     }
                     break;
                 case 't':
-                    if (array_key_exists($key, $subFields) && array_key_exists('w', $subFields)) { //mit link?
-                        $arr[$key] = '<a href="' . $this->link($subFields['w']) . '">' . htmlentities($subFields[$key]) . '</a>';
+                    if (array_key_exists($key, $subFields)) { //mit link?
+                        //array_key_exists('w', $subFields);
+                        foreach ($field->getSubfields('w') as $w) {
+                            if (strpos($w->getData(), "(DE-603)") !== false) {
+                                $arr[$key] = '<a href="' . $this->link($w->getData()) . '">' . htmlentities($subFields[$key]) . '</a>';
+                            }
+                        }
+
                     } else if (array_key_exists($key, $subFields)) { //wenn kein link, dann text ohne link
                         $arr[$key] = htmlentities($subFields[$key]);
                     }
@@ -138,6 +157,6 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
     }
 
     protected function link($w) {
-        return $this->getView()->basePath().'/Search/Results?lookfor0[]=HEB'.$this->removePrefix($w, "(DE-603)").'&type0[]=isn';
+        return $this->getView()->basePath().'/RecordFinder/HEB'.$this->removePrefix($w, "(DE-603)");
     }
 }

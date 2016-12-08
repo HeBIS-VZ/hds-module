@@ -30,11 +30,11 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
-class SingleRecordProductionTest extends AbstractViewHelperTest
+class SingleRecordManufactureTest extends AbstractViewHelperTest
 {
 
     public function setUp() {
-        $this->viewHelperClass = "SingleRecordProduction";
+        $this->viewHelperClass = "SingleRecordManufacture";
         $this->testResultField = "";
         $this->testRecordIds = [];
         $this->testSheetName = "Entstehung";
