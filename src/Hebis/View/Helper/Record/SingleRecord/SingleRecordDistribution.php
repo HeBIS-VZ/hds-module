@@ -27,16 +27,15 @@
 
 namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\RecordDriver\SolrMarc;
-use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 
 /**
- * Class InternationalStandardMusicNumber
+ * Class SingleRecordDistribution
  * @package Hebis\View\Helper\Record\SingleRecord
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordInternationalStandardMusicNumber extends AbstractRecordViewHelper
+class SingleRecordDistribution extends SingleRecordProduction
 {
 
     /**
@@ -45,36 +44,23 @@ class SingleRecordInternationalStandardMusicNumber extends AbstractRecordViewHel
      */
     public function __invoke(SolrMarc $record)
     {
+        $id = $record->getUniqueID();
+
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $arr = [];
-        $fields = $marcRecord->getFields('024');
+        $fields = $marcRecord->getFields('264');
 
-        foreach ($fields as $field) {
-            if ($field->getIndicator(1) === "2") {
-                $subFields = $this->getSubfieldsAsArray($field);
-                foreach ($subFields as $code => $subField) {
-                    switch ($code) {
-                        case 'a':
-                        case 'y':
-                            if (array_key_exists($code, $arr)) {
-                                $arr[$code] = array_merge($arr, [htmlentities($subField)]);
-                            } else {
-                                $arr[$code] = htmlentities($subField);
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-        $return = [];
+        $fields = array_filter($fields, function($field) {
+            $ind2 = $field->getIndicator(2);
+            $ind1 = $field->getIndicator(1);
+            return $ind2 === "2" && in_array($ind1, ["3", "2", " ", ""]);
+        });
 
-        //flatten
-        array_walk_recursive($arr, function($elem) use (&$return) { $return[] = $elem; });
+        usort($fields, function (\File_MARC_Data_Field $fieldA, \File_MARC_Data_Field $fieldB) {
+            return (-1) * strcmp($fieldA->getIndicator(1), $fieldB->getIndicator(1));
+        });
 
-        return implode(" ; ", $return);
+        return $this->generateContent($fields);
     }
 }

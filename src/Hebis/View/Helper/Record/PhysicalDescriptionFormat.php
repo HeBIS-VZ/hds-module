@@ -35,7 +35,7 @@ use Hebis\RecordDriver\SolrMarc;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class PhysicalDescription extends AbstractRecordViewHelper
+class PhysicalDescriptionFormat extends AbstractRecordViewHelper
 {
 
 

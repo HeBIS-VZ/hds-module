@@ -45,10 +45,10 @@ class SingleRecordPhysicalDescription extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
-        $_362 = $marcRecord->getFields('300');
+        $_300_ = $marcRecord->getFields('300');
 
         /** @var \File_MARC_Data_Field $field */
-        foreach ($_362 as $field) {
+        foreach ($_300_ as $field) {
             $ret = "";
             $a = $this->getSubFieldDataOfGivenField($field, 'a');
             $b = $this->getSubFieldDataOfGivenField($field, 'b');

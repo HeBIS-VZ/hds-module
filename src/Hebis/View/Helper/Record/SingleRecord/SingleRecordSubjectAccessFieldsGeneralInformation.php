@@ -43,7 +43,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
      * @param SolrMarc $record
      * @return string
      */
-    public function __invoke(SolrMarc $record)
+    public function __invoke(SolrMarc $record, $htmlOutout = false)
     {
         $arr = [];
         $line600 = ($this->add600($record));
@@ -79,8 +79,13 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             $arr[] = $line648;
         }
 
+        if (!$htmlOutout) {
+            return implode("<br />", $arr);
+        }
+        else {
+            return $arr;
+        }
 
-        return implode("<br />", $arr);
     }
 
     /**

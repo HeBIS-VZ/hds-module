@@ -39,7 +39,7 @@ use Hebis\View\Helper\Record\ResultList\ResultListPersonalName;
 class SingleRecordPersonalName extends ResultListPersonalName
 {
 
-    public function __invoke(SolrMarc $record)
+    public function __invoke(SolrMarc $record, $test = true)
     {
         $arr = [];
         /** @var \File_MARC_Record $marcRecord */
@@ -47,7 +47,12 @@ class SingleRecordPersonalName extends ResultListPersonalName
         $aut = $this->getFieldContentsByFieldNo($marcRecord, 100);
 
         if (!empty($aut)) {
-            $arr[] = $aut;
+            if (!$test) {
+                $arr[] = $this->addLink($record, $aut);
+            } else {
+                $arr[] = $aut;
+            }
+
         }
 
         $f700_ = $marcRecord->getFields(700);
@@ -59,7 +64,11 @@ class SingleRecordPersonalName extends ResultListPersonalName
             }
             $addedEntryPN = $this->getFieldContents($field);
             if (!empty($addedEntryPN)) {
-                $arr[] = $addedEntryPN;
+                if (!$test) {
+                    $arr[] = $this->addLink($record, $addedEntryPN);
+                } else {
+                    $arr[] = $addedEntryPN;
+                }
             }
         }
 
@@ -81,5 +90,11 @@ class SingleRecordPersonalName extends ResultListPersonalName
                 $field->appendSubfield(new \File_MARC_Subfield("e", $types[$_4->getData()]));
             }
         }
+    }
+
+    protected function addLink($record, $personalName)
+    {
+        $url = $this->getView()->record($record)->getLink('author', $personalName);
+        return '<a title="'.htmlentities($personalName).'" href="'.$url.'">'.htmlentities($personalName).'</a>';
     }
 }

@@ -60,7 +60,7 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
                 $str = "";
                 $ab = $this->getSubFieldsDataArrayOfField($field, ['a', 'b']);
                 $glue = " : ";
-                if (substr(trim($ab['b']), 0, 1) === "=") {
+                if (array_key_exists('b', $ab) && substr(trim($ab['b']), 0, 1) === "=") {
                     //$ab['b'] = substr(trim($ab['b']),2);
                     $glue = " ";
                 }

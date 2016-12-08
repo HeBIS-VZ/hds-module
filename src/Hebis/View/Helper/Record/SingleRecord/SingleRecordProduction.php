@@ -40,6 +40,7 @@ use Hebis\View\Helper\Record\MarcSubfieldManipulationTrait;
 class SingleRecordProduction extends AbstractRecordViewHelper
 {
     use MarcSubfieldManipulationTrait;
+
     /**
      * @param SolrMarc $record
      * @return string
@@ -59,14 +60,25 @@ class SingleRecordProduction extends AbstractRecordViewHelper
             return $ind2 === "3" && in_array($ind1, ["3", "2", " ", ""]);
         });
 
-        usort($fields, function(\File_MARC_Data_Field $fieldA, \File_MARC_Data_Field $fieldB) {
+        usort($fields, function (\File_MARC_Data_Field $fieldA, \File_MARC_Data_Field $fieldB) {
             return (-1) * strcmp($fieldA->getIndicator(1), $fieldB->getIndicator(1));
         });
 
+        return $this->generateContent($fields);
+    }
+
+    /**
+     * @param $fields
+     * @return string
+     */
+    protected function generateContent($fields)
+    {
         $arr = [];
         foreach ($fields as $field) {
             $a = implode("; ", $this->getSubFieldsStringArrayOfGivenField($field, ['a']));
             $b = implode("; ", $this->getSubFieldsStringArrayOfGivenField($field, ['b']));
+            $c = implode("; ", $this->getSubFieldsStringArrayOfGivenField($field, ['c']));
+
             $str = $a;
             $str .= (!empty($b) ? " : $b" : "");
             $str .= (!empty($c) ? ", $c" : "");

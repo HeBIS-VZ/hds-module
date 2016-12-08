@@ -58,4 +58,6 @@ class SingleRecordHostItemEntry extends ResultListHostItemEntry
 
         return sprintf('<a href="%s" title="%s">%s</a>', $href, $title, $title);
     }
+
+
 }

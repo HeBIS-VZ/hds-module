@@ -28,11 +28,11 @@
 namespace Hebis\View\Helper\Record;
 
 
-class PhysicalDescriptionTest extends AbstractViewHelperTest
+class PhysicalDescriptionFormatTest extends AbstractViewHelperTest
 {
     public function setUp()
     {
-        $this->viewHelperClass = "PhysicalDescription";
+        $this->viewHelperClass = "PhysicalDescriptionFormat";
         $this->testResultField = "";
         $this->testRecordIds = [];
 

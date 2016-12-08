@@ -101,8 +101,8 @@ class Module
     {
         return array(
             'factories' => array(
-                'physical_description' => function($sm) {
-                    return new View\Helper\Record\PhysicalDescription();
+                'physical_description_format' => function($sm) { //Format
+                    return new View\Helper\Record\PhysicalDescriptionFormat();
                 },
                 'bib_tip' => function($sm) {
                     return new View\Helper\Record\BibTip();
@@ -134,8 +134,14 @@ class Module
                 'single_record_dates_of_publication_sequential_designation' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordDatesOfPublicationSequentialDesignation();
                 },
+                'single_record_physical_description' => function($sm) { //Umfang
+                    return new View\Helper\Record\SingleRecord\SingleRecordPhysicalDescription();
+                },
                 'single_record_dissertation_note' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordDissertationNote();
+                },
+                'single_record_corporate_name' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordCorporateName();
                 },
                 'single_record_edition_statement' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordEditionStatement();
@@ -164,20 +170,26 @@ class Module
                 'single_record_personal_name' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordPersonalName();
                 },
-                'single_record_physical_description' => function($sm) {
-                    return new View\Helper\Record\SingleRecord\SingleRecordPhysicalDescription();
-                },
                 'single_record_preceding_succeeding_entry' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordPrecedingSucceedingEntry();
                 },
                 'single_record_manufacture' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordManufacture();
                 },
-                'single_record_publication_distribution' => function($sm) {
+                'single_record_production' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordProduction();
+                },
+                'single_record_publication' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordPublication();
+                },
+                'single_record_distribution' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordDistribution();
                 },
                 'single_record_section_of_a_work' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordSectionOfAWork();
+                },
+                'single_record_part_of_a_work' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordPartOfAWork();
                 },
                 'single_record_series_statement_added_entry' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordSeriesStatementAddedEntry();

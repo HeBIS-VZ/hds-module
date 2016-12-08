@@ -27,54 +27,28 @@
 
 namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\RecordDriver\SolrMarc;
-use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 
 /**
- * Class InternationalStandardMusicNumber
+ * Class SingleRecordPartOfAWork
  * @package Hebis\View\Helper\Record\SingleRecord
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordInternationalStandardMusicNumber extends AbstractRecordViewHelper
+class SingleRecordPartOfAWork extends SingleRecordSectionOfAWork
 {
-
-    /**
-     * @param SolrMarc $record
-     * @return string
-     */
     public function __invoke(SolrMarc $record)
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
+        $leader = $marcRecord->getLeader();
 
+        $char = $leader{19};
         $arr = [];
-        $fields = $marcRecord->getFields('024');
 
-        foreach ($fields as $field) {
-            if ($field->getIndicator(1) === "2") {
-                $subFields = $this->getSubfieldsAsArray($field);
-                foreach ($subFields as $code => $subField) {
-                    switch ($code) {
-                        case 'a':
-                        case 'y':
-                            if (array_key_exists($code, $arr)) {
-                                $arr[$code] = array_merge($arr, [htmlentities($subField)]);
-                            } else {
-                                $arr[$code] = htmlentities($subField);
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
+        if (preg_match("/[c]/", $char)) {
+            $arr = $this->createOutput($marcRecord, $arr);
         }
-        $return = [];
-
-        //flatten
-        array_walk_recursive($arr, function($elem) use (&$return) { $return[] = $elem; });
-
-        return implode(" ; ", $return);
+        return implode("<br />", $arr);
     }
 }

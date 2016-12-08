@@ -25,41 +25,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record\SingleRecord;
+namespace Hebis\View\Helper\Record;
+use VuFind\View\Helper\Root\RecordLink as Link;
 
-use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
-class SingleRecordPersonalNameTest extends AbstractViewHelperTest
+/**
+ * Class RecordLink
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
+class RecordLink extends Link
 {
-    public function setUp()
-    {
-        $this->viewHelperClass = "SingleRecordPersonalName";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
 
-        $this->testSheetName = "Verantwortlich";
-        parent::setUp();
+    public function __construct(\VuFind\Record\Router $router) {
+        parent::__construct($router);
     }
 
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
+    public function recordFinderProxy($ppn)
     {
-        $mock = $this->getMock('VuFind\View\Helper\Root\Record', ['getLink', '__invoke', 'getView']);
+        $this->getActionUrl("record_finder", "home", ['id' => "HEB".$ppn]);
+    }
 
-        $mock->expects($this->any())
-            ->method('getLink')
-            ->will($this->returnValue('http://www.example.org'));
+    public function getActionUrl($controller, $action, $params = [])
+    {
 
-        $mock->expects($this->any())
-            ->method('getView')
-            ->will($this->returnValue($this->getMock('Zend\View\Renderer\RendererInterface')));
+        // Build the URL:
+        $urlHelper = $this->getView()->plugin('url');
 
-        return [
-            'record' => $mock
-        ];
+        $this->getView()->url()->fromRoute('route-name', $params);
+
+        /*
+        $this->router->getRouteDetails();
+        $details = $this->router->getActionRouteDetails($driver, $action);
+        return $urlHelper($details['route'], $params);
+        */
     }
 }

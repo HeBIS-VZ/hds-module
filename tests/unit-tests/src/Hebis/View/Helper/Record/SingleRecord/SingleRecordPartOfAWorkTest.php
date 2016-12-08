@@ -27,17 +27,19 @@
 
 namespace Hebis\View\Helper\Record\SingleRecord;
 
+
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
-class SingleRecordPersonalNameTest extends AbstractViewHelperTest
+class SingleRecordPartOfAWorkTest extends AbstractViewHelperTest
 {
+
     public function setUp()
     {
-        $this->viewHelperClass = "SingleRecordPersonalName";
+        $this->viewHelperClass = "SingleRecordPartOfAWork";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "Verantwortlich";
+        $this->testSheetName = "Teil";
         parent::setUp();
     }
 
@@ -48,18 +50,6 @@ class SingleRecordPersonalNameTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $mock = $this->getMock('VuFind\View\Helper\Root\Record', ['getLink', '__invoke', 'getView']);
-
-        $mock->expects($this->any())
-            ->method('getLink')
-            ->will($this->returnValue('http://www.example.org'));
-
-        $mock->expects($this->any())
-            ->method('getView')
-            ->will($this->returnValue($this->getMock('Zend\View\Renderer\RendererInterface')));
-
-        return [
-            'record' => $mock
-        ];
+        return [];
     }
 }
