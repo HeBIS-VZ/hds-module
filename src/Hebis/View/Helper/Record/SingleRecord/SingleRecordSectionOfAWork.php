@@ -76,11 +76,11 @@ class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
                 switch ($key) {
                     case 'n':
                         //if (strpos($subField->getData(), "[...]") === false) {
-                            $n = htmlentities($subField->getData());
+                            $n = htmlentities($this->removeControlSigns($subField->getData()));
                         //}
                         break;
                     case 'p':
-                        $p = htmlentities($subField->getData());
+                        $p = htmlentities($this->removeControlSigns($subField->getData()));
                         break;
                 }
 
