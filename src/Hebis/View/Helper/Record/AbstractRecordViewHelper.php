@@ -53,6 +53,8 @@ class AbstractRecordViewHelper extends AbstractHelper
 
     const URL_SEARCH_PPN = 'RecordFinder/HEB%s';
 
+    const URL_SHOW_ALL = 'Results?lookfor=%d&type=part_of&sort=pub_date_max+desc';
+
 
     /**
      * checks if subField exists, if true it returns the subField containing data

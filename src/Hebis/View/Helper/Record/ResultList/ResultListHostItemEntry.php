@@ -54,6 +54,12 @@ class ResultListHostItemEntry extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $field */
         $fields = $marcRecord->getFields(773);
+
+        return $this->output($fields);
+    }
+
+    protected function output($fields)
+    {
         $ret = "";
 
         foreach ($fields as $field) {
@@ -74,12 +80,9 @@ class ResultListHostItemEntry extends AbstractRecordViewHelper
     {
 
         $arr = [];
-        $subFields = $field->getSubfields();
-        $w = $field->getSubfields("w");
 
-        $w = array_filter($w, function ($field) {
-            return strpos($field->getData(), "(DE-603)") !== false;
-        });
+        $w = $this->getAssociatedPPNs($field);
+        $subFields = $field->getSubfields();
 
         /** @var \File_MARC_Subfield $subField */
         foreach ($subFields as $subField) {
@@ -120,5 +123,21 @@ class ResultListHostItemEntry extends AbstractRecordViewHelper
     protected function addLink($subfield, $w)
     {
         return htmlentities($subfield->getData());
+    }
+
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @return array
+     */
+    protected function getAssociatedPPNs(\File_MARC_Data_Field $field)
+    {
+
+        $w = $field->getSubfields("w");
+
+        $w = array_filter($w, function ($field) {
+            return strpos($field->getData(), "(DE-603)") !== false;
+        });
+
+        return $w;
     }
 }

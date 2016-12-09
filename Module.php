@@ -128,6 +128,9 @@ class Module
                 'single_record_additional_physical_from_available_note' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordAdditionalPhysicalFromAvailableNote();
                 },
+                'single_record_reproduction_note' => function($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordReproductionNote();
+                },
                 'single_record_cartographic_mathematical_data' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordCartographicMathematicalData();
                 },
