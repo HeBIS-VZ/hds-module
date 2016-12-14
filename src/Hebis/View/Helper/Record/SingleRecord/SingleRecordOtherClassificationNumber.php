@@ -39,7 +39,7 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 class SingleRecordOtherClassificationNumber extends AbstractRecordViewHelper
 {
 
-    public function __invoke(SolrMarc $record)
+    public function __invoke(SolrMarc $record, $asArray = false)
     {
         $marcRecord = $record->getMarcRecord();
 
@@ -50,6 +50,9 @@ class SingleRecordOtherClassificationNumber extends AbstractRecordViewHelper
                 $arr[] = $a->getData();
             }
         }
-        return implode(" ; ", $arr);
+        if (!$asArray) {
+            return '<div class="rvk">'.implode(" ; ", $arr).'</div>';
+        }
+        return $arr;
     }
 }
