@@ -44,11 +44,21 @@ class SingleRecordPersonalName extends ResultListPersonalName
         $arr = [];
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
-        $aut = $this->getFieldContentsByFieldNo($marcRecord, 100);
+
+        $field100 = $marcRecord->getField('100');
+
+        $aut = $this->getFieldContents($field100);
 
         if (!empty($aut)) {
             if (!$test) {
-                $arr[] = $this->addLink($record, $aut);
+                $wiki = $wikiLink = "";
+                $gnd = $this->getGnd($field100);
+                if (!empty($gnd)) {
+                    $wiki = '<div class="hidden" id="gnd_'.$gnd.'"><div class="popover-heading"></div><div class="popover-body"></div></div>';
+                    $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" data-id="'.$gnd.'" data-container="body" data-popover-content="#gnd_'.$gnd.'" data-trigger="focus" data-toggle="popover"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
+                }
+
+                $arr[] = $this->addLink($record, $aut).$wikiLink.$wiki;
             } else {
                 $arr[] = $aut;
             }
@@ -65,7 +75,13 @@ class SingleRecordPersonalName extends ResultListPersonalName
             $addedEntryPN = $this->getFieldContents($field);
             if (!empty($addedEntryPN)) {
                 if (!$test) {
-                    $arr[] = $this->addLink($record, $addedEntryPN);
+                    $wiki = $wikiLink = "";
+                    $gnd = $this->getGnd($field100);
+                    if (!empty($gnd)) {
+                        $wiki = '<div class="hidden" id="gnd_'.$gnd.'"><div class="popover-heading"></div><div class="popover-body"></div></div>';
+                        $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" data-id="'.$gnd.'" data-container="body" data-popover-content="#gnd_'.$gnd.'" data-trigger="focus" data-toggle="popover"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
+                    }
+                    $arr[] = $this->addLink($record, $addedEntryPN).$wikiLink.$wiki;
                 } else {
                     $arr[] = $addedEntryPN;
                 }
@@ -96,5 +112,31 @@ class SingleRecordPersonalName extends ResultListPersonalName
     {
         $url = $this->getView()->record($record)->getLink('author', $personalName);
         return '<a title="'.htmlentities($personalName).'" href="'.$url.'">'.htmlentities($personalName).'</a>';
+    }
+
+    /**
+     * @var \File_MARC_Data_Field $field
+     * @return string
+     */
+    public function getGnd($field)
+    {
+        if (!empty($field)) {
+            $subfields = $field->getSubfields(0);
+
+
+            $gndArray = array_filter($subfields, function($field){
+                /** @var \File_MARC_Subfield $field */
+                return strpos($field->getData(), "(DE-588)") !== false;
+            });
+
+            if (!empty($gndArray)) {
+                $gnds = [];
+                foreach ($gndArray as $gndId) {
+                    $gnds[] = str_replace("(DE-588)", "", $gndId->getData());
+                }
+                return $gnds[0];
+            }
+        }
+        return "";
     }
 }
