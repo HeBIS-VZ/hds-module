@@ -125,9 +125,11 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                 }
                 $arr_[] = $line;
             }
-            $arr[] = "<nobr>".$this->generateTag($field, $arr_)."</nobr>";
+            $generatedKeywords = $this->generateTag($field, $arr_);
+            if (!empty($generatedKeywords)) {
+                $arr[] = "<nobr>".$generatedKeywords."</nobr>";
+            }
         }
-
         return implode("<br />", $arr);
     }
 
@@ -166,7 +168,10 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                         break;
                 }
             }
-            $arr[] = "<nobr>".$this->generateTag($field, $arr_)."</nobr>";
+            $generatedKeywords = $this->generateTag($field, $arr_);
+            if (!empty($generatedKeywords)) {
+                $arr[] = "<nobr>".$generatedKeywords."</nobr>";
+            }
         }
         return implode("<br />", $arr);
     }
@@ -204,7 +209,10 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                 }
 
             }
-            $arr[] = "<nobr>".$this->generateTag($field, $arr_)."</nobr>";
+            $generatedKeywords = $this->generateTag($field, $arr_);
+            if (!empty($generatedKeywords)) {
+                $arr[] = "<nobr>".$generatedKeywords."</nobr>";
+            }
         }
         return implode("<br />", $arr);
     }
@@ -227,7 +235,10 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                 $arr_[] = !empty($sf['t']) ? " / " . $sf['t'] : "";
                 $arr_[] = !empty($sf['x']) ? ", " . $sf['x'] : "";
 
-                $arr[] = "<nobr>".$this->generateTag($field, $arr_)."</nobr>";
+                $generatedKeywords = $this->generateTag($field, $arr_);
+                if (!empty($generatedKeywords)) {
+                    $arr[] = "<nobr>".$generatedKeywords."</nobr>";
+                }
             }
         }
         return implode("<br />", $arr);
@@ -245,7 +256,10 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                 $arr_[] = !empty($sf['c']) ? " &lt;" . $sf['c'] . "&gt;" : "";
                 $arr_[] = !empty($sf['x']) ? ", " . $sf['x'] : "";
                 $arr_[] = !empty($sf['g']) ? " &lt;" . str_replace("g:", "", $sf['g']) . "&gt;" : "";
-                $arr[] = "<nobr>".$this->generateTag($field, $arr_)."</nobr>";
+                $generatedKeywords = $this->generateTag($field, $arr_);
+                if (!empty($generatedKeywords)) {
+                    $arr[] = "<nobr>".$generatedKeywords."</nobr>";
+                }
             }
         }
         return implode("<br />", $arr);

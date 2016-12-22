@@ -28,15 +28,13 @@
 
 namespace Hebis\RecordDriver;
 
-use HAB\Pica\Reader\PicaPlainReader;
 use HAB\Pica\Record\TitleRecord;
 use VuFind\Exception\ILS as ILSException,
     VuFind\View\Helper\Root\RecordLink,
     VuFind\XSLT\Processor as XSLTProcessor,
     VuFindCode\ISBN;
-use Hebis\RecordDriver\PicaRecordInterface, Hebis\RecordDriver\ProxyUrlBuilder;
-use VuFind\RecordDriver\SolrDefault;
-use Zend\Session\SessionManager;
+use VuFindSearch\Backend\Exception\BackendException;
+
 
 /**
  * Model for MARC records in Solr.
@@ -195,8 +193,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             self::$currentPicaRecord = $this->picaRecord;
         } catch (\Exception $e) {
             /** @var  \Zend\Log\LoggerInterface$logger */
-            $logger = $this->getLogger();
-            $logger->err("Could not parse pica record ".$data['id']." in class ". __CLASS__ . ", line: " . __LINE__);
+            //$logger = $this->getLogger();
+            //$logger->err("Could not parse pica record ".$data['id']." in class ". __CLASS__ . ", line: " . __LINE__);
+            throw new BackendException("Error parsing PICA", 0, $e);
         }
         $this->marcRecord = $marc->next();
 
@@ -207,9 +206,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     }
 
     /**
-     * @param PicaRecord $picaRecord
+     * @param TitleRecord $picaRecord
      */
-    public function setPicaRecord(PicaRecord $picaRecord)
+    public function setPicaRecord(TitleRecord $picaRecord)
     {
         $this->picaRecord = $picaRecord;
     }
