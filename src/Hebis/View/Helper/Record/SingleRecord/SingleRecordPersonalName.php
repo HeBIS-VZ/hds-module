@@ -55,7 +55,7 @@ class SingleRecordPersonalName extends ResultListPersonalName
                 $gnd = $this->getGnd($field100);
                 if (!empty($gnd)) {
                     $wiki = '<div class="hidden" id="gnd_'.$gnd.'"><div class="popover-heading"></div><div class="popover-body"></div></div>';
-                    $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" data-id="'.$gnd.'" data-container="body" data-popover-content="#gnd_'.$gnd.'" data-trigger="focus" data-toggle="popover"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
+                    $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" id="wiki-'.$gnd.'" data-id="'.$gnd.'" data-container="body" data-popover-content="#gnd_'.$gnd.'"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
                 }
 
                 $arr[] = $this->addLink($record, $aut).$wikiLink.$wiki;
@@ -76,10 +76,10 @@ class SingleRecordPersonalName extends ResultListPersonalName
             if (!empty($addedEntryPN)) {
                 if (!$test) {
                     $wiki = $wikiLink = "";
-                    $gnd = $this->getGnd($field100);
+                    $gnd = $this->getGnd($field);
                     if (!empty($gnd)) {
                         $wiki = '<div class="hidden" id="gnd_'.$gnd.'"><div class="popover-heading"></div><div class="popover-body"></div></div>';
-                        $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" data-id="'.$gnd.'" data-container="body" data-popover-content="#gnd_'.$gnd.'" data-trigger="focus" data-toggle="popover"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
+                        $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" id="wiki-'.$gnd.'" data-id="'.$gnd.'" data-container="body" data-popover-content="#gnd_'.$gnd.'"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
                     }
                     $arr[] = $this->addLink($record, $addedEntryPN).$wikiLink.$wiki;
                 } else {
