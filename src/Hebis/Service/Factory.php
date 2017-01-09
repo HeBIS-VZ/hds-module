@@ -102,4 +102,22 @@ class Factory extends \VuFind\Service\Factory
         return $translator;
     }
 
+    /**
+     * Construct the WorldCat helper.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Connection\WorldCatUtils
+     */
+    public static function getWorldCatUtils(ServiceManager $sm)
+    {
+        $config = $sm->get('VuFind\Config')->get('config');
+        $client = $sm->get('VuFind\Http')->createClient();
+        $ip = $sm->get('Request')->getServer()->get('SERVER_ADDR');
+        return new \Hebis\Connection\WorldCatUtils(
+            isset($config->WorldCat) ? $config->WorldCat : null,
+            $client, true, $ip
+        );
+    }
+
 }

@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record;
+use Hebis\Cover\ContentType;
 use Hebis\RecordDriver\SolrMarc;
 
 
@@ -39,57 +40,6 @@ class PhysicalDescriptionFormat extends AbstractRecordViewHelper
 {
 
 
-    private $physicalDescription;
-    
-    public function initMap()
-    {
-        $this->physicalDescription = [];
-        $this->physicalDescription["a"]["a"]["xxx"]="article";
-        $this->physicalDescription["a"]["a"]["cr"]="article";
-        $this->physicalDescription["a"]["m"]["xxx"]="book";
-        $this->physicalDescription["a"]["m"]["co"]="dvd";
-        $this->physicalDescription["a"]["m"]["cocd"]="cd";
-        $this->physicalDescription["a"]["m"]["c "]="cd";
-        $this->physicalDescription["a"]["m"]["cr"]="ebook";
-        $this->physicalDescription["a"]["m"]["cu"]="ebook";
-        $this->physicalDescription["a"]["m"]["h"]="microfilm";
-        $this->physicalDescription["a"]["m"]["f"]="sensorimage";
-        $this->physicalDescription["a"]["m"]["o"]="kit";
-        $this->physicalDescription["a"]["m"]["r"]="retro";
-        $this->physicalDescription["a"]["s"]["xxx"]="journal";
-        $this->physicalDescription["a"]["s"]["t"]="journal";
-        $this->physicalDescription["a"]["s"]["h"]="journal";
-        $this->physicalDescription["a"]["s"]["co"]="journal";
-        $this->physicalDescription["a"]["s"]["cocd"]="journal";
-        $this->physicalDescription["a"]["s"]["cr"]="electronic";
-        $this->physicalDescription["a"]["s"]["f"]="sensorimage";
-        $this->physicalDescription["c"]["m"]["q"]="musicalscore";
-        $this->physicalDescription["c"]["s"]["q"]="musicalscore";
-        $this->physicalDescription["e"]["m"]["a"]="map";
-        $this->physicalDescription["e"]["s"]["a"]="map";
-        $this->physicalDescription["g"]["m"]["m"]="video";
-        $this->physicalDescription["g"]["m"]["xxx"]="video";
-        $this->physicalDescription["g"]["s"]["m"]="video";
-        $this->physicalDescription["g"]["s"]["xxx"]="video";
-        $this->physicalDescription["g"]["m"]["v"]="video";
-        $this->physicalDescription["g"]["s"]["v"]="video";
-        $this->physicalDescription["i"]["m"]["s"]="audio";
-        $this->physicalDescription["i"]["m"]["cocd"]="cd";
-        $this->physicalDescription["j"]["m"]["xxx"]="audio";
-        $this->physicalDescription["j"]["m"]["s"]="audio";
-        $this->physicalDescription["j"]["m"]["cocd"]="audio";
-        $this->physicalDescription["j"]["s"]["co"]="audio";
-        $this->physicalDescription["j"]["s"]["s"]="audio";
-        $this->physicalDescription["k"]["m"]["a"]="photo";
-        $this->physicalDescription["k"]["m"]["k"]="photo";
-        $this->physicalDescription["k"]["m"]["cr"]="photo";
-        $this->physicalDescription["o"]["m"]["xxx"]="kit";
-        $this->physicalDescription["o"]["m"]["o"]="kit";
-        $this->physicalDescription["r"]["m"]["xxx"]="physicalobject";
-        $this->physicalDescription["r"]["m"]["z"]="physicalobject";
-        $this->physicalDescription["t"]["m"]["xxx"]="manuscript";
-    }
-
 
     /**
      * @param SolrMarc $record
@@ -98,64 +48,6 @@ class PhysicalDescriptionFormat extends AbstractRecordViewHelper
     public function __invoke(SolrMarc $record)
     {
         $id = $record->getUniqueID();
-        $this->initMap();
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
-
-        $x = substr($marcRecord->getLeader(), 6, 1);
-        $y = substr($marcRecord->getLeader(), 7, 1);
-        $z = " ";
-
-        if (!empty($_007 = $marcRecord->getField('007'))) {
-            $z = substr($_007->getData(), 0, 1);
-        }
-
-        // Exceptions for CD/DVD
-        $_300_a = $this->getSubFieldDataOfField($record, 300, 'a');
-
-        switch ($z) {
-            case 'c':
-                $z .= substr($marcRecord->getField('007')->getData(), 1, 1);
-                /* $materialart["a"]["m"]["c "]: … wenn 338 $bvd oder wenn 300 $aDVD:  ="dvd"; … sonst: ="cd" */
-                if ($z == "c ") {
-                    $_338_b = $this->getSubFieldDataOfField($record, 338, 'b');
-                    if ($_338_b == "vd" || strpos($_300_a, "DVD") !== false) {
-                        $z = "co";
-                    }
-                }
-                break;
-            case " ":
-                $z = "xxx";
-        }
-        if ($x == "a" && $y == "m") {
-            if ($z == "co") {
-                if (strpos($_300_a, "DVD") === false && strpos($_300_a, "Blu-Ray") === false) {
-                    $z = "c ";
-                }
-            }
-            if ($z == "c ") {
-                if (strpos($_300_a, "DVD") !== false) {
-                    $z = "co";
-                }
-            }
-        }
-
-        $_338_b = $this->getSubFieldDataOfField($record, 338, 'b');
-        if ($_338_b === "vd") {
-            $z = "co";
-        }
-
-        /* Falls in 856 $3 der Inhalt "Katalogkarte" vorhanden ist UND Art=a, Level=m und Phys=xxx, dann Phys = r. */
-        if ($x == "a" && $y == "m" && $z == "xxx") {
-            $_856_3 = $this->getSubFieldDataOfField($record, 856, '3');
-            if (is_string($_856_3) && strpos($_856_3, "Katalogkarte") !== false) {
-                $z = "r";
-            }
-        }
-
-
-        $className = isset($this->physicalDescription[$x][$y][$z]) ? $this->physicalDescription[$x][$y][$z] : "";
-
-        return $className;
+        return ContentType::getContentType($record);
     }
 }

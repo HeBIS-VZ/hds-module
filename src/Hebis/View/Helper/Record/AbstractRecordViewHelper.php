@@ -28,6 +28,7 @@
 
 namespace Hebis\View\Helper\Record;
 
+use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\FieldArray;
 use \File_MARC_Data_Field;
@@ -72,6 +73,8 @@ class AbstractRecordViewHelper extends AbstractHelper
     /**
      * returns the data of the subField if field and subField exists, otherwise false
      *
+     * @deprecated use \Hebis\Marc\Helper::getSubFieldDataOfField instead
+     *
      * @param SolrMarc $record
      * @param $fieldCode
      * @param $subFieldCode
@@ -79,13 +82,7 @@ class AbstractRecordViewHelper extends AbstractHelper
      */
     protected function getSubFieldDataOfField(SolrMarc $record, $fieldCode, $subFieldCode)
     {
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
-
-        /** @var \File_MARC_Data_Field $field */
-        $field = $marcRecord->getField($fieldCode);
-
-        return $this->getSubFieldDataOfGivenField($field, $subFieldCode);
+        return Helper::getSubFieldDataOfField($record, $fieldCode, $subFieldCode);
     }
 
     /**
@@ -178,20 +175,15 @@ class AbstractRecordViewHelper extends AbstractHelper
      * if field of type \File_MARC_Data_Field and it has a subField with $subFieldCode this function returns the data
      * string of the subField, otherwise false.
      *
+     * @deprecated use \Hebis\Marc\Helper::getSubFieldDataOfGivenField instead
+     *
      * @param $field
      * @param $subFieldCode
      * @return bool|string
      */
     protected function getSubFieldDataOfGivenField($field, $subFieldCode)
     {
-        if ($field && $field instanceof \File_MARC_Data_Field) {
-
-            $subField = $field->getSubfield($subFieldCode);
-
-            return !empty($subField) ? htmlentities($subField->getData()) : false;
-        }
-
-        return false;
+        return Helper::getSubFieldDataOfGivenField($field, $subFieldCode);
     }
 
     /**
@@ -246,9 +238,11 @@ class AbstractRecordViewHelper extends AbstractHelper
      */
     protected function generateLink($href, $title, $linkText)
     {
-
-        if (strpos($href, $this->getView()->basePath()) !== 0) { //basePath not part of href
-            $href = $this->getView()->basePath() . "/" . $href; //prepend bathPath
+        $basePath = $this->getView()->basePath();
+        if (!empty($basePath)) { //basePath not part of href
+            if (strpos($href, $basePath) !== 0) {
+                $href = $this->getView()->basePath() . "/" . $href; //prepend bathPath
+            }
         }
         return sprintf('<a href="%s" title="%s">%s</a>', $href, $title, $linkText);
     }
