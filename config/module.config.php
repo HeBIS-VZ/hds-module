@@ -33,6 +33,7 @@ $config = [
             'VuFind\RecordDriverPluginManager' => 'Hebis\RecordDriver\Factory::getRecordDriverPluginManager',
             'Zend\Session\SessionManager' => 'Zend\Session\Service\SessionManagerFactory',
             'Zend\Session\Config\ConfigInterface' => 'Zend\Session\Service\SessionConfigFactory',
+            'VuFind\WorldCatUtils' => 'Hebis\Service\Factory::getWorldCatUtils',
         ]
     ],
 
