@@ -24,6 +24,16 @@ $config = [
                     'hebis' => 'Hebis\ILS\Driver\Factory::getHebis',
                 ]
             ],
+            'autocomplete' => [
+                'factories' => [
+                    'solrterms' => function($sm) {
+                        return new \Hebis\Autocomplete\Terms(
+                            $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager'),
+                            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+                        );
+                    }
+                ]
+            ],
         ],
 
     ],
@@ -34,6 +44,11 @@ $config = [
             'Zend\Session\SessionManager' => 'Zend\Session\Service\SessionManagerFactory',
             'Zend\Session\Config\ConfigInterface' => 'Zend\Session\Service\SessionConfigFactory',
             'VuFind\WorldCatUtils' => 'Hebis\Service\Factory::getWorldCatUtils',
+            'VuFind\AutocompletePluginManager' => 'VuFind\Service\Factory::getAutocompletePluginManager',
+            'VuFind\SearchResultsPluginManager' => 'VuFind\Service\Factory::getSearchResultsPluginManager',
+        ],
+        'invokables' => [
+            'VuFind\Terms' => 'Hebis\Search\Service',
         ]
     ],
 
