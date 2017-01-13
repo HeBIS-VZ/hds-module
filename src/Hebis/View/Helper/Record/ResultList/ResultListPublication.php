@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\ResultList;
+use Hebis\Marc\Helper;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
 
@@ -100,20 +101,37 @@ class ResultListPublication extends AbstractRecordViewHelper
         $ret = "";
         $_264 = current($_264__);
 
-        $_533d = $this->getSubFieldDataOfField($record, '533', 'd');
+        $_533d = Helper::getSubFieldDataOfField($record, '533', 'd');
         $_264_ = empty($_264) ? [] : $this->getSubFieldsDataArrayOfField($_264, ['a', 'b']);
 
         if (!empty($_533d)) {
             $ret .= implode(" : ", $_264_);
             $ret .= !empty($ret) ? ", $_533d" : $_533d;
         } else {
-            $_264c = empty($_264) ? "" : $this->getSubFieldDataOfGivenField($_264, 'c');
+            $_264c = empty($_264) ? "" : Helper::getSubFieldDataOfGivenField($_264, 'c');
+
+            $_264_ = $this->flattenSubfields($_264_, "; ");
 
             $ret .= implode(" : ", $_264_);
             $ret .= empty($_264c) ? "" : !empty($ret) ? ", $_264c" : $_264c;
         }
 
         return $ret;
+    }
+
+    private function flattenSubfields($field, $delimiter)
+    {
+        $field_ = [];
+
+        foreach ($field as $subfieldKey => $subfieldValue) {
+            if (is_array($subfieldValue)) {
+                $field_[$subfieldKey] = implode($delimiter, $subfieldValue);
+            } else {
+                $field_[$subfieldKey] = $subfieldValue;
+            }
+        }
+
+        return $field_;
     }
 
 }
