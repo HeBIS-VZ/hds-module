@@ -28,12 +28,8 @@
 
 namespace Hebis\RecordDriver;
 
-use HAB\Pica\Parser\PicaPlainParser;
-use HAB\Pica\Record\CopyRecord;
-use HAB\Pica\Record\Field;
-use HAB\Pica\Record\LocalRecord;
-use HAB\Pica\Record\Record;
-use HAB\Pica\Record\TitleRecord;
+use HAB\Pica\Record\Record as PicaRecord;
+
 
 class PicaRecordParser
 {
@@ -92,6 +88,9 @@ class PicaRecordParser
         return $this;
     }
 
+    /**
+     * @return PicaRecord
+     */
     public function getRecord()
     {
         return $this->picaRecord;

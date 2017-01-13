@@ -28,12 +28,8 @@
 
 namespace Hebis\RecordDriver;
 
-use HAB\Pica\Record\TitleRecord;
+use HAB\Pica\Record\Record as PicaRecord;
 use Hebis\Cover\ContentType;
-use VuFind\Exception\ILS as ILSException,
-    VuFind\View\Helper\Root\RecordLink,
-    VuFind\XSLT\Processor as XSLTProcessor,
-    VuFindCode\ISBN;
 use VuFindSearch\Backend\Exception\BackendException;
 
 
@@ -49,10 +45,13 @@ use VuFindSearch\Backend\Exception\BackendException;
 class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 {
 
+    /**
+     * @var PicaRecord
+     */
     static protected $currentPicaRecord;
 
     /**
-     * @return TitleRecord
+     * @return PicaRecord
      */
     public static function getCurrentPicaRecord()
     {
@@ -117,44 +116,6 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     protected $picaRecord;
 
 
-
-    /*
-     * @var array
-     */
-    //protected $picaTit;
-
-    /*
-     * @var array
-     */
-    //private $picaLocal;
-
-
-    //private $picaExp;
-    //private $picaEpn;
-    //private $picaPpn;
-    //private $picaILN;
-
-    protected $mainAuthor = array();
-    protected $secondaryAuthors = array();
-    protected $partAuthors = array();
-    protected $subjectHeadings = array();
-    protected $corporation = array();
-    protected $interpreter = array();
-    protected $secondaryCategories = array();
-    private $copies = array();
-    private $urls = array();
-    private $retrourl = array();
-    private $levelonedata = array();
-    private $series = array();
-    private $reviewed = array();
-    private $review = array();
-    private $journal = array();
-    private $jbibcontext = array();
-    private $journalprepost = array();
-    private $volumes = array();
-    private $otherEditions = array();
-    private $allTitleLinks = array();
-
     /**
      * Set raw data to initialize the object.
      *
@@ -164,6 +125,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      * array containing MARC data in the 'fullrecord' field.
      *
      * @return void
+     * @throws \File_MARC_Exception
      */
     public function setRawData($data)
     {
@@ -207,9 +169,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     }
 
     /**
-     * @param TitleRecord $picaRecord
+     * @param PicaRecord $picaRecord
      */
-    public function setPicaRecord(TitleRecord $picaRecord)
+    public function setPicaRecord(PicaRecord $picaRecord)
     {
         $this->picaRecord = $picaRecord;
     }
