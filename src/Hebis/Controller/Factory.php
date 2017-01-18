@@ -41,12 +41,20 @@ class Factory
      *
      * @return \Hebis\Controller\OAuthController
      */
-    public static function getOAuthController(ServiceManager $sm)
+    public static function getOAuth(ServiceManager $sm)
     {
-        $oauthController = new Hebis\Controller\OAuthController();
+        $oauthController = new \Hebis\Controller\OAuthController();
         $oauthController->setServiceLocator($sm->getServiceLocator());
         $oauthController->init();
         return $oauthController;
 
+    }
+
+
+    public static function getRecordFinder(ServiceManager $sm)
+    {
+        return new \Hebis\Controller\RecordFinderController(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        );
     }
 }

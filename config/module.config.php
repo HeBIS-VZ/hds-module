@@ -26,12 +26,7 @@ $config = [
             ],
             'autocomplete' => [
                 'factories' => [
-                    'solrterms' => function($sm) {
-                        return new \Hebis\Autocomplete\Terms(
-                            $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager'),
-                            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
-                        );
-                    }
+                    'solrterms' => 'Hebis\Autocomplete\Factory::getTerms',
                 ]
             ],
         ],
@@ -60,17 +55,8 @@ $config = [
 
     'controllers' => [
         'factories' => [
-            'OAuth' => function(ServiceManager $sm) {
-                $oauthController = new \Hebis\Controller\OAuthController();
-                $oauthController->setServiceLocator($sm->getServiceLocator());
-                $oauthController->init();
-                return $oauthController;
-            },
-            'recordfinder' => function(ServiceManager $sm) {
-                return new \Hebis\Controller\RecordFinderController(
-                    $sm->getServiceLocator()->get('VuFind\Config')->get('config')
-                );
-            }
+            'OAuth' => 'Hebis\Controller\Factory::getOAuth',
+            'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder'
         ],
         'invokables' => [
             'my-research' => 'Hebis\Controller\MyResearchController',
