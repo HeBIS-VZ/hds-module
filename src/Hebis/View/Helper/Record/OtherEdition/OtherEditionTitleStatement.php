@@ -32,24 +32,22 @@ class OtherEditionTitleStatement extends AbstractRecordViewHelper
         /** @var \File_MARC_Subfield $sf */
         if ($sf = $_245->getSubfields(9)) {
             if (strpos($sf->getData(),"patchF") !== false) {
-                /** @var \File_MARC_Data_Field $_490 */
-                $_490 = $marcRecord->getField(490);
-                $_arr = [];
-                $a = $_490->getSubfield('a');
-                $v = $_490->getSubfield('v');
-
-                !empty($a) ?: $_arr[] = $a->getData();
-                !empty($v) ?: $_arr[] = $v->getData();
-
-                return implode(" ; ", $_arr);
+                return $this->extract490av($marcRecord);
             }
         }
 
-        /** @var \File_MARC_Subfield $_a */
-        $a = $_245->getSubfield('a');
+        return $this->trimTitle($_245->getSubfield('a'));
 
-        if (!empty($a)) {
-            $_a = $a->getData();
+    }
+
+    /**
+     * @param \File_MARC_Subfield $subfield
+     * @return string
+     */
+    protected function trimTitle(\File_MARC_Subfield $subfield)
+    {
+        if (!empty($subfield)) {
+            $_a = $subfield->getData();
             for ($j = 0; $j < strlen($_a); ++$j) {
                 if (in_array($_a{$j}, ['/', '=', ':'])) {
                     $i = $j - 1;
@@ -62,7 +60,24 @@ class OtherEditionTitleStatement extends AbstractRecordViewHelper
             }
             return $_a;
         }
-
         return "";
+    }
+
+    /**
+     * @param $marcRecord
+     * @return string
+     */
+    public function extract490av($marcRecord): string
+    {
+        /** @var \File_MARC_Data_Field $_490 */
+        $_490 = $marcRecord->getField(490);
+        $_arr = [];
+        $a = $_490->getSubfield('a');
+        $v = $_490->getSubfield('v');
+
+        !empty($a) ?: $_arr[] = $a->getData();
+        !empty($v) ?: $_arr[] = $v->getData();
+
+        return implode(" ; ", $_arr);
     }
 }

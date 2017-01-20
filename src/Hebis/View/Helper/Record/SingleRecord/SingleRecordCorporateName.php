@@ -39,7 +39,7 @@ use Hebis\View\Helper\Record\ResultList\ResultListCorporateName;
 class SingleRecordCorporateName extends ResultListCorporateName
 {
 
-    public function __invoke(SolrMarc $record)
+    public function __invoke(SolrMarc $record, $asArray = false)
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
@@ -97,17 +97,11 @@ class SingleRecordCorporateName extends ResultListCorporateName
                 $arr[] = $str;
             }
         }
-
+        if ($asArray === true) {
+            return $arr;
+        }
 
         return implode("<br />", $arr);
-    }
-
-    private function expandSubfield($subfields)
-    {
-        if (is_array($subfields)) {
-            return implode(", ", $this->toStringArray($subfields));
-        }
-        return "";
     }
 
     public function toStringArray($subFields) {

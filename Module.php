@@ -104,9 +104,6 @@ class Module
                 'physical_description_format' => function($sm) { //Format
                     return new View\Helper\Record\PhysicalDescriptionFormat();
                 },
-                'bib_tip' => function($sm) {
-                    return new View\Helper\Record\BibTip();
-                },
                 'result_list_title_statement' => function($sm) {
                     return new View\Helper\Record\ResultList\ResultListTitleStatement();
                 },
@@ -223,6 +220,15 @@ class Module
                 },
                 'other_edition_publication' => function($sm) {
                     return new View\Helper\Record\OtherEdition\OtherEditionPublication();
+                },
+                'bib_tip_title_statement' => function($sm) {
+                    return new View\Helper\Record\BibTip\BibTipTitleStatement();
+                },
+                'bib_tip_personal_name' => function($sm) {
+                    return new View\Helper\Record\BibTip\BibTipPersonalName();
+                },
+                'bib_tip_publication' => function($sm) {
+                    return new View\Helper\Record\BibTip\BibTipPublication();
                 }
             )
         );

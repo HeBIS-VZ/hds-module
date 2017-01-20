@@ -28,6 +28,7 @@
 namespace Hebis\View\Helper\Record\ResultList;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\CorporateHelperTrait;
 
 
 /**
@@ -38,6 +39,8 @@ use Hebis\RecordDriver\SolrMarc;
  */
 class ResultListCorporateName extends AbstractRecordViewHelper
 {
+
+    use CorporateHelperTrait;
 
     /**
      * @param SolrMarc $record
@@ -104,73 +107,4 @@ class ResultListCorporateName extends AbstractRecordViewHelper
 
         return "";
     }
-
-    /**
-     * @param $subFields
-     * @return string
-     */
-    protected function getAeg($subFields)
-    {
-        $ret = "";
-        foreach ($subFields as $key => $subField) {
-            switch ((string) $key) {
-                case 'a':
-                    $ret .= htmlentities($subField);
-                    break;
-                case 'e':
-                    $ret .= ". " . htmlentities($subField);
-                    break;
-                case 'g':
-                    $ret .= " (".htmlentities($subField).")";
-            }
-        }
-        return $ret;
-    }
-
-    /**
-     * @param $subFields
-     * @return string
-     */
-    protected function getAbgn($subFields)
-    {
-        $ret = "";
-        foreach ($subFields as $key => $subField) {
-            switch ((string) $key) {
-                case 'a':
-                    $ret .= htmlentities($subField);
-                    break;
-                case 'b':
-                    $ret .= ". " . htmlentities($subField);
-                    break;
-                case 'g':
-                case 'n':
-                    $ret .= " (".htmlentities($subField).")";
-            }
-        }
-        return $ret;
-    }
-
-
-    /**
-     * @param $subFields
-     * @return array
-     */
-    protected function getNdc($subFields)
-    {
-        $keys = ['n', 'd', 'c'];
-
-        $ndc_ = array_filter($subFields, function ($key) use ($keys) {
-            return in_array($key, $keys, true);
-        }, ARRAY_FILTER_USE_KEY);
-
-        /* sortiere ndc so dass ndc = ['n' => ...,'d' => ...,'c' => ...] */
-        $ndc = [];
-        foreach ($ndc_ as $key => $value) {
-            $k = array_search($key, $keys);
-            $ndc[$k] = htmlentities($value);
-        }
-        return $ndc;
-    }
-
-
 }
