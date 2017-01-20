@@ -45,7 +45,7 @@ class SingleRecordPublication extends ResultListPublication
      * @param SolrMarc $record
      * @return string
      */
-    public function __invoke(SolrMarc $record)
+    public function __invoke(SolrMarc $record, $asArray = false)
     {
         $ret = "";
         $id = $record->getUniqueID();
@@ -67,7 +67,9 @@ class SingleRecordPublication extends ResultListPublication
             $r .= empty($_264c) ? "" : (!empty($r) ? ", $_264c" : $_264c);
             $arr[] = $r;
         }
-
+        if ($asArray) {
+            return $arr;
+        }
         return implode("<br />", $arr);
     }
 }

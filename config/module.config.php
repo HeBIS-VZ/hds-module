@@ -56,7 +56,8 @@ $config = [
     'controllers' => [
         'factories' => [
             'OAuth' => 'Hebis\Controller\Factory::getOAuth',
-            'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder'
+            'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder',
+            'Xisbn' => 'Hebis\Controller\Factory::getXisbn',
         ],
         'invokables' => [
             'my-research' => 'Hebis\Controller\MyResearchController',
@@ -84,14 +85,25 @@ $config = [
                     ]
                 ]
             ],
+            'ajax-xisbn' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route'    => '/xisbn/xid[/]',
+                    'defaults' => [
+                        'controller'    => 'Xisbn',
+                        'action'        => 'xid'
+                    ]
+                ]
+            ]
         ],
     ],
 ];
 
 $recordRoutes = ['recordfinder' => 'RecordFinder'];
+//$ajaxRoutes = ['AJAX/XISBN'];
 
 $routeGenerator = new \VuFind\Route\RouteGenerator();
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
-
+//$routeGenerator->addStaticRoute($config, $ajaxRoutes);
 
 return $config;

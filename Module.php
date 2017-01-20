@@ -214,6 +214,15 @@ class Module
                 },
                 'single_record_uniform_title' => function($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordUniformTitle();
+                },
+                'other_edition_title_statement' => function($sm) {
+                    return new View\Helper\Record\OtherEdition\OtherEditionTitleStatement();
+                },
+                'other_edition_edition_statement' => function($sm) {
+                    return new View\Helper\Record\OtherEdition\OtherEditionEditionStatement();
+                },
+                'other_edition_publication' => function($sm) {
+                    return new View\Helper\Record\OtherEdition\OtherEditionPublication();
                 }
             )
         );

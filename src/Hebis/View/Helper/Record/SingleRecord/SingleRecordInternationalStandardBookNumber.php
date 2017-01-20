@@ -39,7 +39,7 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
  */
 class SingleRecordInternationalStandardBookNumber extends AbstractRecordViewHelper
 {
-    public function __invoke(SolrMarc $record)
+    public function __invoke(SolrMarc $record, $asArray = false)
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
@@ -65,6 +65,10 @@ class SingleRecordInternationalStandardBookNumber extends AbstractRecordViewHelp
                     $arr[] = $z;
                 }
             }
+        }
+
+        if ($asArray === true) {
+            return $arr;
         }
 
         return implode(" ; ", $arr);

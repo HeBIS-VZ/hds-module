@@ -24,6 +24,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
+namespace Hebis\Controller;
+
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -56,5 +59,14 @@ class Factory
         return new \Hebis\Controller\RecordFinderController(
             $sm->getServiceLocator()->get('VuFind\Config')->get('config')
         );
+    }
+
+
+    public static function getXisbn(ServiceManager $sm)
+    {
+        $ajaxController = new XisbnController();
+        $ajaxController->setServiceLocator($sm->getServiceLocator());
+        $ajaxController->init();
+        return $ajaxController;
     }
 }
