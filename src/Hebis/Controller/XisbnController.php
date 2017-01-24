@@ -9,8 +9,10 @@
 namespace Hebis\Controller;
 
 use Hebis\Connection\WorldCatUtils as WorldCatUtilsService;
+use Hebis\RecordDriver\SolrMarc;
 use VuFind\Controller\AbstractBase;
 use VuFind\Controller\SearchController;
+use VuFind\Search\Base\Results;
 
 class XisbnController extends SearchController
 {
@@ -65,7 +67,9 @@ class XisbnController extends SearchController
         $view = $this->createViewModel();
 
         $isbn = $this->params()->fromQuery('isbn');
-        $isbns = $this->worldCatUtils->getXISBN($isbn);
+        $isbns = array_filter($this->worldCatUtils->getXISBN($isbn), function($elem) use ($isbn) {
+            return ($elem !== $isbn);
+        });
 
         $lookfor = "isxn:(".implode(" ", $isbns).")";
         $limit = 5;
@@ -84,6 +88,7 @@ class XisbnController extends SearchController
         };
 
         $results = $runner->run([], $this->searchClassId, $cb);
+        $results->filterResults(self::getFilterCallback([$isbn]));
         $view->results = $results;
         // Make view
 
@@ -126,6 +131,22 @@ class XisbnController extends SearchController
             throw $e;
 
         }
+    }
+
+
+
+    protected static function getFilterCallback(array $isbns)
+    {
+
+        return function($record) use ($isbns) {
+            /** @var SolrMarc $record */
+            foreach ($record->getISBNs() as $isbn) {
+                if (in_array($isbn, $isbns)) {
+                    return false;
+                }
+            }
+            return true;
+        };
     }
 
 }

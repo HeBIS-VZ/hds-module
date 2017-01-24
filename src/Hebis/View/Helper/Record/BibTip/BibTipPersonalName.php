@@ -29,10 +29,14 @@ class BibTipPersonalName extends SingleRecordPersonalName
             return $aut;
         }
 
-        $f700_ = $marcRecord->getFields(700);
-        $filteredFields = $this->filterByIndicator($f700_, 2, " ");
+        $aut = "";
 
-        $aut = $this->getFieldContents($filteredFields[0]);
+        $f700_ = $marcRecord->getFields(700);
+
+        if (!empty($f700_)) {
+            $filteredFields = $this->filterByIndicator($f700_, 2, " ");
+            $aut = $this->getFieldContents($filteredFields[0]);
+        }
 
         if (!empty($aut)) {
             return $aut;

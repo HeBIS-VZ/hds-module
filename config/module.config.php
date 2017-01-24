@@ -29,6 +29,13 @@ $config = [
                     'solrterms' => 'Hebis\Autocomplete\Factory::getTerms',
                 ]
             ],
+            'search_results' => [
+                'abstract_factories' => ['Hebis\Search\Results\PluginFactory'],
+                'factories' => [
+                    'favorites' => 'VuFind\Search\Results\Factory::getFavorites',
+                    'solr' => 'Hebis\Search\Results\Factory::getSolr',
+                ],
+            ],
         ],
 
     ],
