@@ -207,4 +207,36 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         $arr['contenttype'] = ContentType::getContentType($this);
         return $arr;
     }
+
+    /**
+     * Get an array of all ISBNs associated with the record (may be empty).
+     *
+     * @return array
+     */
+    public function getISBNs()
+    {
+        $isbns = [];
+        $f020_ = $this->marcRecord->getFields('020');
+        /** @var \File_MARC_Data_Field $f020 */
+        foreach ($f020_ as $f020) {
+            if (!empty($f020)) {
+                if (!empty($a = $f020->getSubfield('a'))) {
+                    $isbns[] = $a->getData();
+                }
+                if (!empty($z = $f020->getSubfield('z'))) {
+                    $isbns[] = $z->getData();
+                }
+            }
+        }
+
+        /** @var \File_MARC_Data_Field $f776 */
+        $f776 = $this->marcRecord->getField('776');
+
+        if (!empty($f776) && $f776->getIndicator('1') === '1') {
+            if (!empty($z = $f776->getSubfield('z'))) {
+                $isbns[] = $z;
+            }
+        }
+        return $isbns;
+    }
 }
