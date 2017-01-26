@@ -68,6 +68,7 @@ $config = [
         ],
         'invokables' => [
             'my-research' => 'Hebis\Controller\MyResearchController',
+            'search' => 'Hebis\Controller\SearchController',
         ]
     ],
     'router' => [
