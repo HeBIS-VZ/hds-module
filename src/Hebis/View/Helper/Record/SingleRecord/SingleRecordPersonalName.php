@@ -111,7 +111,7 @@ class SingleRecordPersonalName extends ResultListPersonalName
     protected function addLink($record, $personalName)
     {
         $url = $this->getView()->record($record)->getLink('author', $personalName);
-        return '<a title="'.htmlentities($personalName).'" href="'.$url.'">'.htmlentities($personalName).'</a>';
+        return '<a title="'.$personalName.'" href="'.$url.'">'.$personalName.'</a>';
     }
 
     /**

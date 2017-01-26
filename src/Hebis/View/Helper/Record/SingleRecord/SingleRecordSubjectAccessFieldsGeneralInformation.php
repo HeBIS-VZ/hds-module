@@ -301,7 +301,8 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     {
         $field = $record->getMarcRecord()->getField('648');
         $_648_a = $this->getSubFieldDataOfGivenField($field, 'a');
-        return "<nobr>".$this->generateTag($field, [$_648_a])."</nobr>";
+        $tag = $this->generateTag($field, [$_648_a]);
+        return !empty($tag) ? "<nobr>".$tag."</nobr>" : "";
     }
 
     /**
@@ -331,7 +332,9 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
 
     private function makeCheckboxField($gnd, $content)
     {
-        return  '<label class="checkbox-inline"><input type="checkbox" name="lookfor[]" value="uses_authority:%22'.$gnd.'%22" />'
+        $gnd = trim($gnd);
+        $value = "uses_authority:&quot;$gnd&quot;";
+        return  '<label class="checkbox-inline"><input type="checkbox" name="lookfor[]" value="'.$value.'" />'
                 .'<input type="hidden" name="type" value="allfields" />'.$content .'</label>';
     }
 }
