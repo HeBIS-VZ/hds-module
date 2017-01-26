@@ -67,11 +67,7 @@ class XisbnController extends SearchController
         $view = $this->createViewModel();
 
         $isbn = $this->params()->fromQuery('isbn');
-        $isbns = array_filter($this->worldCatUtils->getXISBN($isbn), function($elem) use ($isbn) {
-            return ($elem !== $isbn);
-        });
-
-        $lookfor = "isxn:(".implode(" ", $isbns).")";
+        $lookfor = "isxn:(".implode(" ", $this->worldCatUtils->getXISBN($isbn)).")";
         $limit = 5;
 
         $runner = $this->getServiceLocator()->get('VuFind\SearchRunner');
