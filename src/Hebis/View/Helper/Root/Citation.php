@@ -115,12 +115,10 @@ class Citation extends \VuFind\View\Helper\Root\Citation
     public function getCitation($format)
     {
         $format = strtolower($format);
-        if ($format === "apa") {
-            $format = "apa-5th-edition";
-        }
+
         $style = CiteProc::loadStyleSheet($format);
-        $this->citeProc = new CiteProc($style, "de-DE");
-        $rendered = $this->citeProc->render($this->cslRecord, "bibliography");
+        $this->citeProc = new CiteProc($style, "de");
+        $rendered = $this->citeProc->render(json_decode($this->cslRecord), "bibliography");
         return $rendered;
 
     }

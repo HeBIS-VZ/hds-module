@@ -120,4 +120,12 @@ class Factory extends \VuFind\Service\Factory
         );
     }
 
+    public static function getExport(ServiceManager $sm)
+    {
+        return new \Hebis\Export(
+            $sm->get('VuFind\Config')->get('config'),
+            $sm->get('VuFind\Config')->get('export')
+        );
+    }
+
 }

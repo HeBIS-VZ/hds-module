@@ -29,7 +29,7 @@
 namespace Hebis\RecordDriver;
 
 use HAB\Pica\Record\Record as PicaRecord;
-use Hebis\Cover\ContentType;
+
 use VuFindSearch\Backend\Exception\BackendException;
 
 
@@ -239,4 +239,5 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         }
         return $isbns;
     }
+
 }

@@ -26,7 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record;
-use Hebis\Cover\ContentType;
+use Hebis\RecordDriver\ContentType;
 use Hebis\RecordDriver\SolrMarc;
 
 
@@ -38,9 +38,6 @@ use Hebis\RecordDriver\SolrMarc;
  */
 class PhysicalDescriptionFormat extends AbstractRecordViewHelper
 {
-
-
-
     /**
      * @param SolrMarc $record
      * @return string

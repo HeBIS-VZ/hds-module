@@ -6,7 +6,7 @@
  * Time: 15:47
  */
 
-namespace Hebis\Cover;
+namespace Hebis\RecordDriver;
 
 
 use Hebis\Marc\Helper;
