@@ -26,4 +26,23 @@ class Factory extends \VuFind\View\Helper\Root\Factory
         $dateConverter = $sm->getServiceLocator()->get('VuFind\DateConverter');
         return new Citation($dateConverter, $config);
     }
+
+    /**
+     * Construct the Record helper.
+     *
+     * @param ServiceManager $sm
+     * @return Record
+     */
+    public static function getRecord(ServiceManager $sm)
+    {
+        $helper = new Record(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        );
+
+        $helper->setCoverRouter(
+            $sm->getServiceLocator()->get('VuFind\Cover\Router')
+        );
+
+        return $helper;
+    }
 }
