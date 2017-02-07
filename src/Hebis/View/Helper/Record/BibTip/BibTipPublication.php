@@ -35,7 +35,9 @@ class BibTipPublication extends AbstractRecordViewHelper
 
         if (!empty($_264_)) {
             $a = current($_264_);
-            return $a->getSubfield('c')->getData();
+            if (!empty($c = $a->getSubfield('c'))) {
+                return $c->getData();
+            }
         }
 
         return "";

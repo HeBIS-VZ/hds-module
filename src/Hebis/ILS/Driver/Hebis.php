@@ -208,4 +208,40 @@ class Hebis extends PAIA
         $session = new \Zend\Session\Container('Record', $this->sessionManager);
         return $session->picaRecord;
     }
+
+    protected function getItemLocation($item)
+    {
+        $location = '';
+
+        if (isset($item['department'])
+            && isset($item['department']['content'])
+        ) {
+            $location .= (empty($location)
+                ? $item['department']['content']
+                : ' - ' . $item['department']['content']);
+        }
+
+        if (isset($item['storage'])
+            && isset($item['storage']['content'])
+        ) {
+            $location .= (empty($location)
+                ? $item['storage']['content']
+                : ' - ' . $item['storage']['content']);
+        }
+
+        return (empty($location) ? 'Unknown' : $location);
+    }
+
+    /**
+     * Returns the value for "location" href in VuFind getStatus/getHolding array
+     *
+     * @param array $item Array with DAIA item data
+     *
+     * @return string
+     */
+    protected function getItemLocationLink($item)
+    {
+        return isset($item['storage']['href'])
+            ? $item['storage']['href'] : false;
+    }
 }
