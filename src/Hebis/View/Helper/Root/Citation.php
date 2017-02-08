@@ -27,6 +27,7 @@
  */
 namespace Hebis\View\Helper\Root;
 use AcademicPuma\CiteProc\CiteProc;
+use Hebis\Csl\MarcConverter\Converter;
 use Hebis\Csl\Model\Layout\CslRecord;
 use Hebis\Csl\MarcConverter\ArticleConverter;
 use VuFind\Exception\Date as DateException;
@@ -99,7 +100,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
     public function __invoke($driver)
     {
         $this->driver = $driver;
-        $this->cslRecord = ArticleConverter::convert($driver->getMarcRecord());
+        $this->cslRecord = Converter::convert($driver);
         return $this;
     }
 

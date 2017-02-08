@@ -15,6 +15,11 @@ class Converter
 
     public static function convert(SolrMarc $record)
     {
+
+        if (self::isThesis($record->getMarcRecord())) {
+            return ThesisConverter::convert($record->getMarcRecord());
+        }
+
         $type = ContentType::getContentType($record);
 
         switch ($type) {
@@ -28,5 +33,10 @@ class Converter
             default:
 
         }
+    }
+
+    public static function isThesis($marcRecord)
+    {
+        return !empty($marcRecord->getField("502"));
     }
 }

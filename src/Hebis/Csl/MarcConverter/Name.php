@@ -10,7 +10,7 @@ namespace Hebis\Csl\MarcConverter;
 use Hebis\Csl\Model;
 class Name
 {
-
+    use SubfieldsTrait;
     /**
      * @param \File_MARC_Record $marcRecord
      * @return array
@@ -136,5 +136,27 @@ class Name
             }
         }
         return $illustrator;
+    }
+
+    public static function getAuthority($record)
+    {
+        return null;
+    }
+
+    public static function getTranslator(\File_MARC_Record $record)
+    {
+        $translators = $record->getFields("700");
+
+        array_filter($translators, function($field){
+            /** @var \File_MARC_Data_Field $field */
+            $_4 = $field->getSubfield('4');
+            return $field->getIndicator(2) === " " && $_4->getData() === "trl";
+        });
+
+        $names = [];
+        foreach ($translators as $translator) {
+            $names[] = self::extractName($translator);
+        }
+        return $names;
     }
 }

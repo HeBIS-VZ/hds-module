@@ -85,5 +85,81 @@ class Record
         });
     }
 
+    public static function getISBN($record)
+    {
+        return self::getSubfield($record, "490", "x");
+    }
+
+    public static function getCollectionNumber(\File_MARC_Record $record)
+    {
+        $collectionNumber = null;
+        $leader = $record->getLeader();
+        if ($leader{19} === "a") {
+            $collectionNumber = self::getSubfield($record, "490", "v", function($field){
+                /** @var \File_MARC_Data_Field $field */
+                return $field->getIndicator(1) == "1";
+            });
+        }
+
+        if ($leader{19} === "c") {
+            $collectionNumber = self::getSubfield($record, "245", "n");
+        }
+        return $collectionNumber;
+    }
+
+    public static function getCollectionTitle(\File_MARC_Record $record)
+    {
+        $collectionTitle = null;
+        $leader = $record->getLeader();
+        if ($leader{19} === "a") {
+            $collectionTitle = self::getSubfield($record, "490", "a", function($field){
+                /** @var \File_MARC_Data_Field $field */
+                return $field->getIndicator(1) == "1";
+            });
+        }
+        if ($leader{19} === "c") {
+            $collectionTitle = self::getSubfield($record, "245", "a", function($field){
+                /** @var \File_MARC_Data_Field $field */
+                return $field->getIndicator(1) == "1";
+            });
+        }
+        return $collectionTitle;
+    }
+
+    /**
+     * returns MARC 300$a
+     *
+     * @param \File_MARC_Record $record
+     * @return null|string
+     */
+    public static function getNumberOfPages(\File_MARC_Record $record)
+    {
+        $pages = self::getSubfield($record, "300", "a");
+
+        if (preg_match("/[\s,-:;]?(\d+)(\s?S\.)$/", $pages, $match)) {
+            return $match[1];
+        }
+        return $pages;
+    }
+
+    /**
+     * return MARC 730$a
+     * @param \File_MARC_Record $record
+     * @return null|string
+     */
+    public static function getOriginalTitle(\File_MARC_Record $record)
+    {
+        return self::getSubfield($record, "730", "a");
+    }
+
+    /**
+     * returns MARC 490$v
+     * @param \File_MARC_Record $record
+     * @return null|string
+     */
+    public static function getVolume(\File_MARC_Record $record)
+    {
+        return self::getSubfield($record, "490", "v");
+    }
 
 }
