@@ -16,22 +16,21 @@ class Converter
     public static function convert(SolrMarc $record)
     {
 
-        if (self::isThesis($record->getMarcRecord())) {
-            return ThesisConverter::convert($record->getMarcRecord());
-        }
-
         $type = ContentType::getContentType($record);
 
         switch ($type) {
             case 'article':
                 return ArticleConverter::convert($record->getMarcRecord());
+            case 'musicalscore':
+                return MusicalScoreConverter::convert($record->getMarcRecord());
+            case 'map':
+                return MapConverter::convert($record->getMarcRecord());
             case 'book':
-                return BookConverter::convert($record->getMarcRecord());
-            case '':
-
-
             default:
-
+                if (self::isThesis($record->getMarcRecord())) {
+                    return ThesisConverter::convert($record->getMarcRecord());
+                }
+                return BookConverter::convert($record->getMarcRecord());
         }
     }
 

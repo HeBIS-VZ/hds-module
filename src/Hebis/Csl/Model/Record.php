@@ -591,7 +591,7 @@ class Record implements CslRecord, JsonSerializable
      * @param string $numberOfPages
      * @return Record
      */
-    public function setNumberOfPages(string $numberOfPages)
+    public function setNumberOfPages($numberOfPages)
     {
         $this->numberOfPages = $numberOfPages;
         return $this;

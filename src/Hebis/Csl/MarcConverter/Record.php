@@ -26,7 +26,19 @@ class Record
 
     public static function getDimensions(\File_MARC_Record $record)
     {
-        return self::getSubfield($record, "300", "c");
+        $ret = "";
+        $c = self::getSubfield($record, "300", "c");
+
+        if (empty($c)) {
+            $a = self::getSubfield($record, "300", "a");
+            $b = self::getSubfield($record, "300", "b");
+
+            $ret .= !empty($a) ? $a : "";
+            $ret .= !empty($b) ? ", $b" : "";
+            return $ret;
+        }
+
+        return $c;
     }
 
     public static function getDOI(\File_MARC_Record $record)
@@ -118,10 +130,7 @@ class Record
             });
         }
         if ($leader{19} === "c") {
-            $collectionTitle = self::getSubfield($record, "245", "a", function($field){
-                /** @var \File_MARC_Data_Field $field */
-                return $field->getIndicator(1) == "1";
-            });
+            $collectionTitle = self::getSubfield($record, "245", "a");
         }
         return $collectionTitle;
     }

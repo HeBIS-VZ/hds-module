@@ -76,6 +76,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
 
     protected $citationFormats;
 
+    protected $styles = [];
     /**
      * Constructor
      *
@@ -117,11 +118,16 @@ class Citation extends \VuFind\View\Helper\Root\Citation
     {
         $format = strtolower($format);
 
-        $style = CiteProc::loadStyleSheet($format);
-        $this->citeProc = new CiteProc($style, "de");
-        $rendered = $this->citeProc->render(json_decode($this->cslRecord), "bibliography");
+        $rendered = $this->loadStyleSheet($format)->render(json_decode($this->cslRecord), "bibliography");
+
         return $rendered;
 
+    }
+
+    public function getCitationStyleName($format)
+    {
+        $info = $this->loadStyleSheet($format)->getInfo();
+        return $info->getTitle();
     }
 
     public function getFormats()
@@ -129,4 +135,16 @@ class Citation extends \VuFind\View\Helper\Root\Citation
         return $this->citationFormats;
     }
 
+    /**
+     * @param $format
+     * @return CiteProc
+     */
+    private function loadStyleSheet($format) {
+
+        if (!array_key_exists($format, $this->styles)) {
+            $styleSheet = CiteProc::loadStyleSheet($format);
+            $this->styles[$format] = new CiteProc($styleSheet, "de");
+        }
+        return $this->styles[$format];
+    }
 }

@@ -23,11 +23,18 @@ class BookConverter
         $book->setCollectionTitle(Record::getCollectionTitle($record));
         $book->setContainerTitle(self::getContainerTitle($record));
         $book->setEditor(Name::getEditor($record));
+        $book->setTranslator(Name::getTranslator($record));
         $book->setIllustrator(Name::getIllustrator($record));
         $book->setISBN(Record::getISBN($record));
         $book->setISSN(Record::getISSN($record));
+        $book->setTitle(Record::getTitle($record));
+        $book->setPublisher(Record::getPublisher($record));
+        $book->setPublisherPlace(Record::getPublisherPlace($record));
+        $book->setIssued(Date::getIssued($record));
+        $book->setNumberOfPages(Record::getNumberOfPages($record));
+        $book->setType("book");
 
-        return $book;
+        return json_encode($book);
     }
 
 

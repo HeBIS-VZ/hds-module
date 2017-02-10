@@ -32,10 +32,10 @@ trait SubfieldsTrait
         }
 
         if (!empty($field)) {
-            $a = $field->getSubfield($subFieldCode);
+            $subfield = $field->getSubfield($subFieldCode);
 
-            if (!empty($a)) {
-                $ret = $a->getData();
+            if (!empty($subfield)) {
+                $ret = $subfield->getData();
             }
         }
         return $ret;

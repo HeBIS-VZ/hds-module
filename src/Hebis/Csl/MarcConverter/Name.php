@@ -45,7 +45,7 @@ class Name
         return $authors;
     }
 
-    private static function extractName(\File_MARC_Data_Field $field)
+    public static function extractName(\File_MARC_Data_Field $field)
     {
         $name = new Model\Name();
         $a = $field->getSubfield('a');
@@ -77,7 +77,21 @@ class Name
     public static function getEditor(\File_MARC_Record $marcRecord)
     {
         $editor = [];
-
+        $marc100 = $marcRecord->getFields('100');
+        array_filter($marc100, function($field){
+            /** @var $field \File_MARC_Data_Field */
+            $ind2 = $field->getIndicator(2);
+            $_4 = $field->getSubfield(4);
+            if (!empty($_4)) {
+                return $_4->getData() === "edt" && $ind2 == " ";
+            }
+            return false;
+        });
+        if (!empty($marc100)) {
+            foreach ($marc100 as $field) {
+                $editor[] = self::extractName($field);
+            }
+        }
         $marc700 = $marcRecord->getFields('700');
 
         array_filter($marc700, function($field){
@@ -158,5 +172,35 @@ class Name
             $names[] = self::extractName($translator);
         }
         return $names;
+    }
+
+    public static function getComposer(\File_MARC_Record $marcRecord)
+    {
+        $composers = [];
+        $marc100 = $marcRecord->getFields('100');
+        if (!empty($marc100)) {
+            foreach ($marc100 as $field) {
+                $composers[] = self::extractName($field);
+            }
+        }
+        $marc700 = $marcRecord->getFields('700');
+
+        array_filter($marc700, function($field){
+            /** @var $field \File_MARC_Data_Field */
+            $ind2 = $field->getIndicator(2);
+            $_4 = $field->getSubfield(4);
+            if (!empty($_4)) {
+                return $_4->getData() === "cmp" && $ind2 == " ";
+            }
+            return false;
+        });
+
+
+        if (!empty($marc700)) {
+            foreach ($marc700 as $field) {
+                $composers[] = self::extractName($field);
+            }
+        }
+        return $composers;
     }
 }

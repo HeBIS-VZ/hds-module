@@ -18,7 +18,9 @@ class Date extends Record
      */
     public static function getIssued(\File_MARC_Record $record)
     {
-        $year = self::getSubfield($record, "264", "c");
+        $year = self::clearYear(self::getSubfield($record, "264", "c"));
+
+
 
         if (!empty($year)) {
             $date = new Model\Date();
@@ -27,6 +29,14 @@ class Date extends Record
             return $date;
         }
         return null;
+    }
+
+    private static function clearYear($string)
+    {
+        if (preg_match("/^[\[\(]?(\d{4})[\)\]]?$/", trim($string), $match)) {
+            return $match[1];
+        }
+        return trim($string);
     }
 
 }
