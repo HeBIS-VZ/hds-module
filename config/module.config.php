@@ -36,6 +36,11 @@ $config = [
                     'solr' => 'Hebis\Search\Results\Factory::getSolr',
                 ],
             ],
+            'recommend' => [
+                'invokables' => [
+                    'pubdatevisajax' => 'Hebis\Recommend\PubDateVisAjax',
+                ],
+            ],
         ],
 
     ],
@@ -67,6 +72,7 @@ $config = [
             'Xisbn' => 'Hebis\Controller\Factory::getXisbn',
         ],
         'invokables' => [
+            'ajax' => 'Hebis\Controller\AjaxController',
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
         ]
