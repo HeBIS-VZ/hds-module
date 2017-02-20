@@ -134,6 +134,9 @@ class AjaxController extends \VuFind\Controller\AjaxController
                         = [substr($current['value'], 0, 4), $current['count']];
                 }
             }
+            usort($newValues['data'], function ($a, $b) {
+                return strcmp($a[0], $b[0]);
+            });
             $retVal[$field] = $newValues;
         }
         return $retVal;
