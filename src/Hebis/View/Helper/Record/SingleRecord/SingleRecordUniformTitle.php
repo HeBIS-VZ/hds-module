@@ -72,7 +72,8 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
         //240 $a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
         //130 $a <$g>
         if (array_key_exists('040', $fields) && array_key_exists('240', $fields)
-            && strpos($this->getSubFieldDataOfGivenField($fields['040'], "e"), "rda") !== false) {
+            && strpos($this->getSubFieldDataOfGivenField($fields['040'], "e"), "rda") !== false
+        ) {
 
             $ret[] = $this->generateContent($fields['240']);
         } else {
@@ -86,7 +87,8 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
         //243 $a <$g>
         //730 $a <$g>
         if (array_key_exists('040', $fields) && array_key_exists('130', $fields)
-            && strpos($this->getSubFieldDataOfGivenField($fields['040'], 'e'), "rda") !== false) {
+            && strpos($this->getSubFieldDataOfGivenField($fields['040'], 'e'), "rda") !== false
+        ) {
 
             $ret[] = $this->generateContent($fields['130']);
 
@@ -106,7 +108,8 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
         //Wenn 730 + 040 $e = rda, dann:
         //730 $a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
         if (array_key_exists('040', $fields) && array_key_exists('730', $fields)
-            && strpos($this->getSubFieldDataOfGivenField($fields['040'], "e"), "rda") !== false) {
+            && strpos($this->getSubFieldDataOfGivenField($fields['040'], "e"), "rda") !== false
+        ) {
 
             if (is_array($fields['730']) || $fields['730'] instanceof \File_MARC_List) {
                 foreach ($fields['730'] as $field) {
@@ -192,8 +195,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
         $str = "";
         $subFields = $this->getSubFieldsDataArrayOfField($field, ['a', 'f', 'g', 'k', 'm', 'n', 'o', 'p', 'r', 's']);
 
-        foreach ($subFields as $code => $subField)
-        {
+        foreach ($subFields as $code => $subField) {
             switch ($code) {
                 case "a":
                     $str .= $subField;
@@ -209,7 +211,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
                     } else {
                         $r[] = "($subField)";
                     }
-                    $str .= " ".implode(" ", $r);
+                    $str .= " " . implode(" ", $r);
                     break;
                 case "k":
                 case "p":
@@ -223,7 +225,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
                     } else {
                         $r[] = $subField;
                     }
-                    $str .= ". ".implode(". ", $r);
+                    $str .= ". " . implode(". ", $r);
                     break;
                 case "m":
                 case "n":
@@ -237,7 +239,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
                     } else {
                         $r[] = $subField;
                     }
-                    $str .= ", ".implode(", ", $r);
+                    $str .= ", " . implode(", ", $r);
                     break;
                 case "o":
                     $str .= "; $subField";
@@ -255,7 +257,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
         $g = $this->getSubFieldDataOfGivenField($field, 'g');
 
         $ret .= !empty($a) ? trim($a) : "";
-        $ret .= !empty($g) ? " &lt;".trim($g)."&gt;" : "";
+        $ret .= !empty($g) ? " &lt;" . trim($g) . "&gt;" : "";
 
         return $ret;
     }
@@ -266,8 +268,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
         $str = "";
         $subFields = $this->getSubFieldsDataArrayOfField($field, ['t', 'f', 'g', 'k', 'm', 'n', 'o', 'p', 'r', 's']);
 
-        foreach ($subFields as $code => $subField)
-        {
+        foreach ($subFields as $code => $subField) {
             switch ($code) {
                 case "t":
                     $str .= $subField;
@@ -283,7 +284,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
                     } else {
                         $r[] = "($subField)";
                     }
-                    $str .= " ".implode(" ", $r);
+                    $str .= " " . implode(" ", $r);
                     break;
                 case "k":
                 case "p":
@@ -296,7 +297,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
                     } else {
                         $r[] = $subField;
                     }
-                    $str .= ". ".implode(". ", $r);
+                    $str .= ". " . implode(". ", $r);
                     break;
                 case "m":
                 case "n":
@@ -310,7 +311,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
                     } else {
                         $r[] = $subField;
                     }
-                    $str .= ", ".implode(", ", $r);
+                    $str .= ", " . implode(", ", $r);
                     break;
                 case "o":
                     $str .= "; $subField";

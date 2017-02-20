@@ -28,9 +28,13 @@
 
 namespace Hebis\Service;
 
-
 use Zend\ServiceManager\ServiceManager;
 
+/**
+ * Class ServiceManager
+ * @package Hebis\Service
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class Factory extends \VuFind\Service\Factory
 {
 
@@ -51,19 +55,19 @@ class Factory extends \VuFind\Service\Factory
 
         //global i18n files located in vendor folder
         $additionalGlobalLangFolders = $config->LanguageConfiguration->additional_vendor_language_folders;
-        $globalLangFolderArr = explode(',',$additionalGlobalLangFolders);
-        array_walk($globalLangFolderArr, function(&$item, $key) {
+        $globalLangFolderArr = explode(',', $additionalGlobalLangFolders);
+        array_walk($globalLangFolderArr, function (&$item, $key) {
             $item = sprintf("%s/%s", APPLICATION_PATH . '/vendor', $item);
         });
 
         //local i18n files located in local folder
         $additionalLocalLangFolders = $config->LanguageConfiguration->additional_local_language_folders;
-        $localLangFolderArr = explode(',',$additionalLocalLangFolders);
-        array_walk($localLangFolderArr, function(&$item, $key) {
+        $localLangFolderArr = explode(',', $additionalLocalLangFolders);
+        array_walk($localLangFolderArr, function (&$item, $key) {
             $item = sprintf("%s/%s", LOCAL_OVERRIDE_DIR, $item);
         });
 
-        $pathStack = array_merge([APPLICATION_PATH  . '/languages'], $globalLangFolderArr, $localLangFolderArr);
+        $pathStack = array_merge([APPLICATION_PATH . '/languages'], $globalLangFolderArr, $localLangFolderArr);
 
         $fallbackLocales = $config->Site->language == 'en'
             ? 'en'

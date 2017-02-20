@@ -33,7 +33,8 @@ use Hebis\View\Helper\Record\AbstractViewHelperTest;
 class SingleRecordProductionTest extends AbstractViewHelperTest
 {
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->viewHelperClass = "SingleRecordProduction";
         $this->testResultField = "";
         $this->testRecordIds = [];

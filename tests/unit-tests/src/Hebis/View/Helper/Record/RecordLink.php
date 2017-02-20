@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record;
+
 use VuFind\View\Helper\Root\RecordLink as Link;
 
 
@@ -38,13 +39,14 @@ use VuFind\View\Helper\Root\RecordLink as Link;
 class RecordLink extends Link
 {
 
-    public function __construct(\VuFind\Record\Router $router) {
+    public function __construct(\VuFind\Record\Router $router)
+    {
         parent::__construct($router);
     }
 
     public function recordFinderProxy($ppn)
     {
-        $this->getActionUrl("record_finder", "home", ['id' => "HEB".$ppn]);
+        $this->getActionUrl("record_finder", "home", ['id' => "HEB" . $ppn]);
     }
 
     public function getActionUrl($controller, $action, $params = [])

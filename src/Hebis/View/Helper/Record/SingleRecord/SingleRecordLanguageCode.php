@@ -49,7 +49,7 @@ class SingleRecordLanguageCode extends AbstractRecordViewHelper
         $fields = $marcRecord->getFields('041');
 
         for ($i = 0; $i < count($fields); ++$i) {
-            
+
             /** @var \File_MARC_Data_Field $field */
             $field = $fields[$i];
             $subFields = $field->getSubfields('a');

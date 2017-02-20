@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -50,13 +51,13 @@ class SingleRecordManufacture extends AbstractRecordViewHelper
 
         $fields = $marcRecord->getFields(264);
 
-        $fields = array_filter($fields, function($field) {
+        $fields = array_filter($fields, function ($field) {
             $ind2 = $field->getIndicator(2);
             $ind1 = $field->getIndicator(1);
             return $ind2 === "0" && in_array($ind1, ["3", "2", " ", ""]);
         });
 
-        usort($fields, function(\File_MARC_Data_Field $fieldA, \File_MARC_Data_Field $fieldB) {
+        usort($fields, function (\File_MARC_Data_Field $fieldA, \File_MARC_Data_Field $fieldB) {
             return (-1) * strcmp($fieldA->getIndicator(1), $fieldB->getIndicator(1));
         });
 

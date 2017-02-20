@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -78,7 +79,7 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
     {
         $subFields = $this->getSubfieldsAsArray($field);
 
-        $w_ = array_filter($field->getSubfields('w'), function(\File_MARC_Subfield $elem){
+        $w_ = array_filter($field->getSubfields('w'), function (\File_MARC_Subfield $elem) {
             return strpos($elem->getData(), "(DE-603)") !== false;
         });
 
@@ -93,7 +94,7 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
 
         if (array_key_exists('a', $subFields) && array_key_exists('t', $subFields) && !empty($w_)) {
             $link = $this->link($w_[0]->getData());
-            $ret .= '<a href="'.$link.'">';
+            $ret .= '<a href="' . $link . '">';
             $ret .= htmlentities($subFields['a']) . ": ";
             $ret .= htmlentities($subFields['t']);
             $ret .= '</a>';
@@ -101,7 +102,7 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
             if (array_key_exists('a', $subFields)) {
                 if (!empty($w_)) {
                     $link = $this->link($w_[0]->getData());
-                    $ret .= '<a href="'.$link.'">' . htmlentities($subFields['a']) . '</a>' . ": ";
+                    $ret .= '<a href="' . $link . '">' . htmlentities($subFields['a']) . '</a>' . ": ";
                 } else {
                     $ret .= htmlentities($subFields['a']) . ": ";
                 }
@@ -110,7 +111,7 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
             if (array_key_exists('t', $subFields)) {
                 if (!empty($w_)) {
                     $link = $this->link($w_[0]->getData());
-                    $ret .= '<a href="'.$link.'">' . htmlentities($subFields['t']) . '</a>';
+                    $ret .= '<a href="' . $link . '">' . htmlentities($subFields['t']) . '</a>';
                 } else {
                     $ret .= htmlentities($subFields['t']);
                 }
@@ -125,14 +126,15 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
      * @param \File_MARC_Data_Field $field
      * @return array|bool
      */
-    protected function getSubfieldsAsArray(\File_MARC_Data_Field $field) {
+    protected function getSubfieldsAsArray(\File_MARC_Data_Field $field)
+    {
 
         if (!empty($field) && !empty($field->getSubfields())) {
             $arr = [];
             /** @var \File_MARC_Subfield $subfield */
             foreach ($field->getSubfields() as $subfield) {
                 if ($subfield->getCode() === "z" && array_key_exists($subfield->getCode(), $arr)) {
-                    $arr[$subfield->getCode()] .= " ; " .$subfield->getData();
+                    $arr[$subfield->getCode()] .= " ; " . $subfield->getData();
                 } else {
                     $arr[$subfield->getCode()] = $subfield->getData();
                 }
@@ -142,7 +144,8 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
         return false;
     }
 
-    protected function link($w) {
-        return $this->getView()->basePath().'/RecordFinder/HEB'.$this->removePrefix($w, "(DE-603)");
+    protected function link($w)
+    {
+        return $this->getView()->basePath() . '/RecordFinder/HEB' . $this->removePrefix($w, "(DE-603)");
     }
 }

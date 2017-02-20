@@ -1,16 +1,38 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sebastian
- * Date: 27.01.17
- * Time: 11:19
+/*
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an
+ * extension of the open source library search engine VuFind, that
+ * allows users to search and browse beyond resources. More
+ * Information about VuFind you will find on http://www.vufind.org
+ *
+ * Copyright (C) 2017
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * Goethe-Universität Frankfurt / Goethe University of Frankfurt
+ * http://www.hebis.de
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 namespace Hebis\Csl\MarcConverter;
+
 use Hebis\Csl\Model;
+
 class Name
 {
     use SubfieldsTrait;
+
     /**
      * @param \File_MARC_Record $marcRecord
      * @return array
@@ -26,7 +48,7 @@ class Name
         }
         $marc700 = $marcRecord->getFields('700');
 
-        array_filter($marc700, function($field){
+        array_filter($marc700, function ($field) {
             /** @var $field \File_MARC_Data_Field */
             $ind2 = $field->getIndicator(2);
             $_4 = $field->getSubfield(4);
@@ -68,7 +90,7 @@ class Name
         }
 
         if (!empty($c)) {
-            $name->setFamily($name->getFamily() . " [".$c->getData()."]");
+            $name->setFamily($name->getFamily() . " [" . $c->getData() . "]");
         }
 
         return $name;
@@ -78,7 +100,7 @@ class Name
     {
         $editor = [];
         $marc100 = $marcRecord->getFields('100');
-        array_filter($marc100, function($field){
+        array_filter($marc100, function ($field) {
             /** @var $field \File_MARC_Data_Field */
             $ind2 = $field->getIndicator(2);
             $_4 = $field->getSubfield(4);
@@ -94,7 +116,7 @@ class Name
         }
         $marc700 = $marcRecord->getFields('700');
 
-        array_filter($marc700, function($field){
+        array_filter($marc700, function ($field) {
             /** @var $field \File_MARC_Data_Field */
             $ind2 = $field->getIndicator(2);
             $_4 = $field->getSubfield(4);
@@ -114,7 +136,7 @@ class Name
 
     public static function getIllustrator(\File_MARC_Record $marcRecord)
     {
-        $filterIll = function($field){
+        $filterIll = function ($field) {
             /** @var $field \File_MARC_Data_Field */
             $_4 = $field->getSubfield(4);
             if (!empty($_4)) {
@@ -133,7 +155,7 @@ class Name
         }
 
         $marc700 = $marcRecord->getFields('700');
-        array_filter($marc700, function($field){
+        array_filter($marc700, function ($field) {
             /** @var $field \File_MARC_Data_Field */
             $ind = $field->getIndicator(2);
             $_4 = $field->getSubfield(4);
@@ -161,7 +183,7 @@ class Name
     {
         $translators = $record->getFields("700");
 
-        array_filter($translators, function($field){
+        array_filter($translators, function ($field) {
             /** @var \File_MARC_Data_Field $field */
             $_4 = $field->getSubfield('4');
             return $field->getIndicator(2) === " " && $_4->getData() === "trl";
@@ -185,7 +207,7 @@ class Name
         }
         $marc700 = $marcRecord->getFields('700');
 
-        array_filter($marc700, function($field){
+        array_filter($marc700, function ($field) {
             /** @var $field \File_MARC_Data_Field */
             $ind2 = $field->getIndicator(2);
             $_4 = $field->getSubfield(4);

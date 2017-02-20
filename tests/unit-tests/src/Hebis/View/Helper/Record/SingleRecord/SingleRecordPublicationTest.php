@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
 /**
@@ -37,7 +38,8 @@ use Hebis\View\Helper\Record\AbstractViewHelperTest;
 class SingleRecordPublicationTest extends AbstractViewHelperTest
 {
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->viewHelperClass = "SingleRecordPublication";
         $this->testResultField = "";
         $this->testRecordIds = [];

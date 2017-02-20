@@ -31,6 +31,7 @@
  */
 
 namespace Hebis\ILS\Driver;
+
 use Hebis\Db\Table\UserOAuth as UserOAuthTable;
 use Hebis\Db\Row\UserOAuth as UserOAuthRow;
 use League\OAuth2\Client\Provider\GenericProvider;
@@ -264,7 +265,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
 
         try {
             $array_response = $this->paiaPostAsArray(
-                'core/'.$patron['cat_username'].'/cancel', $post_data
+                'core/' . $patron['cat_username'] . '/cancel', $post_data
             );
         } catch (ILSException $e) {
             $this->debug($e->getMessage());
@@ -332,8 +333,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     public function changePassword($details)
     {
         $post_data = [
-            "patron"       => $details['patron']['cat_username'],
-            "username"     => $details['patron']['cat_username'],
+            "patron" => $details['patron']['cat_username'],
+            "username" => $details['patron']['cat_username'],
             "old_password" => $details['oldPassword'],
             "new_password" => $details['newPassword']
         ];
@@ -355,8 +356,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         if (isset($array_response['error'])) {
             // on error
             $details = [
-                'success'    => false,
-                'status'     => $array_response['error'],
+                'success' => false,
+                'status' => $array_response['error'],
                 'sysMessage' =>
                     isset($array_response['error'])
                         ? $array_response['error'] : ' ' .
@@ -395,13 +396,13 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      */
     public function getCancelHoldDetails($checkOutDetails)
     {
-        return($checkOutDetails['cancel_details']);
+        return ($checkOutDetails['cancel_details']);
     }
 
     /**
      * Get Default Pick Up Location
      *
-     * @param array $patron      Patron information returned by the patronLogin
+     * @param array $patron Patron information returned by the patronLogin
      * method.
      * @param array $holdDetails Optional array, only passed in when getting a list
      * in the context of placing a hold; contains most of the same values passed to
@@ -442,7 +443,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     public function getMyFines($patron)
     {
         $fees = $this->paiaGetAsArray(
-            'core/'.$patron['cat_username'].'/fees'
+            'core/' . $patron['cat_username'] . '/fees'
         );
 
         // PAIA simple data type money: a monetary value with currency (format
@@ -451,7 +452,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
             $paiaCurrencyPattern = "/^([0-9]+\.[0-9][0-9]) ([A-Z][A-Z][A-Z])$/";
             if (preg_match($paiaCurrencyPattern, $fee, $feeMatches)) {
                 // VuFind expects fees in PENNIES
-                return ($feeMatches[1]*100);
+                return ($feeMatches[1] * 100);
             }
             return $fee;
         };
@@ -461,14 +462,14 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
             foreach ($fees['fee'] as $fee) {
                 $result = [
                     // fee.amount 	1..1 	money 	amount of a single fee
-                    'amount'      => $feeConverter($fee['amount']),
-                    'checkout'    => '',
+                    'amount' => $feeConverter($fee['amount']),
+                    'checkout' => '',
                     // fee.feetype 	0..1 	string 	textual description of the type
                     // of service that caused the fee
-                    'fine'    => (isset($fee['feetype']) ? $fee['feetype'] : null),
+                    'fine' => (isset($fee['feetype']) ? $fee['feetype'] : null),
                     'balance' => $feeConverter($fee['amount']),
                     // fee.date 	0..1 	date 	date when the fee was claimed
-                    'createdate'  => (isset($fee['date'])
+                    'createdate' => (isset($fee['date'])
                         ? $this->convertDate($fee['date']) : null),
                     'duedate' => '',
                     // fee.edition 	0..1 	URI 	edition that caused the fee
@@ -504,13 +505,13 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         // fee.item 	0..1 	URI 	item that caused the fee
         // fee.feeid 	0..1 	URI 	URI of the type of service that
         // caused the fee
-        $additionalData['feeid']      = (isset($fee['feeid'])
+        $additionalData['feeid'] = (isset($fee['feeid'])
             ? $fee['feeid'] : null);
-        $additionalData['about']      = (isset($fee['about'])
+        $additionalData['about'] = (isset($fee['about'])
             ? $fee['about'] : null);
-        $additionalData['item']       = (isset($fee['item'])
+        $additionalData['item'] = (isset($fee['item'])
             ? $fee['item'] : null);
-        $additionalData['title']      = (isset($fee['title'])
+        $additionalData['title'] = (isset($fee['title'])
             ? $fee['title'] : null);
 
         return $additionalData;
@@ -553,20 +554,20 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         //todo: make fields more configurable
         if (is_array($patron)) {
             return [
-                'firstname'  => $patron['firstname'],
-                'lastname'   => $patron['lastname'],
-                'address1'   => null,
-                'address2'   => null,
-                'city'       => null,
-                'country'    => null,
-                'zip'        => null,
-                'phone'      => null,
-                'group'      => null,
+                'firstname' => $patron['firstname'],
+                'lastname' => $patron['lastname'],
+                'address1' => null,
+                'address2' => null,
+                'city' => null,
+                'country' => null,
+                'zip' => null,
+                'phone' => null,
+                'group' => null,
                 // PAIA specific custom values
-                'expires'    => isset($patron['expires'])
+                'expires' => isset($patron['expires'])
                     ? $this->convertDate($patron['expires']) : null,
                 'statuscode' => isset($patron['status']) ? $patron['status'] : null,
-                'canWrite'   => in_array('write_items', $this->getSession()->scope),
+                'canWrite' => in_array('write_items', $this->getSession()->scope),
             ];
         }
         return [];
@@ -617,10 +618,10 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     /**
      * This method queries the ILS for new items
      *
-     * @param string $page    page number of results to retrieve (counting starts @1)
-     * @param string $limit   the size of each page of results to retrieve
+     * @param string $page page number of results to retrieve (counting starts @1)
+     * @param string $limit the size of each page of results to retrieve
      * @param string $daysOld the maximum age of records to retrieve in days (max 30)
-     * @param string $fundID  optional fund ID to use for limiting results
+     * @param string $fundID optional fund ID to use for limiting results
      *
      * @return array An associative array with two keys: 'count' (the number of items
      * in the 'results' array) and 'results' (an array of associative arrays, each
@@ -637,7 +638,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      * This is responsible for gettting a list of valid library locations for
      * holds / recall retrieval
      *
-     * @param array $patron      Patron information returned by the patronLogin
+     * @param array $patron Patron information returned by the patronLogin
      *                           method.
      * @param array $holdDetails Optional array, only passed in when getting a list
      * in the context of placing a hold; contains most of the same values passed to
@@ -670,7 +671,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      */
     public function getRenewDetails($checkOutDetails)
     {
-        return($checkOutDetails['renew_details']);
+        return ($checkOutDetails['renew_details']);
     }
 
     /**
@@ -726,7 +727,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      * @param $details
      * @return array
      */
-    protected function getConfirmations($holdDetails) {
+    protected function getConfirmations($holdDetails)
+    {
         $confirmations = [];
         if (isset($holdDetails['pickUpLocation'])) {
             $confirmations['http://purl.org/ontology/paia#StorageCondition']
@@ -750,7 +752,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      */
     public function placeHold($holdDetails)
     {
-        $item = $holdDetails['item_id'].":ban:".$holdDetails['doc_id'];
+        $item = $holdDetails['item_id'] . ":ban:" . $holdDetails['doc_id'];
         $patron = $holdDetails['patron'];
 
         $doc = [];
@@ -762,7 +764,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
 
         try {
             $array_response = $this->paiaPostAsArray(
-                'core/'.$patron['id'].'/request', $post_data
+                'core/' . $patron['id'] . '/request', $post_data
             );
         } catch (ILSException $e) {
             $this->debug($e->getMessage());
@@ -852,7 +854,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
 
         try {
             $array_response = $this->paiaPostAsArray(
-                'core/'.$patron['cat_username'].'/renew', $post_data
+                'core/' . $patron['cat_username'] . '/renew', $post_data
             );
         } catch (ILSException $e) {
             $this->debug($e->getMessage());
@@ -880,16 +882,16 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
                     ];
                 } elseif ($element['status'] == '3') {
                     $details[$item_id] = [
-                        'success'  => true,
+                        'success' => true,
                         'new_date' => $element['endtime'],
-                        'item_id'  => 0,
+                        'item_id' => 0,
                         'sysMessage' => 'Successfully renewed'
                     ];
                 } else {
                     $details[$item_id] = [
-                        'success'  => false,
+                        'success' => false,
                         'new_date' => $element['endtime'],
-                        'item_id'  => 0,
+                        'item_id' => 0,
                         'sysMessage' => 'Request rejected'
                     ];
                 }
@@ -945,7 +947,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
 
         if (!isset($itemsResponse) || $itemsResponse == null) {
             $itemsResponse = $this->paiaGetAsArray(
-                'core/'.$this->username.'/items'
+                'core/' . $this->username . '/items'
             );
             //$this->putCachedData($patron['cat_username'] . '_items', $itemsResponse);
         }
@@ -994,8 +996,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     /**
      * PAIA support function to implement ILS specific parsing of user_details
      *
-     * @param string $patron        User id
-     * @param array  $user_response Array with PAIA response data
+     * @param string $patron User id
+     * @param array $user_response Array with PAIA response data
      *
      * @return array
      */
@@ -1012,7 +1014,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
             $lastname = '';
             array_shift($nameArr);
             foreach ($nameArr as $value) {
-                $lastname .= ' '.$value;
+                $lastname .= ' ' . $value;
             }
             $lastname = trim($lastname);
         }
@@ -1021,13 +1023,13 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         // (cf. https://github.com/gbv/paia/issues/29)
 
         $user = [];
-        $user['id']        = $patron;
+        $user['id'] = $patron;
         $user['firstname'] = $firstname;
-        $user['lastname']  = $lastname;
-        $user['email']     = (isset($user_response['email'])
+        $user['lastname'] = $lastname;
+        $user['email'] = (isset($user_response['email'])
             ? $user_response['email'] : '');
-        $user['major']     = null;
-        $user['college']   = null;
+        $user['major'] = null;
+        $user['college'] = null;
         // add other information from PAIA - we don't want anything to get lost while parsing
         if (!empty($user_response)) {
             foreach ($user_response as $key => $value) {
@@ -1044,7 +1046,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      * PAIA helper function to allow customization of mapping from PAIA response to
      * VuFind ILS-method return values.
      *
-     * @param array  $items   Array of PAIA items to be mapped
+     * @param array $items Array of PAIA items to be mapped
      * @param string $mapping String identifying a custom mapping-method
      *
      * @return array
@@ -1093,7 +1095,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
             $result['location'] = (isset($doc['storage']) ? $doc['storage'] : null);
 
             // queue (0..1) number of waiting requests for the document or item
-            $result['position'] =  (isset($doc['queue']) ? $doc['queue'] : null);
+            $result['position'] = (isset($doc['queue']) ? $doc['queue'] : null);
 
             // only true if status == 4
             $result['available'] = false;
@@ -1182,7 +1184,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
             $result['location'] = (isset($doc['storage']) ? $doc['storage'] : null);
 
             // queue (0..1) number of waiting requests for the document or item
-            $result['position'] =  (isset($doc['queue']) ? $doc['queue'] : null);
+            $result['position'] = (isset($doc['queue']) ? $doc['queue'] : null);
 
             // only true if status == 4
             $result['available'] = false;
@@ -1309,7 +1311,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     /**
      * Post something to a foreign host
      *
-     * @param string $file         POST target URL
+     * @param string $file POST target URL
      * @param string $data_to_send POST data
      * @param string $access_token PAIA access token for current session
      *
@@ -1323,7 +1325,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
 
         $http_headers = [];
         if (isset($access_token)) {
-            $http_headers['Authorization'] = 'Bearer ' .$access_token;
+            $http_headers['Authorization'] = 'Bearer ' . $access_token;
         }
 
         try {
@@ -1352,7 +1354,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     /**
      * GET data from foreign host
      *
-     * @param string $file         GET target URL
+     * @param string $file GET target URL
      * @param string $access_token PAIA access token for current session
      *
      * @return bool|string
@@ -1362,9 +1364,9 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     {
         $userAgent = "VuFind 3.0.1";//$this->config['Site']['generator'];
         $http_headers = [
-            'User-Agent' =>    $userAgent,
-            'Authorization' => 'Bearer ' .$access_token,
-            'Content-type' =>  'application/json; charset=UTF-8',
+            'User-Agent' => $userAgent,
+            'Authorization' => 'Bearer ' . $access_token,
+            'Content-type' => 'application/json; charset=UTF-8',
         ];
 
         try {
@@ -1438,7 +1440,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      * Post something at given URL and return it as json_decoded array
      *
      * @param string $file POST target URL
-     * @param array  $data POST data
+     * @param array $data POST data
      *
      * @return array|mixed
      * @throws ILSException
@@ -1476,10 +1478,10 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     {
         // perform full PAIA auth and get patron info
         $post_data = [
-            "username"   => $username,
-            "password"   => $password,
+            "username" => $username,
+            "password" => $password,
             "grant_type" => "password",
-            "scope"      => "read_patron read_fees read_items write_items"
+            "scope" => "read_patron read_fees read_items write_items"
         ];
         $responseJson = $this->paiaPostRequest('auth/login', $post_data);
 
@@ -1554,8 +1556,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      *
      * This is responsible for determining if an item is requestable
      *
-     * @param string $id     The Bib ID
-     * @param array  $data   An Array of item data
+     * @param string $id The Bib ID
+     * @param array $data An Array of item data
      * @param patron $patron An array of patron data
      *
      * @return bool True if request is valid, false if not
@@ -1572,8 +1574,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      *
      * This is responsible for determining if an item is requestable
      *
-     * @param string $id     The Bib ID
-     * @param array  $data   An Array of item data
+     * @param string $id The Bib ID
+     * @param array $data An Array of item data
      * @param patron $patron An array of patron data
      *
      * @return bool True if request is valid, false if not
@@ -1584,7 +1586,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     {
         // TODO: make this more configurable
         if (
-            isset($patron['status']) && $patron['status']  == 0
+            isset($patron['status']) && $patron['status'] == 0
             && isset($patron['expires']) && $patron['expires'] > date('Y-m-d')
             && in_array('write_items', $this->getSession()->scope)
         ) {

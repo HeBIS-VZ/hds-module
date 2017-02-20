@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -73,7 +74,9 @@ class SingleRecordInternationalStandardMusicNumber extends AbstractRecordViewHel
         $return = [];
 
         //flatten
-        array_walk_recursive($arr, function($elem) use (&$return) { $return[] = $elem; });
+        array_walk_recursive($arr, function ($elem) use (&$return) {
+            $return[] = $elem;
+        });
 
         return implode(" ; ", $return);
     }

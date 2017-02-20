@@ -27,11 +27,16 @@
 
 namespace Hebis\View\Helper\Record;
 
-
+/**
+ * Trait MarcSubfieldManipulationTrait
+ * @package Hebis\View\Helper\Record
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 trait MarcSubfieldManipulationTrait
 {
 
-    protected function getSubFieldsStringArrayOfGivenField(\File_MARC_Data_Field $field, $subFieldCodes = []) {
+    protected function getSubFieldsStringArrayOfGivenField(\File_MARC_Data_Field $field, $subFieldCodes = [])
+    {
         $arr = [];
         foreach ($subFieldCodes as $code) {
             $arr = array_merge($arr, $this->toStringArray($field->getSubfields($code)));
@@ -39,7 +44,8 @@ trait MarcSubfieldManipulationTrait
         return $arr;
     }
 
-    public function toStringArray($subFields) {
+    public function toStringArray($subFields)
+    {
         $arr = [];
         /** @var \File_MARC_Subfield $subfield */
         foreach ($subFields as $subfield) {

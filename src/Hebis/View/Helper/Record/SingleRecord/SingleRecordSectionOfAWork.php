@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -76,7 +77,7 @@ class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
                 switch ($key) {
                     case 'n':
                         //if (strpos($subField->getData(), "[...]") === false) {
-                            $n = htmlentities($this->removeControlSigns($subField->getData()));
+                        $n = htmlentities($this->removeControlSigns($subField->getData()));
                         //}
                         break;
                     case 'p':
@@ -89,7 +90,6 @@ class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
                     $n = $p = "";
                     $arr[] = $np;
                 }
-
 
 
             }

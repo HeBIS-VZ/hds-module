@@ -11,11 +11,11 @@ defined('APPLICATION_PATH') || define('APPLICATION_PATH', realpath(dirname(__DIR
 
 // Define application environment
 defined('APPLICATION_ENV')
-    || define('APPLICATION_ENV', (getenv('VUFIND_ENV') ? getenv('VUFIND_ENV') : 'testing'));
+|| define('APPLICATION_ENV', (getenv('VUFIND_ENV') ? getenv('VUFIND_ENV') : 'testing'));
 
 // Define path to local override directory
 defined('LOCAL_OVERRIDE_DIR')
-    || define('LOCAL_OVERRIDE_DIR', (getenv('VUFIND_LOCAL_DIR') ? getenv('VUFIND_LOCAL_DIR') : ''));
+|| define('LOCAL_OVERRIDE_DIR', (getenv('VUFIND_LOCAL_DIR') ? getenv('VUFIND_LOCAL_DIR') : ''));
 
 define('VUFIND_HOME_DIR', '/usr/local/vufind2');
 
@@ -30,13 +30,13 @@ $pathParts[] = get_include_path();
 set_include_path(implode(PATH_SEPARATOR, $pathParts));
 
 // Composer autoloading
-$autoload = __DIR__.'/../../../vendor/autoload.php';
+$autoload = __DIR__ . '/../../../vendor/autoload.php';
 if (file_exists($autoload)) {
-    $loader = include __DIR__.'/../../../vendor/autoload.php';
+    $loader = include __DIR__ . '/../../../vendor/autoload.php';
     $loader = new Composer\Autoload\ClassLoader();
     $loader->add('Hebis', realpath(__DIR__ . '/unit-tests/src'));
     $loader->add('Hebis', realpath(__DIR__ . '/../src'));
-    $loader->add('VuFindTest', realpath(__DIR__.'../../VuFind/tests/unit-tests/src'));
+    $loader->add('VuFindTest', realpath(__DIR__ . '../../VuFind/tests/unit-tests/src'));
     // Dynamically discover all module src directories:
     $modules = opendir(__DIR__ . '/../..');
     while ($mod = readdir($modules)) {

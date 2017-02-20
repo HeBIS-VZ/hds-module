@@ -75,7 +75,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     protected $spreadsheetReader;
 
-    /** @var string $testSheetName  */
+    /** @var string $testSheetName */
     protected $testSheetName;
 
     /**
@@ -152,7 +152,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
      */
     protected function getRecordFromIndex($ppn)
     {
-        $url = SOLR_HOST_TEST.'/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
+        $url = SOLR_HOST_TEST . '/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
         $client = new Client($url, array(
             'maxredirects' => 3,
             'timeout' => 10
@@ -245,7 +245,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
             }
 
             $actual = trim(strip_tags(str_replace("<br />", "\n", $this->viewHelper->__invoke($record))));
-            $_comment = "Test: \"".$this->testSheetName."\", Class: \"".$this->viewHelperClass."\", Test Case: $i / PPN: ".$row[1]."; Comment: $comment\n";
+            $_comment = "Test: \"" . $this->testSheetName . "\", Class: \"" . $this->viewHelperClass . "\", Test Case: $i / PPN: " . $row[1] . "; Comment: $comment\n";
 
             try {
                 $this->executeTest($expectedSingleRecordResult, $actual, $_comment, $expectedRecordListResult);
@@ -256,7 +256,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
         }
 
         foreach ($failures as $e) {
-            fwrite(STDERR, $e->toString()."\n".$e->getComparisonFailure()->getDiff()."\n\n-----\nActual:\n".$e->getComparisonFailure()->getActual()."\n\n");
+            fwrite(STDERR, $e->toString() . "\n" . $e->getComparisonFailure()->getDiff() . "\n\n-----\nActual:\n" . $e->getComparisonFailure()->getActual() . "\n\n");
             fwrite(STDERR, "------------------------------------------------------------------------------------------------------------------------------------------------------\n\n");
         }
 
@@ -291,7 +291,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
                 continue;
             }
 
-            $message = 'Testing "'.$this->viewHelperClass.'" using "'.$k.'.json"';
+            $message = 'Testing "' . $this->viewHelperClass . '" using "' . $k . '.json"';
             $expected = htmlentities($this->expections[$k][$this->testResultField]);
             $actual = trim($this->stripTags($this->viewHelper->__invoke($this->fixtures[$k])));
 

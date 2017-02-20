@@ -1,45 +1,43 @@
 <?php
-/**
- * Citation view helper
+/*
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an
+ * extension of the open source library search engine VuFind, that
+ * allows users to search and browse beyond resources. More
+ * Information about VuFind you will find on http://www.vufind.org
  *
- * PHP version 5
+ * Copyright (C) 2017
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * Goethe-Universität Frankfurt / Goethe University of Frankfurt
+ * http://www.hebis.de
  *
- * Copyright (C) Villanova University 2010.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * @category VuFind
- * @package  View_Helpers
- * @author   Demian Katz <demian.katz@villanova.edu>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development Wiki
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 namespace Hebis\View\Helper\Root;
+
 use AcademicPuma\CiteProc\CiteProc;
 use Hebis\Csl\MarcConverter\Converter;
 use Hebis\Csl\Model\Layout\CslRecord;
 use Hebis\Csl\MarcConverter\ArticleConverter;
 use VuFind\Exception\Date as DateException;
 use Zend\Config\Config;
+
 /**
- * Citation view helper
- *
- * @category VuFind
- * @package  View_Helpers
- * @author   Demian Katz <demian.katz@villanova.edu>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development Wiki
+ * Class Citation
+ * @package Hebis\View\Helper\Root
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
 class Citation extends \VuFind\View\Helper\Root\Citation
 {
@@ -77,6 +75,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
     protected $citationFormats;
 
     protected $styles = [];
+
     /**
      * Constructor
      *
@@ -139,7 +138,8 @@ class Citation extends \VuFind\View\Helper\Root\Citation
      * @param $format
      * @return CiteProc
      */
-    private function loadStyleSheet($format) {
+    private function loadStyleSheet($format)
+    {
 
         if (!array_key_exists($format, $this->styles)) {
             $styleSheet = CiteProc::loadStyleSheet($format);

@@ -76,30 +76,30 @@ $config = [
             'oauth' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
-                    'route'    => '/oauth/callback[/]',
+                    'route' => '/oauth/callback[/]',
                     'defaults' => [
                         'controller' => 'OAuth',
-                        'action'     => 'Callback',
-                   ],
+                        'action' => 'Callback',
+                    ],
                 ],
             ],
             'oauth-token-renew' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
-                    'route'    => '/oauth/renew[/]',
+                    'route' => '/oauth/renew[/]',
                     'defaults' => [
-                        'controller'    => 'OAuth',
-                        'action'        => 'renew'
+                        'controller' => 'OAuth',
+                        'action' => 'renew'
                     ]
                 ]
             ],
             'ajax-xisbn' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
-                    'route'    => '/xisbn/xid[/]',
+                    'route' => '/xisbn/xid[/]',
                     'defaults' => [
-                        'controller'    => 'Xisbn',
-                        'action'        => 'xid'
+                        'controller' => 'Xisbn',
+                        'action' => 'xid'
                     ]
                 ]
             ]

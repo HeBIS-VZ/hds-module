@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Box\Spout\Reader\ODS\RowIterator;
 use Box\Spout\Reader\ODS\Sheet;
 use Box\Spout\Reader\ODS\SheetIterator;
@@ -48,10 +49,10 @@ class SingleRecordSectionOfAWorkTest extends AbstractViewHelperTest
         $this->testRecordIds = [];
 
         $this->testSheetName = "Unterreihe";
-        parent::setUp(); 
+        parent::setUp();
     }
 
-    
+
     /**
      * Get plugins to register to support view helper being tested
      *

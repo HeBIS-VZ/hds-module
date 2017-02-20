@@ -35,7 +35,7 @@ class PicaRecordUtils
     const PICA_TIT_SEARCH_PATTERN = '/--.+--:/';
 
     const PICA_TIT_SEARCH_PATTERN2 = '/--.+--/';
-    
+
 
     /**
      * Process level1 data
@@ -53,7 +53,7 @@ class PicaRecordUtils
             // With ILN do exact match, without ILN find matching EPNs
             $lok = $picaRecord->getIln() ? 'lok: ' . $picaRecord->getEpn() . ' ' . $picaRecord->getIln() : $picaRecord->getEpn();
 
-            $found = $picaRecord->getIln() ? (($key === $lok) ? true : false ) : ( strpos($key, $lok) > -1 ? true : false );
+            $found = $picaRecord->getIln() ? (($key === $lok) ? true : false) : (strpos($key, $lok) > -1 ? true : false);
 
             if ($found) {
                 $klassArray = array();
@@ -151,9 +151,9 @@ class PicaRecordUtils
                     }
 
                     if (preg_match('/^039[BCSEDX]/', $field)) {
-                        
+
                         if (isset($subField['$a'])) {
-                            
+
                             foreach ($subField['$a'] as $index => &$value) {
 
                                 $subFieldArray98ac = [
@@ -262,7 +262,7 @@ class PicaRecordUtils
         if (isset($picaTit['009R']) && strlen($picaTit['009R']['0']['$u']['0']) > 0 &&
             isset($picaTit['002@']) && strpos($picaTit['002@']['0']['$0']['0'], "r") === 0
         )
-        $retroUrl = array($picaTit['009R']['0']['$u']['0'], $picaTit['009R']['0']['$3']['0']);
+            $retroUrl = array($picaTit['009R']['0']['$u']['0'], $picaTit['009R']['0']['$3']['0']);
 
         return $retroUrl;
     }

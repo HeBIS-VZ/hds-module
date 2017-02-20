@@ -35,9 +35,10 @@ class MediaTypes
      * @var array;
      */
     private static $mediaTypes = [];
-    
-    public static function getMediaTypesMap() {
-        
+
+    public static function getMediaTypesMap()
+    {
+
         //just initialize once
         if (empty(self::$mediaTypes)) {
             self::initMediaTypes();
@@ -45,7 +46,7 @@ class MediaTypes
 
         return self::$mediaTypes;
     }
-    
+
     private static function initMediaTypes()
     {
         /* css classes available in blueprint theme

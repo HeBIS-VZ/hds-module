@@ -1,9 +1,28 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sebastian
- * Date: 06.01.17
- * Time: 15:47
+/*
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an
+ * extension of the open source library search engine VuFind, that
+ * allows users to search and browse beyond resources. More
+ * Information about VuFind you will find on http://www.vufind.org
+ *
+ * Copyright (C) 2017
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * Goethe-Universität Frankfurt / Goethe University of Frankfurt
+ * http://www.hebis.de
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 namespace Hebis\RecordDriver;
@@ -18,92 +37,92 @@ class ContentType
         "a" => [
             "a" => [
                 "xxx" => "article",
-                "cr"  => "article"
+                "cr" => "article"
             ],
             "m" => [
                 "xxx" => "book",
-                "co"  => "dvd",
-                "cocd"=> "cd",
-                "c "  => "cd",
-                "cr"  => "ebook",
-                "cu"  => "ebook",
-                "h"   => "microfilm",
-                "f"   => "sensorimage",
-                "o"   => "kit",
-                "r"   => "retro"
+                "co" => "dvd",
+                "cocd" => "cd",
+                "c " => "cd",
+                "cr" => "ebook",
+                "cu" => "ebook",
+                "h" => "microfilm",
+                "f" => "sensorimage",
+                "o" => "kit",
+                "r" => "retro"
             ],
             "s" => [
                 "xxx" => "journal",
-                "t"   => "journal",
-                "h"   => "journal",
-                "co"  => "journal",
-                "cocd"=> "journal",
-                "cr"  => "electronic",
-                "f"   => "sensorimage"
+                "t" => "journal",
+                "h" => "journal",
+                "co" => "journal",
+                "cocd" => "journal",
+                "cr" => "electronic",
+                "f" => "sensorimage"
             ]
         ],
         "c" => [
             "m" => [
-                "q"   => "musicalscore"
+                "q" => "musicalscore"
             ],
             "s" => [
-                "q"   => "musicalscore"
+                "q" => "musicalscore"
             ]
         ],
         "e" => [
             "m" => [
-                "a"   => "map"
+                "a" => "map"
             ],
             "s" => [
-                "a"   => "map"
+                "a" => "map"
             ]
         ],
         "g" => [
             "m" => [
-                "m"   => "video",
-                "v"   => "video",
+                "m" => "video",
+                "v" => "video",
                 "xxx" => "video"
             ],
             "s" => [
-                "m"   => "video",
+                "m" => "video",
                 "xxx" => "video",
-                "v"   => "video"
+                "v" => "video"
             ]
         ],
         "i" => [
             "m" => [
-                "s"   => "audio",
-                "cocd"=> "cd"
+                "s" => "audio",
+                "cocd" => "cd"
             ]
         ],
         "j" => [
             "m" => [
                 "xxx" => "audio",
-                "s"   => "audio",
-                "cocd"=> "audio"
+                "s" => "audio",
+                "cocd" => "audio"
             ],
             "s" => [
-                "co"  => "audio",
-                "s"   => "audio"
+                "co" => "audio",
+                "s" => "audio"
             ]
         ],
         "k" => [
             "m" => [
-                "a"   => "photo",
-                "k"   => "photo",
-                "cr"  => "photo"
+                "a" => "photo",
+                "k" => "photo",
+                "cr" => "photo"
             ]
         ],
         "o" => [
             "m" => [
                 "xxx" => "kit",
-                "o"   => "kit",
+                "o" => "kit",
             ]
         ],
         "r" => [
             "m" => [
                 "xxx" => "physicalobject",
-                "z"   => "physicalobject",
+                "z" => "physicalobject",
             ]
         ],
         "t" => [

@@ -70,13 +70,13 @@ class OAuthController extends AbstractBase
         }
 
         $this->provider = new GenericProvider([
-            'clientId'                => $config['PAIA']['client_id'],    // The client ID assigned to you by the provider
-            'clientSecret'            => $config['PAIA']['client_secret'],   // The client password assigned to you by the provider
-            'redirectUri'             => $config['PAIA']['callback_url'],
-            'urlAuthorize'            => $config['PAIA']['baseUrl'] . 'oauth/v2/auth',
-            'urlAccessToken'          => $config['PAIA']['baseUrl'] . 'oauth/v2/token',
+            'clientId' => $config['PAIA']['client_id'],    // The client ID assigned to you by the provider
+            'clientSecret' => $config['PAIA']['client_secret'],   // The client password assigned to you by the provider
+            'redirectUri' => $config['PAIA']['callback_url'],
+            'urlAuthorize' => $config['PAIA']['baseUrl'] . 'oauth/v2/auth',
+            'urlAccessToken' => $config['PAIA']['baseUrl'] . 'oauth/v2/token',
             'urlResourceOwnerDetails' => $config['PAIA']['baseUrl'] . 'core/',
-            'scopes'                  => 'read_patron read_fees read_items write_items',
+            'scopes' => 'read_patron read_fees read_items write_items',
         ]);
     }
 

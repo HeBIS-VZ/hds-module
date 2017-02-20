@@ -27,6 +27,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -58,7 +59,7 @@ class SingleRecordPhysicalDescription extends AbstractRecordViewHelper
             $ret .= ($b) ? " : " . $b : "";
             $ret .= ($c) ? " ; " . $c : "";
             $ret .= ($e) ? " + " . $e : "";
-            $arr[] =  $ret;
+            $arr[] = $ret;
         }
 
         return implode("<br />", $arr);

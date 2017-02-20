@@ -41,6 +41,7 @@ use Hebis\RecordDriver\SolrMarc;
 class SingleRecordPublication extends ResultListPublication
 {
     use MarcSubfieldManipulationTrait;
+
     /**
      * @param SolrMarc $record
      * @return string

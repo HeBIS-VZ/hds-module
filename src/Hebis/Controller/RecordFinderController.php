@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\Controller;
+
 use VuFind\Controller\AbstractRecord;
 use VuFind\Exception\RecordMissing as RecordMissingException;
 
@@ -58,7 +59,7 @@ class RecordFinderController extends AbstractRecord
             //display link to inter library loan
         } else {
             $request = $this->request;
-            $this->redirect()->toUrl($request->getBaseUrl().'/Record/'.$id);
+            $this->redirect()->toUrl($request->getBaseUrl() . '/Record/' . $id);
 
         }
 

@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Hebisbs3;
+
 use Zend\View\Helper\AbstractHelper;
 
 /**

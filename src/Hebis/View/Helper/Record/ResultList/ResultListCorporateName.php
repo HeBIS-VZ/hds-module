@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\ResultList;
+
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\CorporateHelperTrait;
@@ -59,7 +60,7 @@ class ResultListCorporateName extends AbstractRecordViewHelper
             710 $a._$b_($g)_($n)
             711 $a._$e_($g)_($n_:_$d_:_$c) */
 
-        if ( ! ( !empty($marcRecord->getFields(100)) || !empty($marcRecord->getFields(700))) ) {
+        if (!(!empty($marcRecord->getFields(100)) || !empty($marcRecord->getFields(700)))) {
             $_110 = $marcRecord->getField(110);
             if (!empty($_110)) {
                 $subFields = $this->getSubfieldsAsArray($_110);
@@ -75,7 +76,7 @@ class ResultListCorporateName extends AbstractRecordViewHelper
 
                 $ndc = $this->getNdc($subFields);
 
-                $ret .= " (".implode(" : ", $ndc).")";
+                $ret .= " (" . implode(" : ", $ndc) . ")";
                 return $ret;
             }
 

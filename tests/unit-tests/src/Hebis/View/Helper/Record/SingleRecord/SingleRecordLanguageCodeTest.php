@@ -27,6 +27,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
 /**
@@ -48,7 +49,8 @@ class SingleRecordLanguageCodeTest extends AbstractViewHelperTest
         parent::setUp();
     }
 
-    protected function getTranslator() {
+    protected function getTranslator()
+    {
 
     }
 
@@ -62,7 +64,7 @@ class SingleRecordLanguageCodeTest extends AbstractViewHelperTest
 
         $stub = $this->getMock('VuFind\View\Helper\Root\Translate', ['translate'], [], "TranslateMock");
         $stub->expects($this->any())->method('translate')
-            ->will($this->returnCallback(function($a, $b, $c){
+            ->will($this->returnCallback(function ($a, $b, $c) {
                 //echo "\n\n$a\n".print_r($b)."\n$c\n\n";
                 $map = [
                     'ger' => 'Deutsch',

@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\ResultList\ResultListHostItemEntry;
 
@@ -59,7 +60,8 @@ class SingleRecordHostItemEntry extends ResultListHostItemEntry
         return !empty($w) ? implode("<br />", [$out, $this->showAllLink($record, $w[0])]) : $out;
     }
 
-    protected function getAllAssociatedPPNs($fields) {
+    protected function getAllAssociatedPPNs($fields)
+    {
         $w = [];
         foreach ($fields as $field) {
             $w = array_merge($w, $this->getAssociatedPPNs($field));
@@ -77,12 +79,13 @@ class SingleRecordHostItemEntry extends ResultListHostItemEntry
         $view = $this->getView();
 
         $title = htmlentities($subfield->getData());
-        $href = $view->basePath()."/".sprintf(parent::URL_SEARCH_PPN, $this->removePrefix($w->getData(), "(DE-603)"));
+        $href = $view->basePath() . "/" . sprintf(parent::URL_SEARCH_PPN, $this->removePrefix($w->getData(), "(DE-603)"));
 
         return sprintf('<a href="%s" title="%s">%s</a>', $href, $title, $title);
     }
 
-    protected function showAllLink($record, $w) {
+    protected function showAllLink($record, $w)
+    {
         $view = $this->getView();
         $href = $view->record($record)->getLink('part_of', $this->removePrefix($w->getData(), "(DE-603)")); //$view->basePath()."/".sprintf(parent::URL_SHOW_ALL, $this->removePrefix($w->getData(), "(DE-603)"));
         $linkTitle = $view->transEsc('show all');

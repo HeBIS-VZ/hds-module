@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record;
+
 use Hebis\RecordDriver\ContentType;
 use Hebis\RecordDriver\SolrMarc;
 

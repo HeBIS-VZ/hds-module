@@ -76,7 +76,7 @@ class PICA extends DAIA
      *
      * This is responsible for authenticating a patron against the catalog.
      *
-     * @param string $barcode  The patron username
+     * @param string $barcode The patron username
      * @param string $password The patron's password
      *
      * @throws ILSException
@@ -102,7 +102,7 @@ class PICA extends DAIA
         $_SESSION['picauser'] = $user;
         return [
             'id' => $user->id,
-            'firstname' =>  $user->firstname,
+            'firstname' => $user->firstname,
             'lastname' => $user->lastname,
             'email' => $user->email,
             'username' => $barcode,
@@ -111,6 +111,7 @@ class PICA extends DAIA
             'cat_password' => $password
         ];
     }
+
     /**
      * Get Patron Profile
      *
@@ -126,7 +127,7 @@ class PICA extends DAIA
         // TODO: this object probably doesn't have enough fields; it may be necessary
         // to subclass VuFind\Auth\LDAP with a different processLDAPUser() method for
         // loading the additional required properties.
-        $userinfo = & $_SESSION['picauser'];
+        $userinfo = &$_SESSION['picauser'];
         // firstname
         $recordList['firstname'] = $userinfo->firstname;
         // lastname
@@ -173,16 +174,17 @@ class PICA extends DAIA
         if ($messages === 2) {
             // ignore the first message (its only the message to close the window
             // after finishing)
-            for ($n = 0; $n<2; $n++) {
+            for ($n = 0; $n < 2; $n++) {
                 $pos = strpos($postit, '<strong class="alert">', $position);
                 $pos_close = strpos($postit, '</strong>', $pos);
-                $value = substr($postit, $pos+22, ($pos_close-$pos-22));
+                $value = substr($postit, $pos + 22, ($pos_close - $pos - 22));
                 $position = $pos + 1;
             }
             $recordList['message'] = $value;
         }
         return $recordList;
     }
+
     /**
      * Get Patron Transactions
      *
@@ -220,17 +222,17 @@ class PICA extends DAIA
             $position = strpos($postit, '<iframe');
             for ($i = 0; $i < $iframes; $i++) {
                 $pos = strpos($postit, 'VBAR=', $position);
-                $value = substr($postit, $pos+9, 8);
-                $completeValue = substr($postit, $pos+5, 12);
+                $value = substr($postit, $pos + 9, 8);
+                $completeValue = substr($postit, $pos + 5, 12);
                 $barcode[] = $completeValue;
                 $bc = $this->getPpnByBarcode($value);
                 $ppns[] = $bc;
                 $position = $pos + 1;
                 $current_position = $position;
                 $position_state = null;
-                for ($n = 0; $n<6; $n++) {
+                for ($n = 0; $n < 6; $n++) {
                     $current_position = $this->strposBackwards(
-                        $postit, '<td class="value-small">', $current_position-1
+                        $postit, '<td class="value-small">', $current_position - 1
                     );
                     if ($n === 1) {
                         $position_reservations = $current_position;
@@ -246,16 +248,16 @@ class PICA extends DAIA
                     }
                 }
                 if ($position_state !== null
-                    && substr($postit, $position_state+24, 8) !== 'bestellt'
+                    && substr($postit, $position_state + 24, 8) !== 'bestellt'
                 ) {
-                    $reservations[] = substr($postit, $position_reservations+24, 1);
-                    $expiration[] = substr($postit, $position_expire+24, 10);
+                    $reservations[] = substr($postit, $position_reservations + 24, 1);
+                    $expiration[] = substr($postit, $position_expire + 24, 10);
                     $renewals[] = $this->getRenewals($completeValue);
                     $closing_title = strpos($postit, '</td>', $position_title);
                     $titles[] = $completeValue . " " . substr(
-                        $postit, $position_title+24,
-                        ($closing_title-$position_title-24)
-                    );
+                            $postit, $position_title + 24,
+                            ($closing_title - $position_title - 24)
+                        );
                 } else {
                     $holdsByIframe--;
                     array_pop($ppns);
@@ -270,52 +272,53 @@ class PICA extends DAIA
             $position = strpos($postit, 'input type="checkbox" name="VB"');
             for ($i = 0; $i < $holds; $i++) {
                 $pos = strpos($postit, 'value=', $position);
-                $value = substr($postit, $pos+11, 8);
-                $completeValue = substr($postit, $pos+7, 12);
+                $value = substr($postit, $pos + 11, 8);
+                $completeValue = substr($postit, $pos + 7, 12);
                 $barcode[] = $completeValue;
                 $ppns[] = $this->getPpnByBarcode($value);
                 $position = $pos + 1;
                 $position_expire = $position;
-                for ($n = 0; $n<4; $n++) {
+                for ($n = 0; $n < 4; $n++) {
                     $position_expire = strpos(
-                        $postit, '<td class="value-small">', $position_expire+1
+                        $postit, '<td class="value-small">', $position_expire + 1
                     );
                 }
-                $expiration[] = substr($postit, $position_expire+24, 10);
+                $expiration[] = substr($postit, $position_expire + 24, 10);
                 $renewals[] = $this->getRenewals($completeValue);
             }
         }
         for ($i = 0; $i < $holds; $i++) {
             if ($ppns[$i] !== false) {
                 $transList[] = [
-                    'id'      => $ppns[$i],
+                    'id' => $ppns[$i],
                     'duedate' => $expiration[$i],
                     'renewals' => $renewals[$i],
                     'reservations' => $reservations[$i],
-                    'vb'      => $barcode[$i],
-                    'title'   => $titles[$i]
+                    'vb' => $barcode[$i],
+                    'title' => $titles[$i]
                 ];
             } else {
                 // There is a problem: no PPN found for this item... lets take id 0
                 // to avoid serious error (that will just return an empty title)
                 $transList[] = [
-                    'id'      => 0,
+                    'id' => 0,
                     'duedate' => $expiration[$i],
                     'renewals' => $renewals[$i],
                     'reservations' => $reservations[$i],
-                    'vb'      => $barcode[$i],
-                    'title'   => $titles[$i]
+                    'vb' => $barcode[$i],
+                    'title' => $titles[$i]
                 ];
             }
         }
         return $transList;
     }
+
     /**
      * Support method - reverse strpos.
      *
      * @param string $haystack String to search within
-     * @param string $needle   String to search for
-     * @param int    $offset   Search offset
+     * @param string $needle String to search for
+     * @param int $offset Search offset
      *
      * @return int             Offset of $needle in $haystack
      */
@@ -329,12 +332,13 @@ class PICA extends DAIA
         $needle_reverse = strrev($needle);
         $position_brutto = strpos($haystack_reverse, $needle_reverse);
         if ($offset === 0) {
-            $position_netto = strlen($haystack)-$position_brutto-strlen($needle);
+            $position_netto = strlen($haystack) - $position_brutto - strlen($needle);
         } else {
-            $position_netto = $offset-$position_brutto-strlen($needle);
+            $position_netto = $offset - $position_brutto - strlen($needle);
         }
         return $position_netto;
     }
+
     /**
      * Get the number of renewals
      *
@@ -346,7 +350,7 @@ class PICA extends DAIA
     protected function getRenewals($barcode)
     {
         $renewals = false;
-        if ( !empty($this->renewalsScript)) {
+        if (!empty($this->renewalsScript)) {
             $POST = [
                 "DB" => '1',
                 "VBAR" => $barcode,
@@ -362,6 +366,7 @@ class PICA extends DAIA
         }
         return $renewals;
     }
+
     /**
      * Renew item(s)
      *
@@ -392,6 +397,7 @@ class PICA extends DAIA
          */
         return true;
     }
+
     /**
      * Get Patron Fines
      *
@@ -415,7 +421,7 @@ class PICA extends DAIA
         ];
         $postit = $this->postit($URL, $POST);
         // How many items are there?
-        $holds = substr_count($postit, '<td class="plain"')/3;
+        $holds = substr_count($postit, '<td class="plain"') / 3;
         $fineDate = [];
         $description = [];
         $fine = [];
@@ -425,30 +431,30 @@ class PICA extends DAIA
             // first class=plain => description
             // length = position of next </td> - startposition
             $nextClosingTd = strpos($postit, '</td>', $pos);
-            $description[$i] = substr($postit, $pos+18, ($nextClosingTd-$pos-18));
+            $description[$i] = substr($postit, $pos + 18, ($nextClosingTd - $pos - 18));
             $position = $pos + 1;
             // next class=plain => date of fee creation
             $pos = strpos($postit, '<td class="plain"', $position);
             $nextClosingTd = strpos($postit, '</td>', $pos);
-            $fineDate[$i] = substr($postit, $pos+18, ($nextClosingTd-$pos-18));
+            $fineDate[$i] = substr($postit, $pos + 18, ($nextClosingTd - $pos - 18));
             $position = $pos + 1;
             // next class=plain => amount of fee
             $pos = strpos($postit, '<td class="plain"', $position);
             $nextClosingTd = strpos($postit, '</td>', $pos);
-            $fineString = substr($postit, $pos+32, ($nextClosingTd-$pos-32));
+            $fineString = substr($postit, $pos + 32, ($nextClosingTd - $pos - 32));
             $feeString = explode(',', $fineString);
             $feeString[1] = substr($feeString[1], 0, 2);
-            $fine[$i] = (double) implode('', $feeString);
+            $fine[$i] = (double)implode('', $feeString);
             $position = $pos + 1;
         }
         $fineList = [];
         for ($i = 0; $i < $holds; $i++) {
             $fineList[] = [
-                "amount"   => $fine[$i],
+                "amount" => $fine[$i],
                 "checkout" => "",
-                "fine"     => $fineDate[$i] . ': ' .
+                "fine" => $fineDate[$i] . ': ' .
                     utf8_encode(html_entity_decode($description[$i])),
-                "duedate"  => ""
+                "duedate" => ""
             ];
             // id should be the ppn of the book resulting the fine but there's
             // currently no way to find out the PPN (we have neither barcode nor
@@ -456,6 +462,7 @@ class PICA extends DAIA
         }
         return $fineList;
     }
+
     /**
      * Get Patron Holds
      *
@@ -485,17 +492,17 @@ class PICA extends DAIA
         $position = strpos($postit, 'input type="checkbox" name="VB"');
         for ($i = 0; $i < $holds; $i++) {
             $pos = strpos($postit, 'value=', $position);
-            $value = substr($postit, $pos+11, 8);
+            $value = substr($postit, $pos + 11, 8);
             $ppns[] = $this->getPpnByBarcode($value);
             $position = $pos + 1;
             $position_create = $position;
-            for ($n = 0; $n<3; $n++) {
+            for ($n = 0; $n < 3; $n++) {
                 $position_create = strpos(
-                    $postit, '<td class="value-small">', $position_create+1
+                    $postit, '<td class="value-small">', $position_create + 1
                 );
             }
             $creation[]
-                = str_replace('-', '.', substr($postit, $position_create+24, 10));
+                = str_replace('-', '.', substr($postit, $position_create + 24, 10));
         }
         /* items, which are ordered and have no signature yet, are not included in
          * the for-loop getthem by checkbox PPN
@@ -505,32 +512,32 @@ class PICA extends DAIA
         for ($i = 0; $i < $moreholds; $i++) {
             $pos = strpos($postit, 'value=', $position);
             // get the length of PPN
-               $x = strpos($postit, '"', $pos+7);
-            $value = substr($postit, $pos+7, $x-$pos-7);
+            $x = strpos($postit, '"', $pos + 7);
+            $value = substr($postit, $pos + 7, $x - $pos - 7);
             // problem: the value presented here does not contain the checksum!
             // so its not a valid identifier
             // we need to calculate the checksum
             $checksum = 0;
-            for ($i = 0; $i<strlen($value);$i++) {
-                $checksum += $value[$i]*(9-$i);
+            for ($i = 0; $i < strlen($value); $i++) {
+                $checksum += $value[$i] * (9 - $i);
             }
-            if ($checksum%11 === 1) {
+            if ($checksum % 11 === 1) {
                 $checksum = 'X';
-            } else if ($checksum%11 === 0) {
+            } else if ($checksum % 11 === 0) {
                 $checksum = 0;
             } else {
-                $checksum = 11 - $checksum%11;
+                $checksum = 11 - $checksum % 11;
             }
             $ppns[] = $value . $checksum;
             $position = $pos + 1;
             $position_create = $position;
-            for ($n = 0; $n<3; $n++) {
+            for ($n = 0; $n < 3; $n++) {
                 $position_create = strpos(
-                    $postit, '<td class="value-small">', $position_create+1
+                    $postit, '<td class="value-small">', $position_create + 1
                 );
             }
             $creation[]
-                = str_replace('-', '.', substr($postit, $position_create+24, 10));
+                = str_replace('-', '.', substr($postit, $position_create + 24, 10));
         }
         /* media ordered from closed stack is not visible on the UI_LOR page
          * requested above... we need to do another request and filter the
@@ -548,18 +555,18 @@ class PICA extends DAIA
         $position = 0;
         for ($i = 0; $i < $requests; $i++) {
             $position = strpos(
-                $postit_lol, '<td class="value-small">bestellt</td>', $position+1
+                $postit_lol, '<td class="value-small">bestellt</td>', $position + 1
             );
-            $pos = strpos($postit_lol, '<td class="value-small">', ($position-100));
+            $pos = strpos($postit_lol, '<td class="value-small">', ($position - 100));
             $nextClosingTd = strpos($postit_lol, '</td>', $pos);
-            $value = substr($postit_lol, $pos+27, ($nextClosingTd-$pos-27));
+            $value = substr($postit_lol, $pos + 27, ($nextClosingTd - $pos - 27));
             $ppns[] = $this->getPpnByBarcode($value);
             $creation[] = date('d.m.Y');
         }
-        for ($i = 0; $i < ($holds+$moreholds+$requests); $i++) {
+        for ($i = 0; $i < ($holds + $moreholds + $requests); $i++) {
             $holdList[] = [
-                "id"       => $ppns[$i],
-                "create"   => $creation[$i]
+                "id" => $ppns[$i],
+                "create" => $creation[$i]
             ];
         }
         return $holdList;
@@ -597,7 +604,7 @@ class PICA extends DAIA
     /**
      * Post something to a foreign host
      *
-     * @param string $file         POST target URL
+     * @param string $file POST target URL
      * @param string $data_to_send POST data
      *
      * @return string              POST response
@@ -612,7 +619,7 @@ class PICA extends DAIA
         }
         $postData = implode("&", $data_to_send);
         // HTTP-Header vorbereiten
-        $out  = "POST $file HTTP/1.1\r\n";
+        $out = "POST $file HTTP/1.1\r\n";
         $out .= "Host: " . $this->catalogHost . "\r\n";
         $out .= "Content-type: application/x-www-form-urlencoded\r\n";
         $out .= "Content-length: " . strlen($postData) . "\r\n";
@@ -632,6 +639,7 @@ class PICA extends DAIA
         fclose($conex);
         return $data;
     }
+
     /**
      * Gets a PPN by its barcode
      *
@@ -655,6 +663,7 @@ class PICA extends DAIA
         }
         return $ppn;
     }
+
     /**
      * Gets holdings of magazine and journal exemplars
      *
@@ -680,5 +689,5 @@ class PICA extends DAIA
         return $ppn;
     }
 
-    
+
 }

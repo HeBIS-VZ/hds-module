@@ -256,7 +256,7 @@ class AbstractRecordViewHelper extends AbstractHelper
     {
         $len = strlen($str);
         if (strpos($str, '@') === 0) {
-            $str = substr($str, 1, $len-1);
+            $str = substr($str, 1, $len - 1);
         }
         $ret = str_replace(" @", " ", $str);
         return $ret;
@@ -270,7 +270,7 @@ class AbstractRecordViewHelper extends AbstractHelper
      */
     protected function filterByIndicator(array $_264s, $ind, $x)
     {
-        return array_filter($_264s, function($a) use ($ind, $x) {
+        return array_filter($_264s, function ($a) use ($ind, $x) {
             /** @var \File_MARC_Data_Field $a */
             if (empty($x) || $x == " ") {
                 return ord($a->getIndicator($ind)) == 32;

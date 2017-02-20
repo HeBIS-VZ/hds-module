@@ -27,6 +27,7 @@
 
 
 namespace Hebis\Db\Table;
+
 use Zend\ServiceManager\ServiceManager;
 
 /**

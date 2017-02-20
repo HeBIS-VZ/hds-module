@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\View\Helper\Record\MarcSubfieldManipulationTrait;
@@ -54,7 +55,7 @@ class SingleRecordProduction extends AbstractRecordViewHelper
 
         $fields = $marcRecord->getFields('264');
 
-        $fields = array_filter($fields, function($field) {
+        $fields = array_filter($fields, function ($field) {
             $ind2 = $field->getIndicator(2);
             $ind1 = $field->getIndicator(1);
             return $ind2 === "3" && in_array($ind1, ["3", "2", " ", ""]);

@@ -62,7 +62,7 @@ class SingleRecordTitleStatementSectionOfWork extends SingleRecordTitleStatement
                         }
                         break;
                     case 'p':
-                        $ret .= $subField ? ". ".$subField->getData() : "";
+                        $ret .= $subField ? ". " . $subField->getData() : "";
                         if (!empty($ret)) {
                             $arr[] = $ret;
                             $ret = "";

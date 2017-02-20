@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -56,7 +57,7 @@ class SingleRecordTargetAudienceNote extends AbstractRecordViewHelper
         foreach ($marcRecord->getFields("521") as $field) {
             if ($a = $field->getSubfield('a')) {
                 if (!empty($a)) {
-                    $arr[] = "FSK ".htmlentities($a->getData());
+                    $arr[] = "FSK " . htmlentities($a->getData());
                 }
             }
         }

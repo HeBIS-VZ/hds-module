@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -51,7 +52,7 @@ class SingleRecordOtherClassificationNumber extends AbstractRecordViewHelper
             }
         }
         if (!$asArray) {
-            return '<div class="rvk">'.implode(" ; ", $arr).'</div>';
+            return '<div class="rvk">' . implode(" ; ", $arr) . '</div>';
         }
         return $arr;
     }

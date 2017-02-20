@@ -56,6 +56,4 @@ interface ILSDriver
     public function getMyTransactions(array $patron);
 
 
-    
-
 }

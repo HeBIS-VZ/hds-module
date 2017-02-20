@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\ResultList;
+
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
 class SingleRecordEditionStatementTest extends AbstractViewHelperTest

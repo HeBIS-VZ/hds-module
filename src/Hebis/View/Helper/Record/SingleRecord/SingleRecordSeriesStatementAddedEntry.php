@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -114,7 +115,7 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
             foreach ($fields as $field) {
                 $ax = $this->getSubFieldsDataArrayOfField($field, ['a', 'x']);
                 if (array_key_exists('x', $ax)) {
-                    $ax['x'] = "ISSN ".$ax['x'];
+                    $ax['x'] = "ISSN " . $ax['x'];
                 }
                 $str = implode(", ", $ax);
 
@@ -164,7 +165,7 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
         $tCalled = false;
         $ret = "";
         foreach ($field->getSubfields() as $code => $subfield) {
-            switch($code) {
+            switch ($code) {
                 case 'a':
                     $ret .= $subfield->getData();
                     break;
@@ -172,20 +173,20 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
                     $ret .= ". " . $subfield->getData();
                     break;
                 case 'g':
-                    $ret.= " (".$subfield->getData().")";
+                    $ret .= " (" . $subfield->getData() . ")";
                     break;
                 case 'n':
                     if (!$tCalled) { //vor dem t
-                        $ret.= " (".$subfield->getData().")";
+                        $ret .= " (" . $subfield->getData() . ")";
                     } else {
                         if (strpos($subfield->getData(), "[...]") === false) {
-                            $ret.= " : ".$subfield->getData();
+                            $ret .= " : " . $subfield->getData();
                         }
                     }
                     break;
                 case 't':
                     $tCalled = true;
-                    $ret.= ": " . $subfield->getData();
+                    $ret .= ": " . $subfield->getData();
                     break;
                 case 'p':
                     $ret .= ", " . $subfield->getData();
@@ -217,12 +218,12 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
          * @var \File_MARC_Subfield $subfield
          */
         foreach ($field->getSubfields() as $code => $subfield) {
-            switch($code) {
+            switch ($code) {
                 case 'a':
                     $ret .= $subfield->getData();
                     break;
                 case 'g':
-                    $ret.= " (".$subfield->getData().")";
+                    $ret .= " (" . $subfield->getData() . ")";
                     break;
                 case 'n':
                 case 'c':
@@ -242,12 +243,12 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
                             $ncd[] = $d[0]->getData();
                         }
                         if (!empty($ncd)) {
-                            $ret .= " (".implode(" : ", $ncd).")";
+                            $ret .= " (" . implode(" : ", $ncd) . ")";
                         }
                         $ncdCalled = true;
 
                     } else if ($code == "n" && $tCalled) {
-                        $ret .= " : ".$subfield->getData();
+                        $ret .= " : " . $subfield->getData();
                     }
                     break;
                 case 't':

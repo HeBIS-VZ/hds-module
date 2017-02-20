@@ -5,7 +5,7 @@
  * allows users to search and browse beyond resources. More
  * Information about VuFind you will find on http://www.vufind.org
  *
- * Copyright (C) 2016
+ * Copyright (C) 2017
  * HeBIS Verbundzentrale des HeBIS-Verbundes
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -76,7 +76,7 @@ trait JsonSerializeTrait
             $matches = $matches[0];
             $ret = "";
             $start = 0;
-            array_walk($matches, function($match) use ($name, &$start, &$ret) {
+            array_walk($matches, function ($match) use ($name, &$start, &$ret) {
                 $len = $match[1] - $start;
                 $ret .= strtolower(substr($name, $start, $len)) . "-";
                 $start = $match[1];

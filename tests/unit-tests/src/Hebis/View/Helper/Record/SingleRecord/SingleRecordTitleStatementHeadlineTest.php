@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
 
@@ -41,7 +42,8 @@ class SingleRecordTitleStatementHeadlineTest extends AbstractViewHelperTest
     /**
      * {@inheritdoc}
      */
-    public function setUp() {
+    public function setUp()
+    {
 
         $this->viewHelperClass = "SingleRecordTitleStatementHeadline";
         $this->testRecordIds = [];

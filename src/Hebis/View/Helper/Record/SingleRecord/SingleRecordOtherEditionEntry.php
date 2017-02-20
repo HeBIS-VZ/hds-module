@@ -84,7 +84,7 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
         $subFieldKeys = ['t', 'b', 'd', 'g', 'h', 'z', 'o', 'x'];
         $subFields = $this->getSubfieldsAsArray($field);
 
-        $w_ = array_filter($field->getSubfields('w'), function(\File_MARC_Subfield $elem){
+        $w_ = array_filter($field->getSubfields('w'), function (\File_MARC_Subfield $elem) {
             return strpos($elem->getData(), "(DE-603)") !== false;
         });
 
@@ -122,7 +122,7 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
                 case 't':
                     if (!$tCalled && array_key_exists($key, $subFields)) {
                         if (!empty($w_) && !array_key_exists('a', $subFields)) {
-                            $str = '<a href="' . $this->link($w_[0]->getData()) . '">'.htmlentities($subFields[$key]).'</a>';
+                            $str = '<a href="' . $this->link($w_[0]->getData()) . '">' . htmlentities($subFields[$key]) . '</a>';
                         } else {
                             $str = htmlentities($subFields[$key]);
                         }
@@ -164,7 +164,8 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
         return $prefix . implode(". - ", $arr);
     }
 
-    protected function link($w) {
-        return $this->getView()->basePath().'/RecordFinder/HEB'.$this->removePrefix($w, "(DE-603)");
+    protected function link($w)
+    {
+        return $this->getView()->basePath() . '/RecordFinder/HEB' . $this->removePrefix($w, "(DE-603)");
     }
 }

@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 
 
@@ -51,7 +52,7 @@ class SingleRecordDistribution extends SingleRecordProduction
 
         $fields = $marcRecord->getFields('264');
 
-        $fields = array_filter($fields, function($field) {
+        $fields = array_filter($fields, function ($field) {
             $ind2 = $field->getIndicator(2);
             $ind1 = $field->getIndicator(1);
             return $ind2 === "2" && in_array($ind1, ["3", "2", " ", ""]);

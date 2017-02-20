@@ -36,7 +36,8 @@ class SingleRecordCartographicMathematicalDataTest extends AbstractViewHelperTes
     /**
      * {@inheritdoc}
      */
-    public function setUp() {
+    public function setUp()
+    {
 
         $this->viewHelperClass = "SingleRecordCartographicMathematicalData";
         $this->testRecordIds = [];

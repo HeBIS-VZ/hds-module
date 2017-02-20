@@ -30,6 +30,7 @@ namespace Hebis\View\Helper\Record\ResultList;
 
 
 namespace Hebis\View\Helper\Record;
+
 use Hebis\RecordDriver\SolrMarc;
 
 /**
@@ -56,7 +57,7 @@ class ResultListAddedEntryPersonalName extends SingleRecordAddedEntryPersonalNam
         $_700 = $marcRecord->getFields('700');
         $fields = array_filter(
             $_700,
-            function(\File_MARC_Data_Field $field) {
+            function (\File_MARC_Data_Field $field) {
                 $subField = $field->getSubfield('4');
                 return !empty($subField) && !in_array($subField->getData(), ['aut', 'hnr', 'prf']);
             }

@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
 /**
@@ -36,16 +37,18 @@ use Hebis\View\Helper\Record\AbstractViewHelperTest;
  */
 class SingleRecordTitleStatementTest extends AbstractViewHelperTest
 {
-    public function setUp() {
+    public function setUp()
+    {
 
         $this->viewHelperClass = "SingleRecordTitleStatement";
         $this->testRecordIds = [];
         $this->testResultField = 'title';
         $this->testSheetName = "Titel";
-        parent::setUp(); 
+        parent::setUp();
     }
 
-    public function testRemoveSpecialChars() {
+    public function testRemoveSpecialChars()
+    {
 
         $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("@The Result of a Equation"));
         $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("The @Result of a Equation"));

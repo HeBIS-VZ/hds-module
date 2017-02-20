@@ -37,12 +37,12 @@ namespace Hebis\ILS\Driver;
  */
 class DAIA extends \VuFind\ILS\Driver\DAIA
 {
-    
+
     /**
      * Parse an array with DAIA status information.
      *
-     * @param string $id        Record id for the DAIA array.
-     * @param array  $daiaArray Array with raw DAIA status information.
+     * @param string $id Record id for the DAIA array.
+     * @param array $daiaArray Array with raw DAIA status information.
      *
      * @return array            Array with VuFind compatible status information.
      */

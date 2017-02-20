@@ -33,7 +33,8 @@ use Hebis\View\Helper\Record\AbstractViewHelperTest;
 class SingleRecordSeriesStatementAddedEntryTest extends AbstractViewHelperTest
 {
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->viewHelperClass = "SingleRecordSeriesStatementAddedEntry";
         $this->testResultField = "";
         $this->testRecordIds = [];

@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\ResultList;
+
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
 
@@ -64,7 +65,7 @@ class ResultListHostItemEntry extends AbstractRecordViewHelper
 
         foreach ($fields as $field) {
 
-            $ret .= !empty($a = $field->getSubfield('a')) ? htmlentities($a->getData()).". " : "";
+            $ret .= !empty($a = $field->getSubfield('a')) ? htmlentities($a->getData()) . ". " : "";
 
             $ret .= $this->generateSubfields($field);
         }

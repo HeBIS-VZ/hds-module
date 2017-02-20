@@ -31,7 +31,8 @@ use Hebis\View\Helper\Record\AbstractViewHelperTest;
 
 class SingleRecordDistributionTest extends AbstractViewHelperTest
 {
-    public function setUp() {
+    public function setUp()
+    {
         $this->viewHelperClass = "SingleRecordDistribution";
         $this->testResultField = "";
         $this->testRecordIds = [];

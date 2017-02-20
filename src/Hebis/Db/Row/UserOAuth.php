@@ -26,8 +26,10 @@
  */
 
 namespace Hebis\Db\Row;
+
 use VuFind\Db\Row\RowGateway;
 use Hebis\Db\Row\UserOAuth as UserOAuthRow;
+
 /**
  * Class UserOAuth
  *

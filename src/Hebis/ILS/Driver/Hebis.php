@@ -26,15 +26,8 @@
  */
 
 
-/*
-require_once 'Interface.php';
-require_once 'DAIA.php';
-require_once 'sys/User.php';
-*/
-
 namespace Hebis\ILS\Driver;
 
-// PICA defined numbers for textline types
 use HAB\Pica\Record\CopyRecord;
 use HAB\Pica\Record\Field;
 use HAB\Pica\Record\LocalRecord;
@@ -65,13 +58,13 @@ class Hebis extends PAIA
         }
 
         $this->provider = new GenericProvider([
-            'clientId'                => $this->config['PAIA']['client_id'],    // The client ID assigned to you by the provider
-            'clientSecret'            => $this->config['PAIA']['client_secret'],   // The client password assigned to you by the provider
-            'redirectUri'             => 'http://sbpc2.hebis.uni-frankfurt.de/vufind2/oauth/callback',
-            'urlAuthorize'            => $this->config['PAIA']['baseUrl'] . 'oauth/v2/auth',
-            'urlAccessToken'          => $this->config['PAIA']['baseUrl'] . 'oauth/v2/token',
+            'clientId' => $this->config['PAIA']['client_id'],    // The client ID assigned to you by the provider
+            'clientSecret' => $this->config['PAIA']['client_secret'],   // The client password assigned to you by the provider
+            'redirectUri' => 'http://sbpc2.hebis.uni-frankfurt.de/vufind2/oauth/callback',
+            'urlAuthorize' => $this->config['PAIA']['baseUrl'] . 'oauth/v2/auth',
+            'urlAccessToken' => $this->config['PAIA']['baseUrl'] . 'oauth/v2/token',
             'urlResourceOwnerDetails' => $this->config['PAIA']['baseUrl'] . 'core/',
-            'scopes'                  => 'read_patron read_fees read_items write_items',
+            'scopes' => 'read_patron read_fees read_items write_items',
         ]);
     }
 
@@ -84,8 +77,8 @@ class Hebis extends PAIA
     /**
      * Parse an array with DAIA status information.
      *
-     * @param string $id        Record id for the DAIA array.
-     * @param array  $daiaArray Array with raw DAIA status information.
+     * @param string $id Record id for the DAIA array.
+     * @param array $daiaArray Array with raw DAIA status information.
      *
      * @return array            Array with VuFind compatible status information.
      */
@@ -93,7 +86,6 @@ class Hebis extends PAIA
     {
         $picaRecord = SolrMarc::getCurrentPicaRecord();
         $doc_id = null;
-
 
 
         //$this->
@@ -115,7 +107,7 @@ class Hebis extends PAIA
         $epn = trim(str_replace("epn:", "", $daiaArray['item'][0]['id']));
 
         /** @var LocalRecord $picaLevel2 */
-        $picaLevel2 = array_filter($picaRecord->getLocalRecords(), function($localRecord) use($epn) {
+        $picaLevel2 = array_filter($picaRecord->getLocalRecords(), function ($localRecord) use ($epn) {
             /** @var LocalRecord $localRecord */
             $copyRecords = $localRecord->getCopyRecords();
             /** @var CopyRecord $copyRecord */
@@ -183,7 +175,8 @@ class Hebis extends PAIA
     }
 
 
-    public function checkRequestIsValid($id, $data, $patron) {
+    public function checkRequestIsValid($id, $data, $patron)
+    {
         return true; //TODO: implement a validation
     }
 
@@ -195,7 +188,7 @@ class Hebis extends PAIA
             ["locationID" => 3, "locationDisplay" => "Zentralbibliothek (ZB): Ausleihe (EG)"],
             ["locationID" => 50, "locationDisplay" => "ZB: Lesesaal Geisteswissenschaften (EG)"],
             ["locationID" => 51, "locationDisplay" => "ZB: Asienbibliothek (1.Stock)"],
-            ["locationID" => 52, "locationDisplay"  => "ZB: Lesesaal Naturwissenschaften (2.Stock)"],
+            ["locationID" => 52, "locationDisplay" => "ZB: Lesesaal Naturwissenschaften (2.Stock)"],
             ["locationID" => 53, "locationDisplay" => "ZB: Lesesaal Spezialsammlungen (3. Stock)"]
         ];
     }

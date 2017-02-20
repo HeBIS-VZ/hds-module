@@ -27,6 +27,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -81,8 +82,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
 
         if (!$asArray) {
             return implode("<br />", $arr);
-        }
-        else {
+        } else {
             return $arr;
         }
 
@@ -127,12 +127,11 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             }
             $generatedKeywords = $this->generateTag($field, $arr_);
             if (!empty($generatedKeywords)) {
-                $arr[] = "<nobr>".$generatedKeywords."</nobr>";
+                $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
             }
         }
         return implode("<br />", $arr);
     }
-
 
 
     private function add610($record)
@@ -161,7 +160,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                         $arr_[] = !empty($sf) ? " / " . htmlentities($sf->getData()) : "";
                         break;
                     case 'f':
-                        $arr_[] = !empty($sf) ? " (" . htmlentities($sf->getData()).")" : "";
+                        $arr_[] = !empty($sf) ? " (" . htmlentities($sf->getData()) . ")" : "";
                         break;
                     case 'x':
                         $arr_[] = !empty($sf) ? ", " . htmlentities($sf->getData()) : "";
@@ -170,7 +169,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             }
             $generatedKeywords = $this->generateTag($field, $arr_);
             if (!empty($generatedKeywords)) {
-                $arr[] = "<nobr>".$generatedKeywords."</nobr>";
+                $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
             }
         }
         return implode("<br />", $arr);
@@ -211,7 +210,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             }
             $generatedKeywords = $this->generateTag($field, $arr_);
             if (!empty($generatedKeywords)) {
-                $arr[] = "<nobr>".$generatedKeywords."</nobr>";
+                $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
             }
         }
         return implode("<br />", $arr);
@@ -237,7 +236,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
 
                 $generatedKeywords = $this->generateTag($field, $arr_);
                 if (!empty($generatedKeywords)) {
-                    $arr[] = "<nobr>".$generatedKeywords."</nobr>";
+                    $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
                 }
             }
         }
@@ -258,7 +257,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                 $arr_[] = !empty($sf['g']) ? " &lt;" . str_replace("g:", "", $sf['g']) . "&gt;" : "";
                 $generatedKeywords = $this->generateTag($field, $arr_);
                 if (!empty($generatedKeywords)) {
-                    $arr[] = "<nobr>".$generatedKeywords."</nobr>";
+                    $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
                 }
             }
         }
@@ -279,7 +278,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                 $arr_[] = !empty($sf['g']) ? ", " . $sf['g'] : "";
                 $arr_[] = !empty($sf['x']) ? ", " . $sf['x'] : "";
                 $arr_[] = !empty($sf['z']) ? "," . $sf['z'] : "";
-                $arr[] = "<nobr>".$this->generateTag($field, $arr_)."</nobr>";
+                $arr[] = "<nobr>" . $this->generateTag($field, $arr_) . "</nobr>";
             }
         }
         return implode("<br />", $arr);
@@ -291,7 +290,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
         foreach ($record->getMarcRecord()->getFields(655) as $field) {
             $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'x', 'y', 'z']);
             foreach ($sf_ as $sf) {
-                $arr[] = "<nobr>".$this->generateTag($field, [implode(", ", $sf)])."</nobr>";
+                $arr[] = "<nobr>" . $this->generateTag($field, [implode(", ", $sf)]) . "</nobr>";
             }
         }
         return implode("<br />", $arr);
@@ -302,7 +301,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
         $field = $record->getMarcRecord()->getField('648');
         $_648_a = $this->getSubFieldDataOfGivenField($field, 'a');
         $tag = $this->generateTag($field, [$_648_a]);
-        return !empty($tag) ? "<nobr>".$tag."</nobr>" : "";
+        return !empty($tag) ? "<nobr>" . $tag . "</nobr>" : "";
     }
 
     /**
@@ -327,14 +326,14 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
 
     private function getUrl($gnd)
     {
-        return $this->getView()->basePath()."/".sprintf("Search/Results?lookfor=%s&type=allfields", "uses_authority:%22$gnd%22");
+        return $this->getView()->basePath() . "/" . sprintf("Search/Results?lookfor=%s&type=allfields", "uses_authority:%22$gnd%22");
     }
 
     private function makeCheckboxField($gnd, $content)
     {
         $gnd = trim($gnd);
         $value = "uses_authority:&quot;$gnd&quot;";
-        return  '<label class="checkbox-inline"><input type="checkbox" name="lookfor[]" value="'.$value.'" />'
-                .'<input type="hidden" name="type" value="allfields" />'.$content .'</label>';
+        return '<label class="checkbox-inline"><input type="checkbox" name="lookfor[]" value="' . $value . '" />'
+            . '<input type="hidden" name="type" value="allfields" />' . $content . '</label>';
     }
 }

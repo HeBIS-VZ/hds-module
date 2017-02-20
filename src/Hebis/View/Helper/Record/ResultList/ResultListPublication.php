@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\ResultList;
+
 use Hebis\Marc\Helper;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;

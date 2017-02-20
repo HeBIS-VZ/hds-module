@@ -12,7 +12,8 @@ namespace Hebis\RecordDriver;
 class PicaRecordUtilsTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testParsePica() {
+    public function testParsePica()
+    {
 
         $this->markTestIncomplete("not implemented yet.");
     }

@@ -27,6 +27,7 @@
  */
 
 namespace Hebis\View\Helper\Record\ResultList;
+
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
 
@@ -58,7 +59,7 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
                 }
             }
             if (!empty($arr)) {
-                $ret .= "[".implode(" ", $arr)."]<br />";
+                $ret .= "[" . implode(" ", $arr) . "]<br />";
             }
         }
 
@@ -66,7 +67,6 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
         $_245 = $marcRecord->getField(245);
 
         $subFields = $this->getSubfieldsAsArray($_245);
-
 
 
         /** @var \File_MARC_Data_Field $field */
@@ -82,8 +82,8 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
 
         $n_p = $this->getNp($field);
         $ret .= !empty($a) ? trim($a) : "";
-        $ret .= !empty($h) ? " ".trim($h) : "";
-        $ret .= !empty($b) ? " : ".trim($b) : "";
+        $ret .= !empty($h) ? " " . trim($h) : "";
+        $ret .= !empty($b) ? " : " . trim($b) : "";
 
         if (!empty($n_p)) {
             $ret .= "<br />";
@@ -116,7 +116,7 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
             }
 
             if (!empty($p)) {
-                if (!in_array(substr(trim($n_p), -1), ['.', ',','[',']']) && !empty($n_p)) {
+                if (!in_array(substr(trim($n_p), -1), ['.', ',', '[', ']']) && !empty($n_p)) {
                     $n_p .= ". ";
                 }
                 $n_p .= htmlentities(trim($p));

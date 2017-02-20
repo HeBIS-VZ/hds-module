@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\ResultList\ResultListPersonalName;
 
@@ -54,11 +55,11 @@ class SingleRecordPersonalName extends ResultListPersonalName
                 $wiki = $wikiLink = "";
                 $gnd = $this->getGnd($field100);
                 if (!empty($gnd)) {
-                    $wiki = '<div class="hidden" id="gnd_'.$gnd.'"><div class="popover-heading"></div><div class="popover-body"></div></div>';
-                    $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" id="wiki-'.$gnd.'" data-id="'.$gnd.'" data-container="body" data-popover-content="#gnd_'.$gnd.'"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
+                    $wiki = '<div class="hidden" id="gnd_' . $gnd . '"><div class="popover-heading"></div><div class="popover-body"></div></div>';
+                    $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" id="wiki-' . $gnd . '" data-id="' . $gnd . '" data-container="body" data-popover-content="#gnd_' . $gnd . '"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
                 }
 
-                $arr[] = $this->addLink($record, $aut).$wikiLink.$wiki;
+                $arr[] = $this->addLink($record, $aut) . $wikiLink . $wiki;
             } else {
                 $arr[] = $aut;
             }
@@ -78,10 +79,10 @@ class SingleRecordPersonalName extends ResultListPersonalName
                     $wiki = $wikiLink = "";
                     $gnd = $this->getGnd($field);
                     if (!empty($gnd)) {
-                        $wiki = '<div class="hidden" id="gnd_'.$gnd.'"><div class="popover-heading"></div><div class="popover-body"></div></div>';
-                        $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" id="wiki-'.$gnd.'" data-id="'.$gnd.'" data-container="body" data-popover-content="#gnd_'.$gnd.'"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
+                        $wiki = '<div class="hidden" id="gnd_' . $gnd . '"><div class="popover-heading"></div><div class="popover-body"></div></div>';
+                        $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" id="wiki-' . $gnd . '" data-id="' . $gnd . '" data-container="body" data-popover-content="#gnd_' . $gnd . '"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
                     }
-                    $arr[] = $this->addLink($record, $addedEntryPN).$wikiLink.$wiki;
+                    $arr[] = $this->addLink($record, $addedEntryPN) . $wikiLink . $wiki;
                 } else {
                     $arr[] = $addedEntryPN;
                 }
@@ -111,7 +112,7 @@ class SingleRecordPersonalName extends ResultListPersonalName
     protected function addLink($record, $personalName)
     {
         $url = $this->getView()->record($record)->getLink('author', $personalName);
-        return '<a title="'.$personalName.'" href="'.$url.'">'.$personalName.'</a>';
+        return '<a title="' . $personalName . '" href="' . $url . '">' . $personalName . '</a>';
     }
 
     /**
@@ -124,7 +125,7 @@ class SingleRecordPersonalName extends ResultListPersonalName
             $subfields = $field->getSubfields(0);
 
 
-            $gndArray = array_filter($subfields, function($field){
+            $gndArray = array_filter($subfields, function ($field) {
                 /** @var \File_MARC_Subfield $field */
                 return strpos($field->getData(), "(DE-588)") !== false;
             });

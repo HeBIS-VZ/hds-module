@@ -26,7 +26,9 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\View\Helper\Record\AbstractViewHelperTest;
+
 /**
  * Class SingleRecordOtherEditionEntryTest
  * @package Hebis\View\Helper\Record

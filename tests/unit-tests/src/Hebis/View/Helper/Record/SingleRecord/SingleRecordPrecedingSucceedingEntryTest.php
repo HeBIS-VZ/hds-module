@@ -33,7 +33,8 @@ use Hebis\View\Helper\Record\AbstractViewHelperTest;
 class SingleRecordPrecedingSucceedingEntryTest extends AbstractViewHelperTest
 {
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->viewHelperClass = "SingleRecordPrecedingSucceedingEntry";
         $this->testResultField = "";
         $this->testRecordIds = [];

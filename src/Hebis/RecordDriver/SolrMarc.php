@@ -155,7 +155,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             $this->picaRecord = $picaParser->parse($data['raw_fullrecord'])->getRecord();
             self::$currentPicaRecord = $this->picaRecord;
         } catch (\Exception $e) {
-            /** @var  \Zend\Log\LoggerInterface$logger */
+            /** @var  \Zend\Log\LoggerInterface $logger */
             //$logger = $this->getLogger();
             //$logger->err("Could not parse pica record ".$data['id']." in class ". __CLASS__ . ", line: " . __LINE__);
             throw new BackendException("Error parsing PICA", 0, $e);
@@ -183,7 +183,7 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     {
         return $this->picaRecord;
     }
-    
+
     public function getPPN()
     {
         return $this->fields['id'];

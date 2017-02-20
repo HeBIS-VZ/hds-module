@@ -46,14 +46,15 @@ class WorldCatUtils extends \VuFind\Connection\WorldCatUtils
     /**
      * Constructor
      *
-     * @param Config|string     $config WorldCat configuration (either a full Config
+     * @param Config|string $config WorldCat configuration (either a full Config
      * object, or a string containing the id setting).
      * @param \Zend\Http\Client $client HTTP client
-     * @param bool              $silent Should we silently ignore HTTP failures?
-     * @param string            $ip     Current server IP address (optional, but
+     * @param bool $silent Should we silently ignore HTTP failures?
+     * @param string $ip Current server IP address (optional, but
      * needed for xID token hashing
      */
-    public function __construct($config, \Zend\Http\Client $client, $silent = true, $ip = null) {
+    public function __construct($config, \Zend\Http\Client $client, $silent = true, $ip = null)
+    {
 
         parent::__construct($config, $client, $silent, $ip);
     }
@@ -72,10 +73,10 @@ class WorldCatUtils extends \VuFind\Connection\WorldCatUtils
     /**
      * Build a url to use in querying OCLC's xID service.
      *
-     * @param string $base      base url with no querystring
-     * @param string $tokenVar  config file variable holding the token
+     * @param string $base base url with no querystring
+     * @param string $tokenVar config file variable holding the token
      * @param string $secretVar config file variable holding the secret
-     * @param string $format    data format for api response
+     * @param string $format data format for api response
      *
      * @return string
      */
@@ -89,9 +90,10 @@ class WorldCatUtils extends \VuFind\Connection\WorldCatUtils
         if ($token && $secret) {
             $hash = md5($base . '|' . $this->ip . '|' . $secret);
             $querystr .= '&token=' . $token . '&hash=' . $hash;
-        } if ($wcId = $this->getWorldCatId()) {
-        $querystr .= '&ai=' . urlencode($wcId);
-    }
+        }
+        if ($wcId = $this->getWorldCatId()) {
+            $querystr .= '&ai=' . urlencode($wcId);
+        }
         $base .= $querystr;
         return $base;
     }
@@ -213,10 +215,10 @@ class WorldCatUtils extends \VuFind\Connection\WorldCatUtils
      * key, possible broader terms in the 'broader' key and possible narrower
      * terms in the 'narrower' key of the return array.
      *
-     * @param string $term       Term to get related terms for.
+     * @param string $term Term to get related terms for.
      * @param string $vocabulary Vocabulary to search (default = LCSH; see OCLC docs
      * for other options).
-     * @param int    $maxRecords Max # of records to read from API (more = slower).
+     * @param int $maxRecords Max # of records to read from API (more = slower).
      *
      * @return mixed             False on error, otherwise array of related terms,
      * keyed by category.

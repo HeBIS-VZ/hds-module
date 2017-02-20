@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\SingleRecord;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\ResultList\ResultListCorporateName;
 
@@ -62,7 +63,7 @@ class SingleRecordCorporateName extends ResultListCorporateName
 
             $ndc = $this->getNdc($subFields);
 
-            $str .= " (".implode(" : ", $ndc).")";
+            $str .= " (" . implode(" : ", $ndc) . ")";
             $j = $this->expandSubfield($_111->getSubfields('j'));
             $str .= !empty($j) ? " ($j)" : "";
             $arr[] = $str;
@@ -104,7 +105,8 @@ class SingleRecordCorporateName extends ResultListCorporateName
         return implode("<br />", $arr);
     }
 
-    public function toStringArray($subFields) {
+    public function toStringArray($subFields)
+    {
         $arr = [];
         /** @var \File_MARC_Subfield $subfield */
         foreach ($subFields as $subfield) {
