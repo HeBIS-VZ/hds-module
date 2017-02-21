@@ -37,6 +37,9 @@ $config = [
                 ],
             ],
             'recommend' => [
+                'factories' => [
+                    'topfacets' => 'Hebis\Recommend\Factory::getTopFacets',
+                ],
                 'invokables' => [
                     'pubdatevisajax' => 'Hebis\Recommend\PubDateVisAjax',
                 ],
