@@ -40,6 +40,7 @@ use VuFind\Exception\Auth as AuthException;
 class AjaxController extends \VuFind\Controller\AjaxController
 {
 
+    const MERGE_BOUNDARY = 100;
 
     /**
      * AJAX for timeline feature (PubDateVisAjax)
@@ -126,20 +127,131 @@ class AjaxController extends \VuFind\Controller\AjaxController
         $facets = $results->getFullFieldFacets(array_keys($fields));
         $retVal = [];
         foreach ($facets as $field => $values) {
-            $newValues = ['data' => []];
+            $newValues = ['data' => [], 'minYear' => intval(date("Y", time())), 'maxYear' => 0, 'minCount' => 0, 'maxCount' => 0];
+            list($to, $from, $hasDateFilter, $newValues) = $this->dateFilters($results, $newValues);
             foreach ($values['data']['list'] as $current) {
                 // Only retain numeric values!
                 if (preg_match("/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[T][0-9]{2}:[0-9]{2}:[0-9]{2}[A-Z]$/", $current['value'])) {
-                    $newValues['data'][]
-                        = [substr($current['value'], 0, 4), $current['count']];
+                    $currentYear = intval(substr($current['value'], 0, 4));
+                    if ($currentYear < 1400) {
+                        continue;
+                    }
+                    $currentCount = $current['count'];
+                    $val = [$currentYear, $currentCount];
+                    if ($hasDateFilter) {
+                        if (strcmp($current['value'], $from) >= 0 && strcmp($current['value'], $to) <= 0) {
+                            $val[] = true;
+                        } else {
+                            $val[] = false;
+                        }
+                    } else {
+                        $val[] = false;
+                    }
+
+                    $newValues['data'][$currentYear] = $val;
+                    $newValues = $this->maxMinValues($newValues, $val);
                 }
             }
+
+            for ($i = $newValues['minYear']; $i <= $newValues['maxYear']; ++$i) {
+                if (!array_key_exists($i, $newValues['data'])) {
+                    $val = [$i, 0];
+                    $val[] = $i >= $newValues['minYear'] && $i <= $newValues['maxYear'] ? true : false;
+                    $newValues['data'][$i] = $val;
+                }
+            }
+
             usort($newValues['data'], function ($a, $b) {
                 return strcmp($a[0], $b[0]);
             });
+
+
+            if (count($newValues['data']) > self::MERGE_BOUNDARY) {
+
+                $newValues = $this->mergeYears($newValues);
+            }
             $retVal[$field] = $newValues;
+            $retVal[$field]['data'] = array_values($newValues['data']);
         }
         return $retVal;
+    }
+
+    /**
+     * @param $newValues
+     * @return array
+     */
+    protected function mergeYears($newValues)
+    {
+        $numOfSummarizedFields = floor(count($newValues['data']) / self::MERGE_BOUNDARY) + 1;
+        $i = 1;
+        $list = [];
+        $val = [0, 0, false];
+        foreach ($newValues['data'] as $key => $value) {
+            if ($i <= $numOfSummarizedFields) {
+                if ($i === 1) {
+                    $val[0] = $value[0];
+                }
+                $val[1] += $value[1];
+                $val[2] = $val[2] || $value[2];
+                if ($i < $numOfSummarizedFields) {
+                    ++$i;
+                    continue;
+                }
+            }
+            $list[$val[0]] = $val;
+            $newValues = $this->maxMinValues($newValues, $val);
+            $val = [0, 0, false];
+            $i = 1;
+        }
+        $newValues['data'] = $list;
+        return $newValues;
+    }
+
+    /**
+     * @param $newValues
+     * @param $val
+     * @return mixed
+     */
+    protected function maxMinValues($newValues, $val)
+    {
+        if ($val[0] < $newValues['minYear']) {
+            $newValues['minYear'] = $val[0];
+        }
+        if ($val[0] > $newValues['maxYear']) {
+            $newValues['maxYear'] = $val[0];
+        }
+        if ($val[1] < $newValues['minCount']) {
+            $newValues['minCount'] = $val[1];
+        }
+        if ($val[1] > $newValues['maxCount']) {
+            $newValues['maxCount'] = $val[1];
+        }
+        return $newValues;
+    }
+
+    /**
+     * @param @param \VuFind\Search\Solr\Results $results Search results object
+     * @param $newValues
+     * @return array
+     */
+    protected function dateFilters($results, $newValues)
+    {
+        $filters = $results->getParams()->getFilterList(true);
+        $from = $to = '';
+        $hasDateFilter = false;
+        foreach ($filters as $filter) {
+            foreach ($filter as $currentFilter) {
+                $match = [];
+                if (preg_match("/^\[([0-9]{4}\-[0-9]{2}\-[0-9]{2}[T][0-9]{2}:[0-9]{2}:[0-9]{2}[A-Z]) TO ([0-9]{4}\-[0-9]{2}\-[0-9]{2}[T][0-9]{2}:[0-9]{2}:[0-9]{2}[A-Z])\]$/", $currentFilter["value"], $match)) {
+                    $from = $match[1];
+                    $to = $match[2];
+                    $hasDateFilter = true;
+                }
+            }
+        }
+        $newValues['rangeFrom'] = intval(substr($from, 0, 4));
+        $newValues['rangeTo'] = intval(substr($to, 0, 4));
+        return array($to, $from, $hasDateFilter, $newValues);
     }
 
 }
