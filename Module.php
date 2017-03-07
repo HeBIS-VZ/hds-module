@@ -238,6 +238,9 @@ class Module
                 },
                 'tab_notes' => function ($sm) {
                     return new View\Helper\Record\Tab\TabNotes();
+                },
+                'tab_toc_summary' => function ($sm) {
+                    return \Hebis\View\Helper\Record\Factory::getTabTocSummary($sm);
                 }
             )
         );

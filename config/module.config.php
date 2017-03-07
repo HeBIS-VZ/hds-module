@@ -4,7 +4,6 @@ namespace Hebis\Module\Configuration;
 use Zend\ServiceManager\ServiceManager;
 
 $config = [
-
     'vufind' => [
         'plugin_managers' => [
             'recorddriver' => [
@@ -44,7 +43,36 @@ $config = [
                     'pubdatevisajax' => 'Hebis\Recommend\PubDateVisAjax',
                 ],
             ],
+            'recordtab' => [
+                'abstract_factories' => ['VuFind\RecordTab\PluginFactory'],
+                'factories' => [
+                    'holdingsils' => 'Hebis\RecordTab\Factory::getHoldingsILS',
+                ],
+                'invokables' => [
+                    'description' => 'Hebis\RecordTab\Description',
+                    'staffviewmarc' => 'Hebis\RecordTab\StaffViewMARC',
+                    'toc' => 'Hebis\RecordTab\TOC',
+                ],
+            ],
         ],
+        'recorddriver_tabs' => [
+            'VuFind\RecordDriver\SolrMarc' => [
+                'tabs' => [
+                    'Holdings' => 'HoldingsILS',
+                    'Description' => 'Description',
+                    'TOC' => 'TOC',
+                    'UserComments' => null,
+                    'Reviews' => null,
+                    'Excerpt' => null,
+                    'Preview' => null,
+                    'HierarchyTree' => null,
+                    'Map' => null,
+                    'Similar' => null,
+                    'Details' => 'StaffViewMARC',
+                ],
+                'defaultTab' => 'Holdings',
+            ],
+        ]
 
     ],
     'service_manager' => [
@@ -56,6 +84,7 @@ $config = [
             'VuFind\WorldCatUtils' => 'Hebis\Service\Factory::getWorldCatUtils',
             'VuFind\AutocompletePluginManager' => 'VuFind\Service\Factory::getAutocompletePluginManager',
             'VuFind\SearchResultsPluginManager' => 'VuFind\Service\Factory::getSearchResultsPluginManager',
+            'VuFind\RecordTabPluginManager' => 'Hebis\Service\Factory::getRecordTabPluginManager',
         ],
         'invokables' => [
             'VuFind\Terms' => 'Hebis\Search\Service',
@@ -114,6 +143,7 @@ $config = [
             ]
         ],
     ],
+
 ];
 
 $recordRoutes = ['recordfinder' => 'RecordFinder'];

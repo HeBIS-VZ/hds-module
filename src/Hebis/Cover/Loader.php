@@ -45,7 +45,7 @@ class Loader extends \VuFind\Cover\Loader
      * @return void
      * @throws \Exception
      */
-    protected function determineLocalFile($ids): void
+    protected function determineLocalFile($ids)
     {
         // We should check whether we have cached images for the 13- or 10-digit
         // ISBNs. If no file exists, we'll favor the 10-digit number if
