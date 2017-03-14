@@ -132,4 +132,22 @@ class Factory extends \VuFind\Service\Factory
         );
     }
 
+    /**
+     * Construct the RecordTab Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \Hebis\RecordTab\PluginManager
+     */
+    public static function getRecordTabPluginManager(ServiceManager $sm)
+    {
+        $configKey = "recordtab";
+        $config = $sm->get('Config');
+        return new \Hebis\RecordTab\PluginManager(
+            new \Zend\ServiceManager\Config(
+                $config['vufind']['plugin_managers'][$configKey]
+            )
+        );
+    }
+
 }

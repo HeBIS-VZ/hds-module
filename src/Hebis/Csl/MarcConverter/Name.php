@@ -186,7 +186,7 @@ class Name
         array_filter($translators, function ($field) {
             /** @var \File_MARC_Data_Field $field */
             $_4 = $field->getSubfield('4');
-            return $field->getIndicator(2) === " " && $_4->getData() === "trl";
+            return !empty($_4) ? $field->getIndicator(2) === " " && $_4->getData() === "trl" : false;
         });
 
         $names = [];

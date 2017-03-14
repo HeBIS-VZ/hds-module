@@ -229,6 +229,18 @@ class Module
                 },
                 'bib_tip_publication' => function ($sm) {
                     return new View\Helper\Record\BibTip\BibTipPublication();
+                },
+                'tab_reference_note' => function ($sm) {
+                    return new View\Helper\Record\Tab\TabReferenceNote();
+                },
+                'tab_relationship_entry' => function ($sm) {
+                    return new View\Helper\Record\Tab\TabRelationshipEntry();
+                },
+                'tab_notes' => function ($sm) {
+                    return new View\Helper\Record\Tab\TabNotes();
+                },
+                'tab_toc_summary' => function ($sm) {
+                    return \Hebis\View\Helper\Record\Factory::getTabTocSummary($sm);
                 }
             )
         );

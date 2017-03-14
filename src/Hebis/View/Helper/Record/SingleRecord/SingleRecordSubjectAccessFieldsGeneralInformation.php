@@ -333,7 +333,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     {
         $gnd = trim($gnd);
         $value = "uses_authority:&quot;$gnd&quot;";
-        return '<label class="checkbox-inline"><input type="checkbox" name="lookfor[]" value="' . $value . '" />'
-            . '<input type="hidden" name="type" value="allfields" />' . $content . '</label>';
+        return '<label class="checkbox-inline"><input type="checkbox" name="lookfor0[]" value="' . $value . '" />'
+            . '<input type="hidden" name="type0[]" value="allfields" />' . $content . '</label>';
     }
 }
