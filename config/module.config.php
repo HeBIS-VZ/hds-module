@@ -105,6 +105,7 @@ $config = [
         ],
         'invokables' => [
             'ajax' => 'Hebis\Controller\AjaxController',
+            'eds' => 'Hebis\Controller\EdsController',
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
         ]
