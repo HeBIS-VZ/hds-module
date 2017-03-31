@@ -39,4 +39,25 @@ class EDS extends \VuFind\RecordDriver\EDS
     {
         return $this->fields;
     }
+
+    /**
+     * Return a URL to a thumbnail preview of the record, if available; false
+     * otherwise.
+     *
+     * @param string $size Size of thumbnail (small, medium or large -- small is
+     * default).
+     *
+     * @return string
+     */
+    public function getThumbnail($size = 'small')
+    {
+        if (!empty($this->fields['ImageInfo'])) {
+            foreach ($this->fields['ImageInfo'] as $image) {
+                if (isset($image['Size']) && $size == $image['Size']) {
+                    return (isset($image['Target'])) ? $image['Target'] : '';
+                }
+            }
+        }
+        return false;
+    }
 }
