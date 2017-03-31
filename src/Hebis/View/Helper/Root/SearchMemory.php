@@ -27,60 +27,38 @@
 
 namespace Hebis\View\Helper\Root;
 
-use Zend\ServiceManager\ServiceManager;
-
 /**
- * Class Factory
+ * Class SearchMemory
  * @package Hebis\View\Helper\Root
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class Factory extends \VuFind\View\Helper\Root\Factory
+class SearchMemory extends \VuFind\View\Helper\Root\SearchMemory
 {
 
-    /**
-     * Construct the Citation helper.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return Citation
-     */
-    public static function getCitation(ServiceManager $sm)
+    public function getLastSearchTerm($shorten = false, $maxLength = 16)
     {
-        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        $dateConverter = $sm->getServiceLocator()->get('VuFind\DateConverter');
-        return new Citation($dateConverter, $config);
+        $url = parse_url($this->memory->retrieveSearch());
+        $query = $url['query'];
+        if (preg_match("/lookfor\=([^&]*){1}/", $query, $match)) {
+            $searchTerm = !empty($match) ? explode(" ", urldecode($match[1])) : null;
+
+            if (count($searchTerm) > 1) {
+                $ret = "";
+                foreach ($searchTerm as $term) {
+                    if (strlen($ret) + strlen($term) < $maxLength) {
+                        $ret .= " " . $term;
+                    } else {
+                        $ret .= " " . substr($term, 0, $maxLength - 1 - strlen($ret)) . "…";
+                    }
+                }
+                return trim($ret);
+            } else {
+                if ($shorten && strlen($searchTerm[1] > $maxLength)) {
+                    return substr($searchTerm[1], 0, $maxLength-1). "…";
+                }
+            }
+        }
+        return "";
     }
 
-    /**
-     * Construct the Record helper.
-     *
-     * @param ServiceManager $sm
-     * @return Record
-     */
-    public static function getRecord(ServiceManager $sm)
-    {
-        $helper = new Record(
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
-        );
-
-        $helper->setCoverRouter(
-            $sm->getServiceLocator()->get('VuFind\Cover\Router')
-        );
-
-        return $helper;
-    }
-
-    /**
-     * Construct the SearchMemory helper.
-     *
-     * @param ServiceManager $sm Service manager.
-     *
-     * @return SearchMemory
-     */
-    public static function getSearchMemory(ServiceManager $sm)
-    {
-        return new SearchMemory(
-            $sm->getServiceLocator()->get('VuFind\Search\Memory')
-        );
-    }
 }
