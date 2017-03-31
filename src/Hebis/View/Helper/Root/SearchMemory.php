@@ -38,23 +38,26 @@ class SearchMemory extends \VuFind\View\Helper\Root\SearchMemory
     public function getLastSearchTerm($shorten = false, $maxLength = 16)
     {
         $url = parse_url($this->memory->retrieveSearch());
-        $query = $url['query'];
-        if (preg_match("/lookfor\=([^&]*){1}/", $query, $match)) {
-            $searchTerm = !empty($match) ? explode(" ", urldecode($match[1])) : null;
+        if (array_key_exists('query', $url)) {
+            $query = $url['query'];
+            if (preg_match("/lookfor\=([^&]*){1}/", $query, $match)) {
+                $searchTerm = !empty($match) ? explode(" ", urldecode($match[1])) : null;
 
-            if (count($searchTerm) > 1) {
-                $ret = "";
-                foreach ($searchTerm as $term) {
-                    if (strlen($ret) + strlen($term) < $maxLength) {
-                        $ret .= " " . $term;
-                    } else {
-                        $ret .= " " . substr($term, 0, $maxLength - 1 - strlen($ret)) . "…";
+                if (count($searchTerm) > 1) {
+                    $ret = "";
+                    foreach ($searchTerm as $term) {
+                        if (strlen($ret) + strlen($term) < $maxLength) {
+                            $ret .= " " . $term;
+                        } else {
+                            $ret .= " " . substr($term, 0, $maxLength - 1 - strlen($ret)) . "…";
+                        }
                     }
-                }
-                return trim($ret);
-            } else {
-                if ($shorten && strlen($searchTerm[1] > $maxLength)) {
-                    return substr($searchTerm[1], 0, $maxLength-1). "…";
+                    return trim($ret);
+                } else {
+                    if ($shorten && strlen($searchTerm[0] > $maxLength)) {
+                        return substr($searchTerm[0], 0, $maxLength - 1) . "…";
+                    }
+                    return $searchTerm[0];
                 }
             }
         }
