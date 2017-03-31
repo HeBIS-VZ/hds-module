@@ -244,6 +244,9 @@ class Module
                 },
                 'tab_toc_summary' => function ($sm) {
                     return \Hebis\View\Helper\Record\Factory::getTabTocSummary($sm);
+                },
+                'eds_short_title' => function($sm) {
+                    return new \Hebis\View\Helper\Record\EDS\EdsShortTitle();
                 }
             )
         );

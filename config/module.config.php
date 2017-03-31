@@ -9,6 +9,7 @@ $config = [
             'recorddriver' => [
                 'factories' => [
                     'solrmarc' => 'Hebis\RecordDriver\Factory::getSolrMarc',
+                    'eds' => 'Hebis\RecordDriver\Factory::getEDS',
                 ]
             ],
             'db_table' => [
