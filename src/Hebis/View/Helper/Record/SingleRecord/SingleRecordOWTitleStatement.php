@@ -84,7 +84,7 @@ class SingleRecordOWTitleStatement extends AbstractRecordViewHelper
                 return $ret;
             }
         }
-
+        // returns empty string
         return "";
     }
 
