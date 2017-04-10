@@ -247,6 +247,12 @@ class Module
                 },
                 'eds_short_title' => function($sm) {
                     return new \Hebis\View\Helper\Record\EDS\EdsShortTitle();
+                },
+                'eds_authors_result_list' => function($sm) {
+                    return new \Hebis\View\Helper\Record\EDS\EdsAuthorsResultList();
+                },
+                'eds_subject_result_list' => function($sm) {
+                    return new \Hebis\View\Helper\Record\EDS\EdsSubjectResultList();
                 }
             )
         );
