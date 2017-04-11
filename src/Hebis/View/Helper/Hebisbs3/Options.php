@@ -39,9 +39,12 @@ class Options extends AbstractHelper
 
     private $options;
 
+    private $edsOptions;
+
     public function __construct(\Zend\ServiceManager\ServiceManager $sm)
     {
         $this->options = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $this->edsOptions = $sm->getServiceLocator()->get('VuFind\Config')->get('eds');
     }
 
     public function theme()
@@ -68,5 +71,4 @@ class Options extends AbstractHelper
     {
         return $this->edsOptions->Facet_Settings->facet_limit;
     }
-
 }
