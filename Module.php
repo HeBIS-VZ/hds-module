@@ -110,6 +110,9 @@ class Module
                 'result_list_personal_name' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListPersonalName();
                 },
+                'result_list_ow_personal_name' => function ($sm) {
+                    return new View\Helper\Record\ResultList\ResultListOWPersonalName();
+                },
                 'result_list_corporate_name' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListCorporateName();
                 },
