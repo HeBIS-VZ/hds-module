@@ -28,6 +28,9 @@
 namespace Hebis\Controller;
 
 
+use Hebis\RecordDriver\SolrMarc;
+use Hebis\Search\Solr\Results;
+
 class SearchController extends \VuFind\Controller\SearchController
 {
 
@@ -49,5 +52,20 @@ class SearchController extends \VuFind\Controller\SearchController
                 => $hierarchicalFacetSortOptions
             ]
         );
+    }
+
+    public function resultsAction()
+    {
+        $view = parent::resultsAction();
+
+        /** @var Results $results */
+        $results = $view->results;
+        if ($results->getResultTotal() === 1) {
+            /** @var SolrMarc $record */
+            $record = $results->getResults()[0];
+            $ppn = $record->getPPN();
+            return $this->forwardTo("record_finder", "home", ['id' => $ppn]);
+        }
+        return $view;
     }
 }
