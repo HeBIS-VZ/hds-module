@@ -206,6 +206,9 @@ class Module
                 'single_record_title_statement' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordTitleStatement();
                 },
+                'single_record_ow_personal_name' => function ($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordOWPersonalName();
+                },
                 'single_record_ow_title_statement' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordOWTitleStatement();
                 },
