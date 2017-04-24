@@ -182,6 +182,9 @@ class Module
                 'single_record_publication' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordPublication();
                 },
+                'single_record_ow_publication' => function ($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordOWPublication();
+                },
                 'single_record_distribution' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordDistribution();
                 },
