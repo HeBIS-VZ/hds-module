@@ -107,6 +107,9 @@ class Module
                 'result_list_title_statement' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListTitleStatement();
                 },
+                'result_list_ow_title_statement' => function ($sm) {
+                    return new View\Helper\Record\ResultList\ResultListOWTitleStatement();
+                },
                 'result_list_personal_name' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListPersonalName();
                 },
