@@ -28,6 +28,9 @@
 namespace Hebis\Controller;
 
 
+use Hebis\RecordDriver\SolrMarc;
+use Hebis\Search\Solr\Results;
+
 class SearchController extends \VuFind\Controller\SearchController
 {
 
@@ -50,4 +53,43 @@ class SearchController extends \VuFind\Controller\SearchController
             ]
         );
     }
+
+    public function resultsAction()
+    {
+        $view = parent::resultsAction();
+
+        /** @var Results $results */
+        $results = $view->results;
+        if ($results->getResultTotal() === 1) {
+            /** @var SolrMarc $record */
+            $record = $results->getResults()[0];
+            $ppn = $record->getPPN();
+            return $this->forwardTo("record_finder", "home", ['id' => $ppn]);
+
+        } else if ($results->getResultTotal() === 0) {
+            $lookfor = $this->params()->fromQuery("lookfor");
+            return $this->forwardTo("search", "record_not_found", ["lookfor" => $lookfor]);
+        }
+        return $view; //else return results list
+    }
+
+    /**
+     * @return \VuFind\Controller\ViewModel
+     */
+    public function recordNotFoundAction()
+    {
+        $view = $this->createViewModel(
+            [
+                'results' => $this->getHomePageFacets(),
+                'hierarchicalFacets' => $this->getHierarchicalFacets(),
+                'hierarchicalFacetSortOptions'
+                => $this->getHierarchicalFacetSortSettings()
+            ]
+        );
+        $view->params = $this->params();
+        $view->lookfor = $this->params()->fromQuery("lookfor");
+        return $view;
+    }
+
+
 }
