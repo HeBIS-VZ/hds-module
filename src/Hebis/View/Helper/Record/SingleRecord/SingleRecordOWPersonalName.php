@@ -45,7 +45,7 @@ class SingleRecordOWPersonalName extends ResultListPersonalName
         $arr = [];
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
-
+        $_880_700_ = array();
         $_880__ = $marcRecord->getFields('880');
 
         foreach ($_880__ as $_880) {
