@@ -119,6 +119,9 @@ class Module
                 'result_list_publication_distribution' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListPublication();
                 },
+                'result_list_ow_publication_distribution' => function ($sm) {
+                    return new View\Helper\Record\ResultList\ResultListOWPublication();
+                },
                 'result_list_host_item_entry' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListHostItemEntry();
                 },
