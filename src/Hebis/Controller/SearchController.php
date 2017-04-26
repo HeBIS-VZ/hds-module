@@ -27,21 +27,12 @@
 
 namespace Hebis\Controller;
 
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\Search\Solr\Results;
 
-/**
- * Class SearchController
- * @package Hebis\Controller
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
 class SearchController extends \VuFind\Controller\SearchController
 {
-
-    const SPECIAL_CHARS_MAP = [
-        "+" => "und",
-        "&" => "und"
-    ];
 
     public function homeAction()
     {
@@ -71,9 +62,12 @@ class SearchController extends \VuFind\Controller\SearchController
         if (preg_match("/\s([&+])\s/u", $lookfor)) {
             $encodedLookfor = $this->solrSpecialChars($lookfor);
             $this->getRequest()->getQuery()->set("lookfor", $encodedLookfor); //call by reference
+            $view = parent::resultsAction();
+            $view->params->getQuery()->setString($lookfor);
+        } else {
+            $view = parent::resultsAction();
         }
-        $view = parent::resultsAction();
-        $view->params->getQuery()->setString($lookfor);
+
 
         /** @var Results $results */
         $results = $view->results;
@@ -108,11 +102,5 @@ class SearchController extends \VuFind\Controller\SearchController
         return $view;
     }
 
-    private function solrSpecialChars($lookfor)
-    {
 
-        return preg_replace_callback("/\s([&+])\s/", function($matches) {
-            return " ".self::SPECIAL_CHARS_MAP[$matches[1]]." ";
-        }, $lookfor);
-    }
 }
