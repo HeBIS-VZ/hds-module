@@ -63,4 +63,10 @@ class Options extends AbstractHelper
     {
         return $this->options->Site->url;
     }
+
+    public function edsFacetLimit()
+    {
+        return $this->edsOptions->Facet_Settings->facet_limit;
+    }
+
 }
