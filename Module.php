@@ -143,6 +143,9 @@ class Module
                 'single_record_dates_of_publication_sequential_designation' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordDatesOfPublicationSequentialDesignation();
                 },
+                'single_record_publication_year' => function ($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordPublicationYear();
+                },
                 'single_record_physical_description' => function ($sm) { //Umfang
                     return new View\Helper\Record\SingleRecord\SingleRecordPhysicalDescription();
                 },
