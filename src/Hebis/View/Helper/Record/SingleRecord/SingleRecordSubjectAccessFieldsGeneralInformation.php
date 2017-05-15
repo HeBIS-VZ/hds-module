@@ -142,29 +142,31 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             /** @var \File_MARC_Subfield $sf */
             $arr_ = "";
             foreach ($field->getSubfields() as $sf) {
+                if(!empty($sf)){
                 if (!in_array($sf->getCode(), ['a', 'b', 'g', 't', 'f', 'x'])) {
                     continue;
                 }
 
                 switch ($sf->getCode()) {
                     case 'a':
-                        $arr_[] = !empty($sf) ? htmlentities($sf->getData()) : "";
+                        $arr_[] = htmlentities($sf->getData());
                         break;
                     case 'b':
-                        $arr_[] = !empty($sf) ? " / " . htmlentities($sf->getData()) : "";
+                        $arr_[] =  " / " . htmlentities($sf->getData());
                         break;
                     case 'g':
-                        $arr_[] = !empty($sf) ? " &lt;" . htmlentities($sf->getData()) . "&gt;" : "";
+                        $arr_[] =  " &lt;" . htmlentities($sf->getData()) . "&gt;";
                         break;
                     case 't':
-                        $arr_[] = !empty($sf) ? " / " . htmlentities($sf->getData()) : "";
+                        $arr_[] =  " / " . htmlentities($sf->getData());
                         break;
                     case 'f':
-                        $arr_[] = !empty($sf) ? " (" . htmlentities($sf->getData()) . ")" : "";
+                        $arr_[] =  " (" . htmlentities($sf->getData()) . ")";
                         break;
                     case 'x':
-                        $arr_[] = !empty($sf) ? ", " . htmlentities($sf->getData()) : "";
+                        $arr_[] =  ", " . htmlentities($sf->getData());
                         break;
+                }
                 }
             }
             $generatedKeywords = $this->generateTag($field, $arr_);
@@ -185,32 +187,44 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             $arr_ = [];
             /** @var \File_MARC_Subfield $sf */
             foreach ($sf_ as $sf) {
-                $key = $sf->getCode();
-                switch ($key) {
-                    case 'a':
-                        $arr_[] = !empty($sf) ? htmlentities($sf->getData()) : "";
-                        break;
-                    case 'c':
-                    case 'd':
-                    case 'f':
-                    case 'n':
-                    case 'x':
-                        $arr_[] = !empty($sf) ? ", " . htmlentities($sf->getData()) : "";
-                        break;
-                    case 'e':
-                        $arr_[] = !empty($sf) ? " / " . htmlentities($sf->getData()) : "";
-                        break;
-                    case 'g':
-                        $arr_[] = !empty($sf) ? " &lt;" . htmlentities($sf->getData()) . "&gt;" : "";
-                        break;
-                    case 't':
-                        $arr_[] = !empty($sf) ? " / " . htmlentities($sf->getData()) : "";
+                if (!empty($sf)) {
+                    $key = $sf->getCode();
+                    switch ($key) {     // 611 $a,_$c,_$d_/_$e,_$f_<$g>,_$n_/_$t,_$x
+                        case 'a':
+                            $arr_[] =  htmlentities($sf->getData());
+                            break;
+                        case 'c':
+                            $arr_[] =  ", " . htmlentities($sf->getData());
+                            break;
+                        case 'd':
+                            $arr_[] =  ", " . htmlentities($sf->getData());
+                            break;
+                        case 'e':
+                            $arr_[] =  " / " . htmlentities($sf->getData());
+                            break;
+                        case 'f':
+                            $arr_[] =  ", " . htmlentities($sf->getData());
+                            break;
+                        case 'g':
+                            $arr_[] =  " &lt;" . htmlentities($sf->getData()) . "&gt;";
+                            break;
+                        case 'n':
+                            $arr_[] =  ", " . htmlentities($sf->getData());
+                            break;
+                        case 't':
+                            $arr_[] =  " / " . htmlentities($sf->getData());
+                            break;
+                        case 'x':
+                            $arr_[] = ", " . htmlentities($sf->getData());
+                            break;
+                    }
+
+                }
+                $generatedKeywords = $this->generateTag($field, $arr_);
+                if (!empty($generatedKeywords)) {
+                    $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
                 }
 
-            }
-            $generatedKeywords = $this->generateTag($field, $arr_);
-            if (!empty($generatedKeywords)) {
-                $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
             }
         }
         return implode("<br />", $arr);
@@ -220,19 +234,38 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     {
         $arr = [];
         foreach ($record->getMarcRecord()->getFields(630) as $field) {
-            $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'c', 'd', 'e', 'f', 'g', 't', 'x']);
+            $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'd', 'e', 'f', 'g', 'n', 's', 't', 'x']);
             foreach ($sf_ as $sf) {
                 $arr_ = [];
-                $arr_[] = !empty($sf['a']) ? $sf['a'] : "";
-                $arr_[] = !empty($sf['c']) ? ", " . $sf['c'] : "";
-                $arr_[] = !empty($sf['d']) ? ", " . $sf['d'] : "";
+                // 630 $a,_$d,_$e,_$f_<$g>,_$n._$s_/_$t,_$x
 
-                $arr_[] = !empty($sf['e']) ? " / " . $sf['e'] : "";
-                $arr_[] = !empty($sf['f']) ? " &lt;" . $sf['f'] . "&gt;" : "";
-                $arr_[] = !empty($sf['g']) ? ", " . $sf['g'] : "";
-
-                $arr_[] = !empty($sf['t']) ? " / " . $sf['t'] : "";
-                $arr_[] = !empty($sf['x']) ? ", " . $sf['x'] : "";
+                if (!empty($sf['a'])) {
+                    $arr_[] = $sf['a'];
+                }
+                if (!empty($sf['d'])) {
+                    $arr_[] = ", " . $sf['d'];
+                }
+                if (!empty($sf['e'])) {
+                    $arr_[] = ", " . $sf['e'];
+                }
+                if(!empty($sf['f'])) {
+                    $arr_[] = ", " . $sf['f'];
+                }
+                if(!empty($sf['g'])) {
+                    $arr_[] = " &lt;" . $sf['g'] . "&gt;";
+                }
+                if(!empty($sf['n'])) {
+                    $arr_[] = ", " . $sf['n'];
+                }
+                if(!empty($sf['s'])) {
+                    $arr_[] = ". " . $sf['s'];
+                }
+                if(!empty($sf['t'])) {
+                    $arr_[] = " / " . $sf['t'];
+                }
+                if(!empty($sf['x'])) {
+                    $arr_[] = ", " . $sf['x'];
+                }
 
                 $generatedKeywords = $this->generateTag($field, $arr_);
                 if (!empty($generatedKeywords)) {
@@ -240,7 +273,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                 }
             }
         }
-        return implode("<br />", $arr);
+        return implode("<br/>", $arr);
     }
 
     private function add650($record)
@@ -249,12 +282,20 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
         foreach ($record->getMarcRecord()->getFields(650) as $field) {
             $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'c', 'x', 'g']);
 
-            foreach ($sf_ as $sf) {
-                $arr_ = [];
-                $arr_[] = !empty($sf['a']) ? $sf['a'] : "";
-                $arr_[] = !empty($sf['c']) ? " &lt;" . $sf['c'] . "&gt;" : "";
-                $arr_[] = !empty($sf['x']) ? ", " . $sf['x'] : "";
-                $arr_[] = !empty($sf['g']) ? " &lt;" . str_replace("g:", "", $sf['g']) . "&gt;" : "";
+            $arr_ = [];
+            foreach ($sf_ as $sf) {         // 650 $a_<$c>,_$x_<$g>
+                if(!empty($sf['a'])){
+                    $arr_[] = $sf['a'];
+                }
+                if(!empty($sf['c'])){
+                    $arr_[] = " &lt;" . $sf['c'] . "&gt;";
+                }
+                if(!empty($sf['x'])){
+                    $arr_[] = ", " . $sf['x'];
+                }
+                if(!empty($sf['g'])){
+                    $arr_[] = " &lt;" . str_replace("g:", "", $sf['g']) . "&gt;";
+                }
                 $generatedKeywords = $this->generateTag($field, $arr_);
                 if (!empty($generatedKeywords)) {
                     $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
@@ -272,12 +313,20 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
         foreach ($record->getMarcRecord()->getFields(651) as $field) {
 
             $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'g', 'x', 'z']);
+            $arr_ = [];
             foreach ($sf_ as $sf) {
-                $arr_ = [];
-                $arr_[] = !empty($sf['a']) ? $sf['a'] : "";
-                $arr_[] = !empty($sf['g']) ? ", " . $sf['g'] : "";
-                $arr_[] = !empty($sf['x']) ? ", " . $sf['x'] : "";
-                $arr_[] = !empty($sf['z']) ? "," . $sf['z'] : "";
+                if(!empty($sf['a'])){
+                    $arr_[] = $sf['a'];
+                }
+                if(!empty($sf['g'])){
+                    $arr_[] = ", " . $sf['g'];
+                }
+                if(!empty($sf['x'])){
+                    $arr_[] = " / " . $sf['x'];
+                }
+                if(!empty($sf['z'])){
+                    $arr_[] = ", " . $sf['z'];
+                }
                 $arr[] = "<nobr>" . $this->generateTag($field, $arr_) . "</nobr>";
             }
         }

@@ -35,7 +35,6 @@ use Box\Spout\Reader\ReaderInterface;
 use Box\Spout\Writer\Common\Sheet;
 use Hebis\Exception\HebisException;
 use Hebis\RecordDriver\SolrMarc;
-use VuFindSearch\Backend\Exception\HttpErrorException;
 use Zend\Http\Client;
 
 /**
