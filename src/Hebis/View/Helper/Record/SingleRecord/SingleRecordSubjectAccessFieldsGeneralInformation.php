@@ -105,19 +105,19 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                 if (!in_array($sf->getCode(), ['a', 'b', 'c', 't', 'x'])) {
                     continue;
                 }
-                $line = "";
+                $line = "";         // 600 $a__$b_<$c>_/_$t,_$x
                 switch ($sf->getCode()) {
                     case 'a':
                         $line .= !empty($sf) ? htmlentities($sf->getData()) : "";
                         break;
                     case 'b':
-                        $line .= !empty($sf) ? htmlentities($sf->getData()) : "";
+                        $line .= !empty($sf) ? " " . htmlentities($sf->getData()) : "";
                         break;
                     case 'c':
-                        $line .= !empty($sf) ? "&lt;" . htmlentities($sf->getData()) . "&gt;" : "";
+                        $line .= !empty($sf) ? " &lt;" . htmlentities($sf->getData()) . "&gt;" : "";
                         break;
                     case 't':
-                        $line .= !empty($sf) ? "/ " . htmlentities($sf->getData()) : "";
+                        $line .= !empty($sf) ? " / " . htmlentities($sf->getData()) : "";
                         break;
                     case 'x':
                         $line .= !empty($sf) ? ", " . htmlentities($sf->getData()) : "";
@@ -146,6 +146,8 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                 if (!in_array($sf->getCode(), ['a', 'b', 'g', 't', 'f', 'x'])) {
                     continue;
                 }
+
+                // 610 $a_/_$b_<$g>_/_$t_($f),_$x
 
                 switch ($sf->getCode()) {
                     case 'a':
@@ -182,14 +184,18 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
         $arr = [];
         /** @var \File_MARC_Data_Field $field */
         foreach ($record->getMarcRecord()->getFields(611) as $field) {
-            $sf_ = $field->getSubfields();
-            //['a', 'c', 'd', 'e', 'f', 'g', 'n', 't', 'x'];
+
             $arr_ = [];
-            /** @var \File_MARC_Subfield $sf */
-            foreach ($sf_ as $sf) {
-                if (!empty($sf)) {
-                    $key = $sf->getCode();
-                    switch ($key) {     // 611 $a,_$c,_$d_/_$e,_$f_<$g>,_$n_/_$t,_$x
+            foreach ($field->getSubfields() as $sf) {
+                if(!empty($sf)){
+                    if (!in_array($sf->getCode(), ['a', 'c', 'd', 'e', 'f', 'g', 'n', 't', 'x'])) {
+                        continue;
+                    }
+
+                    switch ($sf->getCode()) {
+                        // TODO: 88
+                        // Test Case: 7  PPN: 061371955; Comment: die Felder $n $d $c : "11, 1996, Salvador" existisiren nicht in $record
+
                         case 'a':
                             $arr_[] =  htmlentities($sf->getData());
                             break;
@@ -268,12 +274,13 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
                 }
 
                 $generatedKeywords = $this->generateTag($field, $arr_);
+
                 if (!empty($generatedKeywords)) {
                     $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
                 }
             }
         }
-        return implode("<br/>", $arr);
+        return implode("<br />", $arr);
     }
 
     private function add650($record)
@@ -366,7 +373,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             });
             if (!empty($_0)) {
                 $gnd = str_replace("(DE-603)", "", array_pop($_0)->getData());
-                $completeTag = '<a href="' . $this->getUrl($gnd) . '">' . implode(" ", $arr) . '</a>';
+                $completeTag = '<a href="' . $this->getUrl($gnd) . '">' . implode("", $arr) . '</a>';
                 return $this->makeCheckboxField($gnd, $completeTag);
             }
         }
