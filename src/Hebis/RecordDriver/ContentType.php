@@ -189,12 +189,12 @@ class ContentType
                 }
             }
             if ($z == "cr") {
-                if (strpos($marcRecord->getLeader(), 19, 1) == 'a') {
+                if (substr($marcRecord->getLeader(), 19, 1) == 'a') {
                     $z = "cry";
                 }
             }
             if ($z == "xxx") {
-                if (strpos($marcRecord->getLeader(), 19, 1) == 'a') {
+                if ($l19 = substr($marcRecord->getLeader(), 19, 1) == 'a') {
                     $z = "xxxy";
                 }
             }
