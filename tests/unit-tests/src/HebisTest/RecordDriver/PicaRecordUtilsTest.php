@@ -6,7 +6,7 @@
  * Time: 15:21
  */
 
-namespace Hebis\RecordDriver;
+namespace HebisTest\RecordDriver;
 
 
 class PicaRecordUtilsTest extends \PHPUnit_Framework_TestCase
