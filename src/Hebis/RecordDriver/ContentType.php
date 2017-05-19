@@ -41,10 +41,12 @@ class ContentType
             ],
             "m" => [
                 "xxx" => "book",
+                "xxxy" => "hierarchy", //bei leader 19 = a
                 "co" => "dvd",
                 "cocd" => "cd",
                 "c " => "cd",
                 "cr" => "ebook",
+                "cry" => "hierarchy", //bei leader 19 = a
                 "cu" => "ebook",
                 "h" => "microfilm",
                 "f" => "sensorimage",
@@ -58,7 +60,12 @@ class ContentType
                 "co" => "journal",
                 "cocd" => "journal",
                 "cr" => "electronic",
+                "c " => "journal",
                 "f" => "sensorimage"
+            ],
+            "i" => [
+                "cr" => "electronic",
+                "xxxy" => "hierarchy" //bei leader 19 = a
             ]
         ],
         "c" => [
@@ -91,6 +98,8 @@ class ContentType
         ],
         "i" => [
             "m" => [
+                "co" => "audio",
+                "c " => "audio",
                 "s" => "audio",
                 "cocd" => "cd"
             ]
@@ -103,7 +112,7 @@ class ContentType
             ],
             "s" => [
                 "co" => "audio",
-                "s" => "audio"
+                "c " => "audio"
             ]
         ],
         "k" => [
@@ -168,7 +177,7 @@ class ContentType
             case " ":
                 $z = "xxx";
         }
-        if ($x == "a" && $y == "m") {
+        if ($x == "a" && ($y == "m" || $y == "i")) {
             if ($z == "co") {
                 if (strpos($_300_a, "DVD") === false && strpos($_300_a, "Blu-Ray") === false) {
                     $z = "c ";
@@ -177,6 +186,16 @@ class ContentType
             if ($z == "c ") {
                 if (strpos($_300_a, "DVD") !== false) {
                     $z = "co";
+                }
+            }
+            if ($z == "cr") {
+                if (strpos($marcRecord->getLeader(), 19, 1) == 'a') {
+                    $z = "cry";
+                }
+            }
+            if ($z == "xxx") {
+                if (strpos($marcRecord->getLeader(), 19, 1) == 'a') {
+                    $z = "xxxy";
                 }
             }
         }
