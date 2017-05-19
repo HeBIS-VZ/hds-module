@@ -25,50 +25,42 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Hebisbs3;
+namespace HebisTest\View\Helper\Record;
 
-use Zend\View\Helper\AbstractHelper;
+use VuFind\View\Helper\Root\RecordLink as Link;
+
 
 /**
- * Class Options
+ * Class RecordLink
+ * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class Options extends AbstractHelper
+class RecordLink extends Link
 {
 
-    private $options;
-
-    private $edsOptions;
-
-    public function __construct(\Zend\ServiceManager\ServiceManager $sm)
+    public function __construct(\VuFind\Record\Router $router)
     {
-        $this->options = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        $this->edsOptions = $sm->getServiceLocator()->get('VuFind\Config')->get('eds');
+        parent::__construct($router);
     }
 
-    public function theme()
+    public function recordFinderProxy($ppn)
     {
-        return $this->options->Site->theme;
+        $this->getActionUrl("record_finder", "home", ['id' => "HEB" . $ppn]);
     }
 
-    public function themePath()
+    public function getActionUrl($controller, $action, $params = [])
     {
-        return "/themes/" . $this->theme();
-    }
 
-    public function title()
-    {
-        return $this->options->Site->title;
-    }
+        // Build the URL:
+        $urlHelper = $this->getView()->plugin('url');
 
-    public function homeUrl()
-    {
-        return $this->options->Site->url;
-    }
+        $this->getView()->url()->fromRoute('route-name', $params);
 
-    public function edsFacetLimit()
-    {
-        return $this->edsOptions->Facet_Settings->facet_limit;
+        /*
+        $this->router->getRouteDetails();
+        $details = $this->router->getActionRouteDetails($driver, $action);
+        return $urlHelper($details['route'], $params);
+        */
     }
 }

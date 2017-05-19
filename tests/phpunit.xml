@@ -4,10 +4,7 @@
 
     <testsuites>
         <testsuite name="AllUnitTests">
-            <directory>../../*/tests/unit-tests/src</directory>
-        </testsuite>
-        <testsuite name="AllIntegrationTests">
-            <directory>../../*/tests/integration-tests/src</directory>
+            <directory>./unit-tests/src</directory>
         </testsuite>
     </testsuites>
 

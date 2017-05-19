@@ -6,7 +6,7 @@
  * Time: 10:53
  */
 
-namespace Hebis\RecordDriver;
+namespace HebisTest\RecordDriver;
 
 use Hebis\RecordDriver\PicaRecordInterface;
 use Hebis\RecordDriver\PicaRecordParser;
