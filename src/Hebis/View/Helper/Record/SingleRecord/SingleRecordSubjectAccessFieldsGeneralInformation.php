@@ -142,33 +142,33 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             /** @var \File_MARC_Subfield $sf */
             $arr_ = "";
             foreach ($field->getSubfields() as $sf) {
-                if(!empty($sf)){
-                if (!in_array($sf->getCode(), ['a', 'b', 'g', 't', 'f', 'x'])) {
-                    continue;
-                }
+                if (!empty($sf)) {
+                    if (!in_array($sf->getCode(), ['a', 'b', 'g', 't', 'f', 'x'])) {
+                        continue;
+                    }
 
-                // 610 $a_/_$b_<$g>_/_$t_($f),_$x
+                    // 610 $a_/_$b_<$g>_/_$t_($f),_$x
 
-                switch ($sf->getCode()) {
-                    case 'a':
-                        $arr_[] = htmlentities($sf->getData());
-                        break;
-                    case 'b':
-                        $arr_[] =  " / " . htmlentities($sf->getData());
-                        break;
-                    case 'g':
-                        $arr_[] =  " &lt;" . htmlentities($sf->getData()) . "&gt;";
-                        break;
-                    case 't':
-                        $arr_[] =  " / " . htmlentities($sf->getData());
-                        break;
-                    case 'f':
-                        $arr_[] =  " (" . htmlentities($sf->getData()) . ")";
-                        break;
-                    case 'x':
-                        $arr_[] =  ", " . htmlentities($sf->getData());
-                        break;
-                }
+                    switch ($sf->getCode()) {
+                        case 'a':
+                            $arr_[] = htmlentities($sf->getData());
+                            break;
+                        case 'b':
+                            $arr_[] = " / " . htmlentities($sf->getData());
+                            break;
+                        case 'g':
+                            $arr_[] = " &lt;" . htmlentities($sf->getData()) . "&gt;";
+                            break;
+                        case 't':
+                            $arr_[] = " / " . htmlentities($sf->getData());
+                            break;
+                        case 'f':
+                            $arr_[] = " (" . htmlentities($sf->getData()) . ")";
+                            break;
+                        case 'x':
+                            $arr_[] = ", " . htmlentities($sf->getData());
+                            break;
+                    }
                 }
             }
             $generatedKeywords = $this->generateTag($field, $arr_);
@@ -186,50 +186,53 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
         foreach ($record->getMarcRecord()->getFields(611) as $field) {
 
             $arr_ = [];
-            foreach ($field->getSubfields() as $sf) {
-                if(!empty($sf)){
-                    if (!in_array($sf->getCode(), ['a', 'c', 'd', 'e', 'f', 'g', 'n', 't', 'x'])) {
-                        continue;
-                    }
+            $subFields = $field->getSubfields();
 
-                    switch ($sf->getCode()) {
-                        // TODO: 88
-                        // Test Case: 7  PPN: 061371955; Comment: die Felder $n $d $c : "11, 1996, Salvador" existisiren nicht in $record
+            foreach ($subFields as $sf) {
 
-                        case 'a':
-                            $arr_[] =  htmlentities($sf->getData());
-                            break;
-                        case 'c':
-                            $arr_[] =  ", " . htmlentities($sf->getData());
-                            break;
-                        case 'd':
-                            $arr_[] =  ", " . htmlentities($sf->getData());
-                            break;
-                        case 'e':
-                            $arr_[] =  " / " . htmlentities($sf->getData());
-                            break;
-                        case 'f':
-                            $arr_[] =  ", " . htmlentities($sf->getData());
-                            break;
-                        case 'g':
-                            $arr_[] =  " &lt;" . htmlentities($sf->getData()) . "&gt;";
-                            break;
-                        case 'n':
-                            $arr_[] =  ", " . htmlentities($sf->getData());
-                            break;
-                        case 't':
-                            $arr_[] =  " / " . htmlentities($sf->getData());
-                            break;
-                        case 'x':
-                            $arr_[] = ", " . htmlentities($sf->getData());
-                            break;
-                    }
+                $code = $sf->getCode();
 
+                if (!in_array($code, ['a', 'c', 'd', 'e', 'f', 'g', 'n', 't', 'x'])) {
+                    continue;
                 }
-                $generatedKeywords = $this->generateTag($field, $arr_);
-                if (!empty($generatedKeywords)) {
-                    $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
+
+                switch ($code) {
+
+                    case 'a':
+                        $arr_[] = htmlentities($sf->getData());
+                        break;
+                    case 'c':
+                        $arr_[] = ", " . htmlentities($sf->getData());
+                        break;
+                    case 'd':
+                        $arr_[] = ", " . htmlentities($sf->getData());
+                        break;
+                    case 'e':
+                        $arr_[] = " / " . htmlentities($sf->getData());
+                        break;
+                    case 'f':
+                        $arr_[] = ", " . htmlentities($sf->getData());
+                        break;
+                    case 'g':
+                        $arr_[] = " &lt;" . htmlentities($sf->getData()) . "&gt;";
+                        break;
+                    case 'n':
+                        $arr_[] = ", " . htmlentities($sf->getData());
+                        break;
+                    case 't':
+                        $arr_[] = " / " . htmlentities($sf->getData());
+                        break;
+                    case 'x':
+                        $arr_[] = ", " . htmlentities($sf->getData());
+                        break;
                 }
+
+
+            }
+            $generatedKeywords = $this->generateTag($field, $arr_);
+
+            if (!empty($generatedKeywords)) {
+                $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
 
             }
         }
@@ -240,46 +243,58 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     {
         $arr = [];
         foreach ($record->getMarcRecord()->getFields(630) as $field) {
-            $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'd', 'e', 'f', 'g', 'n', 's', 't', 'x']);
-            foreach ($sf_ as $sf) {
-                $arr_ = [];
+
+            $subFields = $field->getSubfields();
+            $arr_ = [];
+
+            foreach ($subFields as $sf) {
+
+                $data = htmlentities($sf->getData());
+                $code = $sf->getCode();
+
+
                 // 630 $a,_$d,_$e,_$f_<$g>,_$n._$s_/_$t,_$x
 
-                if (!empty($sf['a'])) {
-                    $arr_[] = $sf['a'];
-                }
-                if (!empty($sf['d'])) {
-                    $arr_[] = ", " . $sf['d'];
-                }
-                if (!empty($sf['e'])) {
-                    $arr_[] = ", " . $sf['e'];
-                }
-                if(!empty($sf['f'])) {
-                    $arr_[] = ", " . $sf['f'];
-                }
-                if(!empty($sf['g'])) {
-                    $arr_[] = " &lt;" . $sf['g'] . "&gt;";
-                }
-                if(!empty($sf['n'])) {
-                    $arr_[] = ", " . $sf['n'];
-                }
-                if(!empty($sf['s'])) {
-                    $arr_[] = ". " . $sf['s'];
-                }
-                if(!empty($sf['t'])) {
-                    $arr_[] = " / " . $sf['t'];
-                }
-                if(!empty($sf['x'])) {
-                    $arr_[] = ", " . $sf['x'];
+                switch ($code) {
+                    case 'a' :
+                        $arr_[] = $data;
+                        break;
+                    case 'd' :
+                        $arr_[] = ", " . $data;
+                        break;
+                    case 'e' :
+                        $arr_[] = ", " . $data;
+                        break;
+                    case 'f' :
+                        $arr_[] = ", " . $data;
+                        break;
+                    case 'g' :
+                        $arr_[] = " &lt;" . $data . "&gt;";
+                        break;
+                    case 'n' :
+                        $arr_[] = ", " . $data;
+                        break;
+                    case 's' :
+                        $arr_[] = ". " . $data;
+                        break;
+                    case 't' :
+                        $arr_[] = " / " . $data;
+                        break;
+                    case 'x' :
+                        $arr_[] = ", " . $data;
+                        break;
+
                 }
 
-                $generatedKeywords = $this->generateTag($field, $arr_);
-
-                if (!empty($generatedKeywords)) {
-                    $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
-                }
             }
-        }
+
+            $generatedKeywords = $this->generateTag($field, $arr_);
+
+            if (!empty($generatedKeywords)) {
+                $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
+            }
+    }
+
         return implode("<br />", $arr);
     }
 
@@ -291,22 +306,23 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
 
             $arr_ = [];
             foreach ($sf_ as $sf) {         // 650 $a_<$c>,_$x_<$g>
-                if(!empty($sf['a'])){
+                if (!empty($sf['a'])) {
                     $arr_[] = $sf['a'];
                 }
-                if(!empty($sf['c'])){
+                if (!empty($sf['c'])) {
                     $arr_[] = " &lt;" . $sf['c'] . "&gt;";
                 }
-                if(!empty($sf['x'])){
+                if (!empty($sf['x'])) {
                     $arr_[] = ", " . $sf['x'];
                 }
-                if(!empty($sf['g'])){
+                if (!empty($sf['g'])) {
                     $arr_[] = " &lt;" . str_replace("g:", "", $sf['g']) . "&gt;";
                 }
-                $generatedKeywords = $this->generateTag($field, $arr_);
-                if (!empty($generatedKeywords)) {
-                    $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
-                }
+
+            }
+            $generatedKeywords = $this->generateTag($field, $arr_);
+            if (!empty($generatedKeywords)) {
+                $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
             }
         }
         return implode("<br />", $arr);
@@ -322,16 +338,16 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'g', 'x', 'z']);
             $arr_ = [];
             foreach ($sf_ as $sf) {
-                if(!empty($sf['a'])){
+                if (!empty($sf['a'])) {
                     $arr_[] = $sf['a'];
                 }
-                if(!empty($sf['g'])){
+                if (!empty($sf['g'])) {
                     $arr_[] = ", " . $sf['g'];
                 }
-                if(!empty($sf['x'])){
+                if (!empty($sf['x'])) {
                     $arr_[] = " / " . $sf['x'];
                 }
-                if(!empty($sf['z'])){
+                if (!empty($sf['z'])) {
                     $arr_[] = ", " . $sf['z'];
                 }
                 $arr[] = "<nobr>" . $this->generateTag($field, $arr_) . "</nobr>";
@@ -371,9 +387,10 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             $_0 = array_filter($field->getSubfields('0'), function ($f) {
                 return strpos($f, "(DE-603)") !== false;
             });
+
             if (!empty($_0)) {
                 $gnd = str_replace("(DE-603)", "", array_pop($_0)->getData());
-                $completeTag = '<a href="' . $this->getUrl($gnd) . '">' . implode("", $arr) . '</a>';
+                $completeTag = '<a href="' . $this->getUrl($gnd) . '">' . implode($arr) . '</a>';
                 return $this->makeCheckboxField($gnd, $completeTag);
             }
         }
