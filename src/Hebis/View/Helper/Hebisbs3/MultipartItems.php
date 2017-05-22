@@ -64,7 +64,7 @@ class MultipartItems extends AbstractRecordViewHelper
      * MultipartItems constructor.
      * @param ServiceManager $sm
      */
-    public function __construct(ServiceManager $sm)
+    public function __construct(ServiceManager $sm = null)
     {
         $this->sm = $sm;
     }
@@ -98,6 +98,9 @@ class MultipartItems extends AbstractRecordViewHelper
             $ppn = substr($this->driver->getPPN(), 3);
         } else {
             $ppn = $this->getPPNFrom773();
+            if (empty($ppn)) {
+                return "";
+            }
         }
 
         if (empty($ppn)) {
@@ -404,8 +407,9 @@ class MultipartItems extends AbstractRecordViewHelper
             if (!empty($w) && !empty($w->getData())) {
                 $ppn = substr($w->getData(), 8);
             }
+            return $ppn;
         }
-        return $ppn;
+        return "";
     }
 
 }

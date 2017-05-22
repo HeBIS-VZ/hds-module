@@ -203,9 +203,6 @@ class Module
                 'single_record_part_of_a_work' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordPartOfAWork();
                 },
-                'single_record_series_statement_added_entry' => function ($sm) {
-                    return new View\Helper\Record\SingleRecord\SingleRecordSeriesStatementAddedEntry();
-                },
                 'single_record_subject_access_fields_general_information' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordSubjectAccessFieldsGeneralInformation();
                 },

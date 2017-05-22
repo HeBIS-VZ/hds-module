@@ -46,7 +46,7 @@ class Factory
         return new Options($sm);
     }
 
-    public static function getMultipartItems(ServiceManager $sm)
+    public static function getMultipartItems(ServiceManager $sm = null)
     {
         return new MultipartItems($sm);
     }
