@@ -50,4 +50,9 @@ class Factory
     {
         return new MultipartItems($sm);
     }
+
+    public static function getPpnLink(ServiceManager $sm = null)
+    {
+        return new PpnLink($sm);
+    }
 }

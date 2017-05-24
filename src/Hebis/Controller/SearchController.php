@@ -58,7 +58,7 @@ class SearchController extends \VuFind\Controller\SearchController
     {
         //results->getUrlQuery()
         $lookfor = $this->params()->fromQuery("lookfor");
-
+        $backlink = $this->params()->fromQuery("backlink");
         if (preg_match("/\s([&+])\s/u", $lookfor)) {
             $encodedLookfor = $this->solrSpecialChars($lookfor);
             $this->getRequest()->getQuery()->set("lookfor", $encodedLookfor); //call by reference
@@ -75,7 +75,12 @@ class SearchController extends \VuFind\Controller\SearchController
             /** @var SolrMarc $record */
             $record = $results->getResults()[0];
             $ppn = $record->getPPN();
-            return $this->forwardTo("record_finder", "home", ['id' => $ppn]);
+            $params = ['id' => $ppn];
+            if (!empty($backlink)) {
+                $params = array_merge($params, ['backlink' => $backlink]);
+            }
+
+            return $this->forwardTo("record", "home", $params);
 
         } else if ($results->getResultTotal() === 0) {
             $lookfor = $this->params()->fromQuery("lookfor");
@@ -99,6 +104,7 @@ class SearchController extends \VuFind\Controller\SearchController
         );
         $view->params = $this->params();
         $view->lookfor = $this->params()->fromQuery("lookfor");
+        $view->backlink = $this->params()->fromQuery("backlink");
         return $view;
     }
 

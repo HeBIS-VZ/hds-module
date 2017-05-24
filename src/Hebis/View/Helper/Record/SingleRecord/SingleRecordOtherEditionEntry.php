@@ -39,9 +39,15 @@ use Hebis\RecordDriver\SolrMarc;
  */
 class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
 {
+    /**
+     * @var SolrMarc
+     */
+    protected $record;
 
     public function __invoke(SolrMarc $record)
     {
+        $this->record = $record;
+
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
         $id = $record->getUniqueID();
@@ -94,13 +100,18 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
             switch ($key) {
                 case 'a':
                     if (!empty($w_)) { // mit link
-                        $str = '<a href="' . $this->link($w_[0]->getData()) . '">';
-                        $str .= $subFields[$key] . ". ";
+
+                        $linkText = $subFields[$key] . ". ";
                         if (array_key_exists("t", $subFields)) { //mit link?
-                            $str .= htmlentities($subFields['t']);
+                            $linkText .= htmlentities($subFields['t']);
                             $tCalled = true;
                         }
-                        $str .= '</a>';
+                        $str = $this->getView()->ppnLink()->getLink(
+                            $linkText,
+                            $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                            ["backlink" => $this->record->getPPN()]
+                        );
+
                         $arr[] = $str;
                     } else {
                         $arr[] = htmlentities($subFields[$key]);
@@ -122,7 +133,12 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
                 case 't':
                     if (!$tCalled && array_key_exists($key, $subFields)) {
                         if (!empty($w_) && !array_key_exists('a', $subFields)) {
-                            $str = '<a href="' . $this->link($w_[0]->getData()) . '">' . htmlentities($subFields[$key]) . '</a>';
+                            //$str = '<a href="' . $this->link($w_[0]->getData()) . '">' . htmlentities($subFields[$key]) . '</a>';
+                            $str = $this->getView()->ppnLink()->getLink(
+                                htmlentities($subFields[$key]),
+                                $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                                ["backlink" => $this->record->getPPN()]
+                            );
                         } else {
                             $str = htmlentities($subFields[$key]);
                         }

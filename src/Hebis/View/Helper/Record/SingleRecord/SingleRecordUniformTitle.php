@@ -194,7 +194,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
         //$a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
         $str = "";
         $subFields = $this->getSubFieldsDataArrayOfField($field, ['a', 'f', 'g', 'k', 'm', 'n', 'o', 'p', 'r', 's']);
-
+        $w = $field->getSubfield('w');
         foreach ($subFields as $code => $subField) {
             switch ($code) {
                 case "a":
@@ -252,6 +252,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
 
     private function generateAG($field)
     {
+        $w = $field->getSubfield('w');
         $ret = "";
         $a = $this->getSubFieldDataOfGivenField($field, 'a');
         $g = $this->getSubFieldDataOfGivenField($field, 'g');
@@ -267,7 +268,7 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
         //$t_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
         $str = "";
         $subFields = $this->getSubFieldsDataArrayOfField($field, ['t', 'f', 'g', 'k', 'm', 'n', 'o', 'p', 'r', 's']);
-
+        $w = $field->getSubfield('w');
         foreach ($subFields as $code => $subField) {
             switch ($code) {
                 case "t":

@@ -46,6 +46,7 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
      */
     public function __invoke(SolrMarc $record)
     {
+        $this->record = $record;
         $id = $record->getUniqueID();
         $marcRecord = $record->getMarcRecord();
 

@@ -29,6 +29,7 @@ namespace Hebis\View\Helper\Hebisbs3;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use Zend\Validator\Uri;
 
 /**
  * Class PpnLink
@@ -37,34 +38,36 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
  */
 class PpnLink extends AbstractRecordViewHelper
 {
-    /**
-     * @var SolrMarc
-     */
-    private $driver;
 
-    /**
-     * @param SolrMarc $driver
-     */
-    public function __invoke($driver)
+    public function __invoke()
     {
-        $this->driver = $driver;
+        return $this;
     }
 
     public function getTransLink($transKey, $ppn)
     {
-        return $this->getLink($this->getView()->transEsc($transKey, $ppn));
-
-
-
+        return $this->getLink($this->getView()->transEsc($transKey), $ppn);
     }
 
-    public function getLink($linkText, $ppn)
+    public function getLink($linkText, $ppn, $params = [])
     {
-        $searchParams = [
-            "type0" => "id",
+        if (!preg_match("/^HEB[\d]+/", $ppn)) {
+            $ppn = "HEB" . $ppn;
+        }
+
+        $searchParams = array_merge( [
             "lookfor" => "id:" . $ppn
-        ];
+        ], $params);
 
         return $this->generateSearchLink($linkText, $searchParams);
+    }
+
+    public function getRecordLink($linkText, $ppn)
+    {
+        if (!preg_match("/^HEB[\d]+/", $ppn)) {
+            $ppn = "HEB" . $ppn;
+        }
+
+        return '<a href="'.$this->getView()->url('record') . $ppn . '">'.$linkText.'</a>';
     }
 }
