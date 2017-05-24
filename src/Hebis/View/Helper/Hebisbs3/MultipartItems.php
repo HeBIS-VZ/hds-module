@@ -5,7 +5,7 @@
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
  * 
- * Copyright (C) 2016 
+ * Copyright (C) 2017 
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -25,56 +25,139 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record\SingleRecord;
+namespace Hebis\View\Helper\Hebisbs3;
 
+use Hebis\Exception\HebisException;
+use Hebis\Marc\Helper;
+use Hebis\RecordDriver\ContentType;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use Zend\ServiceManager\ServiceManager;
+use Zend\Uri\Uri;
 
 /**
- * Class SingleRecordSeriesStatementAddedEntry
- * @package Hebis\View\Helper\Record\SingleRecord
- *
+ * Class MultipartItems
+ * @package Hebis\View\Helper\Hebisbs3
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
+class MultipartItems extends AbstractRecordViewHelper
 {
+
+    private $sm;
+
     /**
-     * @param SolrMarc $record
-     * @return string
+     * @var bool
      */
-    public function __invoke(SolrMarc $record)
+    private $isMultipartItem;
+
+    /**
+     * @var bool
+     */
+    private $isPartOfMultipartItem;
+
+    /**
+     * @var SolrMarc
+     */
+    private $driver;
+
+    /**
+     * MultipartItems constructor.
+     * @param ServiceManager $sm
+     */
+    public function __construct(ServiceManager $sm = null)
     {
+        $this->sm = $sm;
+    }
 
-        $id = $record->getUniqueID();
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
+    /**
+     * Store a record driver object and return this object so that the appropriate
+     * template can be rendered.
+     *
+     * @param \Hebis\RecordDriver\SolrMarc $driver Record driver object.
+     *
+     * @return MultipartItems
+     */
+    public function __invoke($driver)
+    {
+        $this->driver = $driver;
+        $this->isMultipartItem = ContentType::getContentType($driver) === "hierarchy";
+        return $this;
+    }
 
-        /* Wenn  Leader Pos. 19 = c:
-        245 $a_:_$b_/_$c
-        + Zusatzregeln (s. Anmerkungen) */
-        $arr = [];
-        $leader = $marcRecord->getLeader();
-        if (substr($leader, 19, 1) === "c") {
-            $fields = $marcRecord->getFields(245);
-            foreach ($fields as $field) {
-                $str = "";
-                $ab = $this->getSubFieldsDataArrayOfField($field, ['a', 'b']);
-                $glue = " : ";
-                if (array_key_exists('b', $ab) && substr(trim($ab['b']), 0, 1) === "=") {
-                    //$ab['b'] = substr(trim($ab['b']),2);
-                    $glue = " ";
-                }
-                $str .= implode($glue, $ab);
+    /**
+     * @return bool
+     */
+    public function isMultipartItem()
+    {
+        return $this->isMultipartItem;
+    }
 
-                if (!empty($c = $this->getSubFieldDataOfGivenField($field, 'c'))) {
-                    $str .= " / $c";
-                }
-                $arr[] = $str;
-
+    public function renderShowAllVolumesLink()
+    {
+        if ($this->isMultipartItem) {
+            $ppn = substr($this->driver->getPPN(), 3);
+        } else {
+            $ppn = $this->getPPNFrom773();
+            if (empty($ppn)) {
+                return "";
             }
         }
 
+        if (empty($ppn)) {
+            throw new HebisException("Invalid state. No PPN present to generate link");
+        }
+
+        $linkText = $this->getView()->transEsc('show_all_volumes');
+        $searchParams = [
+            "sort" => "relevance",
+            "type0[]" => "part_of",
+            "lookfor0[]" => $ppn,
+            "join" => "AND"];
+
+        return $this->generateSearchLink($linkText, $searchParams);
+
+    }
+
+
+    public function isPartOfMultipartItem()
+    {
+        return $this->isMultipartItem;
+    }
+
+    public function renderParentalItem()
+    {
+
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $this->driver->getMarcRecord();
+
+        /* Wenn  Leader Pos. 19 = c:
+           245 $a_:_$b_/_$c
+           + Zusatzregeln (s. Anmerkungen) */
+        $arr = [];
+        $leader = $marcRecord->getLeader();
+        if (substr($leader, 19, 1) === "c") {
+            $field = $marcRecord->getField(245);
+
+            $str = "";
+            $ab = $this->getSubFieldsDataArrayOfField($field, ['a', 'b']);
+            $glue = " : ";
+            if (array_key_exists('b', $ab) && substr(trim($ab['b']), 0, 1) === "=") {
+                //$ab['b'] = substr(trim($ab['b']),2);
+                $glue = " ";
+            }
+            $str .= implode($glue, $ab);
+
+            if (!empty($c = $this->getSubFieldDataOfGivenField($field, 'c'))) {
+                $str .= " / $c";
+            }
+            $ppn = $this->getPPNFrom773();
+            if (!empty($ppn)) {
+                $uri = new Uri($this->getView()->url('recordfinder') . "HEB" . $ppn);
+                $arr[] = '<a href="'.$uri->toString().'">'.$str.'</a>';
+            } else {
+                $arr[] = $str;
+            }
+        }
 
         /* Wenn Leader Pos. 19 = b oder c:
         800 $a_$b,_$c:_$t_:_$n,_$p_;_$v
@@ -119,7 +202,7 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
                 }
                 $str = implode(", ", $ax);
 
-                if (!empty($v = $this->getSubFieldDataOfGivenField($field, 'v'))) {
+                if (!empty($v = Helper::getSubFieldDataOfGivenField($field, 'v'))) {
                     $str .= " ; $v";
                 }
                 $arr[] = trim($str);
@@ -128,7 +211,6 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
 
         return implode("<br />", $arr);
     }
-
 
     private function generate800($field)
     {
@@ -208,7 +290,7 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
     {
         $ret = "";
 
-        $n_ = $this->getSubfieldsOfN($field);
+        $n_ = $field->getSubfields('n');
         $c = $field->getSubfields('c');
         $d = $field->getSubfields('d');
         $tCalled = false;
@@ -310,14 +392,24 @@ class SingleRecordSeriesStatementAddedEntry extends AbstractRecordViewHelper
         return $arr;
     }
 
-    private function getSubfieldsOfN($field)
+    /**
+     * @return bool|string
+     */
+    private function getPPNFrom773()
     {
-        return $field->getSubfields('n');
-        /*
-        return array_filter($n_, function($elem) {
-            return (strpos($elem->getData(), "[...]") !== false);
-        });
-        */
+        /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $this->driver->getMarcRecord();
+
+        /** @var \File_MARC_Data_Field $_773 */
+        $_773 = $marcRecord->getField(773);
+        if (!empty($_773)) {
+            $w = $_773->getSubfield("w");
+            if (!empty($w) && !empty($w->getData())) {
+                $ppn = substr($w->getData(), 8);
+            }
+            return $ppn;
+        }
+        return "";
     }
 
 }
