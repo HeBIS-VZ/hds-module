@@ -5,7 +5,7 @@
  * allows users to search and browse beyond resources. More
  * Information about VuFind you will find on http://www.vufind.org
  *
- * Copyright (C) 2017
+ * Copyright (C) 2016
  * HeBIS Verbundzentrale des HeBIS-Verbundes
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -25,45 +25,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\Search\Solr;
+namespace HebisTest\View\Helper\Record\SingleRecord;
 
-use Hebis\Search\UrlQueryHelper;
-use VuFindSearch\Backend\Solr\Response\Json\Spellcheck;
-use VuFindSearch\Query\AbstractQuery;
-use VuFindSearch\Query\QueryGroup;
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
 /**
- * Solr Search Parameters
+ * Class SingleRecordUniformTitleTest
+ * @package Hebis\View\Helper\Record
  *
- * @category VuFind
- * @package  Search_Solr
- * @author   Demian Katz <demian.katz@villanova.edu>
- * @author   David Maus <maus@hab.de>
- * @author   Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org Main Page
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class Results extends \VuFind\Search\Solr\Results
+class SingleRecordUniformTitleTest extends AbstractViewHelperTest
 {
-    /**
-     * @param \Closure $function Callback function for which will applied from array_filter on results set
-     */
-    public function filterResults(\Closure $function)
+
+    public function setUp()
     {
-        $this->results = array_filter($this->results, $function);
+        $this->viewHelperClass = "SingleRecordUniformTitle";
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+        $this->testSheetName = "Werktitel";
+        parent::setUp();
     }
 
     /**
-     * Get the URL helper for this object.
+     * Get plugins to register to support view helper being tested
      *
-     * @return UrlHelper
+     * @return array
      */
-    public function getUrlQuery()
+    protected function getPlugins()
     {
-        // Set up URL helper:
-        if (!isset($this->helpers['urlQuery'])) {
-            $this->helpers['urlQuery'] = new UrlQueryHelper($this->getParams());
-        }
-        return $this->helpers['urlQuery'];
+        return [];
     }
 }

@@ -6,6 +6,7 @@
  * Information about VuFind you will find on http://www.vufind.org
  * 
  * Copyright (C) 2016 
+ * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -25,43 +26,38 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record\SingleRecord;
-
-use Hebis\RecordDriver\SolrMarc;
-use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+namespace HebisTest\View\Helper\Record;
 
 
 /**
- * Class SingleRecordTitleStatementHeadline
- * @package Hebis\View\Helper\Record
+ * Class BibTipTest
+ * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordTitleStatementHeadline extends AbstractRecordViewHelper
+class BibTipTest extends AbstractViewHelperTest
 {
 
-    public function __invoke(SolrMarc $record)
+    public function setUp()
     {
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
+        $this->viewHelperClass = "BibTip";
+        $this->testResultField = "";
+        $this->testRecordIds = [];
 
-        /** @var \File_MARC_Data_Field $_880
-         * prefer original writing over latin writing
-         first approach: take first title writing
-         next iteration: take title according to preferences concerning writing */
-        $_880__ = $marcRecord->getFields('880');
-        //do I have to check whether array is empty?
-        foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
-            if (strncmp("245", $_880_6, 3) == 0) {
-                return $this->removeControlSigns($_880->getSubField('a')->getData());
+        $this->testSheetName = "BibTip";
+        parent::setUp();
+    }
 
-            }
-        }
-
-        /** @var \File_MARC_Data_Field $_245 */
-        $_245 = $marcRecord->getField('245');
-
-        return $this->removeControlSigns($_245->getSubfield('a')->getData());
+    /**
+     * Get plugins to register to support view helper being tested
+     *
+     * @return array
+     */
+    protected function getPlugins()
+    {
+        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
+        return [
+            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
+        ];
     }
 }

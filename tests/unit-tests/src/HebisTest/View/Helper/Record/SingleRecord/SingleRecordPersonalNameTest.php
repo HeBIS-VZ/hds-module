@@ -25,50 +25,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Hebisbs3;
+namespace HebisTest\View\Helper\Record\SingleRecord;
 
-use Zend\View\Helper\AbstractHelper;
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
-/**
- * Class Options
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class Options extends AbstractHelper
+class SingleRecordPersonalNameTest extends AbstractViewHelperTest
 {
-
-    private $options;
-
-    private $edsOptions;
-
-    public function __construct(\Zend\ServiceManager\ServiceManager $sm)
+    public function setUp()
     {
-        $this->options = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        $this->edsOptions = $sm->getServiceLocator()->get('VuFind\Config')->get('eds');
+        $this->viewHelperClass = "SingleRecordPersonalName";
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+
+        $this->testSheetName = "Verantwortlich";
+        parent::setUp();
     }
 
-    public function theme()
+    /**
+     * Get plugins to register to support view helper being tested
+     *
+     * @return array
+     */
+    protected function getPlugins()
     {
-        return $this->options->Site->theme;
-    }
+        $mock = $this->getMock('VuFind\View\Helper\Root\Record', ['getLink', '__invoke', 'getView']);
 
-    public function themePath()
-    {
-        return "/themes/" . $this->theme();
-    }
+        $mock->expects($this->any())
+            ->method('getLink')
+            ->will($this->returnValue('http://www.example.org'));
 
-    public function title()
-    {
-        return $this->options->Site->title;
-    }
+        $mock->expects($this->any())
+            ->method('getView')
+            ->will($this->returnValue($this->getMock('Zend\View\Renderer\RendererInterface')));
 
-    public function homeUrl()
-    {
-        return $this->options->Site->url;
-    }
-
-    public function edsFacetLimit()
-    {
-        return $this->edsOptions->Facet_Settings->facet_limit;
+        return [
+            'record' => $mock
+        ];
     }
 }

@@ -25,43 +25,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record\SingleRecord;
+namespace HebisTest\View\Helper\Record\SingleRecord;
 
-use Hebis\RecordDriver\SolrMarc;
-use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
 
 /**
- * Class SingleRecordTitleStatementHeadline
+ * Class SingleRecordDatesOfPublicationSequentialDesignationTest
  * @package Hebis\View\Helper\Record
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordTitleStatementHeadline extends AbstractRecordViewHelper
+class SingleRecordDatesOfPublicationSequentialDesignationTest extends AbstractViewHelperTest
 {
 
-    public function __invoke(SolrMarc $record)
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp()
     {
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
 
-        /** @var \File_MARC_Data_Field $_880
-         * prefer original writing over latin writing
-         first approach: take first title writing
-         next iteration: take title according to preferences concerning writing */
-        $_880__ = $marcRecord->getFields('880');
-        //do I have to check whether array is empty?
-        foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
-            if (strncmp("245", $_880_6, 3) == 0) {
-                return $this->removeControlSigns($_880->getSubField('a')->getData());
+        $this->viewHelperClass = "SingleRecordDatesOfPublicationSequentialDesignation";
+        $this->testRecordIds = [];
+        $this->testResultField = '';
+        $this->testSheetName = "Erscheinungsverlauf";
+        parent::setUp();
+    }
 
-            }
-        }
-
-        /** @var \File_MARC_Data_Field $_245 */
-        $_245 = $marcRecord->getField('245');
-
-        return $this->removeControlSigns($_245->getSubfield('a')->getData());
+    /**
+     * Get plugins to register to support view helper being tested
+     *
+     * @return array
+     */
+    protected function getPlugins()
+    {
+        return [];
     }
 }

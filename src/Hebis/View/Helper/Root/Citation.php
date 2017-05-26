@@ -27,11 +27,10 @@
 
 namespace Hebis\View\Helper\Root;
 
-use AcademicPuma\CiteProc\CiteProc;
 use Hebis\Csl\MarcConverter\Converter;
 use Hebis\Csl\Model\Layout\CslRecord;
-use Hebis\Csl\MarcConverter\ArticleConverter;
-use VuFind\Exception\Date as DateException;
+use Seboettg\CiteProc\CiteProc;
+use Seboettg\CiteProc\StyleSheet;
 use Zend\Config\Config;
 
 /**
@@ -115,9 +114,11 @@ class Citation extends \VuFind\View\Helper\Root\Citation
      */
     public function getCitation($format)
     {
+        $lang = $this->getView()->layout()->userLang;
         $format = strtolower($format);
-
-        $rendered = $this->loadStyleSheet($format)->render(json_decode($this->cslRecord), "bibliography");
+        $style = StyleSheet::loadStyleSheet($format);
+        $citeProc = new CiteProc($style, $this->langCode($lang));
+        $rendered = $citeProc->render([json_decode($this->cslRecord)]);
 
         return $rendered;
 
@@ -125,7 +126,11 @@ class Citation extends \VuFind\View\Helper\Root\Citation
 
     public function getCitationStyleName($format)
     {
-        $info = $this->loadStyleSheet($format)->getInfo();
+        $format = strtolower($format);
+        $style = StyleSheet::loadStyleSheet($format);
+        $citeProc = new CiteProc($style);
+        $citeProc->init();
+        $info = CiteProc::getContext()->getInfo();
         return $info->getTitle();
     }
 
@@ -134,17 +139,50 @@ class Citation extends \VuFind\View\Helper\Root\Citation
         return $this->citationFormats;
     }
 
-    /**
-     * @param $format
-     * @return CiteProc
-     */
-    private function loadStyleSheet($format)
+    private function langCode($lang)
     {
+        $langBase = array(
+            "af" => "af-ZA",
+            "ar" => "ar-AR",
+            "bg" => "bg-BG",
+            "ca" => "ca-AD",
+            "cs" => "cs-CZ",
+            "da" => "da-DK",
+            "de" => "de-DE",
+            "el" => "el-GR",
+            "en" => "en-GB",
+            "en" => "en-US",
+            "es" => "es-ES",
+            "et" => "et-EE",
+            "fa" => "fa-IR",
+            "fi" => "fi-FI",
+            "fr" => "fr-FR",
+            "he" => "he-IL",
+            "hu" => "hu-HU",
+            "is" => "is-IS",
+            "it" => "it-IT",
+            "ja" => "ja-JP",
+            "km" => "km-KH",
+            "ko" => "ko-KR",
+            "mn" => "mn-MN",
+            "nb" => "nb-NO",
+            "nl" => "nl-NL",
+            "nn" => "nn-NO",
+            "pl" => "pl-PL",
+            "pt" => "pt-PT",
+            "ro" => "ro-RO",
+            "ru" => "ru-RU",
+            "sk" => "sk-SK",
+            "sl" => "sl-SI",
+            "sr" => "sr-RS",
+            "sv" => "sv-SE",
+            "th" => "th-TH",
+            "tr" => "tr-TR",
+            "uk" => "uk-UA",
+            "vi" => "vi-VN",
+            "zh" => "zh-CN",
+        );
 
-        if (!array_key_exists($format, $this->styles)) {
-            $styleSheet = CiteProc::loadStyleSheet($format);
-            $this->styles[$format] = new CiteProc($styleSheet, "de");
-        }
-        return $this->styles[$format];
+        return $langBase[$lang];
     }
 }

@@ -5,7 +5,7 @@
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
  * 
- * Copyright (C) 2016 
+ * Copyright (C) 2017 
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -25,50 +25,37 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Hebisbs3;
-
-use Zend\View\Helper\AbstractHelper;
+namespace Hebis\Search;
 
 /**
- * Class Options
- *
+ * Class UrlQueryHelper
+ * @package Hebis\Search
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class Options extends AbstractHelper
+class UrlQueryHelper extends \VuFind\Search\UrlQueryHelper
 {
 
-    private $options;
-
-    private $edsOptions;
-
-    public function __construct(\Zend\ServiceManager\ServiceManager $sm)
+    /**
+     * Add a facet to the parameters.
+     *
+     * @param array $fields      Facet fields
+     * @return string
+     */
+    public function addFacets($fields, $paramArray = null)
     {
-        $this->options = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        $this->edsOptions = $sm->getServiceLocator()->get('VuFind\Config')->get('eds');
-    }
+        $filters = is_null($paramArray) ? $this->getParamArray() : $paramArray;
+        if (!isset($filters['filter'])) {
+            $filters['filter'] = [];
+        }
+        // Facets are just a special case of filters:
+        foreach ($fields as $field) {
+            $fieldName = $field['field'];
+            $value = $field['value'];
+            $operator = $field['operator'];
+            $prefix = ($operator == 'NOT') ? '-' : ($operator == 'OR' ? '~' : '');
+            $filters['filter'][] = $prefix . $fieldName . ':"' . $value . '"';
+        }
 
-    public function theme()
-    {
-        return $this->options->Site->theme;
-    }
-
-    public function themePath()
-    {
-        return "/themes/" . $this->theme();
-    }
-
-    public function title()
-    {
-        return $this->options->Site->title;
-    }
-
-    public function homeUrl()
-    {
-        return $this->options->Site->url;
-    }
-
-    public function edsFacetLimit()
-    {
-        return $this->edsOptions->Facet_Settings->facet_limit;
+        return '?' . $this->buildQueryString($filters);
     }
 }

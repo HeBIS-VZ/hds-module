@@ -5,7 +5,7 @@
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
  * 
- * Copyright (C) 2016 
+ * Copyright (C) 2017 
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -25,43 +25,38 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record\SingleRecord;
+namespace Hebis\View\Helper\Record\EDS;
 
-use Hebis\RecordDriver\SolrMarc;
-use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use VuFind\RecordDriver\EDS;
+use Zend\View\Helper\AbstractHelper;
 
 /**
- * Class SingleRecordTitleStatementHeadline
- * @package Hebis\View\Helper\Record
- *
+ * Class EdsAuthors
+ * @package Hebis\View\Helper\Record\EDS
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordTitleStatementHeadline extends AbstractRecordViewHelper
+class EdsAuthorsResultList extends AbstractHelper
 {
 
-    public function __invoke(SolrMarc $record)
+    public function __invoke(EDS $record)
     {
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
+        $ret = [];
+        $bibRecord = $record->getFields()['RecordInfo']['BibRecord'];
+        if (array_key_exists("BibRelationships", $bibRecord) &&
+            array_key_exists("HasContributorRelationships", $bibRecord['BibRelationships'])) {
+            $persons = $bibRecord['BibRelationships']['HasContributorRelationships'];
+            $i = 0;
+            foreach ($persons as $person) {
+                if (isset($person['PersonEntity']['Name']['NameFull']) && $i < 3) {
+                    $ret[] = $person['PersonEntity']['Name']['NameFull'];
+                    ++$i;
+                }
+            }
 
-        /** @var \File_MARC_Data_Field $_880
-         * prefer original writing over latin writing
-         first approach: take first title writing
-         next iteration: take title according to preferences concerning writing */
-        $_880__ = $marcRecord->getFields('880');
-        //do I have to check whether array is empty?
-        foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
-            if (strncmp("245", $_880_6, 3) == 0) {
-                return $this->removeControlSigns($_880->getSubField('a')->getData());
-
+            if (count($persons) > 3) {
+                $ret[] = "et al.";
             }
         }
-
-        /** @var \File_MARC_Data_Field $_245 */
-        $_245 = $marcRecord->getField('245');
-
-        return $this->removeControlSigns($_245->getSubfield('a')->getData());
+        return implode(" ; ", $ret);
     }
 }

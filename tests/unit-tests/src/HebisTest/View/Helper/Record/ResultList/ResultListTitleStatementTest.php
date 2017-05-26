@@ -6,7 +6,7 @@
  * Information about VuFind you will find on http://www.vufind.org
  * 
  * Copyright (C) 2016 
- * HeBIS Verbundzentrale des HeBIS-Verbundes 
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
  * 
@@ -25,50 +25,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Hebisbs3;
+namespace HebisTest\View\Helper\Record\ResultList;
 
-use Zend\View\Helper\AbstractHelper;
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
 /**
- * Class Options
+ * Class ResultListTitleStatementTest
+ * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class Options extends AbstractHelper
+class ResultListTitleStatementTest extends AbstractViewHelperTest
 {
 
-    private $options;
-
-    private $edsOptions;
-
-    public function __construct(\Zend\ServiceManager\ServiceManager $sm)
+    public function setUp()
     {
-        $this->options = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        $this->edsOptions = $sm->getServiceLocator()->get('VuFind\Config')->get('eds');
+        $this->viewHelperClass = "ResultListTitleStatement";
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+
+        $this->testSheetName = "Titel";
+        parent::setUp();
     }
 
-    public function theme()
+    /**
+     * Get plugins to register to support view helper being tested
+     *
+     * @return array
+     */
+    protected function getPlugins()
     {
-        return $this->options->Site->theme;
-    }
-
-    public function themePath()
-    {
-        return "/themes/" . $this->theme();
-    }
-
-    public function title()
-    {
-        return $this->options->Site->title;
-    }
-
-    public function homeUrl()
-    {
-        return $this->options->Site->url;
-    }
-
-    public function edsFacetLimit()
-    {
-        return $this->edsOptions->Facet_Settings->facet_limit;
+        return [];
     }
 }
