@@ -5,7 +5,7 @@
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
  * 
- * Copyright (C) 2016 
+ * Copyright (C) 2017 
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -27,32 +27,47 @@
 
 namespace Hebis\View\Helper\Hebisbs3;
 
-use Zend\ServiceManager\ServiceManager;
+use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use Zend\Validator\Uri;
 
 /**
- * Class Factory
- *
+ * Class PpnLink
+ * @package Hebis\View\Helper\Hebisbs3
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class Factory
+class PpnLink extends AbstractRecordViewHelper
 {
 
-    /**
-     * @param ServiceManager $sm
-     * @return Options
-     */
-    public static function getConfig(ServiceManager $sm)
+    public function __invoke()
     {
-        return new Options($sm);
+        return $this;
     }
 
-    public static function getMultipartItems(ServiceManager $sm = null)
+    public function getTransLink($transKey, $ppn)
     {
-        return new MultipartItems($sm);
+        return $this->getLink($this->getView()->transEsc($transKey), $ppn);
     }
 
-    public static function getPpnLink(ServiceManager $sm = null)
+    public function getLink($linkText, $ppn, $params = [])
     {
-        return new PpnLink($sm);
+        if (!preg_match("/^HEB[\d]+/", $ppn)) {
+            $ppn = "HEB" . $ppn;
+        }
+
+        $searchParams = array_merge( [
+            "lookfor" => "id:" . $ppn
+        ], $params);
+
+        return $this->generateSearchLink($linkText, $searchParams);
+    }
+
+    public function getRecordLink($linkText, $ppn)
+    {
+        if (!preg_match("/^HEB[\d]+/", $ppn)) {
+            $ppn = "HEB" . $ppn;
+        }
+
+        return '<a href="'.$this->getView()->url('record') . $ppn . '">'.$linkText.'</a>';
     }
 }
