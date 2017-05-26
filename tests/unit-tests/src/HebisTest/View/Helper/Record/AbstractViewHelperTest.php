@@ -29,14 +29,15 @@
 namespace HebisTest\View\Helper\Record;
 
 use Box\Spout\Common\Type;
-use Box\Spout\Reader\IteratorInterface;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Reader\ReaderInterface;
-use Box\Spout\Writer\Common\Sheet;
 use Hebis\Exception\HebisException;
 use Hebis\RecordDriver\SolrMarc;
-use VuFindSearch\Backend\Exception\HttpErrorException;
-use Zend\Http\Client;
+use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use HebisTest\View\Helper\SpreadsheetTestsTrait;
+use HebisTest\View\Helper\TestRecordFromIndexTrait;
+use HebisTest\View\Helper\TestRunnerTrait;
+
 
 /**
  * Class AbstractViewHelperTest
@@ -47,7 +48,11 @@ use Zend\Http\Client;
 abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCase
 {
 
-    const VIEW_HELPER_NAMESPACE = "\\Hebis\\View\\Helper\\Record";
+    use TestRecordFromIndexTrait,
+        SpreadsheetTestsTrait,
+        TestRunnerTrait;
+
+    const VIEW_HELPER_NAMESPACE = "Hebis\View\Helper\Record";
 
     /**
      * @var array;
@@ -105,7 +110,7 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
         $className = self::VIEW_HELPER_NAMESPACE . "\\" . $type . $className;
 
         if (!class_exists($className)) {
-            throw new HebisException("Class '$className' not found");
+            //throw new HebisException("Class '$className' not found");
         }
 
         /** @var AbstractRecordViewHelper $helper */
@@ -145,45 +150,11 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
     }
 
-    /**
-     * @param $ppn
-     * @return SolrMarc|null
-     * @throws \HttpException
-     */
-    protected function getRecordFromIndex($ppn)
-    {
-        $url = SOLR_HOST_TEST . '/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
-        $client = new Client($url, array(
-            'maxredirects' => 3,
-            'timeout' => 10
-        ));
-        $response = $client->send();
-
-        if ($response->getStatusCode() > 299) {
-            throw new \HttpException("Status code " . $response->getStatusCode() . " for $url.");
-        }
-        $jsonString = trim($response->getBody());
-        $jsonObject = json_decode($jsonString, true);
-        $marcObject = new SolrMarc();
-
-        if ($jsonObject['response']['numFound'] < 1) {
-            $this->markTestIncomplete("No document found with ppn \"$ppn\". Skipping this test case...");
-
-        }
-
-        try {
-            $marcObject->setRawData($jsonObject['response']['docs'][0]);
-        } catch (\File_MARC_Exception $e) {
-            echo "Record HEB$ppn: " . $e->getMessage() . "\n";
-            return null;
-        }
-        return $marcObject;
-    }
-
     public function setUp()
     {
         $this->pluginFactory = new \VuFind\Config\PluginFactory();
         $this->viewHelper = self::factory($this->viewHelperClass);
+        self::VIEW_HELPER_NAMESPACE . "\BibTip";
         $this->viewHelper->setView($this->getPhpRenderer($this->getPlugins()));
         $this->spreadsheetReader = ReaderFactory::create(Type::XLSX);
         $this->spreadsheetReader->open(PHPUNIT_FIXTURES_HEBIS . "/spreadsheet/rda.xlsx");
@@ -205,7 +176,13 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
     public function test__invoke()
     {
         if (!empty($this->testSheetName)) {
-            $this->spreadsheetTest();
+            $relevantRows = $this->spreadsheetTestCases($this->spreadsheetReader, $this->testSheetName);
+            if (empty($relevantRows)) {
+                $this->fail("No test case found!");
+            } else {
+                $this->runTests($relevantRows);
+            }
+
         } else {
             $this->fixtureTest();
         }
@@ -219,52 +196,6 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
         return trim($string);
 
     }
-
-    /**
-     * @param IteratorInterface $rows
-     */
-    protected function runTests($rows)
-    {
-        $failures = [];
-        for ($i = 0; $i < count($rows); ++$i) {
-            $row = $rows[$i];
-            list(
-                $comment,
-                $ppn,
-                $testData,
-                $expectedSingleRecordResult,
-                $expectedRecordListResult) = array_slice($row, 0, 5);
-
-            $record = $this->getRecordFromIndex($ppn);
-            if (empty($record)) {
-                if (empty($testData)) {
-
-                    throw new \PHPUnit_Framework_IncompleteTestError('no data found');
-                }
-                //$record = $this->getRecordFromTestData($testData); TODO: implement
-            }
-
-            $actual = trim(strip_tags(str_replace("<br />", "\n", $this->viewHelper->__invoke($record))));
-            $_comment = "Test: \"" . $this->testSheetName . "\", Class: \"" . $this->viewHelperClass . "\", Test Case: $i / PPN: " . $row[1] . "; Comment: $comment\n";
-
-            try {
-                $this->executeTest($expectedSingleRecordResult, $actual, $_comment, $expectedRecordListResult);
-            } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
-                $failures[] = $e;
-            }
-
-        }
-
-        foreach ($failures as $e) {
-            fwrite(STDERR, $e->toString() . "\n" . $e->getComparisonFailure()->getDiff() . "\n\n-----\nActual:\n" . $e->getComparisonFailure()->getActual() . "\n\n");
-            fwrite(STDERR, "------------------------------------------------------------------------------------------------------------------------------------------------------\n\n");
-        }
-
-        if (count($failures) > 0) {
-            $this->fail("This Test has failed!");
-        }
-    }
-
 
     /**
      * @param $expectedSingleRecordResult
@@ -297,41 +228,6 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
             $this->assertEquals($expected, $actual, $message);
         }
-    }
-
-    public function spreadsheetTest()
-    {
-
-        /** @var Sheet $sheet */
-        foreach ($this->spreadsheetReader->getSheetIterator() as $sheet) {
-
-            if ($sheet->getName() === $this->testSheetName) {
-                $isRelevantRow = false;
-                $relevantRows = [];
-                /** @var array $row */
-                foreach ($sheet->getRowIterator() as $row) {
-
-                    if (strpos($row[0], "Genutzte Felder") !== false) {
-                        $isRelevantRow = true;
-                        continue;
-                    }
-                    if ($isRelevantRow) {
-                        if (empty($row[0])) {
-                            break;
-                        }
-                        $relevantRows[] = array_slice($row, 0, 6);
-                    }
-                }
-
-                break;
-            }
-        }
-
-        if (empty($relevantRows)) {
-            $this->fail("No test case found!");
-        }
-
-        $this->runTests($relevantRows);
     }
 
     /**
