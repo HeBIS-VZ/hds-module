@@ -52,6 +52,10 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
             $ret[] = $this->generate7xx($field);
         }
 
+        foreach ($marcRecord->getFields(777) as $field) {
+            $ret[] = $this->generate7xx($field);
+        }
+
         foreach ($marcRecord->getFields(787) as $field) {
             $ret[] = $this->generate7xx($field);
         }
