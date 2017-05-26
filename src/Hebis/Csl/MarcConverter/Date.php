@@ -43,8 +43,20 @@ class Date extends Record
 
         if (!empty($year)) {
             $date = new Model\Date();
-            $date->setDateParts([[$year]]);
-            $date->setLiteral($year);
+            if (strpos($year, "ca.") !== false || strpos($year, "circa")) {
+                $date->setCirca(true);
+                if (preg_match("/(\d{4})[^\d]*$/", $year, $match)) {
+                    $date->setDateParts([[$match[1]]]);
+                } else {
+                    $date->setDateParts([[$year]]);
+                }
+
+            } else {
+                $date->setLiteral($year);
+                $date->setDateParts([[$year]]);
+            }
+
+
             return $date;
         }
         return null;
@@ -52,7 +64,7 @@ class Date extends Record
 
     private static function clearYear($string)
     {
-        if (preg_match("/^[\[\(]?(\d{4})[\)\]]?$/", trim($string), $match)) {
+        if (preg_match("/^[\[\(]?(.*\d{4})[\)\]]?$/", trim($string), $match)) {
             return $match[1];
         }
         return trim($string);
