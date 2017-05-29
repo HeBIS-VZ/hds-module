@@ -37,9 +37,12 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
  */
 class TabRelationshipEntry extends AbstractRecordViewHelper
 {
+    private $record;
 
     public function __invoke(SolrMarc $record)
     {
+        $this->record = $record;
+
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
@@ -49,6 +52,10 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
         }
 
         foreach ($marcRecord->getFields(772) as $field) {
+            $ret[] = $this->generate7xx($field);
+        }
+
+        foreach ($marcRecord->getFields(777) as $field) {
             $ret[] = $this->generate7xx($field);
         }
 
@@ -100,7 +107,11 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
         $ltext .= !empty($x) ? " - $x" : "";
 
         if (!empty($w_)) {
-            $ret .= ' <a href="' . $this->link($w_[0]->getData()) . '">' . htmlentities(trim($ltext)) . '</a>';
+            $ret .= $this->getView()->ppnLink()->getLink(
+                htmlentities($ltext),
+                $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                ["backlink" => $this->record->getPPN()]
+            );
         } else {
             $ret .= $ltext;
         }
@@ -108,8 +119,4 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
         return $ret;
     }
 
-    protected function link($w)
-    {
-        return $this->getView()->basePath() . '/RecordFinder/HEB' . $this->removePrefix($w, "(DE-603)");
-    }
 }
