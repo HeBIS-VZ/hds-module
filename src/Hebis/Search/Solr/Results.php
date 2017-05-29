@@ -27,6 +27,7 @@
 
 namespace Hebis\Search\Solr;
 
+use Hebis\Search\UrlQueryHelper;
 use VuFindSearch\Backend\Solr\Response\Json\Spellcheck;
 use VuFindSearch\Query\AbstractQuery;
 use VuFindSearch\Query\QueryGroup;
@@ -50,5 +51,19 @@ class Results extends \VuFind\Search\Solr\Results
     public function filterResults(\Closure $function)
     {
         $this->results = array_filter($this->results, $function);
+    }
+
+    /**
+     * Get the URL helper for this object.
+     *
+     * @return UrlHelper
+     */
+    public function getUrlQuery()
+    {
+        // Set up URL helper:
+        if (!isset($this->helpers['urlQuery'])) {
+            $this->helpers['urlQuery'] = new UrlQueryHelper($this->getParams());
+        }
+        return $this->helpers['urlQuery'];
     }
 }

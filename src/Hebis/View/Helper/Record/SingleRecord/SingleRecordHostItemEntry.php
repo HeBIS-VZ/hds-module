@@ -28,6 +28,7 @@
 namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Hebisbs3\MultipartItems;
 use Hebis\View\Helper\Record\ResultList\ResultListHostItemEntry;
 
 
@@ -40,6 +41,8 @@ use Hebis\View\Helper\Record\ResultList\ResultListHostItemEntry;
 class SingleRecordHostItemEntry extends ResultListHostItemEntry
 {
 
+    private $record;
+
     /**
      *
      * @param SolrMarc $record
@@ -47,6 +50,8 @@ class SingleRecordHostItemEntry extends ResultListHostItemEntry
      */
     public function __invoke(SolrMarc $record)
     {
+        $this->record = $record;
+
         $id = $record->getUniqueID();
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
@@ -76,20 +81,20 @@ class SingleRecordHostItemEntry extends ResultListHostItemEntry
      */
     protected function addLink($subfield, $w)
     {
-        $view = $this->getView();
 
-        $title = htmlentities($subfield->getData());
-        $href = $view->basePath() . "/" . sprintf(parent::URL_SEARCH_PPN, $this->removePrefix($w->getData(), "(DE-603)"));
-
-        return sprintf('<a href="%s" title="%s">%s</a>', $href, $title, $title);
+        return $this->getView()->ppnLink()->getLink(
+            htmlentities($subfield->getData()),
+            $this->removePrefix($w->getData(), "(DE-603)"),
+            ["backlink" => $this->record->getPPN()]
+        );
     }
 
     protected function showAllLink($record, $w)
     {
-        $view = $this->getView();
-        $href = $view->record($record)->getLink('part_of', $this->removePrefix($w->getData(), "(DE-603)")); //$view->basePath()."/".sprintf(parent::URL_SHOW_ALL, $this->removePrefix($w->getData(), "(DE-603)"));
-        $linkTitle = $view->transEsc('show all');
-        return sprintf('<a href="%s" title="%s">%s</a>', $href, $linkTitle, $linkTitle);
+
+        /** @var MultipartItems $viewHelper */
+        $viewHelper = $this->getView()->multipartItems($record);
+        return $viewHelper->renderShowAllVolumesLink();
     }
 
 

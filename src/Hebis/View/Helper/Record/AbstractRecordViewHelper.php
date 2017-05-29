@@ -32,6 +32,7 @@ use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\FieldArray;
 use \File_MARC_Data_Field;
+use Zend\Uri\Uri;
 use Zend\View\Helper\AbstractHelper;
 
 /**
@@ -288,5 +289,17 @@ class AbstractRecordViewHelper extends AbstractHelper
     {
         $string = preg_replace('/^@/', "", $string);
         return preg_replace('/\s\@([\w\däöü])/i', " $1", $string);
+    }
+
+    protected function generateSearchLink($linkText, array $searchParams)
+    {
+        $uri = new Uri($this->getView()->url('search-results'));
+
+        $uri->setQuery(str_replace(
+            '+',
+            '%20',
+            http_build_query($searchParams)));
+
+        return '<a href="'.$uri->toString().'">'.$linkText.'</a>';
     }
 }

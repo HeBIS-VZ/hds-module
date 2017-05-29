@@ -107,8 +107,14 @@ class Module
                 'result_list_title_statement' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListTitleStatement();
                 },
+                'result_list_ow_title_statement' => function ($sm) {
+                    return new View\Helper\Record\ResultList\ResultListOWTitleStatement();
+                },
                 'result_list_personal_name' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListPersonalName();
+                },
+                'result_list_ow_personal_name' => function ($sm) {
+                    return new View\Helper\Record\ResultList\ResultListOWPersonalName();
                 },
                 'result_list_corporate_name' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListCorporateName();
@@ -118,6 +124,9 @@ class Module
                 },
                 'result_list_publication_distribution' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListPublication();
+                },
+                'result_list_ow_publication_distribution' => function ($sm) {
+                    return new View\Helper\Record\ResultList\ResultListOWPublication();
                 },
                 'result_list_host_item_entry' => function ($sm) {
                     return new View\Helper\Record\ResultList\ResultListHostItemEntry();
@@ -133,6 +142,9 @@ class Module
                 },
                 'single_record_dates_of_publication_sequential_designation' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordDatesOfPublicationSequentialDesignation();
+                },
+                'single_record_publication_year' => function ($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordPublicationYear();
                 },
                 'single_record_physical_description' => function ($sm) { //Umfang
                     return new View\Helper\Record\SingleRecord\SingleRecordPhysicalDescription();
@@ -182,6 +194,9 @@ class Module
                 'single_record_publication' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordPublication();
                 },
+                'single_record_ow_publication' => function ($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordOWPublication();
+                },
                 'single_record_distribution' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordDistribution();
                 },
@@ -190,9 +205,6 @@ class Module
                 },
                 'single_record_part_of_a_work' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordPartOfAWork();
-                },
-                'single_record_series_statement_added_entry' => function ($sm) {
-                    return new View\Helper\Record\SingleRecord\SingleRecordSeriesStatementAddedEntry();
                 },
                 'single_record_subject_access_fields_general_information' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordSubjectAccessFieldsGeneralInformation();
@@ -205,6 +217,12 @@ class Module
                 },
                 'single_record_title_statement' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordTitleStatement();
+                },
+                'single_record_ow_personal_name' => function ($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordOWPersonalName();
+                },
+                'single_record_ow_title_statement' => function ($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordOWTitleStatement();
                 },
                 'single_record_title_statement_headline' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordTitleStatementHeadline();
@@ -241,6 +259,15 @@ class Module
                 },
                 'tab_toc_summary' => function ($sm) {
                     return \Hebis\View\Helper\Record\Factory::getTabTocSummary($sm);
+                },
+                'eds_short_title' => function($sm) {
+                    return new \Hebis\View\Helper\Record\EDS\EdsShortTitle();
+                },
+                'eds_authors_result_list' => function($sm) {
+                    return new \Hebis\View\Helper\Record\EDS\EdsAuthorsResultList();
+                },
+                'eds_subject_result_list' => function($sm) {
+                    return new \Hebis\View\Helper\Record\EDS\EdsSubjectResultList();
                 }
             )
         );

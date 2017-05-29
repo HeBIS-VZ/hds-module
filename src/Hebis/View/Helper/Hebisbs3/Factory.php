@@ -25,6 +25,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+namespace Hebis\View\Helper\Hebisbs3;
+
+use Zend\ServiceManager\ServiceManager;
+
 /**
  * Class Factory
  *
@@ -33,5 +37,22 @@
 class Factory
 {
 
+    /**
+     * @param ServiceManager $sm
+     * @return Options
+     */
+    public static function getConfig(ServiceManager $sm)
+    {
+        return new Options($sm);
+    }
 
+    public static function getMultipartItems(ServiceManager $sm = null)
+    {
+        return new MultipartItems($sm);
+    }
+
+    public static function getPpnLink(ServiceManager $sm = null)
+    {
+        return new PpnLink($sm);
+    }
 }

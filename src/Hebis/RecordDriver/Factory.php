@@ -67,6 +67,21 @@ class Factory extends \VuFind\RecordDriver\Factory
     }
 
     /**
+     * Factory for EDS record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return EDS
+     */
+    public static function getEDS(ServiceManager $sm)
+    {
+        $eds = $sm->getServiceLocator()->get('VuFind\Config')->get('EDS');
+        return new EDS(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'), $eds, $eds
+        );
+    }
+
+    /**
      * @param ServiceManager $sm
      * @return PluginManager
      */

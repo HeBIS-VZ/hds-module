@@ -1,41 +1,38 @@
 <?php
-/**
- * Ajax Controller Module
+/*
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an
+ * extension of the open source library search engine VuFind, that
+ * allows users to search and browse beyond resources. More
+ * Information about VuFind you will find on http://www.vufind.org
  *
- * PHP version 5
+ * Copyright (C) 2017
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * Goethe-Universität Frankfurt / Goethe University of Frankfurt
+ * http://www.hebis.de
  *
- * Copyright (C) Villanova University 2010.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * @category VuFind
- * @package  Controller
- * @author   Chris Hallberg <challber@villanova.edu>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development:plugins:controllers Wiki
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 namespace Hebis\Controller;
+use VuFind\Controller\AbstractSearch;
+use VuFind\Controller\EdsController;
 use VuFind\Exception\Auth as AuthException;
 
 /**
- * This controller handles global AJAX functionality
- *
- * @category VuFind
- * @package  Controller
- * @author   Chris Hallberg <challber@villanova.edu>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development:plugins:controllers Wiki
+ * Class AjaxController
+ * @package Hebis\Controller
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
 class AjaxController extends \VuFind\Controller\AjaxController
 {
@@ -49,6 +46,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
      *
      * @author Chris Hallberg <crhallberg@gmail.com>
      * @author Till Kinstler <kinstler@gbv.de>
+     * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
      *
      * @return \Zend\Http\Response
      */

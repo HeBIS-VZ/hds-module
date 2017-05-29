@@ -9,6 +9,7 @@ $config = [
             'recorddriver' => [
                 'factories' => [
                     'solrmarc' => 'Hebis\RecordDriver\Factory::getSolrMarc',
+                    'eds' => 'Hebis\RecordDriver\Factory::getEDS',
                 ]
             ],
             'db_table' => [
@@ -105,6 +106,7 @@ $config = [
         ],
         'invokables' => [
             'ajax' => 'Hebis\Controller\AjaxController',
+            'eds' => 'Hebis\Controller\EdsController',
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
         ]
