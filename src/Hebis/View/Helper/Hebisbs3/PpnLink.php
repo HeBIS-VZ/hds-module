@@ -44,12 +44,12 @@ class PpnLink extends AbstractRecordViewHelper
         return $this;
     }
 
-    public function getTransLink($transKey, $ppn)
+    public function getTransLink($transKey, $ppn, $newWindow = false)
     {
-        return $this->getLink($this->getView()->transEsc($transKey), $ppn);
+        return $this->getLink($this->getView()->transEsc($transKey), $ppn, $newWindow);
     }
 
-    public function getLink($linkText, $ppn, $params = [])
+    public function getLink($linkText, $ppn, $params = [], $newWindow = false)
     {
         if (!preg_match("/^HEB[\d]+/", $ppn)) {
             $ppn = "HEB" . $ppn;
@@ -59,7 +59,7 @@ class PpnLink extends AbstractRecordViewHelper
             "lookfor" => "id:" . $ppn
         ], $params);
 
-        return $this->generateSearchLink($linkText, $searchParams);
+        return $this->generateSearchLink($linkText, $searchParams, $newWindow);
     }
 
     public function getRecordLink($linkText, $ppn)
