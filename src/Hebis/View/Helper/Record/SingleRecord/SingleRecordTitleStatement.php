@@ -31,6 +31,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\View\Helper\FieldArray;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordTitle
@@ -63,11 +64,11 @@ class SingleRecordTitleStatement extends AbstractRecordViewHelper
         /** @var \File_MARC_Data_Field $field */
         $field = $marcRecord->getField('245');
 
-        $a = trim($this->getSubFieldDataOfGivenField($field, 'a'));
+        $a = trim(Helper::getSubFieldDataOfGivenField($field, 'a'));
         $a = $this->removeSpecialChars($a);
-        $b = $this->getSubFieldDataOfGivenField($field, 'b');
-        $c = $this->getSubFieldDataOfGivenField($field, 'c');
-        $h = $this->getSubFieldDataOfGivenField($field, 'h');
+        $b = Helper::getSubFieldDataOfGivenField($field, 'b');
+        $c = Helper::getSubFieldDataOfGivenField($field, 'c');
+        $h = Helper::getSubFieldDataOfGivenField($field, 'h');
 
         /* setup colon */
         $colon = " :";

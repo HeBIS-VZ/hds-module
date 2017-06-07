@@ -30,6 +30,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordTitle
@@ -58,12 +59,12 @@ class SingleRecordOWTitleStatement extends AbstractRecordViewHelper
         $_880__ = $marcRecord->getFields('880');
 
         foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
+            $_880_6 = empty($_880) ? "" : Helper::getSubFieldDataOfGivenField($_880, '6');
             if (strncmp("245", $_880_6, 3) == 0) {
-                $a = trim($this->getSubFieldDataOfGivenField($_880, 'a'));
-                $b = $this->getSubFieldDataOfGivenField($_880, 'b');
-                $c = $this->getSubFieldDataOfGivenField($_880, 'c');
-                $h = $this->getSubFieldDataOfGivenField($_880, 'h');
+                $a = trim(Helper::getSubFieldDataOfGivenField($_880, 'a'));
+                $b = Helper::getSubFieldDataOfGivenField($_880, 'b');
+                $c = Helper::getSubFieldDataOfGivenField($_880, 'c');
+                $h = Helper::getSubFieldDataOfGivenField($_880, 'h');
 
                 /* setup colon */
                 $colon = " :";

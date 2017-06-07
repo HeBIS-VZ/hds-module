@@ -29,6 +29,7 @@ namespace Hebis\View\Helper\Record\ResultList;
 
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\Marc\Helper;
 
 
 /**
@@ -55,11 +56,13 @@ class ResultListOWPersonalName extends AbstractRecordViewHelper
         $aut = "";
 
         foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
+            $_880_6 = empty($_880) ? "" : Helper::getSubFieldDataOfGivenField($_880, '6');
             if (strncmp("100", $_880_6, 3) == 0) {
                 $aut = $this->getFieldContents($_880);
-            } else if (strncmp("700", $_880_6, 3) == 0) {
-                $_880_700_[] = $_880;
+            } else {
+                if (strncmp("700", $_880_6, 3) == 0) {
+                    $_880_700_[] = $_880;
+                }
             }
         }
 
@@ -80,9 +83,9 @@ class ResultListOWPersonalName extends AbstractRecordViewHelper
     protected function getFieldContents($field)
     {
         $ret = "";
-        $a = $this->getSubFieldDataOfGivenField($field, 'a');
-        $b = $this->getSubFieldDataOfGivenField($field, 'b');
-        $c = $this->getSubFieldDataOfGivenField($field, 'c');
+        $a = Helper::getSubFieldDataOfGivenField($field, 'a');
+        $b = Helper::getSubFieldDataOfGivenField($field, 'b');
+        $c = Helper::getSubFieldDataOfGivenField($field, 'c');
         $eArray = !is_bool($field) ? $field->getSubfields("e") : [];
 
         $ret .= $a ? $a : "";
@@ -90,7 +93,6 @@ class ResultListOWPersonalName extends AbstractRecordViewHelper
         $ret .= $c ? " &lt;$c&gt;" : "";
 
         if (count($eArray) > 0) {
-
             $ret .= " (";
             $i = 0;
             /** @var \File_MARC_Subfield $e_ */

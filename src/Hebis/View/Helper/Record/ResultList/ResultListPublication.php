@@ -83,9 +83,9 @@ class ResultListPublication extends AbstractRecordViewHelper
     protected function concatSubfields($field, $_533_d)
     {
         $ret = "";
-        $a = $this->getSubFieldDataOfGivenField($field, 'a');
-        $b = $this->getSubFieldDataOfGivenField($field, 'b');
-        $c = $this->getSubFieldDataOfGivenField($field, 'c');
+        $a = Helper::getSubFieldDataOfGivenField($field, 'a');
+        $b = Helper::getSubFieldDataOfGivenField($field, 'b');
+        $c = Helper::getSubFieldDataOfGivenField($field, 'c');
 
         $ret .= !empty($a) ? "$a" : "";
         $ret .= !empty($b) ? " : $b" : ""; //append $b

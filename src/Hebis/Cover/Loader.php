@@ -42,7 +42,7 @@ class Loader extends \VuFind\Cover\Loader
      * Support method for fetchFromAPI() -- set the localFile property.
      *
      * @param array $ids IDs returned by getIdentifiers() method
-     * @return void
+     * @return string
      * @throws \Exception
      */
     protected function determineLocalFile($ids)

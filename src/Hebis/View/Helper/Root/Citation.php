@@ -83,6 +83,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
      */
     public function __construct(\VuFind\Date\Converter $converter, Config $config)
     {
+        parent::__construct($converter);
         $this->dateConverter = $converter;
         $this->citationFormats = array_map("trim", explode(",", $config->Record->citation_formats));
 
@@ -150,7 +151,7 @@ class Citation extends \VuFind\View\Helper\Root\Citation
             "da" => "da-DK",
             "de" => "de-DE",
             "el" => "el-GR",
-            "en" => "en-GB",
+            //"en" => "en-GB",
             "en" => "en-US",
             "es" => "es-ES",
             "et" => "et-EE",

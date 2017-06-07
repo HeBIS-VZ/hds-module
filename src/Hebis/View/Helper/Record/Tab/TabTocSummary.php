@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\Tab;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -59,9 +60,11 @@ class TabTocSummary extends AbstractRecordViewHelper
             $_3 = $this->getSubField($field, "3");
 
             if (!empty($u) && !empty($_3) && $_3 !== "Umschlagbild" && $_3 !== "Cover") {
-                $ret[] = '<a href="'.$u.'">'.htmlentities($_3).'</a>';
-            } else if (empty($_3)) {
-                $ret[] = $this->getView()->transEsc("tab_description_note_about_content");
+                $ret[] = '<a href="' . $u . '">' . htmlentities($_3) . '</a>';
+            } else {
+                if (empty($_3)) {
+                    $ret[] = $this->getView()->transEsc("tab_description_note_about_content");
+                }
             }
         }
         return implode("<br />\n", $ret);

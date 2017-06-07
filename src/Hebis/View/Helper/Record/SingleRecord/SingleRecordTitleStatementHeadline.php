@@ -29,7 +29,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordTitleStatementHeadline
@@ -47,12 +47,12 @@ class SingleRecordTitleStatementHeadline extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $_880
          * prefer original writing over latin writing
-         first approach: take first title writing
-         next iteration: take title according to preferences concerning writing */
+         * first approach: take first title writing
+         * next iteration: take title according to preferences concerning writing */
         $_880__ = $marcRecord->getFields('880');
         //do I have to check whether array is empty?
         foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
+            $_880_6 = empty($_880) ? "" : Helper::getSubFieldDataOfGivenField($_880, '6');
             if (strncmp("245", $_880_6, 3) == 0) {
                 return $this->removeControlSigns($_880->getSubField('a')->getData());
 

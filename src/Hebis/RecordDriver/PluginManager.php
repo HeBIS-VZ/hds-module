@@ -105,7 +105,7 @@ class PluginManager extends \VuFind\RecordDriver\PluginManager implements Servic
 
     /**
      * @param array $data
-     * @return PicaRecord
+     * @return PicaRecordParser
      */
     private function initPica(array $data)
     {

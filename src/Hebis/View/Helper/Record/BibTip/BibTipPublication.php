@@ -29,6 +29,7 @@ namespace Hebis\View\Helper\Record\BibTip;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use Hebis\Marc\Helper;
 
 /**
  * Class BibTipPublication
@@ -39,12 +40,16 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 class BibTipPublication extends AbstractRecordViewHelper
 {
 
+    /**
+     * @param SolrMarc $record
+     * @return string
+     */
     public function __invoke(SolrMarc $record)
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $_533_d = $this->getSubFieldDataOfField($record, 533, 'd');
+        $_533_d = Helper::getSubFieldDataOfField($record, 533, 'd');
 
         if (!empty($_533_d)) {
             return $_533_d;

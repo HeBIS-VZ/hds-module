@@ -147,7 +147,7 @@ class MultipartItems extends AbstractRecordViewHelper
             }
             $str .= implode($glue, $ab);
 
-            if (!empty($c = $this->getSubFieldDataOfGivenField($field, 'c'))) {
+            if (!empty($c = Helper::getSubFieldDataOfGivenField($field, 'c'))) {
                 $str .= " / $c";
             }
             $ppn = $this->getPPNFrom773();
@@ -221,7 +221,7 @@ class MultipartItems extends AbstractRecordViewHelper
         $c_t = implode(": ", $this->getSubFieldsDataArrayOfField($field, ['c', 't']));
         $ret .= (!empty($c_t)) ? ", $c_t" : "";
 
-        $n = $this->getSubFieldDataOfGivenField($field, 'n');
+        $n = Helper::getSubFieldDataOfGivenField($field, 'n');
         if (strpos($n, "[...]") === false) {
             $n = " : $n";
         } else {
@@ -229,10 +229,10 @@ class MultipartItems extends AbstractRecordViewHelper
         }
 
         $ret .= $n;
-        $ret .= !empty($p = $this->getSubFieldDataOfGivenField($field, 'p')) ? ", $p" : "";
+        $ret .= !empty($p = Helper::getSubFieldDataOfGivenField($field, 'p')) ? ", $p" : "";
 
 
-        $v = $this->getSubFieldDataOfGivenField($field, 'v');
+        $v = Helper::getSubFieldDataOfGivenField($field, 'v');
         $ret .= (!empty($v)) ? " ; $v" : "";
 
         return $ret;

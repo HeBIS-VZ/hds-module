@@ -51,10 +51,11 @@ class UserOAuth extends \VuFind\Db\Table\Gateway
      * @param Container $session Session container to inject into rows (optional;
      * used for privacy mode)
      */
-    public function __construct(Config $config, $rowClass = 'VuFind\Db\Row\UserOAuth',
-                                Container $session = null
-    )
-    {
+    public function __construct(
+        Config $config,
+        $rowClass = 'VuFind\Db\Row\UserOAuth',
+        Container $session = null
+    ) {
         parent::__construct('user_oauth', $rowClass);
         $this->config = $config;
         $this->session = $session;
@@ -65,7 +66,7 @@ class UserOAuth extends \VuFind\Db\Table\Gateway
      *
      * @param string $username Username to use for retrieval.
      *
-     * @return UserOAuthRow
+     * @return object
      */
     public function createRowForUsername($username)
     {

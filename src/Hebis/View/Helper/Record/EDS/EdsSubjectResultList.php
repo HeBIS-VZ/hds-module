@@ -44,12 +44,14 @@ class EdsSubjectResultList extends AbstractHelper
         $ret = [];
         $bibRecord = $record->getFields()['RecordInfo']['BibRecord'];
         if (array_key_exists("BibEntity", $bibRecord) &&
-            array_key_exists("Subjects", $bibRecord['BibEntity'])) {
+            array_key_exists("Subjects", $bibRecord['BibEntity'])
+        ) {
             $subjects = $bibRecord['BibEntity']['Subjects'];
             $i = 0;
             foreach ($subjects as $subject) {
                 if (isset($subject['SubjectFull']) && $subject['Type'] === "general") {
-                    $ret[] = '<span class="label label-primary">' . $this->getView()->truncate($subject['SubjectFull'], 24) . '</span>';
+                    $ret[] = '<span class="label label-primary">' . $this->getView()->truncate($subject['SubjectFull'],
+                            24) . '</span>';
                     ++$i;
                 }
             }

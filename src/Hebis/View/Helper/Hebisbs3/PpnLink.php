@@ -55,7 +55,7 @@ class PpnLink extends AbstractRecordViewHelper
             $ppn = "HEB" . $ppn;
         }
 
-        $searchParams = array_merge( [
+        $searchParams = array_merge([
             "lookfor" => "id:" . $ppn
         ], $params);
 
@@ -68,6 +68,6 @@ class PpnLink extends AbstractRecordViewHelper
             $ppn = "HEB" . $ppn;
         }
 
-        return '<a href="'.$this->getView()->url('record') . $ppn . '">'.$linkText.'</a>';
+        return '<a href="' . $this->getView()->url('record') . $ppn . '">' . $linkText . '</a>';
     }
 }

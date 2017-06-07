@@ -285,10 +285,12 @@ class WorldCatUtils extends \VuFind\Connection\WorldCatUtils
                         if (strcasecmp($term, $value) != 0) {
                             $broader[] = $value;
                         }
-                    } else if ($type == 'h') {
-                        // Don't save exact matches to the user-entered term:
-                        if (strcasecmp($term, $value) != 0) {
-                            $narrower[] = $value;
+                    } else {
+                        if ($type == 'h') {
+                            // Don't save exact matches to the user-entered term:
+                            if (strcasecmp($term, $value) != 0) {
+                                $narrower[] = $value;
+                            }
                         }
                     }
                 }

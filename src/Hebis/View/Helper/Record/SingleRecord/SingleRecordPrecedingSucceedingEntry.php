@@ -29,7 +29,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use Hebis\Marc\Helper;
 
 /**
  * Class PrecedingSucceedingEntry
@@ -52,7 +52,7 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
 
         $arr = [];
 
-        $rda = $this->getSubFieldDataOfField($record, '040', 'e') === "rda";
+        $rda = Helper::getSubFieldDataOfField($record, '040', 'e') === "rda";
         $_780_ = $marcRecord->getFields(780);
 
         foreach ($_780_ as $field) {
@@ -94,25 +94,39 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
         }
 
         if (array_key_exists('a', $subFields) && array_key_exists('t', $subFields) && !empty($w_)) {
-
             $linkText = htmlentities($subFields['a']) . ": ";
             $linkText .= htmlentities($subFields['t']);
 
-            $ret .= $this->getView()->ppnLink()->getLink($linkText, $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
-
+            $ret .= $this->getView()->ppnLink()->getLink(
+                $linkText,
+                $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                ["backlink" => $this->record->getPPN()]
+            );
         } else {
             if (array_key_exists('a', $subFields)) {
                 if (!empty($w_)) {
-                    $ret .= $this->getView()->ppnLink()->getLink(htmlentities($subFields['a']), $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
+                    $ret .= $this->getView()->ppnLink()->getLink(
+                        htmlentities($subFields['a']),
+                        $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                        ["backlink" => $this->record->getPPN()]
+                    );
                 } else {
                     $linkText = htmlentities($subFields['a']) . ": ";
-                    $ret .= $this->getView()->ppnLink()->getLink($linkText, $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
+                    $ret .= $this->getView()->ppnLink()->getLink(
+                        $linkText,
+                        $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                        ["backlink" => $this->record->getPPN()]
+                    );
                 }
             }
 
             if (array_key_exists('t', $subFields)) {
                 if (!empty($w_)) {
-                    $ret .= $this->getView()->ppnLink()->getLink(htmlentities($subFields['t']), $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
+                    $ret .= $this->getView()->ppnLink()->getLink(
+                        htmlentities($subFields['t']),
+                        $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                        ["backlink" => $this->record->getPPN()]
+                    );
                 } else {
                     $ret .= htmlentities($subFields['t']);
                 }

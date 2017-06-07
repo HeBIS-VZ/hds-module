@@ -43,7 +43,8 @@ class EdsAuthorsResultList extends AbstractHelper
         $ret = [];
         $bibRecord = $record->getFields()['RecordInfo']['BibRecord'];
         if (array_key_exists("BibRelationships", $bibRecord) &&
-            array_key_exists("HasContributorRelationships", $bibRecord['BibRelationships'])) {
+            array_key_exists("HasContributorRelationships", $bibRecord['BibRelationships'])
+        ) {
             $persons = $bibRecord['BibRelationships']['HasContributorRelationships'];
             $i = 0;
             foreach ($persons as $person) {

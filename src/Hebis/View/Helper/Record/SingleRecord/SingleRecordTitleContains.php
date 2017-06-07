@@ -29,7 +29,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordTitleContains
@@ -49,11 +49,15 @@ class SingleRecordTitleContains extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $field */
         foreach ($_249 as $field) {
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $b = $this->getSubFieldDataOfGivenField($field, 'b');
+            $a = Helper::getSubFieldDataOfGivenField($field, 'a');
+            $b = Helper::getSubFieldDataOfGivenField($field, 'b');
 
-            if ($a) $arr[] = $this->removeControlSigns($a);
-            if ($b) $arr[] = $this->removeControlSigns($b);
+            if ($a) {
+                $arr[] = $this->removeControlSigns($a);
+            }
+            if ($b) {
+                $arr[] = $this->removeControlSigns($b);
+            }
         }
 
         return implode("<br />", $arr);

@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\Tab;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 

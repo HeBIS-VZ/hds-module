@@ -92,7 +92,7 @@ class OtherEditionTitleStatement extends AbstractRecordViewHelper
      * @param $marcRecord
      * @return string
      */
-    public function extract490av($marcRecord): string
+    public function extract490av($marcRecord)
     {
         /** @var \File_MARC_Data_Field $_490 */
         $_490 = $marcRecord->getField(490);

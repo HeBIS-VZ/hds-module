@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\RecordTab;
+
 use Zend\ServiceManager\ServiceManager;
 
 /**

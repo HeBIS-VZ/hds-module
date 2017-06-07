@@ -47,10 +47,13 @@ class Service extends \VuFindSearch\Service
      *
      * @return RecordCollectionInterface
      */
-    public function searchTerms($backend, AbstractQuery $query, $offset = 0,
-                                $limit = 20, ParamBag $params = null
-    )
-    {
+    public function searchTerms(
+        $backend,
+        AbstractQuery $query,
+        $offset = 0,
+        $limit = 20,
+        ParamBag $params = null
+    ) {
         $params = $params ?: new ParamBag();
         $context = __FUNCTION__;
         $args = compact('backend', 'query', 'offset', 'limit', 'params', 'context');

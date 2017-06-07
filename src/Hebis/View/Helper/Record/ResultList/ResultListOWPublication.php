@@ -55,7 +55,7 @@ class ResultListOWPublication extends AbstractRecordViewHelper
         $_880_264_ = array();
         $_880__ = $marcRecord->getFields('880');
         foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
+            $_880_6 = empty($_880) ? "" : Helper::getSubFieldDataOfGivenField($_880, '6');
             if (strncmp("264", $_880_6, 3) == 0) {
                 $_880_264_[] = $_880;
             }
@@ -73,8 +73,8 @@ class ResultListOWPublication extends AbstractRecordViewHelper
     protected function concatSubfields($field, $_533_d)
     {
         $ret = "";
-        $a = $this->getSubFieldDataOfGivenField($field, 'a');
-        $b = $this->getSubFieldDataOfGivenField($field, 'b');
+        $a = Helper::getSubFieldDataOfGivenField($field, 'a');
+        $b = Helper::getSubFieldDataOfGivenField($field, 'b');
 
         $ret .= !empty($a) ? "$a" : "";
         $ret .= !empty($b) ? " : $b" : ""; //append $b
