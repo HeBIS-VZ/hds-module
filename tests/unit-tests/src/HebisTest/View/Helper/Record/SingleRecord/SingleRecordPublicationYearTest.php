@@ -25,9 +25,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record\SingleRecord;
+namespace HebisTest\View\Helper\Record\SingleRecord;
 
-use Hebis\View\Helper\Record\AbstractViewHelperTest;
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
 /**
  * Class SingleRecordPublicationDistributionTest
