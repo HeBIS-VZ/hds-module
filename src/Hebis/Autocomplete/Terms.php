@@ -27,9 +27,9 @@
 
 namespace Hebis\Autocomplete;
 
-
 use Hebis\Search\Service as SearchService;
 use VuFind\Autocomplete\AutocompleteInterface;
+use VuFind\Search\Results\PluginManager;
 use VuFindSearch\ParamBag;
 use VuFindSearch\Query\Query;
 
@@ -45,9 +45,10 @@ class Terms implements AutocompleteInterface
     /**
      * Constructor
      *
-     * @param \VuFind\Search\Results\PluginManager $results Results plugin manager
+     * @param PluginManager $results Results plugin manager
+     * @param $searchConfig
      */
-    public function __construct(\VuFind\Search\Results\PluginManager $results, $searchConfig)
+    public function __construct(PluginManager $results, $searchConfig)
     {
         $this->searchService = new SearchService();
         $this->searchConfig = $searchConfig;
@@ -71,9 +72,9 @@ class Terms implements AutocompleteInterface
         $params = new ParamBag();
         $params->set("terms.fl", $key);
 
-        $results = $this->searchService
-            ->searchTerms('Solr', $query, 0, 20, $params)
-            ->getFieldTerms($key);
+        /** @var \VuFindSearch\Backend\Solr\Response\Json\Terms $resultsCollection */
+        $resultsCollection = $this->searchService->searchTerms('Solr', $query, 0, 20, $params);
+        $results = $resultsCollection->getFieldTerms($key);
 
         $arr = [];
         foreach ($results as $term => $value) {
@@ -115,5 +116,4 @@ class Terms implements AutocompleteInterface
         */
         return $query;
     }
-
 }

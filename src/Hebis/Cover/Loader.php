@@ -27,14 +27,26 @@
 
 namespace Hebis\Cover;
 
-
 use VuFind\Content\Covers\PluginManager as ApiManager;
 
 class Loader extends \VuFind\Cover\Loader
 {
 
-    public function __construct(\Zend\Config\Config $config, ApiManager $manager, \VuFindTheme\ThemeInfo $theme, \Zend\Http\Client $client, $baseDir = null)
-    {
+    /**
+     * Loader constructor.
+     * @param \Zend\Config\Config $config
+     * @param ApiManager $manager
+     * @param \VuFindTheme\ThemeInfo $theme
+     * @param \Zend\Http\Client $client
+     * @param null $baseDir
+     */
+    public function __construct(
+        \Zend\Config\Config $config,
+        ApiManager $manager,
+        \VuFindTheme\ThemeInfo $theme,
+        \Zend\Http\Client $client,
+        $baseDir = null
+    ) {
         parent::__construct($config, $manager, $theme, $client, $baseDir);
     }
 
@@ -56,11 +68,11 @@ class Loader extends \VuFind\Cover\Loader
                 return $this->getCachePath($this->size, $ids['isbn']->get10());
             }
             return $file;
-        } else if (isset($ids['issn'])) {
+        } elseif (isset($ids['issn'])) {
             return $this->getCachePath($this->size, $ids['issn']);
-        } else if (isset($ids['oclc'])) {
+        } elseif (isset($ids['oclc'])) {
             return $this->getCachePath($this->size, 'OCLC' . $ids['oclc']);
-        } else if (isset($ids['upc'])) {
+        } elseif (isset($ids['upc'])) {
             return $this->getCachePath($this->size, 'UPC' . $ids['upc']);
         }
         throw new \Exception('Unexpected code path reached!');
@@ -73,8 +85,6 @@ class Loader extends \VuFind\Cover\Loader
         $settings = is_array($settings)
             ? array_merge($this->getDefaultSettings(), $settings)
             : $this->getImageSettingsFromLegacyArgs(func_get_args());
-
-
     }
 
     protected function getSettings()

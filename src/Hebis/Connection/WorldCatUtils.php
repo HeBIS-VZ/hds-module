@@ -27,10 +27,11 @@
 
 namespace Hebis\Connection;
 
-use File_MARCXML,
-    \Vufind\XSLT\Processor as XSLTProcessor,
-    \Zend\Config\Config;
-
+use File_MARCXML;
+use VuFind\Log\LoggerAwareTrait;
+use \Vufind\XSLT\Processor as XSLTProcessor;
+use \Zend\Config\Config;
+use Zend\Http\Client;
 
 /**
  * Class WorldCatUtils
@@ -40,7 +41,7 @@ use File_MARCXML,
  */
 class WorldCatUtils extends \VuFind\Connection\WorldCatUtils
 {
-    use \VuFind\Log\LoggerAwareTrait;
+    use LoggerAwareTrait;
 
 
     /**
@@ -48,14 +49,13 @@ class WorldCatUtils extends \VuFind\Connection\WorldCatUtils
      *
      * @param Config|string $config WorldCat configuration (either a full Config
      * object, or a string containing the id setting).
-     * @param \Zend\Http\Client $client HTTP client
+     * @param Client $client HTTP client
      * @param bool $silent Should we silently ignore HTTP failures?
      * @param string $ip Current server IP address (optional, but
      * needed for xID token hashing
      */
-    public function __construct($config, \Zend\Http\Client $client, $silent = true, $ip = null)
+    public function __construct($config, Client $client, $silent = true, $ip = null)
     {
-
         parent::__construct($config, $client, $silent, $ip);
     }
 
@@ -123,9 +123,7 @@ class WorldCatUtils extends \VuFind\Connection\WorldCatUtils
                 // Filter out non-ISBN characters and validate the length of
                 // whatever is left behind; this will prevent us from treating
                 // error messages like "invalidId" or "overlimit" as ISBNs.
-                $isbn = preg_replace(
-                    '/[^0-9xX]/', '', isset($line->isbn[0]) ? $line->isbn[0] : ''
-                );
+                $isbn = preg_replace('/[^0-9xX]/', '', isset($line->isbn[0]) ? $line->isbn[0] : '');
                 if (strlen($isbn) >= 10) {
                     $isbns[] = $isbn;
                 }

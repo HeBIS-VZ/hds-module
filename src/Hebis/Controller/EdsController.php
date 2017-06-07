@@ -101,6 +101,4 @@ class EdsController extends \VuFind\Controller\EdsController
             }
         }
     }
-
-
 }

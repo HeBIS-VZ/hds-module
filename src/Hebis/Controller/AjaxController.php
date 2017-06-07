@@ -71,8 +71,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
         foreach ($fields as $field => $val) {
             $facets[$field]['min'] = $val[0] > 0 ? $val[0] : 0;
             $facets[$field]['max'] = $val[1] > 0 ? $val[1] : 0;
-            $facets[$field]['removalURL']
-                = $results->getUrlQuery()->removeFacet(
+            $facets[$field]['removalURL'] = $results->getUrlQuery()->removeFacet(
                 $field,
                 isset($filters[$field][0]) ? $filters[$field][0] : null,
                 false
@@ -137,8 +136,8 @@ class AjaxController extends \VuFind\Controller\AjaxController
             list($to, $from, $hasDateFilter, $newValues) = $this->dateFilters($results, $newValues);
             foreach ($values['data']['list'] as $current) {
                 // Only retain numeric values!
-                if (preg_match("/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[T][0-9]{2}:[0-9]{2}:[0-9]{2}[A-Z]$/",
-                    $current['value'])) {
+                $pattern = "/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[T][0-9]{2}:[0-9]{2}:[0-9]{2}[A-Z]$/";
+                if (preg_match($pattern, $current['value'])) {
                     $currentYear = intval(substr($current['value'], 0, 4));
                     if ($currentYear < 1400) {
                         continue;
@@ -172,9 +171,7 @@ class AjaxController extends \VuFind\Controller\AjaxController
                 return strcmp($a[0], $b[0]);
             });
 
-
             if (count($newValues['data']) > self::MERGE_BOUNDARY) {
-
                 $newValues = $this->mergeYears($newValues);
             }
             $retVal[$field] = $newValues;
@@ -249,8 +246,9 @@ class AjaxController extends \VuFind\Controller\AjaxController
         foreach ($filters as $filter) {
             foreach ($filter as $currentFilter) {
                 $match = [];
-                if (preg_match("/^\[([0-9]{4}\-[0-9]{2}\-[0-9]{2}[T][0-9]{2}:[0-9]{2}:[0-9]{2}[A-Z]) TO ([0-9]{4}\-[0-9]{2}\-[0-9]{2}[T][0-9]{2}:[0-9]{2}:[0-9]{2}[A-Z])\]$/",
-                    $currentFilter["value"], $match)) {
+                $pattern = "/^\[([0-9]{4}\-[0-9]{2}\-[0-9]{2}[T][0-9]{2}:[0-9]{2}:[0-9]{2}[A-Z]) TO " .
+                    "([0-9]{4}\-[0-9]{2}\-[0-9]{2}[T][0-9]{2}:[0-9]{2}:[0-9]{2}[A-Z])\]$/";
+                if (preg_match($pattern, $currentFilter["value"], $match)) {
                     $from = $match[1];
                     $to = $match[2];
                     $hasDateFilter = true;
@@ -261,5 +259,4 @@ class AjaxController extends \VuFind\Controller\AjaxController
         $newValues['rangeTo'] = intval(substr($to, 0, 4));
         return array($to, $from, $hasDateFilter, $newValues);
     }
-
 }

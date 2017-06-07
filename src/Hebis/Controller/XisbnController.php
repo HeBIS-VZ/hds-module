@@ -162,5 +162,4 @@ class XisbnController extends SearchController
             return true;
         };
     }
-
 }

@@ -28,22 +28,23 @@
 namespace Hebis\Db\Row;
 
 use VuFind\Db\Row\RowGateway;
-use Hebis\Db\Row\UserOAuth as UserOAuthRow;
+use VuFind\Db\Table\DbTableAwareInterface;
+use VuFind\Db\Table\DbTableAwareTrait;
+use Zend\Config\Config;
 
 /**
  * Class UserOAuth
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class UserOAuth extends RowGateway implements \VuFind\Db\Table\DbTableAwareInterface
+class UserOAuth extends RowGateway implements DbTableAwareInterface
 {
-    use \VuFind\Db\Table\DbTableAwareTrait;
-
+    use DbTableAwareTrait;
 
     /**
      * VuFind configuration
      *
-     * @var \Zend\Config\Config
+     * @var Config
      */
     protected $config = null;
 
@@ -60,11 +61,11 @@ class UserOAuth extends RowGateway implements \VuFind\Db\Table\DbTableAwareInter
     /**
      * Configuration setter
      *
-     * @param \Zend\Config\Config $config VuFind configuration
+     * @param Config $config VuFind configuration
      *
      * @return void
      */
-    public function setConfig(\Zend\Config\Config $config)
+    public function setConfig(Config $config)
     {
         $this->config = $config;
     }

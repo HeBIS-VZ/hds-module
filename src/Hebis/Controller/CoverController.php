@@ -49,7 +49,8 @@ class CoverController extends \VuFind\Controller\CoverController
                 $cacheDir
             );
             \VuFind\ServiceManager\Initializer::initInstance(
-                $this->loader, $this->getServiceLocator()
+                $this->loader,
+                $this->getServiceLocator()
             );
         }
         return $this->loader;

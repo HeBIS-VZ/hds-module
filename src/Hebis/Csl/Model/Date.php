@@ -27,7 +27,6 @@
 
 namespace Hebis\Csl\Model;
 
-
 use Hebis\Csl\Model\Layout\CslDate;
 use Zend\Stdlib\JsonSerializable;
 

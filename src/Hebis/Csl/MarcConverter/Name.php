@@ -82,7 +82,6 @@ class Name
                 array_shift($a_);
                 $name->setGiven(implode(" ", $a_));
             }
-
         }
 
         if (!empty($b)) {
