@@ -42,15 +42,17 @@ class PluginManager extends \VuFind\RecordTab\PluginManager
     /**
      * Get an array of valid tabs for the provided record driver.
      *
-     * @param AbstractRecordDriver $driver  Record driver
-     * @param array                $config  Tab configuration (map of
+     * @param AbstractRecordDriver $driver Record driver
+     * @param array $config Tab configuration (map of
      * driver class => tab configuration)
-     * @param \Zend\Http\Request   $request User request (optional)
+     * @param \Zend\Http\Request $request User request (optional)
      *
      * @return array               service name => tab object
      */
-    public function getTabsForRecord(AbstractRecordDriver $driver,
-                                     array $config, $request = null
+    public function getTabsForRecord(
+        AbstractRecordDriver $driver,
+        array $config,
+        $request = null
     ) {
         $tabs = [];
         foreach ($this->getTabServiceNames($driver, $config) as $tabKey => $svc) {
@@ -77,17 +79,20 @@ class PluginManager extends \VuFind\RecordTab\PluginManager
      * Convenience method to load tab information, including default, in a
      * single pass. Returns an associative array with 'tabs' and 'default' keys.
      *
-     * @param AbstractRecordDriver $driver   Record driver
-     * @param array                $config   Tab configuration (map of
+     * @param AbstractRecordDriver $driver Record driver
+     * @param array $config Tab configuration (map of
      * driver class => tab configuration)
-     * @param \Zend\Http\Request   $request  User request (optional)
-     * @param string               $fallback Fallback default tab to use if no
+     * @param \Zend\Http\Request $request User request (optional)
+     * @param string $fallback Fallback default tab to use if no
      * tab specified or matched.
      *
      * @return array
      */
-    public function getTabDetailsForRecord(AbstractRecordDriver $driver,
-                                           array $config, $request = null, $fallback = null
+    public function getTabDetailsForRecord(
+        AbstractRecordDriver $driver,
+        array $config,
+        $request = null,
+        $fallback = null
     ) {
         $tabs = $this->getTabsForRecord($driver, $config, $request);
         $default = $this->getDefaultTabForRecord($driver, $config, $tabs, $fallback);

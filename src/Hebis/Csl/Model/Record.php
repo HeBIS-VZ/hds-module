@@ -592,7 +592,7 @@ class Record implements CslRecord, JsonSerializable
      * @param string $number
      * @return Record
      */
-    public function setNumber(string $number)
+    public function setNumber($number)
     {
         $this->number = $number;
         return $this;

@@ -47,8 +47,8 @@ class SingleRecordTitleStatementHeadline extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $_880
          * prefer original writing over latin writing
-         first approach: take first title writing
-         next iteration: take title according to preferences concerning writing */
+         * first approach: take first title writing
+         * next iteration: take title according to preferences concerning writing */
         $_880__ = $marcRecord->getFields('880');
         //do I have to check whether array is empty?
         foreach ($_880__ as $_880) {

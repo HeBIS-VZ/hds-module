@@ -112,7 +112,8 @@ class MultipartItems extends AbstractRecordViewHelper
             "sort" => "relevance",
             "type0[]" => "part_of",
             "lookfor0[]" => $ppn,
-            "join" => "AND"];
+            "join" => "AND"
+        ];
 
         return $this->generateSearchLink($linkText, $searchParams);
 
@@ -153,7 +154,7 @@ class MultipartItems extends AbstractRecordViewHelper
             $ppn = $this->getPPNFrom773();
             if (!empty($ppn)) {
                 $uri = new Uri($this->getView()->url('recordfinder') . "HEB" . $ppn);
-                $arr[] = '<a href="'.$uri->toString().'">'.$str.'</a>';
+                $arr[] = '<a href="' . $uri->toString() . '">' . $str . '</a>';
             } else {
                 $arr[] = $str;
             }
@@ -329,8 +330,10 @@ class MultipartItems extends AbstractRecordViewHelper
                         }
                         $ncdCalled = true;
 
-                    } else if ($code == "n" && $tCalled) {
-                        $ret .= " : " . $subfield->getData();
+                    } else {
+                        if ($code == "n" && $tCalled) {
+                            $ret .= " : " . $subfield->getData();
+                        }
                     }
                     break;
                 case 't':

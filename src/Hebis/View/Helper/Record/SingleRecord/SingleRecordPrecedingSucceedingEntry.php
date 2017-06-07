@@ -98,21 +98,25 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
             $linkText = htmlentities($subFields['a']) . ": ";
             $linkText .= htmlentities($subFields['t']);
 
-            $ret .= $this->getView()->ppnLink()->getLink($linkText, $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
+            $ret .= $this->getView()->ppnLink()->getLink($linkText, $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                ["backlink" => $this->record->getPPN()]);
 
         } else {
             if (array_key_exists('a', $subFields)) {
                 if (!empty($w_)) {
-                    $ret .= $this->getView()->ppnLink()->getLink(htmlentities($subFields['a']), $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
+                    $ret .= $this->getView()->ppnLink()->getLink(htmlentities($subFields['a']),
+                        $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
                 } else {
                     $linkText = htmlentities($subFields['a']) . ": ";
-                    $ret .= $this->getView()->ppnLink()->getLink($linkText, $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
+                    $ret .= $this->getView()->ppnLink()->getLink($linkText,
+                        $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
                 }
             }
 
             if (array_key_exists('t', $subFields)) {
                 if (!empty($w_)) {
-                    $ret .= $this->getView()->ppnLink()->getLink(htmlentities($subFields['t']), $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
+                    $ret .= $this->getView()->ppnLink()->getLink(htmlentities($subFields['t']),
+                        $this->removePrefix($w_[0]->getData(), "(DE-603)"), ["backlink" => $this->record->getPPN()]);
                 } else {
                     $ret .= htmlentities($subFields['t']);
                 }

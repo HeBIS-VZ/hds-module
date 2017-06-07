@@ -68,8 +68,7 @@ class SingleRecordOWPublication extends ResultListPublication
             if ($asArray) {
                 return $arr;
             }
-
-            return implode("<br />", $arr);
         }
+        return implode("<br />", $arr);
     }
 }

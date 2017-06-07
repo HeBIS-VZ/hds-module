@@ -71,6 +71,7 @@ class PICA extends DAIA
             ? $this->config['Catalog']['DB'] : 1;
     }
     // public functions implemented to satisfy Driver Interface
+
     /**
      * Patron Login
      *
@@ -143,10 +144,12 @@ class PICA extends DAIA
             $recordList['address2'] = $address[2];
             // zip (Post Code)
             $recordList['zip'] = $address[3];
-        } else if ($userinfo->homeaddress) {
-            $address = explode("\$", $userinfo->homeaddress);
-            $recordList['address2'] = $address[0];
-            $recordList['zip'] = $address[1];
+        } else {
+            if ($userinfo->homeaddress) {
+                $address = explode("\$", $userinfo->homeaddress);
+                $recordList['address2'] = $address[0];
+                $recordList['zip'] = $address[1];
+            }
         }
         // phone
         $recordList['phone'] = $userinfo->phone;
@@ -523,10 +526,12 @@ class PICA extends DAIA
             }
             if ($checksum % 11 === 1) {
                 $checksum = 'X';
-            } else if ($checksum % 11 === 0) {
-                $checksum = 0;
             } else {
-                $checksum = 11 - $checksum % 11;
+                if ($checksum % 11 === 0) {
+                    $checksum = 0;
+                } else {
+                    $checksum = 11 - $checksum % 11;
+                }
             }
             $ppns[] = $value . $checksum;
             $position = $pos + 1;
@@ -601,6 +606,7 @@ class PICA extends DAIA
         return [];
     }
     // protected functions to connect to PICA
+
     /**
      * Post something to a foreign host
      *

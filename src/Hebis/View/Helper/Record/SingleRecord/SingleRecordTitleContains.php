@@ -52,8 +52,12 @@ class SingleRecordTitleContains extends AbstractRecordViewHelper
             $a = $this->getSubFieldDataOfGivenField($field, 'a');
             $b = $this->getSubFieldDataOfGivenField($field, 'b');
 
-            if ($a) $arr[] = $this->removeControlSigns($a);
-            if ($b) $arr[] = $this->removeControlSigns($b);
+            if ($a) {
+                $arr[] = $this->removeControlSigns($a);
+            }
+            if ($b) {
+                $arr[] = $this->removeControlSigns($b);
+            }
         }
 
         return implode("<br />", $arr);

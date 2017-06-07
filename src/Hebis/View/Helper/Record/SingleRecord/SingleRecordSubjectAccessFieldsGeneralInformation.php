@@ -326,7 +326,8 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
 
     private function getUrl($gnd)
     {
-        return $this->getView()->basePath() . "/" . sprintf("Search/Results?lookfor=%s&type=allfields", "uses_authority:%22$gnd%22");
+        return $this->getView()->basePath() . "/" . sprintf("Search/Results?lookfor=%s&type=allfields",
+                "uses_authority:%22$gnd%22");
     }
 
     private function makeCheckboxField($gnd, $content)

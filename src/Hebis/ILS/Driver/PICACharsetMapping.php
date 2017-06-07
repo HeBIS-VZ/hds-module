@@ -198,10 +198,12 @@ class PICACharsetMapping
                     $currentChar = ($b << 8) + ord($string[$i + 1]);
                     $new .= self::$charset[$currentChar];
                     $i++;
-                } else
+                } else {
                     $new .= self::$charset[$b];
-            } else
+                }
+            } else {
                 $new .= $string[$i];
+            }
         }
 
         return (string)$new;

@@ -72,8 +72,10 @@ class Description extends \VuFind\RecordTab\Description implements TabInterface
 
         if (empty($fields)) {
             return false;
-        } else if ($subFieldCode === null) {
-            return true;
+        } else {
+            if ($subFieldCode === null) {
+                return true;
+            }
         }
 
         /** @var \File_MARC_Data_Field $field */

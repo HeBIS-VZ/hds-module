@@ -58,8 +58,10 @@ class Hebis extends PAIA
         }
 
         $this->provider = new GenericProvider([
-            'clientId' => $this->config['PAIA']['client_id'],    // The client ID assigned to you by the provider
-            'clientSecret' => $this->config['PAIA']['client_secret'],   // The client password assigned to you by the provider
+            'clientId' => $this->config['PAIA']['client_id'],
+            // The client ID assigned to you by the provider
+            'clientSecret' => $this->config['PAIA']['client_secret'],
+            // The client password assigned to you by the provider
             'redirectUri' => 'http://sbpc2.hebis.uni-frankfurt.de/vufind2/oauth/callback',
             'urlAuthorize' => $this->config['PAIA']['baseUrl'] . 'oauth/v2/auth',
             'urlAccessToken' => $this->config['PAIA']['baseUrl'] . 'oauth/v2/token',

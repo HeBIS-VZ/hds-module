@@ -67,9 +67,9 @@ class EdsController extends \VuFind\Controller\EdsController
     /**
      * Send output data and exit.
      *
-     * @param mixed  $data     The response data
-     * @param string $status   Status of the request
-     * @param int    $httpCode A custom HTTP Status Code
+     * @param mixed $data The response data
+     * @param string $status Status of the request
+     * @param int $httpCode A custom HTTP Status Code
      *
      * @return \Zend\Http\Response
      * @throws \Exception
@@ -91,12 +91,14 @@ class EdsController extends \VuFind\Controller\EdsController
             }
             $response->setContent(json_encode($output));
             return $response;
-        } else if ($this->outputMode == 'plaintext') {
-            $headers->addHeaderLine('Content-type', 'text/plain');
-            $response->setContent($data ? $status . " $data" : $status);
-            return $response;
         } else {
-            throw new \Exception('Unsupported output mode: ' . $this->outputMode);
+            if ($this->outputMode == 'plaintext') {
+                $headers->addHeaderLine('Content-type', 'text/plain');
+                $response->setContent($data ? $status . " $data" : $status);
+                return $response;
+            } else {
+                throw new \Exception('Unsupported output mode: ' . $this->outputMode);
+            }
         }
     }
 

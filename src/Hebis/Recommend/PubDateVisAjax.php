@@ -28,6 +28,7 @@
 
 
 namespace Hebis\Recommend;
+
 use VuFind\Recommend\RecommendInterface;
 
 /**
@@ -100,8 +101,8 @@ class PubDateVisAjax implements RecommendInterface
      * recommendation module and for reading any existing search parameters that may
      * be needed.
      *
-     * @param \VuFind\Search\Base\Params $params  Search parameter object
-     * @param \Zend\StdLib\Parameters    $request Parameter object representing user
+     * @param \VuFind\Search\Base\Params $params Search parameter object
+     * @param \Zend\StdLib\Parameters $request Parameter object representing user
      * request.
      *
      * @return void

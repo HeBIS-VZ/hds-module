@@ -58,8 +58,10 @@ class ResultListOWPersonalName extends AbstractRecordViewHelper
             $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
             if (strncmp("100", $_880_6, 3) == 0) {
                 $aut = $this->getFieldContents($_880);
-            } else if (strncmp("700", $_880_6, 3) == 0) {
-                $_880_700_[] = $_880;
+            } else {
+                if (strncmp("700", $_880_6, 3) == 0) {
+                    $_880_700_[] = $_880;
+                }
             }
         }
 

@@ -53,8 +53,10 @@ class SingleRecordOWPersonalName extends ResultListPersonalName
             if (strncmp("100", $_880_6, 3) == 0) {
                 $_880_100 = $_880;
                 $aut = $this->getFieldContents($_880_100);
-            } else if (strncmp("700", $_880_6, 3) == 0) {
-                $_880_700_[] = $_880;
+            } else {
+                if (strncmp("700", $_880_6, 3) == 0) {
+                    $_880_700_[] = $_880;
+                }
             }
         }
 

@@ -51,7 +51,9 @@ class SingleRecordDatesOfPublicationSequentialDesignation extends AbstractRecord
         /** @var \File_MARC_Data_Field $field */
         foreach ($_362 as $field) {
             $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            if ($a) $arr[] = htmlentities($a);
+            if ($a) {
+                $arr[] = htmlentities($a);
+            }
 
         }
 

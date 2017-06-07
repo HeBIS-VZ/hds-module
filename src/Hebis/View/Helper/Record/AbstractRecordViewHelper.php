@@ -200,6 +200,7 @@ class AbstractRecordViewHelper extends AbstractHelper
         if (strpos($haystack, $needle) === 0) {
             return substr($haystack, strlen($needle));
         }
+        return $haystack;
     }
 
     /**
