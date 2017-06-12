@@ -29,6 +29,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use Hebis\Marc\Helper;
 
 
 /**
@@ -46,14 +47,53 @@ class SingleRecordTitleContains extends AbstractRecordViewHelper
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
         $_249 = $marcRecord->getFields('249');
+        $_505 = $marcRecord->getFields('505');
+
 
         /** @var \File_MARC_Data_Field $field */
+        $i = 0;
+        $j = 0;
         foreach ($_249 as $field) {
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $b = $this->getSubFieldDataOfGivenField($field, 'b');
+            $a_249 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'a'));
+            $b_249 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'b'));
+            $c_249 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'c'));
+            $v_249 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'v'));
 
-            if ($a) $arr[] = $this->removeControlSigns($a);
-            if ($b) $arr[] = $this->removeControlSigns($b);
+
+            if ($a_249) {
+                $arr[] = $a_249;
+                if ($v_249) {
+                    $arr[$i] .= ' / ' . $v_249;
+                }
+            }
+
+            if ($b_249) {
+                $arr[] = $b_249;
+                if ($c_249) {
+                    $arr[$i] .= ' / ' . $c_249;
+                }
+            }
+            $i++;
+        }
+
+        foreach ($_505 as $field) {
+            $a_505 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'a'));
+            $t_505 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 't'));
+            $r_505 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'r'));
+
+
+            if ($a_505) {
+                $arr[] = $a_505;
+                if ($t_505) {
+                    $arr[$j] .= ' ' . $t_505;
+                }
+            }
+            else if ($t_505) {
+                    $arr[] = $t_505;
+            }
+            if ($r_505) $arr[$j] .= ' / ' . $r_505;
+
+            $j++;
         }
 
         return implode("<br />", $arr);

@@ -31,6 +31,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\View\Helper\FieldArray;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordTitle
@@ -63,11 +64,10 @@ class SingleRecordTitleStatement extends AbstractRecordViewHelper
         /** @var \File_MARC_Data_Field $field */
         $field = $marcRecord->getField('245');
 
-        $a = trim($this->getSubFieldDataOfGivenField($field, 'a'));
-        $a = $this->removeSpecialChars($a);
-        $b = $this->getSubFieldDataOfGivenField($field, 'b');
-        $c = $this->getSubFieldDataOfGivenField($field, 'c');
-        $h = $this->getSubFieldDataOfGivenField($field, 'h');
+        $a = $this->removeSpecialChars(trim(Helper::getSubFieldDataOfGivenField($field, 'a')));
+        $b = Helper::getSubFieldDataOfGivenField($field, 'b');
+        $c = Helper::getSubFieldDataOfGivenField($field, 'c');
+        $h = Helper::getSubFieldDataOfGivenField($field, 'h');
 
         /* setup colon */
         $colon = " :";
@@ -102,7 +102,7 @@ class SingleRecordTitleStatement extends AbstractRecordViewHelper
 
     protected function titleSearchLink($title)
     {
-        $url = $this->getView()->recordLink()->getActionUrl("Myyresearch", "home");
+        // $url = $this->getView()->recordLink()->getActionUrl("Myyresearch", "home");
 
         $searchTitle = html_entity_decode($title);
         $href = parent::URL_FULL_TITLE_SEARCH_PATTERN . urlencode(trim($searchTitle)) . parent::URL_FULL_TITLE_SEARCH_PATTERN_SUFFIX;

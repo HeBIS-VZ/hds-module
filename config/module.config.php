@@ -109,6 +109,7 @@ $config = [
             'eds' => 'Hebis\Controller\EdsController',
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
+            'adminlogs' => 'Hebis\Controller\AdminLogs'
         ]
     ],
     'router' => [
@@ -142,7 +143,17 @@ $config = [
                         'action' => 'xid'
                     ]
                 ]
-            ]
+            ],
+            'logs' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route' => '/Admin/Logs',
+                    'defaults' => [
+                        'controller' => 'AdminLogs',
+                        'action' => 'Home',
+                    ]
+                ]
+            ],
         ],
     ],
 
