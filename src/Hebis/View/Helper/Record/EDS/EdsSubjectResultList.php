@@ -46,13 +46,20 @@ class EdsSubjectResultList extends AbstractHelper
         if (array_key_exists("BibEntity", $bibRecord) &&
             array_key_exists("Subjects", $bibRecord['BibEntity'])
         ) {
-            $subjects = $bibRecord['BibEntity']['Subjects'];
+            $subjects = array_filter($bibRecord['BibEntity']['Subjects'], function ($subject) {
+                return isset($subject['SubjectFull']) && $subject['Type'] === "general";
+            });
+
             $i = 0;
             foreach ($subjects as $subject) {
-                if (isset($subject['SubjectFull']) && $subject['Type'] === "general") {
-                    $ret[] = '<span class="label label-primary">' . $this->getView()->truncate($subject['SubjectFull'],
-                            24) . '</span>';
-                    ++$i;
+                $ret[] = '<span class="label label-primary">' . $this->getView()->truncate($subject['SubjectFull'], 24) . '</span>';
+                ++$i;
+
+                if ($i >= 6) {
+                    if (count($subjects) > 6) {
+                        $ret[] = '<span class="label label-primary">&hellip;</span>';
+                    }
+                    break;
                 }
             }
         }
