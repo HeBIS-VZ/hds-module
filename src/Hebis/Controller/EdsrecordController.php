@@ -37,9 +37,6 @@ use Zend\View\Model\ViewModel;
  */
 class EdsrecordController extends \VuFind\Controller\EdsrecordController
 {
-
-
-
     /**
      * @return ViewModel
      */
