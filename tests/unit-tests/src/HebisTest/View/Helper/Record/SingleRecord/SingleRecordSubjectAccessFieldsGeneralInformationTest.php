@@ -56,6 +56,12 @@ class SingleRecordSubjectAccessFieldsGeneralInformationTest extends AbstractView
      */
     protected function getPlugins()
     {
-        return [];
+        $basePath = $this->getMock('Zend\View\Helper\BasePath');
+        $basePath->expects($this->any())->method('__invoke')
+            ->will($this->returnValue('/vufind2'));
+
+        return [
+            'basepath' => $basePath
+        ];
     }
 }

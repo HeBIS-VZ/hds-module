@@ -37,6 +37,7 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use HebisTest\View\Helper\SpreadsheetTestsTrait;
 use HebisTest\View\Helper\TestRecordFromIndexTrait;
 use HebisTest\View\Helper\TestRunnerTrait;
+use Zend\Http\Client;
 
 
 /**
