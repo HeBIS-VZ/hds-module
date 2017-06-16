@@ -62,11 +62,8 @@ class ResultListHostItemEntry extends AbstractRecordViewHelper
     protected function output($fields)
     {
         $ret = "";
-
         foreach ($fields as $field) {
-
             $ret .= !empty($a = $field->getSubfield('a')) ? htmlentities($a->getData()) . ". " : "";
-
             $ret .= $this->generateSubfields($field);
         }
         return $ret;
@@ -90,7 +87,7 @@ class ResultListHostItemEntry extends AbstractRecordViewHelper
             $c = $subField->getCode();
             $v = $subField->getData();
 
-            if (!in_array($c, ['t', 'b', 'd', 'g', 'h', 'z', 'o', 'x'])) {
+            if (!in_array($c, ['t', 'b', 'd', 'g'])) {
                 continue;
             }
 
