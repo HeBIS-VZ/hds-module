@@ -27,7 +27,6 @@
 
 namespace Hebis\Search;
 
-
 use VuFindSearch\Backend\Exception\BackendException;
 use VuFindSearch\ParamBag;
 use VuFindSearch\Query\AbstractQuery;
@@ -35,7 +34,6 @@ use VuFindSearch\Response\RecordCollectionInterface;
 
 class Service extends \VuFindSearch\Service
 {
-
     /**
      * Perform a search and return a wrapped response.
      *
@@ -47,14 +45,18 @@ class Service extends \VuFindSearch\Service
      *
      * @return RecordCollectionInterface
      */
-    public function searchTerms($backend, AbstractQuery $query, $offset = 0,
-                                $limit = 20, ParamBag $params = null
-    )
-    {
+    public function searchTerms(
+        $backend,
+        AbstractQuery $query,
+        $offset = 0,
+        $limit = 20,
+        ParamBag $params = null
+    ) {
         $params = $params ?: new ParamBag();
         $context = __FUNCTION__;
         $args = compact('backend', 'query', 'offset', 'limit', 'params', 'context');
 
+        /** @var \VuFindSearch\Backend\Solr\Backend $backend */
         $backend = $this->resolve($backend, $args);
         $args['backend_instance'] = $backend;
 
@@ -66,6 +68,7 @@ class Service extends \VuFindSearch\Service
 
         $this->triggerPre($backend, $args);
         try {
+            /** @var RecordCollectionInterface $response */
             $response = $backend->terms($params);
         } catch (BackendException $e) {
             $this->triggerError($e, $args);

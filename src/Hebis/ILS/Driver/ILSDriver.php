@@ -28,7 +28,6 @@
 
 namespace Hebis\ILS\Driver;
 
-
 interface ILSDriver
 {
     /**
@@ -54,6 +53,4 @@ interface ILSDriver
      * @return mixed
      */
     public function getMyTransactions(array $patron);
-
-
 }

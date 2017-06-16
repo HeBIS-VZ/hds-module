@@ -24,12 +24,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-namespace Hebis\Search\Solr;
 
+namespace Hebis\Search\Solr;
 
 class Terms extends \VuFind\Search\Solr\Results
 {
-
     /**
      * Return search service.
      *
@@ -58,5 +57,4 @@ class Terms extends \VuFind\Search\Solr\Results
     {
         return [];
     }
-
 }

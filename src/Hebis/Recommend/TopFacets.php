@@ -1,32 +1,33 @@
 <?php
-/**
- * SideFacets Recommendations Module
+/*
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an
+ * extension of the open source library search engine VuFind, that
+ * allows users to search and browse beyond resources. More
+ * Information about VuFind you will find on http://www.vufind.org
  *
- * PHP version 5
+ * Copyright (C) 2017
+ * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * Goethe-Universität Frankfurt / Goethe University of Frankfurt
+ * http://www.hebis.de
  *
- * Copyright (C) Villanova University 2010.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2,
- * as published by the Free Software Foundation.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * @category VuFind
- * @package  Recommendations
- * @author   Demian Katz <demian.katz@villanova.edu>
- * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @link     https://vufind.org/wiki/development:plugins:recommendation_modules Wiki
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 namespace Hebis\Recommend;
-use VuFind\Recommend\AbstractFacets;
+
+use VuFind\Config\PluginManager;
 use VuFind\Solr\Utils as SolrUtils;
 use VuFind\Search\Solr\HierarchicalFacetHelper;
 
@@ -130,12 +131,12 @@ class TopFacets extends \VuFind\Recommend\TopFacets
     /**
      * Constructor
      *
-     * @param \VuFind\Config\PluginManager $configLoader Configuration loader
+     * @param PluginManager $configLoader Configuration loader
      * @param HierarchicalFacetHelper      $facetHelper  Helper for handling
      * hierarchical facets
      */
     public function __construct(
-        \VuFind\Config\PluginManager $configLoader,
+        PluginManager $configLoader,
         HierarchicalFacetHelper $facetHelper = null
     ) {
         parent::__construct($configLoader);
@@ -165,6 +166,7 @@ class TopFacets extends \VuFind\Recommend\TopFacets
             $config->$mainSection->toArray() : [];
 
         // Load boolean configurations:
+        /** @var \Zend\Config\Config $config */
         $this->loadBooleanConfigs($config, array_keys($this->mainFacets));
 
         // Get a list of fields that should be displayed as ranges rather than
@@ -266,7 +268,8 @@ class TopFacets extends \VuFind\Recommend\TopFacets
                 }
 
                 $facetArray = $this->hierarchicalFacetHelper->buildFacetArray(
-                    $hierarchicalFacet, $facetSet[$hierarchicalFacet]['list']
+                    $hierarchicalFacet,
+                    $facetSet[$hierarchicalFacet]['list']
                 );
                 $facetSet[$hierarchicalFacet]['list']
                     = $this->hierarchicalFacetHelper
@@ -412,7 +415,8 @@ class TopFacets extends \VuFind\Recommend\TopFacets
     {
         // Merge extras into main list:
         $filterList = array_merge(
-            $this->results->getParams()->getFilterList(true), $extraFilters
+            $this->results->getParams()->getFilterList(true),
+            $extraFilters
         );
 
         // Filter out suppressed values:

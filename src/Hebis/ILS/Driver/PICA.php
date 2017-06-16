@@ -232,7 +232,9 @@ class PICA extends DAIA
                 $position_state = null;
                 for ($n = 0; $n < 6; $n++) {
                     $current_position = $this->strposBackwards(
-                        $postit, '<td class="value-small">', $current_position - 1
+                        $postit,
+                        '<td class="value-small">',
+                        $current_position - 1
                     );
                     if ($n === 1) {
                         $position_reservations = $current_position;
@@ -254,10 +256,9 @@ class PICA extends DAIA
                     $expiration[] = substr($postit, $position_expire + 24, 10);
                     $renewals[] = $this->getRenewals($completeValue);
                     $closing_title = strpos($postit, '</td>', $position_title);
-                    $titles[] = $completeValue . " " . substr(
-                            $postit, $position_title + 24,
-                            ($closing_title - $position_title - 24)
-                        );
+                    $titles[] = $completeValue .
+                        " " .
+                        substr($postit, $position_title + 24, ($closing_title - $position_title - 24));
                 } else {
                     $holdsByIframe--;
                     array_pop($ppns);
@@ -280,7 +281,9 @@ class PICA extends DAIA
                 $position_expire = $position;
                 for ($n = 0; $n < 4; $n++) {
                     $position_expire = strpos(
-                        $postit, '<td class="value-small">', $position_expire + 1
+                        $postit,
+                        '<td class="value-small">',
+                        $position_expire + 1
                     );
                 }
                 $expiration[] = substr($postit, $position_expire + 24, 10);
@@ -498,7 +501,9 @@ class PICA extends DAIA
             $position_create = $position;
             for ($n = 0; $n < 3; $n++) {
                 $position_create = strpos(
-                    $postit, '<td class="value-small">', $position_create + 1
+                    $postit,
+                    '<td class="value-small">',
+                    $position_create + 1
                 );
             }
             $creation[]
@@ -533,7 +538,9 @@ class PICA extends DAIA
             $position_create = $position;
             for ($n = 0; $n < 3; $n++) {
                 $position_create = strpos(
-                    $postit, '<td class="value-small">', $position_create + 1
+                    $postit,
+                    '<td class="value-small">',
+                    $position_create + 1
                 );
             }
             $creation[]
@@ -550,12 +557,15 @@ class PICA extends DAIA
         ];
         $postit_lol = $this->postit($URL, $POST_LOL);
         $requests = substr_count(
-            $postit_lol, '<td class="value-small">bestellt</td>'
+            $postit_lol,
+            '<td class="value-small">bestellt</td>'
         );
         $position = 0;
         for ($i = 0; $i < $requests; $i++) {
             $position = strpos(
-                $postit_lol, '<td class="value-small">bestellt</td>', $position + 1
+                $postit_lol,
+                '<td class="value-small">bestellt</td>',
+                $position + 1
             );
             $pos = strpos($postit_lol, '<td class="value-small">', ($position - 100));
             $nextClosingTd = strpos($postit_lol, '</td>', $pos);
@@ -688,6 +698,4 @@ class PICA extends DAIA
         }
         return $ppn;
     }
-
-
 }

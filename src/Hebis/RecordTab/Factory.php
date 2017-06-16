@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\RecordTab;
+
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -33,7 +34,6 @@ use Zend\ServiceManager\ServiceManager;
  */
 class Factory extends \VuFind\RecordTab\Factory
 {
-
     /**
      * Factory for HoldingsILS tab plugin.
      *
@@ -56,5 +56,4 @@ class Factory extends \VuFind\RecordTab\Factory
         }
         return new HoldingsILS($catalog);
     }
-
 }

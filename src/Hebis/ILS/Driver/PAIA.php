@@ -265,7 +265,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
 
         try {
             $array_response = $this->paiaPostAsArray(
-                'core/' . $patron['cat_username'] . '/cancel', $post_data
+                'core/' . $patron['cat_username'] . '/cancel',
+                $post_data
             );
         } catch (ILSException $e) {
             $this->debug($e->getMessage());
@@ -341,7 +342,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
 
         try {
             $array_response = $this->paiaPostAsArray(
-                'auth/change', $post_data
+                'auth/change',
+                $post_data
             );
         } catch (ILSException $e) {
             $this->debug($e->getMessage());
@@ -724,7 +726,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
      *  - http://purl.org/ontology/paia#FeeCondition to confirm or select a document
      *    service causing a fee -- not mapped yet
      *
-     * @param $details
+     * @param array
      * @return array
      */
     protected function getConfirmations($holdDetails)
@@ -764,7 +766,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
 
         try {
             $array_response = $this->paiaPostAsArray(
-                'core/' . $patron['id'] . '/request', $post_data
+                'core/' . $patron['id'] . '/request',
+                $post_data
             );
         } catch (ILSException $e) {
             $this->debug($e->getMessage());
@@ -854,7 +857,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
 
         try {
             $array_response = $this->paiaPostAsArray(
-                'core/' . $patron['cat_username'] . '/renew', $post_data
+                'core/' . $patron['cat_username'] . '/renew',
+                $post_data
             );
         } catch (ILSException $e) {
             $this->debug($e->getMessage());
@@ -1372,7 +1376,9 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         try {
             $result = $this->httpService->get(
                 $this->paiaURL . $file,
-                [], null, $http_headers
+                [],
+                null,
+                $http_headers
             );
         } catch (\Exception $e) {
             throw new ILSException($e->getMessage());
@@ -1538,14 +1544,16 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     protected function paiaGetUserDetails($patron)
     {
         $responseJson = $this->paiaGetRequest(
-            'core/' . $patron, $this->getAccessToken()
+            'core/' . $patron,
+            $this->getAccessToken()
         );
 
         try {
             $responseArray = $this->paiaParseJsonAsArray($responseJson);
         } catch (ILSException $e) {
             throw new ILSException(
-                $e->getMessage(), $e->getCode()
+                $e->getMessage(),
+                $e->getCode()
             );
         }
         return $this->paiaParseUserDetails($patron, $responseArray);
@@ -1585,8 +1593,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     public function checkRequestIsValid($id, $data, $patron)
     {
         // TODO: make this more configurable
-        if (
-            isset($patron['status']) && $patron['status'] == 0
+        if (isset($patron['status']) && $patron['status'] == 0
             && isset($patron['expires']) && $patron['expires'] > date('Y-m-d')
             && in_array('write_items', $this->getSession()->scope)
         ) {
@@ -1615,7 +1622,6 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         $userOAuthRow = $this->userOAuthTable->getByUsername($this->username);
 
         if (empty($userOAuthRow) || $userOAuthRow->hasExpired()) {
-
             $state = $this->provider->getState();
             $session->oauth2state = serialize($state);
             //$session->
