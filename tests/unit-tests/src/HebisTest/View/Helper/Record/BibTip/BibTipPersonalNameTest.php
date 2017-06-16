@@ -35,16 +35,17 @@ namespace HebisTest\View\Helper\Record;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipTest extends AbstractViewHelperTest
+class BibTipPersonalNameTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "BibTip";
+        $this->spreadSheetName = "BibTip.xlsx";
+        $this->viewHelperClass = "BibTipPersonalName";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "BibTip";
+        $this->testSheetName = "Verantwortlich";
         parent::setUp();
     }
 
@@ -55,9 +56,6 @@ class BibTipTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+        return [];
     }
 }
