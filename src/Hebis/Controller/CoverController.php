@@ -27,7 +27,6 @@
 
 namespace Hebis\Controller;
 
-
 class CoverController extends \VuFind\Controller\CoverController
 {
 

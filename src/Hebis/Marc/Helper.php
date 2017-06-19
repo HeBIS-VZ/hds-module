@@ -27,7 +27,6 @@
 
 namespace Hebis\Marc;
 
-
 use Hebis\RecordDriver\SolrMarc;
 
 class Helper
@@ -62,9 +61,7 @@ class Helper
     public static function getSubFieldDataOfGivenField($field, $subFieldCode)
     {
         if ($field && $field instanceof \File_MARC_Data_Field) {
-
             $subField = $field->getSubfield($subFieldCode);
-
             return !empty($subField) ? htmlentities($subField->getData()) : false;
         }
 

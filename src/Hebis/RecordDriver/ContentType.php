@@ -27,7 +27,6 @@
 
 namespace Hebis\RecordDriver;
 
-
 use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
 

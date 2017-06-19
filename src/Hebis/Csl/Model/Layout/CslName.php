@@ -88,5 +88,4 @@ interface CslName
      * @return string
      */
     public function getSuffix();
-
 }
