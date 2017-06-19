@@ -31,7 +31,6 @@ use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\CorporateNameTrait;
 use Hebis\View\Helper\Record\ResultList\ResultListCorporateName;
 
-
 /**
  * Class SingleRecordCorporateName
  * @package Hebis\View\Helper\Record\SingleRecord
@@ -48,7 +47,6 @@ class SingleRecordCorporateName extends ResultListCorporateName
         if ($asArray === true) {
             return $arr;
         }
-
         return implode("<br />", $arr);
     }
 

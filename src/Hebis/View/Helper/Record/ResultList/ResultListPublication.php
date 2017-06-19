@@ -68,7 +68,7 @@ class ResultListPublication extends AbstractRecordViewHelper
 
         $_264__ = $this->filterByIndicator($marcRecord->getFields('264'), 1, "3");
         if (empty($_264__)) {
-            $_264__ = $this->filterByIndicator($marcRecord->getFields('264'), 1, "");
+            $_264__ = $this->filterByIndicator($marcRecord->getFields('264'), 1, " ");
         }
 
         return $this->generateContents($record, $_264__);
@@ -134,5 +134,4 @@ class ResultListPublication extends AbstractRecordViewHelper
 
         return $field_;
     }
-
 }
