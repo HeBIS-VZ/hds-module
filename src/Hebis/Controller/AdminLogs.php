@@ -24,9 +24,9 @@ class AdminLogs extends AbstractAdmin
         $view = $this->createViewModel();
 
         //$view->setTemplate('admin/logs/home');
-        $view->logContent = $this->getLogFileContent();
-        $view->lineCount = $this->getLineCount();
-        $view->site = 'logs';
+        //$view->logContent = $this->getLogFileContent();
+        //$view->lineCount = $this->getLineCount();
+        //$view->site = 'logs';
 
         return $view;
     }
@@ -58,7 +58,7 @@ class AdminLogs extends AbstractAdmin
     }
 
     /**
-     * returns the last lines of a file bottom up
+     * returns the last lines of a file (bottom-up)
      *
      * @return string recent log
      */

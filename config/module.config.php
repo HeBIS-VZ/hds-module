@@ -109,7 +109,9 @@ $config = [
             'eds' => 'Hebis\Controller\EdsController',
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
-            'adminlogs' => 'Hebis\Controller\AdminLogs'
+            'adminlogs' => 'Hebis\Controller\AdminLogs',
+
+            'custompages' => 'Hebis\Controller\CustomPagesController',
         ]
     ],
     'router' => [
@@ -150,6 +152,16 @@ $config = [
                     'route' => '/Admin/Logs',
                     'defaults' => [
                         'controller' => 'AdminLogs',
+                        'action' => 'Home',
+                    ]
+                ]
+            ],
+            'custompages' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route' => '/Admin/CustomPages',
+                    'defaults' => [
+                        'controller' => 'CustomPagesController',
                         'action' => 'Home',
                     ]
                 ]
