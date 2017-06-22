@@ -90,9 +90,12 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
     protected $pluginFactory;
 
     /**
-     * @var string ("SingleRecord"|"ResultList")
+     * @var string ("SingleRecord"|"ResultList"|"BibTip")
      */
     protected $resultType;
+
+    protected $spreadSheetName = "rda.xlsx";
+
 
     /**
      * @param $className
@@ -102,8 +105,10 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
     {
         if (strpos($className, "ResultList") !== false) {
             $type = "ResultList\\";
-        } else if (strpos($className, "SingleRecord") !== false) {
+        } elseif (strpos($className, "SingleRecord") !== false) {
             $type = "SingleRecord\\";
+        } elseif (strpos($className, "BibTip") !== false) {
+            $type = "BibTip\\";
         } else {
             $type = "";
         }
@@ -129,11 +134,11 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
     {
 
         foreach ($this->testRecordIds as $testRecordFile) {
-
             $fileName = PHPUNIT_FIXTURES_HEBIS . "/JsonSolrDocs/" . $testRecordFile . ".json";
 
             if (!is_file($fileName)) {
-                throw new \Exception("File '" . $testRecordFile . ".json' not found for Test " . $this->viewHelperClass);
+                $message = "File '" . $testRecordFile . ".json' not found for Test " . $this->viewHelperClass;
+                throw new \Exception($message);
             }
 
             $file = file_get_contents($fileName);
@@ -155,14 +160,13 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
     {
         $this->pluginFactory = new \VuFind\Config\PluginFactory();
         $this->viewHelper = self::factory($this->viewHelperClass);
-        self::VIEW_HELPER_NAMESPACE . "\BibTip";
         $this->viewHelper->setView($this->getPhpRenderer($this->getPlugins()));
         $this->spreadsheetReader = ReaderFactory::create(Type::XLSX);
-        $this->spreadsheetReader->open(PHPUNIT_FIXTURES_HEBIS . "/spreadsheet/rda.xlsx");
+        $this->spreadsheetReader->open(PHPUNIT_FIXTURES_HEBIS . "/spreadsheet/" . $this->spreadSheetName);
 
         $testClassName = get_class($this);
 
-        if (strpos($testClassName, "SingleRecord") !== false) {
+        if (strpos($testClassName, "SingleRecord") !== false || strpos($testClassName, "BibTip") !== false) {
             $this->resultType = "SingleRecord";
         } else {
             $this->resultType = "ResultList";
@@ -179,7 +183,9 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
         if (!empty($this->testSheetName)) {
             $relevantRows = $this->spreadsheetTestCases($this->spreadsheetReader, $this->testSheetName);
             if (empty($relevantRows)) {
-                $this->fail("No test case found!");
+                $this->markTestSkipped(
+                    "No test case found!"
+                );
             } else {
                 $this->runTests($relevantRows);
             }

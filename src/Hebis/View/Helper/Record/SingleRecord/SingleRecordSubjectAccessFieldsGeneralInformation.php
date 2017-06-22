@@ -30,7 +30,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordSubjectAccessFieldsGeneralInformation
@@ -42,7 +42,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
 {
     /**
      * @param SolrMarc $record
-     * @return string
+     * @return string|array
      */
     public function __invoke(SolrMarc $record, $asArray = false)
     {
@@ -371,7 +371,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     private function add648($record)
     {
         $field = $record->getMarcRecord()->getField('648');
-        $_648_a = $this->getSubFieldDataOfGivenField($field, 'a');
+        $_648_a = Helper::getSubFieldDataOfGivenField($field, 'a');
         $tag = $this->generateTag($field, [$_648_a]);
         return !empty($tag) ? "<nobr>" . $tag . "</nobr>" : "";
     }
@@ -399,7 +399,8 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
 
     private function getUrl($gnd)
     {
-        return $this->getView()->basePath() . "/" . sprintf("Search/Results?lookfor=%s&type=allfields", "uses_authority:%22$gnd%22");
+        return $this->getView()->basePath() . "/" . sprintf("Search/Results?lookfor=%s&type=allfields",
+                "uses_authority:%22$gnd%22");
     }
 
     private function makeCheckboxField($gnd, $content)

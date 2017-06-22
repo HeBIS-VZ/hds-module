@@ -31,6 +31,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\View\Helper\Record\MarcSubfieldManipulationTrait;
 use Hebis\View\Helper\Record\ResultList\ResultListPublication;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordPublicationDistribution
@@ -44,7 +45,7 @@ class SingleRecordPublication extends ResultListPublication
 
     /**
      * @param SolrMarc $record
-     * @return string
+     * @return string|array
      */
     public function __invoke(SolrMarc $record, $asArray = false)
     {
@@ -63,7 +64,7 @@ class SingleRecordPublication extends ResultListPublication
         $arr = [];
         /** @var \File_MARC_Data_Field $_264 */
         foreach ($_264__ as $_264) {
-            $_264c = empty($_264) ? "" : $this->getSubFieldDataOfGivenField($_264, 'c');
+            $_264c = empty($_264) ? "" : Helper::getSubFieldDataOfGivenField($_264, 'c');
             $r = implode(" : ", $this->getSubFieldsStringArrayOfGivenField($_264, ['a', 'b']));
             $r .= empty($_264c) ? "" : (!empty($r) ? ", $_264c" : $_264c);
             $arr[] = $r;

@@ -1,11 +1,12 @@
 <?php
+
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an
  * extension of the open source library search engine VuFind, that
  * allows users to search and browse beyond resources. More
  * Information about VuFind you will find on http://www.vufind.org
  *
- * Copyright (C) 2017
+ * Copyright (C) 2016
  * HeBIS Verbundzentrale des HeBIS-Verbundes
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -25,48 +26,44 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record\BibTip;
+namespace Hebis\View\Helper\Record\SingleRecord;
 
-
+use Hebis\View\Helper\Record\MarcSubfieldManipulationTrait;
+use Hebis\View\Helper\Record\ResultList\ResultListPublication;
 use Hebis\RecordDriver\SolrMarc;
-use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\Marc\Helper;
 
 /**
- * Class BibTipPublication
- * @package Hebis\View\Helper\Record\BibTip
+ * Class SingleRecordPublicationYear
+ * @package Hebis\View\Helper\Record
  *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ * @author Claudia Grote <grote@hebis.uni-frankfurt.de>
  */
-class BibTipPublication extends AbstractRecordViewHelper
+class SingleRecordPublicationYear extends ResultListPublication
 {
+    use MarcSubfieldManipulationTrait;
 
     /**
      * @param SolrMarc $record
      * @return string
      */
-    public function __invoke(SolrMarc $record)
+    public function __invoke(SolrMarc $record, $asArray = false)
     {
+
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $_533_d = Helper::getSubFieldDataOfField($record, 533, 'd');
+        $_264__ = $this->filterByIndicator($marcRecord->getFields('264'), 2, "1");
 
-        if (!empty($_533_d)) {
-            return $_533_d;
-        }
-
-        $_264__ = $marcRecord->getFields(264);
-        $_264_ = $this->filterByIndicator($_264__, 2, "1");
-
-        usort($_264_, function (\File_MARC_Data_Field $a, \File_MARC_Data_Field $b) {
+        usort($_264__, function (\File_MARC_Data_Field $a, \File_MARC_Data_Field $b) {
             return $a->getIndicator(1) > $b->getIndicator(1) ? -1 : 1;
         });
 
-        if (!empty($_264_)) {
-            $a = current($_264_);
-            if (!empty($c = $a->getSubfield('c'))) {
-                return $c->getData();
+        /** @var \File_MARC_Data_Field $_264 */
+        foreach ($_264__ as $_264) {
+            $_264c = empty($_264) ? "" : Helper::getSubFieldDataOfGivenField($_264, 'c');
+            if (!empty($_264c)) {
+                return $_264c;
             }
         }
 

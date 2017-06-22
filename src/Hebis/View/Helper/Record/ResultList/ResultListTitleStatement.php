@@ -30,6 +30,7 @@ namespace Hebis\View\Helper\Record\ResultList;
 
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\Marc\Helper;
 
 /**
  * Class ResultListTitleStatement
@@ -46,7 +47,7 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $retro = strpos($this->getSubFieldDataOfField($record, 856, '3'), "Katalogkarte") !== false;
+        $retro = strpos(Helper::getSubFieldDataOfField($record, 856, '3'), "Katalogkarte") !== false;
 
         $id = $record->getUniqueID();
         if ($retro) {
@@ -55,7 +56,7 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
             /** @var \File_MARC_Data_Field $_246 */
             foreach ($_246_ as $_246) {
                 if ($_246->getIndicator(2) == 3) {
-                    $arr[] = $this->getSubFieldDataOfGivenField($_246, 'a');
+                    $arr[] = Helper::getSubFieldDataOfGivenField($_246, 'a');
                 }
             }
             if (!empty($arr)) {

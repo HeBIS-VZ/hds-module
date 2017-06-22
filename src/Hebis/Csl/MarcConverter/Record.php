@@ -27,7 +27,6 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-
 class Record
 {
 
@@ -189,5 +188,4 @@ class Record
     {
         return self::getSubfield($record, "490", "v");
     }
-
 }

@@ -200,6 +200,7 @@ class AbstractRecordViewHelper extends AbstractHelper
         if (strpos($haystack, $needle) === 0) {
             return substr($haystack, strlen($needle));
         }
+        return $haystack;
     }
 
     /**
@@ -291,7 +292,7 @@ class AbstractRecordViewHelper extends AbstractHelper
         return preg_replace('/\s\@([\w\däöü])/i', " $1", $string);
     }
 
-    protected function generateSearchLink($linkText, array $searchParams)
+    protected function generateSearchLink($linkText, array $searchParams, $newWindow = false)
     {
         $uri = new Uri($this->getView()->url('search-results'));
 
@@ -300,6 +301,14 @@ class AbstractRecordViewHelper extends AbstractHelper
             '%20',
             http_build_query($searchParams)));
 
-        return '<a href="'.$uri->toString().'">'.$linkText.'</a>';
+        $target = ($newWindow === true ? ' target="_blank" ' : '');
+        $tag = '<a href="'.$uri->toString().'"' . $target . '>';
+
+        if ($newWindow) {
+            $tag .= '<span class="hds-icon-link-ext"><!-- --></span>';
+        }
+        $tag .= $linkText.'</a>';
+
+        return $tag;
     }
 }

@@ -27,7 +27,6 @@
 
 namespace Hebis\Controller;
 
-
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\Search\Solr\Results;
 
@@ -81,10 +80,11 @@ class SearchController extends \VuFind\Controller\SearchController
             }
 
             return $this->forwardTo("record", "home", $params);
-
-        } else if ($results->getResultTotal() === 0) {
-            $lookfor = $this->params()->fromQuery("lookfor");
-            return $this->forwardTo("search", "record_not_found", ["lookfor" => $lookfor]);
+        } else {
+            if ($results->getResultTotal() === 0) {
+                $lookfor = $this->params()->fromQuery("lookfor");
+                return $this->forwardTo("search", "record_not_found", ["lookfor" => $lookfor]);
+            }
         }
         return $view; //else return results list
     }
@@ -107,6 +107,4 @@ class SearchController extends \VuFind\Controller\SearchController
         $view->backlink = $this->params()->fromQuery("backlink");
         return $view;
     }
-
-
 }

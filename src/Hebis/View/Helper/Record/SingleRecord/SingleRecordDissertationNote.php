@@ -30,7 +30,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use Hebis\Marc\Helper;
 /**
  * Class SingleRecordDissertationNote
  * @package Hebis\View\Helper\Record
@@ -52,13 +52,13 @@ class SingleRecordDissertationNote extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $field */
         foreach ($fields as $field) {
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
+            $a = Helper::getSubFieldDataOfGivenField($field, 'a');
             if ($a) {
                 $arr[] = $a;
             }
-            $str = !empty($b_ = $this->getSubFieldDataOfGivenField($field, 'b')) ? $b_ : "";
-            $str .= !empty($c_ = $this->getSubFieldDataOfGivenField($field, 'c')) ? ", $c_" : "";
-            $str .= !empty($d_ = $this->getSubFieldDataOfGivenField($field, 'd')) ? ", $d_" : "";
+            $str = !empty($b_ = Helper::getSubFieldDataOfGivenField($field, 'b')) ? $b_ : "";
+            $str .= !empty($c_ = Helper::getSubFieldDataOfGivenField($field, 'c')) ? ", $c_" : "";
+            $str .= !empty($d_ = Helper::getSubFieldDataOfGivenField($field, 'd')) ? ", $d_" : "";
 
             if (!empty(trim($str))) {
                 $arr[] = $str;

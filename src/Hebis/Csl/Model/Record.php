@@ -27,7 +27,6 @@
 
 namespace Hebis\Csl\Model;
 
-
 use Hebis\Csl\Model\Layout\CslRecord;
 use Zend\Stdlib\JsonSerializable;
 
@@ -592,7 +591,7 @@ class Record implements CslRecord, JsonSerializable
      * @param string $number
      * @return Record
      */
-    public function setNumber(string $number)
+    public function setNumber($number)
     {
         $this->number = $number;
         return $this;
@@ -1405,5 +1404,4 @@ class Record implements CslRecord, JsonSerializable
         $this->yearSuffix = $yearSuffix;
         return $this;
     }
-
 }

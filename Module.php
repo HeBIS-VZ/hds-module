@@ -29,8 +29,6 @@ namespace Hebis;
 
 use Zend\ModuleManager\ModuleManager,
     Zend\Mvc\MvcEvent;
-use Zend\Session\Config\SessionConfig;
-use Zend\Session\SessionManager;
 
 
 /**
@@ -101,7 +99,7 @@ class Module
     {
         return array(
             'factories' => array(
-                'physical_description_format' => function ($sm) { //Format
+                'physical_description_format' => function ($sm) {
                     return new View\Helper\Record\PhysicalDescriptionFormat();
                 },
                 'result_list_title_statement' => function ($sm) {
@@ -143,7 +141,10 @@ class Module
                 'single_record_dates_of_publication_sequential_designation' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordDatesOfPublicationSequentialDesignation();
                 },
-                'single_record_physical_description' => function ($sm) { //Umfang
+                'single_record_publication_year' => function ($sm) {
+                    return new View\Helper\Record\SingleRecord\SingleRecordPublicationYear();
+                },
+                'single_record_physical_description' => function ($sm) {
                     return new View\Helper\Record\SingleRecord\SingleRecordPhysicalDescription();
                 },
                 'single_record_dissertation_note' => function ($sm) {
@@ -257,13 +258,13 @@ class Module
                 'tab_toc_summary' => function ($sm) {
                     return \Hebis\View\Helper\Record\Factory::getTabTocSummary($sm);
                 },
-                'eds_short_title' => function($sm) {
+                'eds_short_title' => function ($sm) {
                     return new \Hebis\View\Helper\Record\EDS\EdsShortTitle();
                 },
-                'eds_authors_result_list' => function($sm) {
+                'eds_authors_result_list' => function ($sm) {
                     return new \Hebis\View\Helper\Record\EDS\EdsAuthorsResultList();
                 },
-                'eds_subject_result_list' => function($sm) {
+                'eds_subject_result_list' => function ($sm) {
                     return new \Hebis\View\Helper\Record\EDS\EdsSubjectResultList();
                 }
             )

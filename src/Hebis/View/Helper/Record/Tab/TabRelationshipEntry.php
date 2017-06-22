@@ -26,6 +26,7 @@
  */
 
 namespace Hebis\View\Helper\Record\Tab;
+
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -86,7 +87,7 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
         $x = $this->getSubField($field7xx, "x");
 
 
-        $ret.= !empty($i) ? "$i" : "";
+        $ret .= !empty($i) ? "$i" : "";
 
         if (!empty($ret)) {
             if (empty($a)) {

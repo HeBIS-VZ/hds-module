@@ -30,6 +30,8 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use Hebis\Marc\Helper;
+
 
 /**
  * Class SingleRecordInternationalStandardBookNumber
@@ -48,10 +50,10 @@ class SingleRecordInternationalStandardBookNumber extends AbstractRecordViewHelp
         $fields = $marcRecord->getFields('020');
 
         foreach ($fields as $field) {
-            if (!empty($a = $this->getSubFieldDataOfGivenField($field, 'a'))) {
+            if (!empty($a = Helper::getSubFieldDataOfGivenField($field, 'a'))) {
                 $arr[] = $a;
             }
-            if (!empty($z = $this->getSubFieldDataOfGivenField($field, 'z'))) {
+            if (!empty($z = Helper::getSubFieldDataOfGivenField($field, 'z'))) {
                 $arr[] = $z;
             }
         }
@@ -60,7 +62,7 @@ class SingleRecordInternationalStandardBookNumber extends AbstractRecordViewHelp
 
         foreach ($fields as $field) {
             if ($field->getIndicator(1) === "1") {
-                $z = $this->getSubFieldDataOfGivenField($field, 'z');
+                $z = Helper::getSubFieldDataOfGivenField($field, 'z');
                 if (!empty($z)) {
                     $arr[] = $z;
                 }

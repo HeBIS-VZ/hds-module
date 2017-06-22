@@ -5,7 +5,7 @@
  * allows users to search and browse beyond resources. More
  * Information about VuFind you will find on http://www.vufind.org
  *
- * Copyright (C) 2017
+ * Copyright (C) 2016
  * HeBIS Verbundzentrale des HeBIS-Verbundes
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -25,32 +25,36 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\Csl\Helper;
+namespace HebisTest\View\Helper\Record\SingleRecord;
 
-class Variables
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
+
+/**
+ * Class SingleRecordPublicationDistributionTest
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Claudia Grote <grote@hebis.uni-frankfurt.de>
+ */
+class SingleRecordPublicationYearTest extends AbstractViewHelperTest
 {
-    const NAME_VARIABLES = [
-        "author",
-        "collection-editor",
-        "composer",
-        "container-author",
-        "director",
-        "editor",
-        "editorial-director",
-        "illustrator",
-        "interviewer",
-        "original-author",
-        "recipient",
-        "reviewed-author",
-        "translator"
-    ];
 
-    const DATE_VARIABLES = [
-        "accessed",
-        "container",
-        "event-date",
-        "issued",
-        "original-date",
-        "submitted"
-    ];
+    public function setUp()
+    {
+        $this->viewHelperClass = "SingleRecordPublicationYear";
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+        $this->testSheetName = "Erscheinungsjahr";
+
+        parent::setUp();
+    }
+
+    /**
+     * Get plugins to register to support view helper being tested
+     *
+     * @return array
+     */
+    protected function getPlugins()
+    {
+        return [];
+    }
 }

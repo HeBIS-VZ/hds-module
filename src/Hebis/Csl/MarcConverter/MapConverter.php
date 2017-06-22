@@ -29,10 +29,8 @@ namespace Hebis\Csl\MarcConverter;
 
 use Hebis\Csl\Model\Record as Map;
 
-
 class MapConverter
 {
-
     use SubfieldsTrait;
 
     public static function convert(\File_MARC_Record $record)

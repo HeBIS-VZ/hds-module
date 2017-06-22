@@ -27,7 +27,6 @@
 
 namespace Hebis\Csl\Model\Layout;
 
-
 interface CslRecord
 {
 
@@ -152,6 +151,7 @@ interface CslRecord
      */
     public function getArchive();
 
+    // @codingStandardsIgnoreStart
     /**
      * storage location within an archive (e.g. a box and folder number)
      * @return string
@@ -163,6 +163,7 @@ interface CslRecord
      * @return string
      */
     public function getArchive_place();
+    // @codingStandardsIgnoreEnd
 
     /**
      * issuing or judicial authority (e.g. “USPTO” for a patent, “Fairfax Circuit Court” for a legal case)
@@ -439,5 +440,4 @@ interface CslRecord
      * @return string
      */
     public function getVolume();
-
 }

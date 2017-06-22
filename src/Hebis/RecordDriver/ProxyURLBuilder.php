@@ -75,8 +75,9 @@ class ProxyUrlBuilder
         }
 
         // not encoded falls eingeschaltet
-        if (isset($configArray['hproxy']['urlencode']) and ($configArray['hproxy']['urlencode'] === "0"))
+        if (isset($configArray['hproxy']['urlencode']) and ($configArray['hproxy']['urlencode'] === "0")) {
             $this->encoded = false;
+        }
 
     }
 

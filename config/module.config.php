@@ -109,6 +109,7 @@ $config = [
             'eds' => 'Hebis\Controller\EdsController',
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
+            'edsrecord' => 'Hebis\Controller\EdsrecordController',
         ]
     ],
     'router' => [
@@ -153,6 +154,6 @@ $recordRoutes = ['recordfinder' => 'RecordFinder'];
 
 $routeGenerator = new \VuFind\Route\RouteGenerator();
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
-//$routeGenerator->addStaticRoute($config, $ajaxRoutes);
+$routeGenerator->addStaticRoutes($config, ['EdsRecord/redilink']);
 
 return $config;

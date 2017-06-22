@@ -25,10 +25,14 @@
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org/wiki/development:plugins:recommendation_modules Wiki
  */
+
 namespace Hebis\Recommend;
+
+use VuFind\Config\PluginManager;
 use VuFind\Recommend\AbstractFacets;
 use VuFind\Solr\Utils as SolrUtils;
 use VuFind\Search\Solr\HierarchicalFacetHelper;
+use Zend\Config\Config;
 
 /**
  * SideFacets Recommendations Module
@@ -130,12 +134,12 @@ class TopFacets extends \VuFind\Recommend\TopFacets
     /**
      * Constructor
      *
-     * @param \VuFind\Config\PluginManager $configLoader Configuration loader
-     * @param HierarchicalFacetHelper      $facetHelper  Helper for handling
+     * @param PluginManager $configLoader Configuration loader
+     * @param HierarchicalFacetHelper $facetHelper Helper for handling
      * hierarchical facets
      */
     public function __construct(
-        \VuFind\Config\PluginManager $configLoader,
+        PluginManager $configLoader,
         HierarchicalFacetHelper $facetHelper = null
     ) {
         parent::__construct($configLoader);
@@ -165,6 +169,7 @@ class TopFacets extends \VuFind\Recommend\TopFacets
             $config->$mainSection->toArray() : [];
 
         // Load boolean configurations:
+        /** @var Config $config */
         $this->loadBooleanConfigs($config, array_keys($this->mainFacets));
 
         // Get a list of fields that should be displayed as ranges rather than
@@ -230,8 +235,8 @@ class TopFacets extends \VuFind\Recommend\TopFacets
      * recommendation module and for reading any existing search parameters that may
      * be needed.
      *
-     * @param \VuFind\Search\Base\Params $params  Search parameter object
-     * @param \Zend\StdLib\Parameters    $request Parameter object representing user
+     * @param \VuFind\Search\Base\Params $params Search parameter object
+     * @param \Zend\StdLib\Parameters $request Parameter object representing user
      * request.
      *
      * @return void
@@ -266,11 +271,12 @@ class TopFacets extends \VuFind\Recommend\TopFacets
                 }
 
                 $facetArray = $this->hierarchicalFacetHelper->buildFacetArray(
-                    $hierarchicalFacet, $facetSet[$hierarchicalFacet]['list']
+                    $hierarchicalFacet,
+                    $facetSet[$hierarchicalFacet]['list']
                 );
                 $facetSet[$hierarchicalFacet]['list']
                     = $this->hierarchicalFacetHelper
-                        ->flattenFacetHierarchy($facetArray);
+                    ->flattenFacetHierarchy($facetArray);
             }
         }
 
@@ -412,7 +418,8 @@ class TopFacets extends \VuFind\Recommend\TopFacets
     {
         // Merge extras into main list:
         $filterList = array_merge(
-            $this->results->getParams()->getFilterList(true), $extraFilters
+            $this->results->getParams()->getFilterList(true),
+            $extraFilters
         );
 
         // Filter out suppressed values:

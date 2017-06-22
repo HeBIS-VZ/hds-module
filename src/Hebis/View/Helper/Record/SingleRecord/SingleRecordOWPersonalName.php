@@ -29,7 +29,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\ResultList\ResultListPersonalName;
-
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordOWPersonalName
@@ -49,12 +49,14 @@ class SingleRecordOWPersonalName extends ResultListPersonalName
         $_880__ = $marcRecord->getFields('880');
 
         foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
+            $_880_6 = empty($_880) ? "" : Helper::getSubFieldDataOfGivenField($_880, '6');
             if (strncmp("100", $_880_6, 3) == 0) {
                 $_880_100 = $_880;
                 $aut = $this->getFieldContents($_880_100);
-            } else if (strncmp("700", $_880_6, 3) == 0) {
-                $_880_700_[] = $_880;
+            } else {
+                if (strncmp("700", $_880_6, 3) == 0) {
+                    $_880_700_[] = $_880;
+                }
             }
         }
 

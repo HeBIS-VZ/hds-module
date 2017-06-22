@@ -50,7 +50,6 @@ class Date extends Record
                 } else {
                     $date->setDateParts([[$year]]);
                 }
-
             } else {
                 $date->setLiteral($year);
                 $date->setDateParts([[$year]]);
@@ -69,5 +68,4 @@ class Date extends Record
         }
         return trim($string);
     }
-
 }

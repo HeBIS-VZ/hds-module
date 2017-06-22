@@ -27,7 +27,6 @@
 
 namespace Hebis\Csl\Model;
 
-
 use Hebis\Csl\Model\Layout\CslName;
 use stdClass;
 use Zend\Stdlib\JsonSerializable;
@@ -128,6 +127,4 @@ class Name implements CslName, JsonSerializable
     {
         $this->suffix = $suffix;
     }
-
-
 }
