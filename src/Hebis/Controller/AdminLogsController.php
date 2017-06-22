@@ -9,7 +9,7 @@ use VuFindAdmin\Controller\AbstractAdmin;
  *
  * @package Controller
  */
-class AdminLogs extends AbstractAdmin
+class AdminLogsController extends AbstractAdmin
 {
 
 
@@ -23,9 +23,9 @@ class AdminLogs extends AbstractAdmin
 
         $view = $this->createViewModel();
 
-        //$view->setTemplate('admin/logs/home');
-        //$view->logContent = $this->getLogFileContent();
-        //$view->lineCount = $this->getLineCount();
+        $view->setTemplate('adminlogs/home');
+        $view->logContent = $this->getLogFileContent();
+        $view->lineCount = $this->getLineCount();
         //$view->site = 'logs';
 
         return $view;

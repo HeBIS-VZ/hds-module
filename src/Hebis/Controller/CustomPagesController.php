@@ -22,8 +22,11 @@ class CustomPagesController extends AbstractAdmin
     {
 
         $view = $this->createViewModel();
+        $view->setTemplate('custompages/home');
 
         return $view;
     }
+
+    //TODO
 
 }

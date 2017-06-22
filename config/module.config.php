@@ -1,7 +1,6 @@
 <?php
 namespace Hebis\Module\Configuration;
 
-use Zend\ServiceManager\ServiceManager;
 
 $config = [
     'vufind' => [
@@ -109,8 +108,7 @@ $config = [
             'eds' => 'Hebis\Controller\EdsController',
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
-            'adminlogs' => 'Hebis\Controller\AdminLogs',
-
+            'adminlogs' => 'Hebis\Controller\AdminLogsController',
             'custompages' => 'Hebis\Controller\CustomPagesController',
         ]
     ],
@@ -146,22 +144,22 @@ $config = [
                     ]
                 ]
             ],
-            'logs' => [
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+            'adminlogs' => [
+                'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => [
                     'route' => '/Admin/Logs',
                     'defaults' => [
-                        'controller' => 'AdminLogs',
+                        'controller' => 'adminlogs',
                         'action' => 'Home',
                     ]
-                ]
+                ],
             ],
             'custompages' => [
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => [
-                    'route' => '/Admin/CustomPages',
+                    'route' => '/Admin/Custom-pages',
                     'defaults' => [
-                        'controller' => 'CustomPagesController',
+                        'controller' => 'custompages',
                         'action' => 'Home',
                     ]
                 ]
@@ -172,10 +170,8 @@ $config = [
 ];
 
 $recordRoutes = ['recordfinder' => 'RecordFinder'];
-//$ajaxRoutes = ['AJAX/XISBN'];
 
 $routeGenerator = new \VuFind\Route\RouteGenerator();
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
-//$routeGenerator->addStaticRoute($config, $ajaxRoutes);
 
 return $config;
