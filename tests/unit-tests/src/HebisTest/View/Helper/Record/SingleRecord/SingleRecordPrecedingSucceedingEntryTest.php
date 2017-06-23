@@ -56,9 +56,18 @@ class SingleRecordPrecedingSucceedingEntryTest extends AbstractViewHelperTest
 
         $transEsc = $this->getMock('VuFind\View\Helper\Root\TransEsc');
 
+        $ppnLink = $this->getMock('Hebis\View\Helper\Hebisbs3\PpnLink');
+        //invoke method returns "$this"
+        $ppnLink->expects($this->any())->method('__invoke')
+            ->will($this->returnValue($ppnLink));
+
+        $ppnLink->expects($this->any())->method('getLink')
+            ->will($this->returnValue("bar"));
+
         return [
             'basepath' => $basePath,
-            'transesc' => $transEsc
+            'transesc' => $transEsc,
+            'ppnLink' => $ppnLink
         ];
     }
 }

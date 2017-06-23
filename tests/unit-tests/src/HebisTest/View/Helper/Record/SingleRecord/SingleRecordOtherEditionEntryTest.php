@@ -27,7 +27,10 @@
 
 namespace HebisTest\View\Helper\Record\SingleRecord;
 
+use Hebis\View\Helper\Hebisbs3\Factory;
+use Hebis\View\Helper\Hebisbs3\PpnLink;
 use HebisTest\View\Helper\Record\AbstractViewHelperTest;
+
 
 /**
  * Class SingleRecordOtherEditionEntryTest
@@ -60,9 +63,25 @@ class SingleRecordOtherEditionEntryTest extends AbstractViewHelperTest
 
         $transEsc = $this->getMock('VuFind\View\Helper\Root\TransEsc');
 
+        $url = $this->getMock('Zend\View\Helper\Url');
+        $url->expects($this->any())->method('__invoke')
+            ->will($this->returnValue("bar"));
+
+
+        $ppnLink = $this->getMock('Hebis\View\Helper\Hebisbs3\PpnLink');
+
+        //invoke method returns "$this"
+        $ppnLink->expects($this->any())->method('__invoke')
+                ->will($this->returnValue($ppnLink));
+
+        $ppnLink->expects($this->any())->method('getLink')
+                ->will($this->returnValue("bar"));
+
         return [
+            'ppnLink' => $ppnLink,
             'basepath' => $basePath,
-            'transesc' => $transEsc
+            'transesc' => $transEsc,
+            'url' => $url
         ];
     }
 }

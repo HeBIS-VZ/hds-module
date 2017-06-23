@@ -34,6 +34,7 @@ use Hebis\View\Helper\FieldArray;
 use \File_MARC_Data_Field;
 use Zend\Uri\Uri;
 use Zend\View\Helper\AbstractHelper;
+use Zend\View\Helper\Url;
 
 /**
  * Class AbstractRecordViewHelper
