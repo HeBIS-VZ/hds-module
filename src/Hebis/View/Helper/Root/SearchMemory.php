@@ -86,6 +86,4 @@ class SearchMemory extends \VuFind\View\Helper\Root\SearchMemory
         }
         return '';
     }
-
-
 }
