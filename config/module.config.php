@@ -86,6 +86,7 @@ $config = [
             'VuFind\AutocompletePluginManager' => 'VuFind\Service\Factory::getAutocompletePluginManager',
             'VuFind\SearchResultsPluginManager' => 'VuFind\Service\Factory::getSearchResultsPluginManager',
             'VuFind\RecordTabPluginManager' => 'Hebis\Service\Factory::getRecordTabPluginManager',
+            'VuFind\Search\Memory' => 'Hebis\Service\Factory::getSearchMemory',
         ],
         'invokables' => [
             'VuFind\Terms' => 'Hebis\Search\Service',

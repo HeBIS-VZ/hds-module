@@ -107,4 +107,25 @@ class SearchController extends \VuFind\Controller\SearchController
         $view->backlink = $this->params()->fromQuery("backlink");
         return $view;
     }
+
+
+    /**
+     * Overrides VuFind\Controller\AbstractSearch::rememberSearch in order to distinguish
+     * Solr Searches from EDS Searches in SearchMemory
+     * @param \VuFind\Search\Base\Results $results
+     */
+    public function rememberSearch($results)
+    {
+        // Only save search URL if the property tells us to...
+        if ($this->rememberSearch) {
+            $searchUrl = $this->url()->fromRoute(
+                    $results->getOptions()->getSearchAction()
+                ) . $results->getUrlQuery()->getParams(false);
+            $this->getSearchMemory()->rememberLastSearchOf('Solr', $searchUrl);
+        }
+
+        // Always save search parameters, since these are namespaced by search
+        // class ID.
+        $this->getSearchMemory()->rememberParams($results->getParams());
+    }
 }
