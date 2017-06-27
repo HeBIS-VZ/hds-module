@@ -64,11 +64,7 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
             }
         }
 
-
         $_245 = $marcRecord->getField(245);
-
-        $subFields = $this->getSubfieldsAsArray($_245);
-
 
         /** @var \File_MARC_Data_Field $field */
         $field = $marcRecord->getField('245');
@@ -110,7 +106,14 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
 
         for ($i = 0; $i < count($n_s); ++$i) {
             $n = array_key_exists($i, $n_s) ? $this->removeControlSigns($n_s[$i]->getData()) : "";
+            /*if (!empty($n) && strlen($n) > 4) {
+                $n = $n[0] . "=" . ord($n[0]) ."|".$n[4]."=".ord($n[4]) . $n;
+            }
+            */
             $p = array_key_exists($i, $p_s) ? $this->removeControlSigns($p_s[$i]->getData()) : "";
+            /*if (!empty($p)) {
+                $p = $p[0] . "=" . ord($p[0]) ."|".$p[4]."=".ord($p[4]) . $p;
+            }*/
 
             if (!empty($n) && strpos($n, "...") === false) {
                 $n_p .= htmlentities(trim($n));

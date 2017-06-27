@@ -261,8 +261,10 @@ class AbstractRecordViewHelper extends AbstractHelper
         if (strpos($str, '@') === 0) {
             $str = substr($str, 1, $len - 1);
         }
-        $ret = str_replace(" @", " ", $str);
-        return $ret;
+
+        $str = str_replace(" @", " ", $str);
+        $ret = str_replace(["", ""], "", $str);
+        return trim($ret);
     }
 
     /**
