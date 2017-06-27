@@ -42,8 +42,8 @@ class SingleRecordOWTitleStatementTest extends AbstractViewHelperTest
 
         $this->viewHelperClass = "SingleRecordOWTitleStatement";
         $this->testRecordIds = [];
-        $this->testResultField = 'title';
-        $this->testSheetName = "Titel";
+        $this->testResultField = '';
+        $this->testSheetName = "Originalschrift Titel";
         parent::setUp();
     }
 

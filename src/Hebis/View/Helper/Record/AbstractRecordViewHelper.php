@@ -251,20 +251,14 @@ class AbstractRecordViewHelper extends AbstractHelper
     }
 
     /**
+     * @deprecated
      * returns $str without control signs i.e. '@'
      * @param string $str
      * @return string
      */
     protected function removeControlSigns($str)
     {
-        $len = strlen($str);
-        if (strpos($str, '@') === 0) {
-            $str = substr($str, 1, $len - 1);
-        }
-
-        $str = str_replace(" @", " ", $str);
-        $ret = str_replace(["", ""], "", $str);
-        return trim($ret);
+        return Helper::removeControlSigns($str);
     }
 
     /**

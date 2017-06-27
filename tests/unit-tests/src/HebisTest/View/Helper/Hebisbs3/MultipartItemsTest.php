@@ -99,6 +99,9 @@ class MultipartItemsTest extends \VuFindTest\Unit\ViewHelperTestCase
                 $expected,
                 $expectedRL) = array_slice($row, 0, 5);
 
+            if (empty($ppn)) {
+                continue;
+            }
             $record = $this->getRecordFromIndex($ppn);
             $this->multipartItemsViewHelper->__invoke($record);
             $actual = trim(strip_tags(str_replace("<br />", "\n", call_user_func_array([$this->multipartItemsViewHelper, $function], [$testData]))));

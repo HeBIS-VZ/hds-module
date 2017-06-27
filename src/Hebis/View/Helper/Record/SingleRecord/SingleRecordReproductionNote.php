@@ -75,8 +75,10 @@ class SingleRecordReproductionNote extends AbstractRecordViewHelper
 
         } else {
             $_533_c = Helper::getSubFieldDataOfField($record, '533', 'c');
-            $str .= !empty($_533_b) ? "$_530_a $_533_b : " : "$_530_a ";
-            $str .= !empty($_533_c) ? $_533_c : "";
+            //$str .= !empty($_533_b) ? "$_530_a $_533_b : " : "$_530_a ";
+            $str .= !empty($_530_a) ? "$_530_a" : "";
+            $str .= !empty($_533_b) ? " $_533_b" : "";
+            $str .= !empty($_533_c) ? " : $_533_c" : "";
         }
 
         $str .= !empty($_533_d) ? ", $_533_d" : "";

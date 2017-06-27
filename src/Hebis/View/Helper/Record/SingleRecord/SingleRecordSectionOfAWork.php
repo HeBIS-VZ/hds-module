@@ -71,9 +71,7 @@ class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
             $n = $p = "";
             /** @var \File_MARC_Subfield $subField */
             foreach ($field->getSubfields() as $subField) {
-
                 $key = $subField->getCode();
-
                 switch ($key) {
                     case 'n':
                         //if (strpos($subField->getData(), "[...]") === false) {

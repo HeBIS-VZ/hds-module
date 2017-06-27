@@ -4,8 +4,8 @@
  * extension of the open source library search engine VuFind, that 
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
- * 
- * Copyright (C) 2016 
+ *
+ * Copyright (C) 2016
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -27,21 +27,27 @@
 
 namespace HebisTest\View\Helper\Record\SingleRecord;
 
-
 use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
-class SingleRecordPrecedingSucceedingEntryTest extends AbstractViewHelperTest
+/**
+ * Class SingleRecordOWTitleStatementTest
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Claudia Grote <grote@hebis.uni-frankfurt.de>
+ */
+class SingleRecordOWPublicationTest extends AbstractViewHelperTest
 {
-
     public function setUp()
     {
-        $this->viewHelperClass = "SingleRecordPrecedingSucceedingEntry";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
-        $this->testSheetName = "frühere_spätere_titel";
 
+        $this->viewHelperClass = "SingleRecordOWPublication";
+        $this->testRecordIds = [];
+        $this->testResultField = '';
+        $this->testSheetName = "Originalschrift Veröffentlicht";
         parent::setUp();
     }
+
+    // So, hier fehlen jetzt aber noch substanzielle Tests.
 
     /**
      * Get plugins to register to support view helper being tested
@@ -53,21 +59,13 @@ class SingleRecordPrecedingSucceedingEntryTest extends AbstractViewHelperTest
         $basePath = $this->getMock('Zend\View\Helper\BasePath');
         $basePath->expects($this->any())->method('__invoke')
             ->will($this->returnValue('/vufind2'));
-
-        $transEsc = $this->getMock('VuFind\View\Helper\Root\TransEsc');
-
-        $ppnLink = $this->getMock('Hebis\View\Helper\Hebisbs3\PpnLink');
-        //invoke method returns "$this"
-        $ppnLink->expects($this->any())->method('__invoke')
-            ->will($this->returnValue($ppnLink));
-
-        $ppnLink->expects($this->any())->method('getLink')
-            ->will($this->returnArgument(0));
+        $url = $this->getMock('Zend\View\Helper\Url');
+        $url->expects($this->any())->method('__invoke')
+            ->will($this->returnValue("/foobar"));
 
         return [
-            'basepath' => $basePath,
-            'transesc' => $transEsc,
-            'ppnLink' => $ppnLink
+            'url' => $url,
+            'basepath' => $basePath
         ];
     }
 }
