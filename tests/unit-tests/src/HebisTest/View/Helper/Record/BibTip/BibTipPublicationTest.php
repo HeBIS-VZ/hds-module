@@ -36,17 +36,17 @@ use HebisTest\View\Helper\Record\AbstractViewHelperTest;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipPersonalNameTest extends AbstractViewHelperTest
+class BibTipPublicationTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
         $this->spreadSheetName = "BibTip.xlsx";
-        $this->viewHelperClass = "BibTipPersonalName";
+        $this->viewHelperClass = "BibTipPublication";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "Verantwortlich";
+        $this->testSheetName = "Veröffentlicht";
         parent::setUp();
     }
 

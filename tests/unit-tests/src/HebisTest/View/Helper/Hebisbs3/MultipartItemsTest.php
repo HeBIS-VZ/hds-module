@@ -154,6 +154,6 @@ class MultipartItemsTest extends \VuFindTest\Unit\ViewHelperTestCase
         $record = $this->getRecordFromIndex($ppn);
         $this->multipartItemsViewHelper->__invoke($record);
         $actual = call_user_func([$this->multipartItemsViewHelper, "renderShowAllVolumesLink"]);
-        $this->executeTest($expected, $actual, "show all volumes from multipart item");
+        $this->executeTest($expected, $actual, "link show all volumes of multipart item");
     }
 }

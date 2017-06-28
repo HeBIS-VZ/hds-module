@@ -36,12 +36,13 @@ class ContentType
     private static $physicalDescription = [
         "a" => [
             "a" => [
-                "xxx" => "article",
-                "cr" => "article"
+                //"xxx" => "article",
+                "c" => "article",
+                "t" => "article"
             ],
             "m" => [
                 "xxx" => "book",
-                "xxxy" => "hierarchy", //bei leader 19 = a
+                "tuy" => "hierarchy", //bei leader 19 = a
                 "co" => "dvd",
                 "cocd" => "cd",
                 "c " => "cd",
@@ -51,21 +52,25 @@ class ContentType
                 "h" => "microfilm",
                 "f" => "sensorimage",
                 "o" => "kit",
-                "r" => "retro"
+                "r" => "retro",
+                "t" => "book",
             ],
             "s" => [
                 "xxx" => "journal",
                 "t" => "journal",
+                //"tu" => "journal",
                 "h" => "journal",
                 "co" => "journal",
                 "cocd" => "journal",
                 "cr" => "electronic",
                 "c " => "journal",
-                "f" => "sensorimage"
+                "f" => "sensorimage",
+
             ],
             "i" => [
                 "cr" => "electronic",
-                "xxxy" => "hierarchy" //bei leader 19 = a
+                "t" => "book",
+                "tuy" => "hierarchy" //bei leader 19 = a
             ]
         ],
         "c" => [
@@ -119,7 +124,7 @@ class ContentType
             "m" => [
                 "a" => "photo",
                 "k" => "photo",
-                "cr" => "photo"
+                "c" => "photo"
             ]
         ],
         "o" => [
@@ -136,7 +141,8 @@ class ContentType
         ],
         "t" => [
             "m" => [
-                "xxx" => "manusscript"
+                "t" => "manuscript",
+                "xxx" => "manuscript"
             ]
         ]
     ];
@@ -152,69 +158,71 @@ class ContentType
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $x = substr($marcRecord->getLeader(), 6, 1);
-        $y = substr($marcRecord->getLeader(), 7, 1);
-        $z = " ";
+        $art = substr($marcRecord->getLeader(), 6, 1);
+        $level = substr($marcRecord->getLeader(), 7, 1);
+        $phys = " ";
 
         if (!empty($_007 = $marcRecord->getField('007'))) {
-            $z = substr($_007->getData(), 0, 1);
+            $phys = substr($_007->getData(), 0, 1);
         }
 
         // Exceptions for CD/DVD
         $_300_a = Helper::getSubFieldDataOfField($record, 300, 'a');
 
-        switch ($z) {
+        switch ($phys) {
             case 'c':
-                $z .= substr($marcRecord->getField('007')->getData(), 1, 1);
+                $phys_ = $phys . substr($marcRecord->getField('007')->getData(), 1, 1);
                 /* $materialart["a"]["m"]["c "]: … wenn 338 $bvd oder wenn 300 $aDVD:  ="dvd"; … sonst: ="cd" */
-                if ($z == "c ") {
+                if ($phys_ == "c " || $phys_ == "c|") {
                     $_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
                     if ($_338_b == "vd" || strpos($_300_a, "DVD") !== false) {
-                        $z = "co";
+                        $phys = "co";
+                    } else {
+                        $phys = "c ";
                     }
                 }
                 break;
             case " ":
-                $z = "xxx";
+                $phys = "xxx";
         }
-        if ($x == "a" && ($y == "m" || $y == "i")) {
-            if ($z == "co") {
+        if ($art == "a" && ($level == "m" || $level == "i")) {
+            if ($phys == "co") {
                 if (strpos($_300_a, "DVD") === false && strpos($_300_a, "Blu-Ray") === false) {
-                    $z = "c ";
+                    $phys = "c ";
                 }
             }
-            if ($z == "c ") {
+            if ($phys == "c ") {
                 if (strpos($_300_a, "DVD") !== false) {
-                    $z = "co";
+                    $phys = "co";
                 }
             }
-            if ($z == "cr") {
+            if ($phys == "cr") {
                 if (substr($marcRecord->getLeader(), 19, 1) == 'a') {
-                    $z = "cry";
+                    $phys = "cry";
                 }
             }
-            if ($z == "xxx") {
+            if ($phys == "xxx") {
                 if ($l19 = substr($marcRecord->getLeader(), 19, 1) == 'a') {
-                    $z = "xxxy";
+                    $phys = "tuy";
                 }
             }
         }
 
         $_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
         if ($_338_b === "vd") {
-            $z = "co";
+            $phys = "co";
         }
 
         /* Falls in 856 $3 der Inhalt "Katalogkarte" vorhanden ist UND Art=a, Level=m und Phys=xxx, dann Phys = r. */
-        if ($x == "a" && $y == "m" && $z == "xxx") {
+        if ($art == "a" && $level == "m" && $phys == "xxx") {
             $_856_3 = Helper::getSubFieldDataOfField($record, 856, '3');
             if (is_string($_856_3) && strpos($_856_3, "Katalogkarte") !== false) {
-                $z = "r";
+                $phys = "r";
             }
         }
 
 
-        $className = isset(self::$physicalDescription[$x][$y][$z]) ? self::$physicalDescription[$x][$y][$z] : "";
+        $className = isset(self::$physicalDescription[$art][$level][$phys]) ? self::$physicalDescription[$art][$level][$phys] : "";
 
         return $className;
     }

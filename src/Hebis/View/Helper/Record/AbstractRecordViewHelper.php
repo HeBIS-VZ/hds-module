@@ -142,7 +142,6 @@ class AbstractRecordViewHelper extends AbstractHelper
 
             /** @var \File_MARC_Subfield $subField */
             foreach ($field->getSubfields($subFieldCode) as $subField) {
-
                 if ($subField) {
                     $arr[] = htmlentities($subField->getData());
                 }

@@ -59,9 +59,7 @@ class BibTipPublication extends AbstractRecordViewHelper
         $_264__ = $marcRecord->getFields(264);
         $_264_ = $this->filterByIndicator($_264__, 2, "1");
 
-        usort($_264_, function (\File_MARC_Data_Field $a, \File_MARC_Data_Field $b) {
-            return $a->getIndicator(1) > $b->getIndicator(1) ? -1 : 1;
-        });
+        usort($_264_, Helper::sortByIndicator1());
 
         if (!empty($_264_)) {
             $a = current($_264_);
