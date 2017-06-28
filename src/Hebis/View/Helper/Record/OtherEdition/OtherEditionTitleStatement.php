@@ -27,6 +27,7 @@
 
 namespace Hebis\View\Helper\Record\OtherEdition;
 
+use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -79,11 +80,11 @@ class OtherEditionTitleStatement extends AbstractRecordViewHelper
                     if ($i >= 0 && preg_match("/\s/", $_a{$i})
                         && $k <= strlen($_a) && preg_match("/\s/", $_a{$j})
                     ) {
-                        return trim(substr($_a, 0, $i));
+                        return htmlentities(Helper::removeControlSigns(trim(substr($_a, 0, $i))));
                     }
                 }
             }
-            return $_a;
+            return htmlentities(Helper::removeControlSigns($_a));
         }
         return "";
     }
@@ -100,8 +101,13 @@ class OtherEditionTitleStatement extends AbstractRecordViewHelper
         $a = $_490->getSubfield('a');
         $v = $_490->getSubfield('v');
 
-        !empty($a) ?: $_arr[] = $a->getData();
-        !empty($v) ?: $_arr[] = $v->getData();
+        if (!empty($a)) {
+            $_arr[] = htmlentities(Helper::removeControlSigns($a->getData()));
+        }
+
+        if (!empty($v)) {
+            $_arr[] = htmlentities(Helper::removeControlSigns($v->getData()));
+        }
 
         return implode(" ; ", $_arr);
     }

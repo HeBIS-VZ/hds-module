@@ -42,8 +42,8 @@ class SingleRecordOWTitleStatementTest extends AbstractViewHelperTest
 
         $this->viewHelperClass = "SingleRecordOWTitleStatement";
         $this->testRecordIds = [];
-        $this->testResultField = 'title';
-        $this->testSheetName = "Titel";
+        $this->testResultField = '';
+        $this->testSheetName = "Originalschrift Titel";
         parent::setUp();
     }
 
@@ -59,8 +59,12 @@ class SingleRecordOWTitleStatementTest extends AbstractViewHelperTest
         $basePath = $this->getMock('Zend\View\Helper\BasePath');
         $basePath->expects($this->any())->method('__invoke')
             ->will($this->returnValue('/vufind2'));
+        $url = $this->getMock('Zend\View\Helper\Url');
+        $url->expects($this->any())->method('__invoke')
+            ->will($this->returnValue("/foobar"));
 
         return [
+            'url' => $url,
             'basepath' => $basePath
         ];
     }

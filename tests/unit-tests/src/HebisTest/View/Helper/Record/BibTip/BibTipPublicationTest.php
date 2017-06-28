@@ -6,6 +6,7 @@
  * Information about VuFind you will find on http://www.vufind.org
  * 
  * Copyright (C) 2016 
+ * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -25,23 +26,37 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record\SingleRecord;
+namespace HebisTest\View\Helper\Record\BibTip;
 
-use Hebis\Marc\Helper;
-use Hebis\RecordDriver\SolrMarc;
-use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
 /**
- * Class SingleRecordCartographicMathematicalData
- * @package Hebis\View\Helper\Record\SingleRecord
+ * Class BibTipTest
+ * @package Hebis\View\Helper
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class SingleRecordCartographicMathematicalData extends AbstractRecordViewHelper
+class BibTipPublicationTest extends AbstractViewHelperTest
 {
-    public function __invoke(SolrMarc $record)
+
+    public function setUp()
     {
-        return Helper::getSubFieldDataOfField($record, "255", "a");
+        $this->spreadSheetName = "BibTip.xlsx";
+        $this->viewHelperClass = "BibTipPublication";
+        $this->testResultField = "";
+        $this->testRecordIds = [];
+
+        $this->testSheetName = "Veröffentlicht";
+        parent::setUp();
+    }
+
+    /**
+     * Get plugins to register to support view helper being tested
+     *
+     * @return array
+     */
+    protected function getPlugins()
+    {
+        return [];
     }
 }

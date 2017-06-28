@@ -52,7 +52,7 @@ class BibTipPersonalName extends SingleRecordPersonalName
         $marcRecord = $record->getMarcRecord();
         $field100 = $marcRecord->getField('100');
 
-        $aut = $this->getFieldContents($field100);
+        $aut = $this->getFieldContents($field100, false);
 
         if (!empty($aut)) {
             return $aut;
@@ -64,7 +64,7 @@ class BibTipPersonalName extends SingleRecordPersonalName
 
         if (!empty($f700_)) {
             $filteredFields = $this->filterByIndicator($f700_, 2, " ");
-            $aut = $this->getFieldContents($filteredFields[0]);
+            $aut = $this->getFieldContents($filteredFields[0], false);
         }
 
         if (!empty($aut)) {

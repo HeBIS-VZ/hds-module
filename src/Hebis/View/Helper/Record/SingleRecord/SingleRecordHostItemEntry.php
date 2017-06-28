@@ -62,7 +62,8 @@ class SingleRecordHostItemEntry extends ResultListHostItemEntry
         $fields = $marcRecord->getFields(773);
         $out = $this->output($fields);
         $w = $this->getAllAssociatedPPNs($fields);
-        return !empty($w) ? implode("<br />", [$out, $this->showAllLink($record, $w[0])]) : $out;
+        $ret = !empty($w) && !empty($out) ? implode("<br />", [$out, $this->showAllLink($record, $w[0])]) : "";
+        return $ret;
     }
 
     protected function getAllAssociatedPPNs($fields)

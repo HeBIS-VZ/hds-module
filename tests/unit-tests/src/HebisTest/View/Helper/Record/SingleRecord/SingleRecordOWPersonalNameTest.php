@@ -30,32 +30,24 @@ namespace HebisTest\View\Helper\Record\SingleRecord;
 use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
 /**
- * Class SingleRecordTitleStatementTest
+ * Class SingleRecordOWTitleStatementTest
  * @package Hebis\View\Helper\Record
  *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ * @author Claudia Grote <grote@hebis.uni-frankfurt.de>
  */
-class SingleRecordTitleStatementTest extends AbstractViewHelperTest
+class SingleRecordOWPersonalNameTest extends AbstractViewHelperTest
 {
     public function setUp()
     {
 
-        $this->viewHelperClass = "SingleRecordTitleStatement";
+        $this->viewHelperClass = "SingleRecordOWPersonalName";
         $this->testRecordIds = [];
-        $this->testResultField = 'title';
-        $this->testSheetName = "Titel";
+        $this->testResultField = '';
+        $this->testSheetName = "Originalschrift Verantwortlich";
         parent::setUp();
     }
 
-    public function testRemoveSpecialChars()
-    {
-
-        $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("@The Result of a Equation"));
-        $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("The @Result of a Equation"));
-        $this->assertEquals("The Result of a Equation", $this->viewHelper->removeSpecialChars("@The @Result of a Equation"));
-        $this->assertEquals("Eine Übersicht ist wichtig", $this->viewHelper->removeSpecialChars("Eine @Übersicht ist wichtig"));
-        $this->assertEquals("E-M@il für dich", $this->viewHelper->removeSpecialChars("E-M@il für dich"));
-    }
+    // So, hier fehlen jetzt aber noch substanzielle Tests.
 
     /**
      * Get plugins to register to support view helper being tested

@@ -103,7 +103,7 @@ class SingleRecordTitleStatement extends AbstractRecordViewHelper
 
     protected function titleSearchLink($title)
     {
-        $url = $this->getView()->recordLink()->getActionUrl("Myyresearch", "home");
+        //$url = $this->getView()->url("MyResearch/Home");
 
         $searchTitle = html_entity_decode($title);
         $href = parent::URL_FULL_TITLE_SEARCH_PATTERN . urlencode(trim($searchTitle)) . parent::URL_FULL_TITLE_SEARCH_PATTERN_SUFFIX;

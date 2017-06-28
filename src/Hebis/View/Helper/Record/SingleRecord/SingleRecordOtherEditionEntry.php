@@ -170,7 +170,6 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
                 }
             }
         } else {
-
             if (array_key_exists('i', $subFields) && array_key_exists('n', $subFields)) {
                 $prefix .= htmlentities($subFields['i']) . " " . htmlentities($subFields['n']) . ": ";
             } else {

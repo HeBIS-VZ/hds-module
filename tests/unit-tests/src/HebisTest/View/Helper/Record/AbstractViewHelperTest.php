@@ -38,6 +38,8 @@ use HebisTest\View\Helper\SpreadsheetTestsTrait;
 use HebisTest\View\Helper\TestRecordFromIndexTrait;
 use HebisTest\View\Helper\TestRunnerTrait;
 use Zend\Http\Client;
+use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\PhpRenderer;
 
 
 /**
@@ -121,7 +123,6 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
         /** @var AbstractRecordViewHelper $helper */
         $helper = new $className();
-
         return $helper;
     }
 

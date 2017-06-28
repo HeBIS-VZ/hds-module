@@ -57,9 +57,7 @@ class SingleRecordPublication extends ResultListPublication
 
         $_264__ = $this->filterByIndicator($marcRecord->getFields('264'), 2, "1");
 
-        usort($_264__, function (\File_MARC_Data_Field $a, \File_MARC_Data_Field $b) {
-            return $a->getIndicator(1) > $b->getIndicator(1) ? -1 : 1;
-        });
+        usort($_264__, Helper::sortByIndicator1());
 
         $arr = [];
         /** @var \File_MARC_Data_Field $_264 */
@@ -74,4 +72,6 @@ class SingleRecordPublication extends ResultListPublication
         }
         return implode("<br />", $arr);
     }
+
+
 }

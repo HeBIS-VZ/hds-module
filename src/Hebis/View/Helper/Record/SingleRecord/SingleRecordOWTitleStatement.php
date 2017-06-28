@@ -48,7 +48,7 @@ use Hebis\Marc\Helper;
  * @package Hebis\View\Helper\Record
  * @author Claudia Grote <grote@hebis.uni-frankfurt.de>
  */
-class SingleRecordOWTitleStatement extends AbstractRecordViewHelper
+class SingleRecordOWTitleStatement extends SingleRecordTitleStatement
 {
 
     public function __invoke(SolrMarc $record)
@@ -87,14 +87,5 @@ class SingleRecordOWTitleStatement extends AbstractRecordViewHelper
         }
         // returns empty string
         return "";
-    }
-
-    protected function titleSearchLink($title)
-    {
-        $url = $this->getView()->recordLink()->getActionUrl("Myyresearch", "home");
-
-        $searchTitle = html_entity_decode($title);
-        $href = parent::URL_FULL_TITLE_SEARCH_PATTERN . urlencode(trim($searchTitle)) . parent::URL_FULL_TITLE_SEARCH_PATTERN_SUFFIX;
-        return $this->generateLink($href, $title, $title);
     }
 }

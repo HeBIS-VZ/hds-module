@@ -49,14 +49,41 @@ class SingleRecordTitleContains extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $field */
         foreach ($_249 as $field) {
-            $a = Helper::getSubFieldDataOfGivenField($field, 'a');
-            $b = Helper::getSubFieldDataOfGivenField($field, 'b');
+            $av = Helper::getSubFieldDataOfGivenField($field, 'a');
 
-            if ($a) {
-                $arr[] = $this->removeControlSigns($a);
+            if (!empty($v = Helper::getSubFieldDataOfGivenField($field, 'v'))) {
+                $av .= " / $v";
             }
-            if ($b) {
-                $arr[] = $this->removeControlSigns($b);
+
+            if (!empty($av)) {
+                $arr[] = Helper::removeControlSigns($av);
+            }
+
+            $bc = Helper::getSubFieldDataOfGivenField($field, 'b');
+            if (!empty($c = Helper::getSubFieldDataOfGivenField($field, 'c'))) {
+                $bc .= " / $c";
+            }
+            if (!empty($bc)) {
+                $arr[] = Helper::removeControlSigns($bc);
+            }
+        }
+
+
+        $_505 = $marcRecord->getFields('505');
+
+        foreach ($_505 as $field) {
+            $atr = Helper::getSubFieldDataOfGivenField($field, 'a');
+
+            if (!empty($t = Helper::getSubFieldDataOfGivenField($field, 't'))) {
+                $atr .= " $t";
+            }
+
+            if (!empty($r = Helper::getSubFieldDataOfGivenField($field, 'r'))) {
+                $atr .= " / $r";
+            }
+
+            if (!empty($atr)) {
+                $arr[] = trim(Helper::removeControlSigns($atr));
             }
         }
 
