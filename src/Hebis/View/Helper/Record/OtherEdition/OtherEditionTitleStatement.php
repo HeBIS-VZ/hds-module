@@ -101,8 +101,13 @@ class OtherEditionTitleStatement extends AbstractRecordViewHelper
         $a = $_490->getSubfield('a');
         $v = $_490->getSubfield('v');
 
-        !empty($a) ?: $_arr[] = htmlentities(Helper::removeControlSigns($a->getData()));
-        !empty($v) ?: $_arr[] = htmlentities(Helper::removeControlSigns($v->getData()));
+        if (!empty($a)) {
+            $_arr[] = htmlentities(Helper::removeControlSigns($a->getData()));
+        }
+
+        if (!empty($v)) {
+            $_arr[] = htmlentities(Helper::removeControlSigns($v->getData()));
+        }
 
         return implode(" ; ", $_arr);
     }

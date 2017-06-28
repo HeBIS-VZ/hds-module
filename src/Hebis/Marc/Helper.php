@@ -99,4 +99,14 @@ class Helper
             return $aInd1 >= $bInd1 ? -1 : 1;
         };
     }
+
+    public static function subStrTill($str, $signs)
+    {
+        foreach ($signs as $sign) {
+            if (($pos = strpos($str, $sign)) !== false) {
+                $str = substr($str, 0, $pos);
+            }
+        }
+        return $str;
+    }
 }

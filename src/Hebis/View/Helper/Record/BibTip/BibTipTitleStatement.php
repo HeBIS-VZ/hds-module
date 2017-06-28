@@ -64,14 +64,17 @@ class BibTipTitleStatement extends OtherEditionTitleStatement
         $a = $this->flatten($_245, 'a');
         $n = $this->flatten($_245, 'n');
         $p = $this->flatten($_245, 'p');
+
+        $a = Helper::subStrTill($a, [' / ', ' = ', ' : ']);
+        $n = Helper::subStrTill($n, [' / ', ' = ', ' : ']);
+        $p = Helper::subStrTill($p, [' / ', ' = ', ' : ']);
+
         empty($a) ?: $_arr[] = trim($a);
         if (strpos($n, "[...]") !== false) {
             empty($p) ?: $_arr[] = trim($p);
         } else {
             empty($n) ?: $_arr[] = trim($n);
         }
-
-
 
         return implode(" ; ", $_arr);
     }
