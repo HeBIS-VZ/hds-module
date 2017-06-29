@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an
  * extension of the open source library search engine VuFind, that
@@ -35,7 +34,6 @@ namespace Hebis\RecordDriver;
  */
 class ProxyUrlBuilder
 {
-
     /**
      * @var bool
      */
@@ -61,7 +59,6 @@ class ProxyUrlBuilder
      */
     public function __construct()
     {
-
         global $configArray;
 
         // Define Guest-Access
@@ -78,6 +75,7 @@ class ProxyUrlBuilder
         if (isset($configArray['hproxy']['urlencode']) and ($configArray['hproxy']['urlencode'] === "0")) {
             $this->encoded = false;
         }
+
 
     }
 
@@ -106,7 +104,6 @@ class ProxyUrlBuilder
     public function addProxy($url)
     {
         if ($this->encoded) {
-
             return $this->proxy . urlencode($url);
         }
 
@@ -121,11 +118,9 @@ class ProxyUrlBuilder
     public function removeProxy($url)
     {
         if ($this->encoded) {
-
             return urldecode(str_replace($this->proxy, "", $url));
         }
 
         return str_replace($this->proxy, "", $url);
     }
 }
-

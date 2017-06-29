@@ -46,8 +46,12 @@ class SingleRecordTitleContains extends AbstractRecordViewHelper
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
         $_249 = $marcRecord->getFields('249');
+        $_505 = $marcRecord->getFields('505');
+
 
         /** @var \File_MARC_Data_Field $field */
+        $i = 0;
+        $j = 0;
         foreach ($_249 as $field) {
             $av = Helper::getSubFieldDataOfGivenField($field, 'a');
 

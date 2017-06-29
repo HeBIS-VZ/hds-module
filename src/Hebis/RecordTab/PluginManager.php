@@ -28,7 +28,7 @@
 namespace Hebis\RecordTab;
 
 use VuFind\RecordDriver\AbstractBase as AbstractRecordDriver;
-
+use Zend\Http\Request as HttpRequest;
 
 /**
  * Class PluginManager
@@ -37,8 +37,6 @@ use VuFind\RecordDriver\AbstractBase as AbstractRecordDriver;
  */
 class PluginManager extends \VuFind\RecordTab\PluginManager
 {
-
-
     /**
      * Get an array of valid tabs for the provided record driver.
      *
@@ -49,11 +47,8 @@ class PluginManager extends \VuFind\RecordTab\PluginManager
      *
      * @return array               service name => tab object
      */
-    public function getTabsForRecord(
-        AbstractRecordDriver $driver,
-        array $config,
-        $request = null
-    ) {
+    public function getTabsForRecord(AbstractRecordDriver $driver, array $config, $request = null)
+    {
         $tabs = [];
         foreach ($this->getTabServiceNames($driver, $config) as $tabKey => $svc) {
             if (!$this->has($svc)) {
@@ -63,7 +58,7 @@ class PluginManager extends \VuFind\RecordTab\PluginManager
             if (method_exists($newTab, 'setRecordDriver')) {
                 $newTab->setRecordDriver($driver);
             }
-            if ($request instanceof \Zend\Http\Request
+            if ($request instanceof HttpRequest
                 && method_exists($newTab, 'setRequest')
             ) {
                 $newTab->setRequest($request);

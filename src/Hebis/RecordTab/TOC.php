@@ -27,8 +27,6 @@
 
 namespace Hebis\RecordTab;
 
-use Hebis\RecordDriver\SolrMarc;
-
 /**
  * Interface TabInterface
  * @package Hebis\RecordTab

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an
  * extension of the open source library search engine VuFind, that
@@ -28,6 +27,11 @@
 
 namespace Hebis\Service;
 
+use Hebis\RecordTab\PluginManager;
+use VuFind\I18n\Translator\Loader\ExtendedIni;
+use Zend\Mvc\Exception\BadMethodCallException;
+use Zend\Mvc\Service\TranslatorServiceFactory;
+use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -47,7 +51,7 @@ class Factory extends \VuFind\Service\Factory
      */
     public static function getTranslator(ServiceManager $sm)
     {
-        $factory = new \Zend\Mvc\Service\TranslatorServiceFactory();
+        $factory = new TranslatorServiceFactory();
         $translator = $factory->createService($sm);
 
         // Set up the ExtendedIni plugin:
@@ -75,7 +79,7 @@ class Factory extends \VuFind\Service\Factory
 
         try {
             $pm = $translator->getPluginManager();
-        } catch (\Zend\Mvc\Exception\BadMethodCallException $ex) {
+        } catch (BadMethodCallException $ex) {
             // If getPluginManager is missing, this means that the user has
             // disabled translation in module.config.php or PHP's intl extension
             // is missing. We can do no further configuration of the object.
@@ -83,8 +87,9 @@ class Factory extends \VuFind\Service\Factory
         }
         $pm->setService(
             'extendedini',
-            new \VuFind\I18n\Translator\Loader\ExtendedIni(
-                $pathStack, $fallbackLocales
+            new ExtendedIni(
+                $pathStack,
+                $fallbackLocales
             )
         );
 
@@ -118,9 +123,12 @@ class Factory extends \VuFind\Service\Factory
         $config = $sm->get('VuFind\Config')->get('config');
         $client = $sm->get('VuFind\Http')->createClient();
         $ip = $sm->get('Request')->getServer()->get('SERVER_ADDR');
+
         return new \Hebis\Connection\WorldCatUtils(
             isset($config->WorldCat) ? $config->WorldCat : null,
-            $client, true, $ip
+            $client,
+            true,
+            $ip
         );
     }
 
@@ -137,18 +145,19 @@ class Factory extends \VuFind\Service\Factory
      *
      * @param ServiceManager $sm Service manager.
      *
-     * @return \Hebis\RecordTab\PluginManager
+     * @return PluginManager
      */
     public static function getRecordTabPluginManager(ServiceManager $sm)
     {
         $configKey = "recordtab";
         $config = $sm->get('Config');
-        return new \Hebis\RecordTab\PluginManager(
-            new \Zend\ServiceManager\Config(
+        return new PluginManager(
+            new Config(
                 $config['vufind']['plugin_managers'][$configKey]
             )
         );
     }
+}
 
     /**
      * Construct the search memory helper.

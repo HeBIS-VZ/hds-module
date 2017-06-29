@@ -703,6 +703,7 @@ class Record implements CslRecord, JsonSerializable
         return $this;
     }
 
+    // @codingStandardsIgnoreStart
     /**
      * @return mixed
      */
@@ -738,6 +739,7 @@ class Record implements CslRecord, JsonSerializable
         $this->archive_place = $archive_place;
         return $this;
     }
+    // @codingStandardsIgnoreEnd
 
     /**
      * @return mixed

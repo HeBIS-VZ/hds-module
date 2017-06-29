@@ -29,7 +29,6 @@ namespace Hebis\Recommend;
 
 use Zend\ServiceManager\ServiceManager;
 
-
 /**
  * Class Factory
  * @package Hebis\Recommend

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an
  * extension of the open source library search engine VuFind, that
@@ -115,5 +114,4 @@ class PluginManager extends \VuFind\RecordDriver\PluginManager implements Servic
 
         return $picaRecord;
     }
-
 }

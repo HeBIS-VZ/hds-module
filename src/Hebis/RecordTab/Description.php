@@ -36,7 +36,6 @@ use Hebis\RecordDriver\SolrMarc;
  */
 class Description extends \VuFind\RecordTab\Description implements TabInterface
 {
-
     public function hasContents()
     {
         $record = $this->getRecordDriver();
@@ -72,10 +71,8 @@ class Description extends \VuFind\RecordTab\Description implements TabInterface
 
         if (empty($fields)) {
             return false;
-        } else {
-            if ($subFieldCode === null) {
-                return true;
-            }
+        } elseif ($subFieldCode === null) {
+            return true;
         }
 
         /** @var \File_MARC_Data_Field $field */
@@ -89,4 +86,3 @@ class Description extends \VuFind\RecordTab\Description implements TabInterface
         return false;
     }
 }
-

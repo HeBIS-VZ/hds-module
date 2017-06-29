@@ -27,7 +27,6 @@
 
 namespace Hebis\RecordDriver;
 
-
 interface PicaRecordInterface
 {
     public function getJournal();
