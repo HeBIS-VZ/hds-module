@@ -157,7 +157,6 @@ class Factory extends \VuFind\Service\Factory
             )
         );
     }
-}
 
     /**
      * Construct the search memory helper.
