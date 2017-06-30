@@ -31,6 +31,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\View\Helper\Record\MarcSubfieldManipulationTrait;
 use Hebis\View\Helper\Record\ResultList\ResultListPublication;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordPublicationDistribution
@@ -44,7 +45,7 @@ class SingleRecordOWPublication extends ResultListPublication
 
     /**
      * @param SolrMarc $record
-     * @return string
+     * @return string|array
      */
     public function __invoke(SolrMarc $record, $asArray = false)
     {
@@ -58,9 +59,9 @@ class SingleRecordOWPublication extends ResultListPublication
         $_880__ = $marcRecord->getFields('880');
 
         foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
+            $_880_6 = empty($_880) ? "" : Helper::getSubFieldDataOfGivenField($_880, '6');
             if (strncmp("264", $_880_6, 3) == 0) {
-                $_880c = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, 'c');
+                $_880c = empty($_880) ? "" : Helper::getSubFieldDataOfGivenField($_880, 'c');
                 $r = implode(" : ", $this->getSubFieldsStringArrayOfGivenField($_880, ['a', 'b']));
                 $r .= empty($_880c) ? "" : (!empty($r) ? ", $_880c" : $_880c);
                 $arr[] = $r;
@@ -68,8 +69,7 @@ class SingleRecordOWPublication extends ResultListPublication
             if ($asArray) {
                 return $arr;
             }
-
-            return implode("<br />", $arr);
         }
+        return implode("<br />", $arr);
     }
 }

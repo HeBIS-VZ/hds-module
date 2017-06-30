@@ -47,6 +47,6 @@ class PhysicalDescriptionFormatTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-
+        return [];
     }
 }

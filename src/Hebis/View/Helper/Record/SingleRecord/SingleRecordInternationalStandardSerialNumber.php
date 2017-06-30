@@ -51,7 +51,10 @@ class SingleRecordInternationalStandardSerialNumber extends AbstractRecordViewHe
 
         /** @var \File_MARC_Data_Field $field */
         foreach ($fields as $field) {
-
+            $_2 = $field->getSubfield('2');
+            if (!empty($_2)) {
+                continue;
+            }
             $a_ = $field->getSubfields('a');
             $y_ = $field->getSubfields('y');
             $subfields = array_merge($a_, $y_);

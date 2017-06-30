@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an
  * extension of the open source library search engine VuFind, that
@@ -50,7 +49,7 @@ class PicaRecordFactory
 
         /** @var Field $field */
         foreach ($fields as $field) {
-            if (Field::match('002@/00', $field)) {
+            if (Field::match('002@/00')) {
                 $typeSubField = $field->getNthSubField('0', 0);
                 if ($typeSubField) {
                     $type = $typeSubField->getValue();
@@ -69,5 +68,4 @@ class PicaRecordFactory
             return new PicaRecord($fields);
         }
     }
-
 }

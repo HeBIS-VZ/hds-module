@@ -27,7 +27,6 @@
 
 namespace Hebis\Csl\Model\Layout;
 
-
 interface CslDate
 {
     /**
@@ -57,5 +56,4 @@ interface CslDate
      * @return string
      */
     public function getRaw();
-
 }

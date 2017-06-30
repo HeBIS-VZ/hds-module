@@ -28,7 +28,6 @@
 
 namespace Hebis\Exception;
 
-
 class HebisException extends \Exception
 {
 

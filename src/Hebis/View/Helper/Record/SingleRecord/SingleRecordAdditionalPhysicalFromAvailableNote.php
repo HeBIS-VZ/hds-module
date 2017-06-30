@@ -29,8 +29,8 @@
 namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordAdditionalPhysicalFormAvailableNote
@@ -50,9 +50,10 @@ class SingleRecordAdditionalPhysicalFromAvailableNote extends AbstractRecordView
 
         $fields = $marcRecord->getFields('530');
 
-        if (($_6 = $marcRecord->getLeader()['6']) == "a" && ($_7 = $marcRecord->getLeader()['7']) == "s") {
+        if (($_6 = substr($marcRecord->getLeader(), 6, 1)) == "a" &&
+            ($_7 = substr($marcRecord->getLeader(), 7, 1)) == "s") {
             foreach ($fields as $field) {
-                $arr[] = $this->getSubFieldDataOfGivenField($field, 'a');
+                $arr[] = Helper::getSubFieldDataOfGivenField($field, 'a');
             }
         }
 

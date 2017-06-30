@@ -36,7 +36,6 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
 
-
 /**
  * Class OAuthController
  * @package Hebis\Controller

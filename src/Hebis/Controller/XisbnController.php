@@ -144,8 +144,8 @@ class XisbnController extends SearchController
                 return $response;
             }
             throw $e;
-
         }
+        throw new \Exception();
     }
 
 
@@ -162,5 +162,4 @@ class XisbnController extends SearchController
             return true;
         };
     }
-
 }

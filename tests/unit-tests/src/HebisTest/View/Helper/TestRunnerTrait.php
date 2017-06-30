@@ -49,6 +49,9 @@ trait TestRunnerTrait
                 $expectedSingleRecordResult,
                 $expectedRecordListResult) = array_slice($row, 0, 5);
 
+            if (empty($ppn)) {
+                break;
+            }
             $record = $this->getRecordFromIndex($ppn);
 
             if (is_null($record)) {
@@ -62,8 +65,8 @@ trait TestRunnerTrait
                 }
                 //$record = $this->getRecordFromTestData($testData); TODO: implement
             }
-
-            $actual = trim(strip_tags(str_replace("<br />", "\n", $this->viewHelper->__invoke($record))));
+            $res = str_replace("<br />", "\n", $this->viewHelper->__invoke($record));
+            $actual = trim(strip_tags($res));
             $_comment = "Test: \"" . $this->testSheetName . "\", Class: \"" . $this->viewHelperClass . "\", Test Case: $i / PPN: " . $row[1] . "; Comment: $comment\n";
 
             try {

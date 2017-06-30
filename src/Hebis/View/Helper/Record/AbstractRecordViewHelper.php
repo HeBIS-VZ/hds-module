@@ -34,6 +34,7 @@ use Hebis\View\Helper\FieldArray;
 use \File_MARC_Data_Field;
 use Zend\Uri\Uri;
 use Zend\View\Helper\AbstractHelper;
+use Zend\View\Helper\Url;
 
 /**
  * Class AbstractRecordViewHelper
@@ -141,7 +142,6 @@ class AbstractRecordViewHelper extends AbstractHelper
 
             /** @var \File_MARC_Subfield $subField */
             foreach ($field->getSubfields($subFieldCode) as $subField) {
-
                 if ($subField) {
                     $arr[] = htmlentities($subField->getData());
                 }
@@ -200,6 +200,7 @@ class AbstractRecordViewHelper extends AbstractHelper
         if (strpos($haystack, $needle) === 0) {
             return substr($haystack, strlen($needle));
         }
+        return $haystack;
     }
 
     /**
@@ -249,18 +250,14 @@ class AbstractRecordViewHelper extends AbstractHelper
     }
 
     /**
+     * @deprecated
      * returns $str without control signs i.e. '@'
      * @param string $str
      * @return string
      */
     protected function removeControlSigns($str)
     {
-        $len = strlen($str);
-        if (strpos($str, '@') === 0) {
-            $str = substr($str, 1, $len - 1);
-        }
-        $ret = str_replace(" @", " ", $str);
-        return $ret;
+        return Helper::removeControlSigns($str);
     }
 
     /**
@@ -291,7 +288,7 @@ class AbstractRecordViewHelper extends AbstractHelper
         return preg_replace('/\s\@([\w\däöü])/i', " $1", $string);
     }
 
-    protected function generateSearchLink($linkText, array $searchParams)
+    protected function generateSearchLink($linkText, array $searchParams, $newWindow = false)
     {
         $uri = new Uri($this->getView()->url('search-results'));
 
@@ -300,6 +297,14 @@ class AbstractRecordViewHelper extends AbstractHelper
             '%20',
             http_build_query($searchParams)));
 
-        return '<a href="'.$uri->toString().'">'.$linkText.'</a>';
+        $target = ($newWindow === true ? ' target="_blank" ' : '');
+        $tag = '<a href="'.$uri->toString().'"' . $target . '>';
+
+        if ($newWindow) {
+            $tag .= '<span class="hds-icon-link-ext"><!-- --></span>';
+        }
+        $tag .= $linkText.'</a>';
+
+        return $tag;
     }
 }

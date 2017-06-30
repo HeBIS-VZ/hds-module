@@ -33,6 +33,7 @@ use File_MARC_Record;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Zend\View\Helper\AbstractHelper;
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordUniformTitle
@@ -71,10 +72,10 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
         //Wenn 240 + 040 $e = rda, dann:
         //240 $a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
         //130 $a <$g>
-        if (array_key_exists('040', $fields) && array_key_exists('240', $fields)
-            && strpos($this->getSubFieldDataOfGivenField($fields['040'], "e"), "rda") !== false
+        if (array_key_exists('040', $fields) &&
+            array_key_exists('240', $fields) &&
+            strpos(Helper::getSubFieldDataOfGivenField($fields['040'], "e"), "rda") !== false
         ) {
-
             $ret[] = $this->generateContent($fields['240']);
         } else {
             if (array_key_exists('240', $fields)) {
@@ -86,10 +87,10 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
         //130 $a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
         //243 $a <$g>
         //730 $a <$g>
-        if (array_key_exists('040', $fields) && array_key_exists('130', $fields)
-            && strpos($this->getSubFieldDataOfGivenField($fields['040'], 'e'), "rda") !== false
+        if (array_key_exists('040', $fields) &&
+            array_key_exists('130', $fields) &&
+            strpos(Helper::getSubFieldDataOfGivenField($fields['040'], 'e'), "rda") !== false
         ) {
-
             $ret[] = $this->generateContent($fields['130']);
 
         } else {
@@ -107,10 +108,10 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
 
         //Wenn 730 + 040 $e = rda, dann:
         //730 $a_($f)_($g)._$k,_$m,_$n;_$o._$p,_$r._$s
-        if (array_key_exists('040', $fields) && array_key_exists('730', $fields)
-            && strpos($this->getSubFieldDataOfGivenField($fields['040'], "e"), "rda") !== false
+        if (array_key_exists('040', $fields) &&
+            array_key_exists('730', $fields) &&
+            strpos(Helper::getSubFieldDataOfGivenField($fields['040'], "e"), "rda") !== false
         ) {
-
             if (is_array($fields['730']) || $fields['730'] instanceof \File_MARC_List) {
                 foreach ($fields['730'] as $field) {
                     $ret[] = $this->generateContent($field);
@@ -254,8 +255,8 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
     {
         $w = $field->getSubfield('w');
         $ret = "";
-        $a = $this->getSubFieldDataOfGivenField($field, 'a');
-        $g = $this->getSubFieldDataOfGivenField($field, 'g');
+        $a = Helper::getSubFieldDataOfGivenField($field, 'a');
+        $g = Helper::getSubFieldDataOfGivenField($field, 'g');
 
         $ret .= !empty($a) ? trim($a) : "";
         $ret .= !empty($g) ? " &lt;" . trim($g) . "&gt;" : "";
@@ -278,7 +279,6 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
                 case "g":
                     $r = [];
                     if (is_array($subField)) {
-
                         foreach ($subField as $sub) {
                             $r[] = " ($sub)";
                         }
@@ -305,7 +305,6 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
                 case "r":
                     $r = [];
                     if (is_array($subField)) {
-
                         foreach ($subField as $sub) {
                             $r[] = $sub;
                         }
@@ -316,11 +315,12 @@ class SingleRecordUniformTitle extends AbstractRecordViewHelper
                     break;
                 case "o":
                     $str .= "; $subField";
+                    break;
                 default:
             }
         }
 
-        return $str;
+        return Helper::removeControlSigns($str);
     }
 
 

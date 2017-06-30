@@ -27,7 +27,6 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-
 trait SubfieldsTrait
 {
 

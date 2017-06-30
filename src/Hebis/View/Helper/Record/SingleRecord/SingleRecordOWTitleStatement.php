@@ -28,8 +28,8 @@
 
 namespace Hebis\View\Helper\Record\SingleRecord;
 
+use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
-use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
 /**
  * Class SingleRecordTitle
@@ -47,7 +47,7 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
  * @package Hebis\View\Helper\Record
  * @author Claudia Grote <grote@hebis.uni-frankfurt.de>
  */
-class SingleRecordOWTitleStatement extends AbstractRecordViewHelper
+class SingleRecordOWTitleStatement extends SingleRecordTitleStatement
 {
 
     public function __invoke(SolrMarc $record)
@@ -58,12 +58,12 @@ class SingleRecordOWTitleStatement extends AbstractRecordViewHelper
         $_880__ = $marcRecord->getFields('880');
 
         foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
+            $_880_6 = empty($_880) ? "" : Helper::getSubFieldDataOfGivenField($_880, '6');
             if (strncmp("245", $_880_6, 3) == 0) {
-                $a = trim($this->getSubFieldDataOfGivenField($_880, 'a'));
-                $b = $this->getSubFieldDataOfGivenField($_880, 'b');
-                $c = $this->getSubFieldDataOfGivenField($_880, 'c');
-                $h = $this->getSubFieldDataOfGivenField($_880, 'h');
+                $a = trim(Helper::getSubFieldDataOfGivenField($_880, 'a'));
+                $b = Helper::getSubFieldDataOfGivenField($_880, 'b');
+                $c = Helper::getSubFieldDataOfGivenField($_880, 'c');
+                $h = Helper::getSubFieldDataOfGivenField($_880, 'h');
 
                 /* setup colon */
                 $colon = " :";
@@ -86,14 +86,5 @@ class SingleRecordOWTitleStatement extends AbstractRecordViewHelper
         }
         // returns empty string
         return "";
-    }
-
-    protected function titleSearchLink($title)
-    {
-        $url = $this->getView()->recordLink()->getActionUrl("Myyresearch", "home");
-
-        $searchTitle = html_entity_decode($title);
-        $href = parent::URL_FULL_TITLE_SEARCH_PATTERN . urlencode(trim($searchTitle)) . parent::URL_FULL_TITLE_SEARCH_PATTERN_SUFFIX;
-        return $this->generateLink($href, $title, $title);
     }
 }

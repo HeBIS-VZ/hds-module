@@ -67,11 +67,11 @@ class EdsController extends \VuFind\Controller\EdsController
     /**
      * Send output data and exit.
      *
-     * @param mixed  $data     The response data
-     * @param string $status   Status of the request
-     * @param int    $httpCode A custom HTTP Status Code
+     * @param mixed $data The response data
+     * @param string $status Status of the request
+     * @param int $httpCode A custom HTTP Status Code
      *
-     * @return \Zend\Http\Response
+     * @return \Zend\Stdlib\ResponseInterface
      * @throws \Exception
      */
     protected function output($data, $status, $httpCode = null)
@@ -91,14 +91,29 @@ class EdsController extends \VuFind\Controller\EdsController
             }
             $response->setContent(json_encode($output));
             return $response;
-        } else if ($this->outputMode == 'plaintext') {
-            $headers->addHeaderLine('Content-type', 'text/plain');
-            $response->setContent($data ? $status . " $data" : $status);
-            return $response;
         } else {
-            throw new \Exception('Unsupported output mode: ' . $this->outputMode);
+            if ($this->outputMode == 'plaintext') {
+                $headers->addHeaderLine('Content-type', 'text/plain');
+                $response->setContent($data ? $status . " $data" : $status);
+                return $response;
+            } else {
+                throw new \Exception('Unsupported output mode: ' . $this->outputMode);
+            }
         }
     }
 
+    public function rememberSearch($results)
+    {
+        // Only save search URL if the property tells us to...
+        if ($this->rememberSearch) {
+            $searchUrl = $this->url()->fromRoute(
+                    $results->getOptions()->getSearchAction()
+                ) . $results->getUrlQuery()->getParams(false);
+            $this->getSearchMemory()->rememberLastSearchOf('EDS', $searchUrl);
+        }
 
+        // Always save search parameters, since these are namespaced by search
+        // class ID.
+        $this->getSearchMemory()->rememberParams($results->getParams());
+    }
 }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an
  * extension of the open source library search engine VuFind, that
@@ -28,7 +27,6 @@
 
 namespace Hebis\RecordDriver;
 
-
 class MediaTypes
 {
     /**
@@ -38,7 +36,6 @@ class MediaTypes
 
     public static function getMediaTypesMap()
     {
-
         //just initialize once
         if (empty(self::$mediaTypes)) {
             self::initMediaTypes();

@@ -30,6 +30,7 @@ namespace Hebis\View\Helper\Record\ResultList;
 
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\Marc\Helper;
 
 /**
  * Class ResultListTitleStatement
@@ -46,7 +47,7 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $retro = strpos($this->getSubFieldDataOfField($record, 856, '3'), "Katalogkarte") !== false;
+        $retro = strpos(Helper::getSubFieldDataOfField($record, 856, '3'), "Katalogkarte") !== false;
 
         $id = $record->getUniqueID();
         if ($retro) {
@@ -55,7 +56,7 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
             /** @var \File_MARC_Data_Field $_246 */
             foreach ($_246_ as $_246) {
                 if ($_246->getIndicator(2) == 3) {
-                    $arr[] = $this->getSubFieldDataOfGivenField($_246, 'a');
+                    $arr[] = Helper::getSubFieldDataOfGivenField($_246, 'a');
                 }
             }
             if (!empty($arr)) {
@@ -63,11 +64,7 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
             }
         }
 
-
         $_245 = $marcRecord->getField(245);
-
-        $subFields = $this->getSubfieldsAsArray($_245);
-
 
         /** @var \File_MARC_Data_Field $field */
         $field = $marcRecord->getField('245');
@@ -109,7 +106,14 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
 
         for ($i = 0; $i < count($n_s); ++$i) {
             $n = array_key_exists($i, $n_s) ? $this->removeControlSigns($n_s[$i]->getData()) : "";
+            /*if (!empty($n) && strlen($n) > 4) {
+                $n = $n[0] . "=" . ord($n[0]) ."|".$n[4]."=".ord($n[4]) . $n;
+            }
+            */
             $p = array_key_exists($i, $p_s) ? $this->removeControlSigns($p_s[$i]->getData()) : "";
+            /*if (!empty($p)) {
+                $p = $p[0] . "=" . ord($p[0]) ."|".$p[4]."=".ord($p[4]) . $p;
+            }*/
 
             if (!empty($n) && strpos($n, "...") === false) {
                 $n_p .= htmlentities(trim($n));

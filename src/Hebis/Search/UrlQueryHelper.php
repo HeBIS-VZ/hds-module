@@ -38,7 +38,7 @@ class UrlQueryHelper extends \VuFind\Search\UrlQueryHelper
     /**
      * Add a facet to the parameters.
      *
-     * @param array $fields      Facet fields
+     * @param array $fields Facet fields
      * @return string
      */
     public function addFacets($fields, $paramArray = null)

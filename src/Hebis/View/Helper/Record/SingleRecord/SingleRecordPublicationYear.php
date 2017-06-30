@@ -31,6 +31,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 use Hebis\View\Helper\Record\MarcSubfieldManipulationTrait;
 use Hebis\View\Helper\Record\ResultList\ResultListPublication;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordPublicationYear
@@ -60,7 +61,7 @@ class SingleRecordPublicationYear extends ResultListPublication
 
         /** @var \File_MARC_Data_Field $_264 */
         foreach ($_264__ as $_264) {
-            $_264c = empty($_264) ? "" : $this->getSubFieldDataOfGivenField($_264, 'c');
+            $_264c = empty($_264) ? "" : Helper::getSubFieldDataOfGivenField($_264, 'c');
             if (!empty($_264c)) {
                 return $_264c;
             }

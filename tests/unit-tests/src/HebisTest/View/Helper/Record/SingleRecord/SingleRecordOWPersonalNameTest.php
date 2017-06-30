@@ -1,15 +1,15 @@
 <?php
 /*
- * This file is a part of HDS (HeBIS Discovery System). HDS is an
- * extension of the open source library search engine VuFind, that
- * allows users to search and browse beyond resources. More
+ * This file is a part of HDS (HeBIS Discovery System). HDS is an 
+ * extension of the open source library search engine VuFind, that 
+ * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
  *
  * Copyright (C) 2016
- * HeBIS Verbundzentrale des HeBIS-Verbundes
+ * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
- *
+ * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -25,28 +25,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\View\Helper\Record\SingleRecord;
+namespace HebisTest\View\Helper\Record\SingleRecord;
 
-use Hebis\View\Helper\Record\AbstractViewHelperTest;
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
 /**
- * Class SingleRecordPublicationDistributionTest
+ * Class SingleRecordOWTitleStatementTest
  * @package Hebis\View\Helper\Record
  *
  * @author Claudia Grote <grote@hebis.uni-frankfurt.de>
  */
-class SingleRecordPublicationYearTest extends AbstractViewHelperTest
+class SingleRecordOWPersonalNameTest extends AbstractViewHelperTest
 {
-
     public function setUp()
     {
-        $this->viewHelperClass = "SingleRecordPublicationYear";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
-        $this->testSheetName = "Erscheinungsjahr";
 
+        $this->viewHelperClass = "SingleRecordOWPersonalName";
+        $this->testRecordIds = [];
+        $this->testResultField = '';
+        $this->testSheetName = "Originalschrift Verantwortlich";
         parent::setUp();
     }
+
+    // So, hier fehlen jetzt aber noch substanzielle Tests.
 
     /**
      * Get plugins to register to support view helper being tested
@@ -55,6 +56,16 @@ class SingleRecordPublicationYearTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        return [];
+        $basePath = $this->getMock('Zend\View\Helper\BasePath');
+        $basePath->expects($this->any())->method('__invoke')
+            ->will($this->returnValue('/vufind2'));
+        $url = $this->getMock('Zend\View\Helper\Url');
+        $url->expects($this->any())->method('__invoke')
+            ->will($this->returnValue("/foobar"));
+
+        return [
+            'url' => $url,
+            'basepath' => $basePath
+        ];
     }
 }

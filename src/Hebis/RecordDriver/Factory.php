@@ -77,7 +77,9 @@ class Factory extends \VuFind\RecordDriver\Factory
     {
         $eds = $sm->getServiceLocator()->get('VuFind\Config')->get('EDS');
         return new EDS(
-            $sm->getServiceLocator()->get('VuFind\Config')->get('config'), $eds, $eds
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $eds,
+            $eds
         );
     }
 

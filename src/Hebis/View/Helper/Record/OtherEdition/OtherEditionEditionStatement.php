@@ -28,6 +28,7 @@
 namespace Hebis\View\Helper\Record\OtherEdition;
 
 
+use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -46,7 +47,7 @@ class OtherEditionEditionStatement extends AbstractRecordViewHelper
      */
     public function __invoke(SolrMarc $record)
     {
-        $_250a = $this->getSubFieldDataOfField($record, '250', 'a');
+        $_250a = Helper::getSubFieldDataOfField($record, '250', 'a');
 
         return !empty($_250a) ? $_250a : "";
     }

@@ -29,7 +29,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use Hebis\Marc\Helper;
 
 /**
  * Class ReproductionNote
@@ -61,22 +61,24 @@ class SingleRecordReproductionNote extends AbstractRecordViewHelper
 
         $str = "";
         $_533 = $marcRecord->getField('533');
-        $_530_a = $this->getSubFieldDataOfField($record, '530', 'a');
-        $_533_b = $this->getSubFieldDataOfField($record, '533', 'b');
-        $_533_d = $this->getSubFieldDataOfField($record, '533', 'd');
-        $_533_e = $this->getSubFieldDataOfField($record, '533', 'e');
-        $_533_f = $this->getSubFieldDataOfField($record, '533', 'f');
+        $_530_a = Helper::getSubFieldDataOfField($record, '530', 'a');
+        $_533_b = Helper::getSubFieldDataOfField($record, '533', 'b');
+        $_533_d = Helper::getSubFieldDataOfField($record, '533', 'd');
+        $_533_e = Helper::getSubFieldDataOfField($record, '533', 'e');
+        $_533_f = Helper::getSubFieldDataOfField($record, '533', 'f');
 
         if (empty($_533) || (!empty($_533) && empty($_533->getSubfields('c')))) {
-            $_583_h = $this->getSubFieldDataOfField($record, '583', 'h');
+            $_583_h = Helper::getSubFieldDataOfField($record, '583', 'h');
             $str .= !empty($_530_a) ? "$_530_a" : "";
             $str .= !empty($_533_b) ? " $_533_b" : "";
             $str .= !empty($_583_h) ? ": $_583_h" : "";
 
         } else {
-            $_533_c = $this->getSubFieldDataOfField($record, '533', 'c');
-            $str .= !empty($_533_b) ? "$_530_a $_533_b : " : "$_530_a ";
-            $str .= !empty($_533_c) ? $_533_c : "";
+            $_533_c = Helper::getSubFieldDataOfField($record, '533', 'c');
+            //$str .= !empty($_533_b) ? "$_530_a $_533_b : " : "$_530_a ";
+            $str .= !empty($_530_a) ? "$_530_a" : "";
+            $str .= !empty($_533_b) ? " $_533_b" : "";
+            $str .= !empty($_533_c) ? " : $_533_c" : "";
         }
 
         $str .= !empty($_533_d) ? ", $_533_d" : "";

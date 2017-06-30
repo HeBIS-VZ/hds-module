@@ -86,6 +86,7 @@ $config = [
             'VuFind\AutocompletePluginManager' => 'VuFind\Service\Factory::getAutocompletePluginManager',
             'VuFind\SearchResultsPluginManager' => 'VuFind\Service\Factory::getSearchResultsPluginManager',
             'VuFind\RecordTabPluginManager' => 'Hebis\Service\Factory::getRecordTabPluginManager',
+            'VuFind\Search\Memory' => 'Hebis\Service\Factory::getSearchMemory',
         ],
         'invokables' => [
             'VuFind\Terms' => 'Hebis\Search\Service',
@@ -109,6 +110,8 @@ $config = [
             'eds' => 'Hebis\Controller\EdsController',
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
+            'edsrecord' => 'Hebis\Controller\EdsrecordController',
+            'adminlogs' => 'Hebis\Controller\AdminLogs'
         ]
     ],
     'router' => [
@@ -142,7 +145,17 @@ $config = [
                         'action' => 'xid'
                     ]
                 ]
-            ]
+            ],
+            'logs' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route' => '/Admin/Logs',
+                    'defaults' => [
+                        'controller' => 'AdminLogs',
+                        'action' => 'Home',
+                    ]
+                ]
+            ],
         ],
     ],
 
@@ -153,6 +166,6 @@ $recordRoutes = ['recordfinder' => 'RecordFinder'];
 
 $routeGenerator = new \VuFind\Route\RouteGenerator();
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
-//$routeGenerator->addStaticRoute($config, $ajaxRoutes);
+$routeGenerator->addStaticRoutes($config, ['EdsRecord/redilink']);
 
 return $config;

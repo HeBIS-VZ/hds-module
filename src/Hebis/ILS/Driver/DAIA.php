@@ -28,7 +28,6 @@
 
 namespace Hebis\ILS\Driver;
 
-
 /**
  * Class DAIA
  * @package Hebis\ILS\Driver
@@ -66,7 +65,6 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
 
         // if one or more items exist, iterate and build result-item
         if (isset($daiaArray['item']) && is_array($daiaArray['item'])) {
-
             foreach ($daiaArray['item'] as $key => $item) {
                 $result_item = [];
                 $result_item['id'] = $id;
@@ -132,10 +130,5 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
         }
 
         return (empty($storage) ? 'Unknown' : $storage);
-    }
-
-    private function getItemStorageId($item)
-    {
-
     }
 }

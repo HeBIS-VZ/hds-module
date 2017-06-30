@@ -27,10 +27,7 @@
 
 namespace Hebis\Search\Solr;
 
-use Hebis\Search\UrlQueryHelper;
-use VuFindSearch\Backend\Solr\Response\Json\Spellcheck;
-use VuFindSearch\Query\AbstractQuery;
-use VuFindSearch\Query\QueryGroup;
+use Hebis\Search\UrlQueryHelper as UrlHelper;
 
 /**
  * Solr Search Parameters
@@ -62,7 +59,7 @@ class Results extends \VuFind\Search\Solr\Results
     {
         // Set up URL helper:
         if (!isset($this->helpers['urlQuery'])) {
-            $this->helpers['urlQuery'] = new UrlQueryHelper($this->getParams());
+            $this->helpers['urlQuery'] = new UrlHelper($this->getParams());
         }
         return $this->helpers['urlQuery'];
     }

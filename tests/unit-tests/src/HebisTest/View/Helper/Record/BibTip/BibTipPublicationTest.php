@@ -26,8 +26,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace HebisTest\View\Helper\Record;
+namespace HebisTest\View\Helper\Record\BibTip;
 
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
 /**
  * Class BibTipTest
@@ -35,16 +36,17 @@ namespace HebisTest\View\Helper\Record;
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class BibTipTest extends AbstractViewHelperTest
+class BibTipPublicationTest extends AbstractViewHelperTest
 {
 
     public function setUp()
     {
-        $this->viewHelperClass = "BibTip";
+        $this->spreadSheetName = "BibTip.xlsx";
+        $this->viewHelperClass = "BibTipPublication";
         $this->testResultField = "";
         $this->testRecordIds = [];
 
-        $this->testSheetName = "BibTip";
+        $this->testSheetName = "Veröffentlicht";
         parent::setUp();
     }
 
@@ -55,9 +57,6 @@ class BibTipTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+        return [];
     }
 }

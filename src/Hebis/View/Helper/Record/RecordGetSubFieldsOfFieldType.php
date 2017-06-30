@@ -46,7 +46,7 @@ class RecordGetSubFieldsOfFieldType extends AbstractRecordViewHelper
      * @param SolrMarc $record
      * @param $fieldCode
      * @param $subFieldCode
-     * @return bool|string
+     * @return string|bool
      */
     public function __invoke(SolrMarc $record, $fieldCode, $subFieldCode)
     {

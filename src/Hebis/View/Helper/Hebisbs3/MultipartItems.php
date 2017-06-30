@@ -112,7 +112,8 @@ class MultipartItems extends AbstractRecordViewHelper
             "sort" => "relevance",
             "type0[]" => "part_of",
             "lookfor0[]" => $ppn,
-            "join" => "AND"];
+            "join" => "AND"
+        ];
 
         return $this->generateSearchLink($linkText, $searchParams);
 
@@ -147,13 +148,13 @@ class MultipartItems extends AbstractRecordViewHelper
             }
             $str .= implode($glue, $ab);
 
-            if (!empty($c = $this->getSubFieldDataOfGivenField($field, 'c'))) {
+            if (!empty($c = Helper::getSubFieldDataOfGivenField($field, 'c'))) {
                 $str .= " / $c";
             }
             $ppn = $this->getPPNFrom773();
             if (!empty($ppn)) {
                 $uri = new Uri($this->getView()->url('recordfinder') . "HEB" . $ppn);
-                $arr[] = '<a href="'.$uri->toString().'">'.$str.'</a>';
+                $arr[] = '<a href="' . $uri->toString() . '">' . $str . '</a>';
             } else {
                 $arr[] = $str;
             }
@@ -221,7 +222,7 @@ class MultipartItems extends AbstractRecordViewHelper
         $c_t = implode(": ", $this->getSubFieldsDataArrayOfField($field, ['c', 't']));
         $ret .= (!empty($c_t)) ? ", $c_t" : "";
 
-        $n = $this->getSubFieldDataOfGivenField($field, 'n');
+        $n = Helper::getSubFieldDataOfGivenField($field, 'n');
         if (strpos($n, "[...]") === false) {
             $n = " : $n";
         } else {
@@ -229,10 +230,10 @@ class MultipartItems extends AbstractRecordViewHelper
         }
 
         $ret .= $n;
-        $ret .= !empty($p = $this->getSubFieldDataOfGivenField($field, 'p')) ? ", $p" : "";
+        $ret .= !empty($p = Helper::getSubFieldDataOfGivenField($field, 'p')) ? ", $p" : "";
 
 
-        $v = $this->getSubFieldDataOfGivenField($field, 'v');
+        $v = Helper::getSubFieldDataOfGivenField($field, 'v');
         $ret .= (!empty($v)) ? " ; $v" : "";
 
         return $ret;
@@ -329,8 +330,10 @@ class MultipartItems extends AbstractRecordViewHelper
                         }
                         $ncdCalled = true;
 
-                    } else if ($code == "n" && $tCalled) {
-                        $ret .= " : " . $subfield->getData();
+                    } else {
+                        if ($code == "n" && $tCalled) {
+                            $ret .= " : " . $subfield->getData();
+                        }
                     }
                     break;
                 case 't':

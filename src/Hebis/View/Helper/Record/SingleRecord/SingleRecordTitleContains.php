@@ -29,7 +29,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordTitleContains
@@ -46,14 +46,49 @@ class SingleRecordTitleContains extends AbstractRecordViewHelper
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
         $_249 = $marcRecord->getFields('249');
+        $_505 = $marcRecord->getFields('505');
+
 
         /** @var \File_MARC_Data_Field $field */
+        $i = 0;
+        $j = 0;
         foreach ($_249 as $field) {
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $b = $this->getSubFieldDataOfGivenField($field, 'b');
+            $av = Helper::getSubFieldDataOfGivenField($field, 'a');
 
-            if ($a) $arr[] = $this->removeControlSigns($a);
-            if ($b) $arr[] = $this->removeControlSigns($b);
+            if (!empty($v = Helper::getSubFieldDataOfGivenField($field, 'v'))) {
+                $av .= " / $v";
+            }
+
+            if (!empty($av)) {
+                $arr[] = Helper::removeControlSigns($av);
+            }
+
+            $bc = Helper::getSubFieldDataOfGivenField($field, 'b');
+            if (!empty($c = Helper::getSubFieldDataOfGivenField($field, 'c'))) {
+                $bc .= " / $c";
+            }
+            if (!empty($bc)) {
+                $arr[] = Helper::removeControlSigns($bc);
+            }
+        }
+
+
+        $_505 = $marcRecord->getFields('505');
+
+        foreach ($_505 as $field) {
+            $atr = Helper::getSubFieldDataOfGivenField($field, 'a');
+
+            if (!empty($t = Helper::getSubFieldDataOfGivenField($field, 't'))) {
+                $atr .= " $t";
+            }
+
+            if (!empty($r = Helper::getSubFieldDataOfGivenField($field, 'r'))) {
+                $atr .= " / $r";
+            }
+
+            if (!empty($atr)) {
+                $arr[] = trim(Helper::removeControlSigns($atr));
+            }
         }
 
         return implode("<br />", $arr);

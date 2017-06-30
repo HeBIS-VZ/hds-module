@@ -160,19 +160,26 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
         if (!array_key_exists('a', $subFields)) {
             if (array_key_exists('i', $subFields) && array_key_exists('n', $subFields)) {
                 $prefix .= htmlentities($subFields['i']) . " " . htmlentities($subFields['n']) . ": ";
-            } else if (array_key_exists('i', $subFields)) {
-                $prefix .= htmlentities($subFields['i']) . ": ";
-            } else if (array_key_exists('n', $subFields)) {
-                $prefix .= htmlentities($subFields['n']) . ": ";
+            } else {
+                if (array_key_exists('i', $subFields)) {
+                    $prefix .= htmlentities($subFields['i']) . ": ";
+                } else {
+                    if (array_key_exists('n', $subFields)) {
+                        $prefix .= htmlentities($subFields['n']) . ": ";
+                    }
+                }
             }
         } else {
-
             if (array_key_exists('i', $subFields) && array_key_exists('n', $subFields)) {
                 $prefix .= htmlentities($subFields['i']) . " " . htmlentities($subFields['n']) . ": ";
-            } else if (array_key_exists('i', $subFields)) {
-                $prefix .= htmlentities($subFields['i']) . ": ";
-            } else if (array_key_exists('n', $subFields)) {
-                $prefix .= htmlentities($subFields['n']) . ": ";
+            } else {
+                if (array_key_exists('i', $subFields)) {
+                    $prefix .= htmlentities($subFields['i']) . ": ";
+                } else {
+                    if (array_key_exists('n', $subFields)) {
+                        $prefix .= htmlentities($subFields['n']) . ": ";
+                    }
+                }
             }
             $prefix .= htmlentities($subFields['a']) . ". "; // a nachtragen
         }
