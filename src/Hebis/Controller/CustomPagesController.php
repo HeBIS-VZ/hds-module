@@ -27,6 +27,21 @@ class CustomPagesController extends AbstractAdmin
         return $view;
     }
 
-    //TODO
+    public function addPageAction()
+    {
+
+        $view = $this->createViewModel();
+        $view->setTemplate('custompages/add');
+
+        return $view;
+    }
+
+
+    public function saveAction()
+    {
+        //TODO
+    }
+
+
 
 }
