@@ -379,14 +379,16 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     private function generateTag($field, $arr)
     {
         if (!empty($field)) {
-            $_0 = array_filter($field->getSubfields('0'), function ($f) {
-                return strpos($f, "(DE-603)") !== false;
-            });
-
+            $_0 = $field->getSubfields('0');
             if (!empty($_0)) {
                 $gnd = str_replace("(DE-603)", "", array_pop($_0)->getData());
                 $completeTag = '<a href="' . $this->getUrl($gnd) . '">' . Helper::removeControlSigns(implode("", $arr)) . '</a>';
                 return $this->makeCheckboxField($gnd, $completeTag);
+            } else {
+                // search for string in topic
+                $topic = Helper::removeControlSigns(implode("", $arr));
+                $completeTag = '<a href="' . $this->getSearchTopicUrl($topic) . '">' . $topic . '</a>';
+                return $this->makeCheckboxTopicField($topic, $completeTag);
             }
         }
         return implode(" ", $arr);
@@ -407,5 +409,20 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
         $value = "uses_authority:&quot;$gnd&quot;";
         return '<label class="checkbox-inline"><input type="checkbox" name="lookfor0[]" value="' . $value . '" />'
             . '<input type="hidden" name="type0[]" value="allfields" />' . $content . '</label>';
+    }
+
+    private function makeCheckboxTopicField($topic, $content)
+    {
+        return '<label class="checkbox-inline"><input type="checkbox" name="lookfor0[]" value="' . trim($topic) . '" />'
+            . '<input type="hidden" name="type0[]" value="topic" />' . $content . '</label>';
+    }
+
+    private function getSearchTopicUrl($topic)
+    {
+        return $this->getView()->basePath() . "/" .
+            sprintf(
+                "Search/Results?lookfor=%s&type=topic",
+                "%22$topic%22"
+            );
     }
 }
