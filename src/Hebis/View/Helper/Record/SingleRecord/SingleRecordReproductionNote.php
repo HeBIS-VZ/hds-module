@@ -46,45 +46,8 @@ class SingleRecordReproductionNote extends AbstractRecordViewHelper
      */
     public function __invoke(SolrMarc $record)
     {
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
 
-
-        /* Nur anzeigen, wenn Marc Leader Pos. 6 und 7 NICHT [a][s]  (= NICHT Materialart journal or electronic).
-           Wenn 533 $c nicht besetzt:
-           530 $a_533 $b_:_583 $h,_533 $d._-_533 $e._-_(533 $f)
-           SONST: 530 $a_533 $b_:_533 $c,_533 $d._-_533 $e._-_(533 $f) */
-
-        if (substr($marcRecord->getLeader(), 6, 2) === "as") {
-            return "";
-        }
-
-        $str = "";
-        $_533 = $marcRecord->getField('533');
-        $_530_a = Helper::getSubFieldDataOfField($record, '530', 'a');
-        $_533_b = Helper::getSubFieldDataOfField($record, '533', 'b');
-        $_533_d = Helper::getSubFieldDataOfField($record, '533', 'd');
-        $_533_e = Helper::getSubFieldDataOfField($record, '533', 'e');
-        $_533_f = Helper::getSubFieldDataOfField($record, '533', 'f');
-
-        if (empty($_533) || (!empty($_533) && empty($_533->getSubfields('c')))) {
-            $_583_h = Helper::getSubFieldDataOfField($record, '583', 'h');
-            $str .= !empty($_530_a) ? "$_530_a" : "";
-            $str .= !empty($_533_b) ? " $_533_b" : "";
-            $str .= !empty($_583_h) ? ": $_583_h" : "";
-
-        } else {
-            $_533_c = Helper::getSubFieldDataOfField($record, '533', 'c');
-            //$str .= !empty($_533_b) ? "$_530_a $_533_b : " : "$_530_a ";
-            $str .= !empty($_530_a) ? "$_530_a" : "";
-            $str .= !empty($_533_b) ? " $_533_b" : "";
-            $str .= !empty($_533_c) ? " : $_533_c" : "";
-        }
-
-        $str .= !empty($_533_d) ? ", $_533_d" : "";
-        $str .= !empty($_533_e) ? ". - $_533_e" : "";
-        $str .= !empty($_533_f) ? ". - ($_533_f)" : "";
-
-        return $str;
+        $_250a = Helper::getSubFieldDataOfField($record, '250', 'a');
+        return !$_250a ? "" : $_250a;
     }
 }
