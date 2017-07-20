@@ -145,16 +145,20 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             //$marc = str_replace(["<", ">"], ["&lt;", "&gt;"], $marc);
             $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
         }
+
+        //TODO: solve PICA problems
+        /*
         try {
             $picaParser = PicaRecordParser::getInstance();
             $this->picaRecord = $picaParser->parse($data['raw_fullrecord'])->getRecord();
             self::$currentPicaRecord = $this->picaRecord;
         } catch (\Exception $e) {
-            /** @var  \Zend\Log\LoggerInterface $logger */
+            // @var  \Zend\Log\LoggerInterface $logger
             //$logger = $this->getLogger();
             //$logger->err("Could not parse pica record ".$data['id']." in class ". __CLASS__ . ", line: " . __LINE__);
-            throw new BackendException("Error parsing PICA", 0, $e);
+            //throw new BackendException("Error parsing PICA", 0, $e);
         }
+        */
         $this->marcRecord = $marc->next();
 
         if (!$this->marcRecord) {
