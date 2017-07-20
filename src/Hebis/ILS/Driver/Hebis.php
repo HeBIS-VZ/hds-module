@@ -81,7 +81,7 @@ class Hebis extends PAIA
      */
     protected function parseDaiaArray($id, $daiaArray)
     {
-        $picaRecord = SolrMarc::getCurrentPicaRecord();
+        //$picaRecord = SolrMarc::getCurrentPicaRecord();
         $doc_id = null;
 
 
@@ -103,11 +103,11 @@ class Hebis extends PAIA
 
         $epn = trim(str_replace("epn:", "", $daiaArray['item'][0]['id']));
 
-        /** @var LocalRecord $picaLevel2 */
+        /* @var LocalRecord $picaLevel2 *
         $picaLevel2 = array_filter($picaRecord->getLocalRecords(), function ($localRecord) use ($epn) {
-            /** @var LocalRecord $localRecord */
+            // @var LocalRecord $localRecord
             $copyRecords = $localRecord->getCopyRecords();
-            /** @var CopyRecord $copyRecord */
+            // @var CopyRecord $copyRecord
             foreach ($copyRecords as $copyRecord) {
                 $epn_c = trim($copyRecord->getEPN());
                 if ($epn_c == $epn) {
@@ -116,6 +116,7 @@ class Hebis extends PAIA
             }
             return false;
         });
+        */
         // if one or more items exist, iterate and build result-item
         if (isset($daiaArray['item']) && is_array($daiaArray['item'])) {
             $number = 0;

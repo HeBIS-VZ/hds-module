@@ -37,14 +37,15 @@ class ContentType
             "a" => [
                 //"xxx" => "article",
                 "c" => "article",
+                "cr" => "article",
                 "t" => "article"
             ],
             "m" => [
                 "xxx" => "book",
                 "tuy" => "hierarchy", //bei leader 19 = a
                 "co" => "dvd",
-                "cocd" => "cd",
                 "c " => "cd",
+                "c|" => "cd",
                 "cr" => "ebook",
                 "cry" => "hierarchy", //bei leader 19 = a
                 "cu" => "ebook",
@@ -53,6 +54,7 @@ class ContentType
                 "o" => "kit",
                 "r" => "retro",
                 "t" => "book",
+                "oy"
             ],
             "s" => [
                 "xxx" => "journal",
@@ -63,6 +65,7 @@ class ContentType
                 "cocd" => "journal",
                 "cr" => "electronic",
                 "c " => "journal",
+                "c|" => "journal",
                 "f" => "sensorimage",
 
             ],
@@ -104,19 +107,19 @@ class ContentType
             "m" => [
                 "co" => "audio",
                 "c " => "audio",
-                "s" => "audio",
-                "cocd" => "cd"
+                "c|" => "audio",
+                "s" => "audio"
             ]
         ],
         "j" => [
             "m" => [
                 "xxx" => "audio",
-                "s" => "audio",
-                "cocd" => "audio"
+                "s" => "audio"
             ],
             "s" => [
                 "co" => "audio",
-                "c " => "audio"
+                "c " => "audio",
+                "c|" => "audio"
             ]
         ],
         "k" => [
@@ -130,7 +133,10 @@ class ContentType
             "m" => [
                 "xxx" => "kit",
                 "o" => "kit",
-            ]
+            ],
+            "i" => [
+                "oy" => "hierarchy",
+            ],
         ],
         "r" => [
             "m" => [
@@ -165,6 +171,20 @@ class ContentType
             $phys = substr($_007->getData(), 0, 1);
         }
 
+        if ($phys === "c") {
+            $phys = substr($_007->getData(), 0, 2);
+        }
+
+        if ($l19 = substr($marcRecord->getLeader(), 19, 1) == 'a') {
+            $phys = substr($_007->getData(), 0, 2);
+            if (($art == "a" || $art == "o") && ($level == "m" || $level == "i")) {
+                if ($phys == "tu" || $phys == "cr" || $phys == "o") {
+                    $phys .= "y";
+                    return isset(self::$physicalDescription[$art][$level][$phys]) ? self::$physicalDescription[$art][$level][$phys] : "";
+                }
+            }
+        }
+
         // Exceptions for CD/DVD
         $_300_a = Helper::getSubFieldDataOfField($record, 300, 'a');
 
@@ -190,12 +210,13 @@ class ContentType
                     $phys = "c ";
                 }
             }
-            if ($phys == "c ") {
-                if (strpos($_300_a, "DVD") !== false) {
+            if ($phys == "c " || $phys == "c|") {
+                $_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
+                if (strpos($_300_a, "DVD") !== false || strpos($_338_b, "vd") !== false) {
                     $phys = "co";
                 }
             }
-            if ($phys == "cr") {
+            if ($phys == "cr" || $phys == "oy") {
                 if (substr($marcRecord->getLeader(), 19, 1) == 'a') {
                     $phys = "cry";
                 }
@@ -206,11 +227,12 @@ class ContentType
                 }
             }
         }
-
+        /*
         $_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
         if ($_338_b === "vd") {
             $phys = "co";
         }
+        */
 
         /* Falls in 856 $3 der Inhalt "Katalogkarte" vorhanden ist UND Art=a, Level=m und Phys=xxx, dann Phys = r. */
         if ($art == "a" && $level == "m" && $phys == "xxx") {
