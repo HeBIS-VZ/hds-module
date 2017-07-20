@@ -74,84 +74,31 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
             $ind1 = $field->getIndicator(1);
             $ind2 = $field->getIndicator(2);
             if ($ind1 == "0" && $ind2 == "8") {
-                $arr[] = $this->generateContents($field);
+                $w_ = array_filter($field->getSubfields('w'), function (\File_MARC_Subfield $elem) {
+                    return strpos($elem->getData(), "(DE-603)") !== false;
+                });
+                if (!empty($w_)) {
+                    $str = $this->getView()->ppnLink()->getLink(
+                        $this->generateContents($field),
+                        $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                        ["backlink" => $this->record->getPPN()]
+                    );
+                } else {
+                    $str = $this->generateContents($field);
+                }
+
+
+                $arr[] = $this->generatePrefix($field).$str;
             }
         }
 
         return implode("<br />", $arr);
     }
 
-    /**
-     * @param \File_MARC_Data_Field $field
-     * @return string
-     */
-    protected function generateContents($field)
+    protected function generatePrefix($field)
     {
         $subFieldKeys = ['t', 'b', 'd', 'g', 'h', 'z', 'o', 'x'];
         $subFields = $this->getSubfieldsAsArray($field);
-
-        $w_ = array_filter($field->getSubfields('w'), function (\File_MARC_Subfield $elem) {
-            return strpos($elem->getData(), "(DE-603)") !== false;
-        });
-
-        $arr = [];
-        $tCalled = false;
-        foreach ($subFieldKeys as $pos => $key) {
-            switch ($key) {
-                case 'a':
-                    if (!empty($w_)) { // mit link
-
-                        $linkText = $subFields[$key] . ". ";
-                        if (array_key_exists("t", $subFields)) { //mit link?
-                            $linkText .= htmlentities($subFields['t']);
-                            $tCalled = true;
-                        }
-                        $str = $this->getView()->ppnLink()->getLink(
-                            $linkText,
-                            $this->removePrefix($w_[0]->getData(), "(DE-603)"),
-                            ["backlink" => $this->record->getPPN()]
-                        );
-
-                        $arr[] = $str;
-                    } else {
-                        $arr[] = htmlentities($subFields[$key]);
-                    }
-                    break;
-
-                case 'z':
-                    if (array_key_exists($key, $subFields)) {
-                        $arr[$key] = "ISBN " . htmlentities($subFields[$key]);
-                    }
-                    break;
-
-                case 'x':
-                    if (array_key_exists($key, $subFields)) {
-                        $arr[$key] = "ISSN " . htmlentities($subFields[$key]);
-                    }
-                    break;
-
-                case 't':
-                    if (!$tCalled && array_key_exists($key, $subFields)) {
-                        if (!empty($w_) && !array_key_exists('a', $subFields)) {
-                            //$str = '<a href="' . $this->link($w_[0]->getData()) . '">' . htmlentities($subFields[$key]) . '</a>';
-                            $str = $this->getView()->ppnLink()->getLink(
-                                htmlentities($subFields[$key]),
-                                $this->removePrefix($w_[0]->getData(), "(DE-603)"),
-                                ["backlink" => $this->record->getPPN()]
-                            );
-                        } else {
-                            $str = htmlentities($subFields[$key]);
-                        }
-                        $arr[$key] = $str;
-                    }
-                    break;
-
-                default:
-                    if (array_key_exists($key, $subFields)) {
-                        $arr[$key] = htmlentities($subFields[$key]);
-                    }
-            }
-        }
 
         $prefix = "";
         /* Wenn kein $a vorhanden, dann nach Inhalt aus
@@ -183,12 +130,70 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
             }
             $prefix .= htmlentities($subFields['a']) . ". "; // a nachtragen
         }
+        return $prefix;
+    }
 
-        return $prefix . implode(". - ", $arr);
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @return string
+     */
+    protected function generateContents($field)
+    {
+        $subFieldKeys = ['t', 'b', 'd', 'g', 'h', 'z', 'o', 'x'];
+        $subFields = $this->getSubfieldsAsArray($field);
+
+        $arr = [];
+
+        foreach ($subFieldKeys as $pos => $key) {
+            switch ($key) {
+                case 'a':
+                    if (!empty($w_)) { // mit link
+
+                        $linkText = $subFields[$key] . ". ";
+                        if (array_key_exists("t", $subFields)) { //mit link?
+                            $linkText .= htmlentities($subFields['t']);
+                            $tCalled = true;
+                        }
+
+                        $arr[] = $str;
+                    } else {
+                        $arr[] = htmlentities($subFields[$key]);
+                    }
+                    break;
+
+                case 'z':
+                    if (array_key_exists($key, $subFields)) {
+                        $arr[$key] = "ISBN " . htmlentities($subFields[$key]);
+                    }
+                    break;
+
+                case 'x':
+                    if (array_key_exists($key, $subFields)) {
+                        $arr[$key] = "ISSN " . htmlentities($subFields[$key]);
+                    }
+                    break;
+
+                case 't':
+                    if (array_key_exists($key, $subFields)) {
+                        $str = htmlentities($subFields[$key]);
+                        $arr[$key] = $str;
+                    }
+                    break;
+
+                default:
+                    if (array_key_exists($key, $subFields)) {
+                        $arr[$key] = htmlentities($subFields[$key]);
+                    }
+            }
+        }
+
+        return implode(". - ", $arr);
     }
 
     protected function link($w)
     {
-        return $this->getView()->basePath() . '/RecordFinder/HEB' . $this->removePrefix($w, "(DE-603)");
+        $ppn = $this->removePrefix($w, "(DE-603)");
+        $ppnLink = $this->getView()->ppnLink()->getLink($ppn);
+        return $ppnLink;
     }
 }

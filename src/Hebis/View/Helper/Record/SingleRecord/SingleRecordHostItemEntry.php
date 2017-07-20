@@ -50,6 +50,7 @@ class SingleRecordHostItemEntry extends ResultListHostItemEntry
      */
     public function __invoke(SolrMarc $record)
     {
+        $ret = "";
         $this->record = $record;
 
         $id = $record->getUniqueID();
@@ -62,7 +63,13 @@ class SingleRecordHostItemEntry extends ResultListHostItemEntry
         $fields = $marcRecord->getFields(773);
         $out = $this->output($fields);
         $w = $this->getAllAssociatedPPNs($fields);
-        $ret = !empty($w) && !empty($out) ? implode("<br />", [$out, $this->showAllLink($record, $w[0])]) : "";
+        if (!empty($out)) {
+            if (!empty($w)) {
+                $ret = implode("<br />", [$out, $this->showAllLink($record, $w[0])]);
+            } else {
+                $ret = $out;
+            }
+        }
         return $ret;
     }
 

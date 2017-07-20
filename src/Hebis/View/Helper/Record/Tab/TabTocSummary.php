@@ -54,7 +54,10 @@ class TabTocSummary extends AbstractRecordViewHelper
             $ret[] = str_replace("Abstract-Anfang", "", $a);
         }
 
-        $fields856 = $marcRecord->getFields(856);
+        $fields856 = array_filter($marcRecord->getFields(856), function($field) {
+            /** @var \File_MARC_Data_Field $field */
+            return $field->getIndicator(2) == 2;
+        });
         foreach ($fields856 as $field) {
             $u = $this->getSubField($field, "u");
             $_3 = $this->getSubField($field, "3");
