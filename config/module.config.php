@@ -14,7 +14,8 @@ $config = [
             'db_table' => [
                 'abstract_factories' => ['VuFind\Db\Table\PluginFactory'],
                 'factories' => [
-                    'user_oauth' => 'Hebis\Db\Table\Factory::getUserOAuth'
+                    'user_oauth' => 'Hebis\Db\Table\Factory::getUserOAuth',
+                    'static_post' => 'Hebis\Db\Table\Factory::getStaticPost'
                 ]
             ],
             'ils_driver' => [

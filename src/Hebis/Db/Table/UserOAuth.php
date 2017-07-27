@@ -40,7 +40,6 @@ class UserOAuth extends \VuFind\Db\Table\Gateway
 {
 
     private $config;
-
     private $session;
 
     /**

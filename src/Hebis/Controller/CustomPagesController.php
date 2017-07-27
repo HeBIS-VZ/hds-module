@@ -4,7 +4,6 @@
 namespace Hebis\Controller;
 
 use VuFindAdmin\Controller\AbstractAdmin;
-use Hebis\Form\Add;
 
 /**
  * Class to manage custom pages
@@ -13,6 +12,8 @@ use Hebis\Form\Add;
  */
 class CustomPagesController extends AbstractAdmin
 {
+
+    protected $postTable;
 
     /**
      * Custom Pages Manager Details
@@ -25,25 +26,39 @@ class CustomPagesController extends AbstractAdmin
         $view = $this->createViewModel();
         $view->setTemplate('custompages/home');
 
+        $table = $this->getTable('static_post');
+
+        $rows = $table->fetchAll();
+
+        $view->rows = $rows;
+
         return $view;
     }
 
-    public function addPageAction()
+    public function addPageAction($params)
     {
-        $form = new Add();
 
-//        if($this->getRequest()->isPost()) {
-//            $form->setData($this->getRequest()->getPost());
-//
-//            //TODO Save page into Data bank
-//        }
-
-        $view = $this->createViewModel(array('form' => $form));
+        $view = $this->createViewModel();
         $view->setTemplate('custompages/add');
 
         return $view;
     }
 
+    public function editPageAction()
+    {
+        $view = $this->createViewModel();
+        $view->setTemplate('custompages/edit');
 
+        return $view;
+    }
+
+    public function deletePageAction()
+    {
+        $view = $this->createViewModel();
+        $view->setTemplate('custompages/delete');
+
+        return $view;
+
+    }
 
 }

@@ -52,4 +52,10 @@ class Factory extends \VuFind\Db\Table\Factory
         }
         return new UserOAuth($config, $rowClass, $session);
     }
+
+    public static function getStaticPost(ServiceManager $sm)
+    {
+        $rowClass = 'Hebis\Db\Row\StaticPost';
+        return new StaticPost($rowClass);
+    }
 }

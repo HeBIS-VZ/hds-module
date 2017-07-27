@@ -1,12 +1,12 @@
 <?php
 
-namespace Hebis\Form;
+namespace Hebis\StaticPages;
 
 
 use Zend\Form\Form;
 use Zend\Form\Element;
 
-class Add extends Form
+class FAdd extends Form
 {
     public function __construct()
     {
