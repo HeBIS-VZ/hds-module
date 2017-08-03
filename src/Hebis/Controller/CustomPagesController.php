@@ -3,7 +3,9 @@
 
 namespace Hebis\Controller;
 
+use VuFind\SMS\AbstractBase;
 use VuFindAdmin\Controller\AbstractAdmin;
+use Hebis\Db\Table\StaticPost;
 
 /**
  * Class to manage custom pages
@@ -13,7 +15,6 @@ use VuFindAdmin\Controller\AbstractAdmin;
 class CustomPagesController extends AbstractAdmin
 {
 
-    protected $postTable;
 
     /**
      * Custom Pages Manager Details
@@ -31,6 +32,21 @@ class CustomPagesController extends AbstractAdmin
         $rows = $table->fetchAll();
 
         $view->rows = $rows;
+
+        return $view;
+    }
+
+    public function viewPage($id)
+    {
+        $view = $this->createViewModel();
+        $view->setTemplate('custompages/viewpage');
+
+        $table = $this->getTable('static_post');
+
+        $page = $table->getPost($id);
+
+        $view->title = $page[$headline];
+        $view->content = $page[$content];
 
         return $view;
     }

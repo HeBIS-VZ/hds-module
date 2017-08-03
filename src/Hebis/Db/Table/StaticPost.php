@@ -14,6 +14,11 @@ class StaticPost extends Gateway
         parent::__construct('static_post', $rowClass);
     }
 
+    public function getPost($id)
+    {
+        return $this->select($id);
+    }
+
     public function savePost(Post $post)
     {
         $data = array(
