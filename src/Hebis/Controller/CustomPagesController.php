@@ -41,13 +41,6 @@ class CustomPagesController extends AbstractAdmin
         $view = $this->createViewModel();
         $view->setTemplate('custompages/viewpage');
 
-        $table = $this->getTable('static_post');
-
-        $page = $table->getPost($id);
-
-        $view->title = $page[$headline];
-        $view->content = $page[$content];
-
         return $view;
     }
 
