@@ -106,6 +106,12 @@ class EdsController extends \VuFind\Controller\EdsController
 
     public function resultsAction()
     {
+        $this->cleanISSNParameter();
+        return parent::resultsAction();
+    }
+
+    public function cleanISSNParameter()
+    {
         $issnPattern = "/(\d{4})-(\d{4})/";
         if (!empty($type = $this->getRequest()->getQuery()->get("type"))) {
             if ($type === "IS") {
@@ -121,12 +127,10 @@ class EdsController extends \VuFind\Controller\EdsController
                     $lookfor0 = $this->getRequest()->getQuery()->get("lookfor0");
                     if (preg_match($issnPattern, $lookfor0[$pos], $match)) {
                         $lookfor[$pos] = $match[1] . $match[2];
-                        $this->getRequest()->getQuery()->set("lookfor0", $lookfor0);
+                        $this->getRequest()->getQuery()->set("lookfor0", $lookfor);
                     }
                 }
             }
         }
-
-        return parent::resultsAction();
     }
 }
