@@ -27,6 +27,8 @@
 
 namespace Hebis\Controller;
 
+use Zend\Stdlib\Parameters;
+
 /**
  * Class EdsController
  * @package Hebis\Controller
@@ -98,6 +100,52 @@ class EdsController extends \VuFind\Controller\EdsController
                 return $response;
             } else {
                 throw new \Exception('Unsupported output mode: ' . $this->outputMode);
+            }
+        }
+    }
+
+    /**
+     * Clean ISSN before starting search request
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function resultsAction()
+    {
+        $this->cleanISXNParameter();
+        return parent::resultsAction();
+    }
+
+    /**
+     * removes '-' from the search query
+     */
+    public function cleanISXNParameter()
+    {
+        $issnPattern = "/(\d{4})-(\d{4})/";
+        if (!empty($type = $this->getRequest()->getQuery()->get("type"))) {
+            $lookfor = $this->getRequest()->getQuery()->get("lookfor");
+            if ($type === "IS") {
+                if (preg_match($issnPattern, $lookfor, $match)) {
+                    $lookfor = $match[1] . $match[2];
+                    $this->getRequest()->getQuery()->set("lookfor", $lookfor);
+                }
+            }
+            if ($type === "IB") {
+                $lookfor = str_replace("-", "", $lookfor);
+                $this->getRequest()->getQuery()->set("lookfor", $lookfor);
+            }
+        } elseif (!empty($type0 = $this->getRequest()->getQuery()->get("type0"))) {
+            if (is_array($type0)) {
+                if (($pos = array_search("IS", $type0)) !== false) {
+                    $lookfor0 = $this->getRequest()->getQuery()->get("lookfor0");
+                    if (preg_match($issnPattern, $lookfor0[$pos], $match)) {
+                        $lookfor[$pos] = $match[1] . $match[2];
+                        $this->getRequest()->getQuery()->set("lookfor0", $lookfor);
+                    }
+                } elseif (($pos = array_search("IB", $type0)) !== false) {
+                    $lookfor0 = $this->getRequest()->getQuery()->get("lookfor0");
+                    $lookfor_ = str_replace("-", "", $lookfor0[$pos]);
+                    $lookfor[$pos] = $lookfor_;
+                    $this->getRequest()->getQuery()->set("lookfor0", $lookfor);
+                }
             }
         }
     }
