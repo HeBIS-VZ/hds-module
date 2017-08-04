@@ -104,12 +104,19 @@ class EdsController extends \VuFind\Controller\EdsController
         }
     }
 
+    /**
+     * Clean ISSN before starting search request
+     * @return \Zend\View\Model\ViewModel
+     */
     public function resultsAction()
     {
         $this->cleanISSNParameter();
         return parent::resultsAction();
     }
 
+    /**
+     * removes '-' from the search query
+     */
     public function cleanISSNParameter()
     {
         $issnPattern = "/(\d{4})-(\d{4})/";
