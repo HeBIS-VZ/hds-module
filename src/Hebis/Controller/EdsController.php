@@ -110,23 +110,27 @@ class EdsController extends \VuFind\Controller\EdsController
      */
     public function resultsAction()
     {
-        $this->cleanISSNParameter();
+        $this->cleanISXNParameter();
         return parent::resultsAction();
     }
 
     /**
      * removes '-' from the search query
      */
-    public function cleanISSNParameter()
+    public function cleanISXNParameter()
     {
         $issnPattern = "/(\d{4})-(\d{4})/";
         if (!empty($type = $this->getRequest()->getQuery()->get("type"))) {
+            $lookfor = $this->getRequest()->getQuery()->get("lookfor");
             if ($type === "IS") {
-                $lookfor = $this->getRequest()->getQuery()->get("lookfor");
                 if (preg_match($issnPattern, $lookfor, $match)) {
                     $lookfor = $match[1] . $match[2];
                     $this->getRequest()->getQuery()->set("lookfor", $lookfor);
                 }
+            }
+            if ($type === "IB") {
+                $lookfor = str_replace("-", "", $lookfor);
+                $this->getRequest()->getQuery()->set("lookfor", $lookfor);
             }
         } elseif (!empty($type0 = $this->getRequest()->getQuery()->get("type0"))) {
             if (is_array($type0)) {
@@ -136,6 +140,11 @@ class EdsController extends \VuFind\Controller\EdsController
                         $lookfor[$pos] = $match[1] . $match[2];
                         $this->getRequest()->getQuery()->set("lookfor0", $lookfor);
                     }
+                } elseif (($pos = array_search("IB", $type0)) !== false) {
+                    $lookfor0 = $this->getRequest()->getQuery()->get("lookfor0");
+                    $lookfor_ = str_replace("-", "", $lookfor0[$pos]);
+                    $lookfor[$pos] = $lookfor_;
+                    $this->getRequest()->getQuery()->set("lookfor0", $lookfor);
                 }
             }
         }
