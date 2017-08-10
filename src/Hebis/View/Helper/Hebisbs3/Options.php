@@ -44,7 +44,7 @@ class Options extends AbstractHelper
     public function __construct(\Zend\ServiceManager\ServiceManager $sm)
     {
         $this->options = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        $this->edsOptions = $sm->getServiceLocator()->get('VuFind\Config')->get('eds');
+        $this->edsOptions = $sm->getServiceLocator()->get('VuFind\Config')->get('EDS');
     }
 
     public function theme()
