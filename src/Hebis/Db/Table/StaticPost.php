@@ -13,35 +13,29 @@ class StaticPost extends Gateway
         parent::__construct('static_post', $rowClass);
     }
 
-    public function savePost(Post $post)
-    {
-        $data = array(
-            'headline' => $post->headline,
-            'content' => $post->content,
-            'author' => $post->author,
-            'date' => $post->dateAdded
-        );
-
-        $id = (int)$post->id;
-        if ($id == 0) {
-            $this->insert($data);
-        } else {
-            if ($this->getPost($id)) {
-                $this->update($data, array('id' => $id));
-            } else {
-                throw new \Exception('Post id does not exist');
-            }
-        }
-    }
-
     public function deletePost($id)
     {
         $this->delete(array('id' => (int)$id));
     }
 
-    public function fetchAll()
+    public function getAll()
     {
         return $this->select();
+    }
+
+    /**
+     * @param $id
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function getPost($id)
+    {
+        $staticPostRow = $this->select(['id' => (int)$id]);
+
+        /*if (!$staticPostRow) {
+            throw new \Exception("Could not find post $id");
+        */
+
+        return $staticPostRow;
     }
 
 }

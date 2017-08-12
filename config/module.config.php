@@ -110,7 +110,7 @@ $config = [
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
             'adminlogs' => 'Hebis\Controller\AdminLogsController',
-            'custompages' => 'Hebis\Controller\CustomPagesController',
+            'staticpages' => 'Hebis\Controller\StaticPagesController',
         ]
     ],
     'router' => [
@@ -146,22 +146,49 @@ $config = [
                 ]
             ],
             'adminlogs' => [
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
                     'route' => '/Admin/Logs',
                     'defaults' => [
                         'controller' => 'adminlogs',
                         'action' => 'Home',
-                    ]
+                    ],
                 ],
             ],
-            'custompages' => [
-                'type' => 'Zend\Mvc\Router\Http\Segment',
+            'staticpages' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
-                    'route' => '/Admin/Custom-pages[/:action]',
+                    'route' => '/Admin/Static-pages',
                     'defaults' => [
-                        'controller' => 'custompages',
+                        'controller' => 'staticpages',
                         'action' => 'Home',
+                    ]
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'view' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/View/:id',
+                            'defaults' => [
+                                'action' => 'View'
+                            ],
+                            'constraints' => [
+                                'id' => '\d+'
+                            ]
+                        ]
+                    ],
+                    'edit' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/Edit/:id',
+                            'defaults' => [
+                                'action' => 'edit'
+                            ],
+                            'constraints' => [
+                                'id' => '\d+'
+                            ]
+                        ]
                     ]
                 ]
             ],
