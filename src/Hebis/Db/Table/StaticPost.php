@@ -25,15 +25,16 @@ class StaticPost extends Gateway
 
     /**
      * @param $id
-     * @return \Zend\Db\ResultSet\ResultSet
+     * @return mixed
+     * @throws \Exception
      */
     public function getPost($id)
     {
-        $staticPostRow = $this->select(['id' => (int)$id]);
+        $staticPostRow = $this->select(['id' => 2])->current();
 
-        /*if (!$staticPostRow) {
+        if (!$staticPostRow) {
             throw new \Exception("Could not find post $id");
-        */
+        }
 
         return $staticPostRow;
     }

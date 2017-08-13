@@ -38,7 +38,8 @@ class StaticPagesController extends AbstractAdmin
         $view = $this->createViewModel();
         $view->setTemplate('staticpages/view');
         $table = $this->getTable('static_post');
-        $view->row = $table->getPost($id);
+        $row = $table->getPost($id);
+        $view->row = $row;
 
         return $view;
     }

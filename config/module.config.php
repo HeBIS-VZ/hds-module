@@ -174,7 +174,7 @@ $config = [
                                 'action' => 'View'
                             ],
                             'constraints' => [
-                                'id' => '\d+'
+                                'id' => '[1-9]\d*',
                             ]
                         ]
                     ],
