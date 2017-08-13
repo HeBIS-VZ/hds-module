@@ -30,7 +30,7 @@ class StaticPost extends Gateway
      */
     public function getPost($id)
     {
-        $staticPostRow = $this->select(['id' => 2])->current();
+        $staticPostRow = $this->select(['id' => $id])->current();
 
         if (!$staticPostRow) {
             throw new \Exception("Could not find post $id");
