@@ -158,7 +158,7 @@ $config = [
             'staticpages' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
-                    'route' => '/Admin/Static-pages',
+                    'route' => '/Admin/Staticpages',
                     'defaults' => [
                         'controller' => 'staticpages',
                         'action' => 'Home',
@@ -169,7 +169,7 @@ $config = [
                     'view' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
-                            'route' => '/View/:id',
+                            'route' => '/View=:id',
                             'defaults' => [
                                 'action' => 'View'
                             ],
@@ -181,12 +181,33 @@ $config = [
                     'edit' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
-                            'route' => '/Edit/:id',
+                            'route' => '/Edit=:id',
                             'defaults' => [
                                 'action' => 'edit'
                             ],
                             'constraints' => [
                                 'id' => '\d+'
+                            ]
+                        ]
+                    ],
+                    'delete' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/!Delete=:id',
+                            'defaults' => [
+                                'action' => 'delete'
+                            ],
+                            'constraints' => [
+                                'id' => '\d+'
+                            ]
+                        ]
+                    ],
+                    'add' => [
+                        'type' => 'Zend\Mvc\Router\Http\Literal',
+                        'options' => [
+                            'route' => '/Add',
+                            'defaults' => [
+                                'action' => 'add'
                             ]
                         ]
                     ]

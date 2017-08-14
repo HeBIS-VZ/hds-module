@@ -33,6 +33,9 @@ class StaticPagesController extends AbstractAdmin
         return $view;
     }
 
+    /** Action: view static page by route
+     * @return \Zend\View\Model\ViewModel
+     */
     public function viewAction()
     {
         $view = $this->createViewModel();
@@ -46,16 +49,15 @@ class StaticPagesController extends AbstractAdmin
         return $view;
     }
 
-    /**
-     * @param $params
+    /** Action: Add new static page
      * @return \Zend\View\Model\ViewModel
      */
-    public function addPageAction()
+    public function addAction()
     {
 
         $view = $this->createViewModel();
         $view->setTemplate('staticpages/add');
-
+        // TODO: create form
 
         return $view;
     }
@@ -72,6 +74,7 @@ class StaticPagesController extends AbstractAdmin
     {
         $view = $this->createViewModel();
         $view->setTemplate('staticpages/delete');
+        // TODO: Delete query
 
         return $view;
 
