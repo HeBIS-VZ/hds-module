@@ -110,7 +110,7 @@ $config = [
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
             'adminlogs' => 'Hebis\Controller\AdminLogsController',
-            'staticpages' => 'Hebis\Controller\StaticPagesController',
+            'adminstaticpages' => 'Hebis\Controller\StaticPagesController',
         ]
     ],
     'router' => [
@@ -155,12 +155,12 @@ $config = [
                     ],
                 ],
             ],
-            'staticpages' => [
+            'adminstaticpages' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
                     'route' => '/Admin/Staticpages',
                     'defaults' => [
-                        'controller' => 'staticpages',
+                        'controller' => 'adminstaticpages',
                         'action' => 'Home',
                     ]
                 ],
