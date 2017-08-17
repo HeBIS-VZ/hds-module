@@ -103,6 +103,7 @@ $config = [
             'OAuth' => 'Hebis\Controller\Factory::getOAuth',
             'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder',
             'Xisbn' => 'Hebis\Controller\Factory::getXisbn',
+            'adminstaticpages' => 'Hebis\Controller\Factory::getStaticPagesController',
         ],
         'invokables' => [
             'ajax' => 'Hebis\Controller\AjaxController',
@@ -110,7 +111,6 @@ $config = [
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
             'adminlogs' => 'Hebis\Controller\AdminLogsController',
-            'adminstaticpages' => 'Hebis\Controller\StaticPagesController',
         ]
     ],
     'router' => [
@@ -169,19 +169,20 @@ $config = [
                     'view' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
-                            'route' => '/View=:id',
+                            'route' => '/View/:id',
                             'defaults' => [
                                 'action' => 'View'
                             ],
                             'constraints' => [
-                                'id' => '[1-9]\d*',
+                                'id' => '\d+'
                             ]
                         ]
                     ],
+
                     'edit' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
-                            'route' => '/Edit=:id',
+                            'route' => '/Edit/:id',
                             'defaults' => [
                                 'action' => 'edit'
                             ],

@@ -23,7 +23,7 @@ class AdminLogsController extends AbstractAdmin
 
         $view = $this->createViewModel();
 
-        $view->setTemplate('adminlogs/home');
+        $view->setTemplate('adminlogs/logs');
         $view->logContent = $this->getLogFileContent();
         $view->lineCount = $this->getLineCount();
         //$view->site = 'logs';

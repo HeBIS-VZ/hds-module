@@ -37,6 +37,15 @@ use Zend\ServiceManager\ServiceManager;
 class Factory
 {
 
+
+    public static function getStaticPagesController(ServiceManager $sm)
+    {
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('static_post');
+        $staticPagesController = new StaticPagesController($table);
+        return $staticPagesController;
+    }
+
     /**
      * Construct the FlashMessenger plugin.
      *

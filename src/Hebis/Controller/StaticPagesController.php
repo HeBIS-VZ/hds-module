@@ -3,6 +3,7 @@
 
 namespace Hebis\Controller;
 
+use Hebis\Db\Table\StaticPost;
 use VuFindAdmin\Controller\AbstractAdmin;
 
 
@@ -14,7 +15,12 @@ use VuFindAdmin\Controller\AbstractAdmin;
  */
 class StaticPagesController extends AbstractAdmin
 {
+    protected $table;
 
+    public function __construct(StaticPost $table)
+    {
+        $this->table = $table;
+    }
 
     /**
      * Static Pages Administrator Home View
@@ -25,10 +31,9 @@ class StaticPagesController extends AbstractAdmin
     {
 
         $view = $this->createViewModel();
-        $view->setTemplate('adminstaticpages/home');
-        $table = $this->getTable('static_post');
+        $view->setTemplate('adminstaticpages/list');
 
-        $view->rows = $table->getAll();
+        $view->rows = $this->table->getAll();
 
         return $view;
     }
@@ -40,9 +45,8 @@ class StaticPagesController extends AbstractAdmin
     {
         $view = $this->createViewModel();
         $view->setTemplate('adminstaticpages/view');
-        $table = $this->getTable('static_post');
         $id = $this->params()->fromRoute();
-        $row = $table->getPost($id);
+        $row = $this->table->getPost($id);
         $visible = $row->visible;
         $view->row = $row;
 
@@ -54,15 +58,27 @@ class StaticPagesController extends AbstractAdmin
      */
     public function addAction()
     {
+        $request = $this->getRequest();
 
         $view = $this->createViewModel();
         $view->setTemplate('adminstaticpages/add');
 
+        if (!$request->isPost()) {
+            return $view;
+        }
 
-        return $view;
+        $table = $this->getTable('static_post');
+
+        $row = $table->createStaticPage();
+
+        $row->headline = $this->params()->fromPost('headline');
+        $row->content = $this->params()->fromPost('content');
+        $row->save();
+        $id = $row->id;
+        return $this->forwardTo('adminstaticpages', 'view', ['id' => $id]);
     }
 
-    public function editPageAction()
+    public function editAction()
     {
         $view = $this->createViewModel();
         $view->setTemplate('adminstaticpages/edit');
@@ -70,13 +86,18 @@ class StaticPagesController extends AbstractAdmin
         return $view;
     }
 
-    public function deletePageAction()
+    public function deleteAction()
     {
         $view = $this->createViewModel();
         $view->setTemplate('adminstaticpages/delete');
         // TODO: Delete query
 
         return $view;
+
+    }
+
+    public function initTable()
+    {
 
     }
 

@@ -19,5 +19,16 @@ class StaticPost extends RowGateway
         parent::__construct('id', 'static_post', $adapter);
     }
 
+    public function getPost($id)
+    {
+        $staticPostRow = $this->select(['id' => $id])->current();
+
+        if (!$staticPostRow) {
+            throw new \Exception("Could not find post $id");
+        }
+
+        return $staticPostRow;
+    }
+
 
 }
