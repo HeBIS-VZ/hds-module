@@ -25,7 +25,7 @@ class StaticPagesController extends AbstractAdmin
     {
 
         $view = $this->createViewModel();
-        $view->setTemplate('staticpages/home');
+        $view->setTemplate('adminstaticpages/home');
         $table = $this->getTable('static_post');
 
         $view->rows = $table->getAll();
@@ -39,7 +39,7 @@ class StaticPagesController extends AbstractAdmin
     public function viewAction()
     {
         $view = $this->createViewModel();
-        $view->setTemplate('staticpages/view');
+        $view->setTemplate('adminstaticpages/view');
         $table = $this->getTable('static_post');
         $id = $this->params()->fromRoute();
         $row = $table->getPost($id);
@@ -56,8 +56,8 @@ class StaticPagesController extends AbstractAdmin
     {
 
         $view = $this->createViewModel();
-        $view->setTemplate('staticpages/add');
-        // TODO: create form
+        $view->setTemplate('adminstaticpages/add');
+
 
         return $view;
     }
@@ -65,7 +65,7 @@ class StaticPagesController extends AbstractAdmin
     public function editPageAction()
     {
         $view = $this->createViewModel();
-        $view->setTemplate('staticpages/edit');
+        $view->setTemplate('adminstaticpages/edit');
 
         return $view;
     }
@@ -73,7 +73,7 @@ class StaticPagesController extends AbstractAdmin
     public function deletePageAction()
     {
         $view = $this->createViewModel();
-        $view->setTemplate('staticpages/delete');
+        $view->setTemplate('adminstaticpages/delete');
         // TODO: Delete query
 
         return $view;

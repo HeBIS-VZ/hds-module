@@ -7,27 +7,24 @@ use VuFind\Db\Table\Gateway;
 class StaticPost extends Gateway
 {
 
-    public function __construct($rowClass = 'VuFind\Db\Row\StaticPost'
-    )
+    public function __construct($rowClass = 'VuFind\Db\Row\StaticPost')
     {
         parent::__construct('static_post', $rowClass);
     }
 
-    public function deletePost($id)
+
+    public function createStaticPage($headline, $content)
     {
-        $this->delete(array('id' => (int)$id));
+        $page = $this->createRow();
+        $page->headline = $headline;
+        $page->content = $content;
+        $page->author = 'Bibi';
+        $page->createDate = date('YYYY-MM-DD');
+
+        return page;
+
     }
 
-    public function getAll()
-    {
-        return $this->select();
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     * @throws \Exception
-     */
     public function getPost($id)
     {
         $staticPostRow = $this->select(['id' => $id])->current();
@@ -38,5 +35,17 @@ class StaticPost extends Gateway
 
         return $staticPostRow;
     }
+
+
+    /** gets all the rows in the table
+     *
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
+    public function getAll()
+    {
+        return $this->select();
+    }
+
+
 
 }
