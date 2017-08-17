@@ -13,7 +13,7 @@ class StaticPost extends Gateway
     }
 
 
-    public function createStaticPage($headline, $content)
+    /*public function createStaticPage($headline, $content)
     {
         $page = $this->createRow();
         $page->headline = $headline;
@@ -23,7 +23,7 @@ class StaticPost extends Gateway
 
         return page;
 
-    }
+    }*/
 
     public function getPost($id)
     {
