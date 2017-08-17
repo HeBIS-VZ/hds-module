@@ -66,11 +66,7 @@ class StaticPagesController extends AbstractAdmin
         if (!$request->isPost()) {
             return $view;
         }
-
-        $table = $this->getTable('static_post');
-
-        $row = $table->createStaticPage();
-
+        $row = $this->table->createRow();
         $row->headline = $this->params()->fromPost('headline');
         $row->content = $this->params()->fromPost('content');
         $row->save();
