@@ -62,6 +62,7 @@ class SearchController extends \VuFind\Controller\SearchController
         //results->getUrlQuery()
         $lookfor = $this->params()->fromQuery("lookfor");
         $backlink = $this->params()->fromQuery("backlink");
+
         if (preg_match("/\s([&+])\s/u", $lookfor)) {
             $encodedLookfor = $this->solrSpecialChars($lookfor);
             $this->getRequest()->getQuery()->set("lookfor", $encodedLookfor); //call by reference
@@ -86,8 +87,10 @@ class SearchController extends \VuFind\Controller\SearchController
             return $this->forwardTo("record", "home", $params);
         } else {
             if ($results->getResultTotal() === 0) {
-                $lookfor = $this->params()->fromQuery("lookfor");
-                return $this->forwardTo("search", "record_not_found", ["lookfor" => $lookfor]);
+                $request = $this->getRequest()->getQuery()->toArray()
+                    + $this->getRequest()->getPost()->toArray()
+                    + ["searchId" => $results->getSearchId()];
+                return $this->forwardTo("search", "record_not_found", $request);
             }
         }
         return $view; //else return results list
@@ -106,9 +109,17 @@ class SearchController extends \VuFind\Controller\SearchController
                 => $this->getHierarchicalFacetSortSettings()
             ]
         );
-        $view->params = $this->params();
+
+        $view->searchId = $this->params()->fromRoute('searchId',false);
         $view->lookfor = $this->params()->fromQuery("lookfor");
         $view->backlink = $this->params()->fromQuery("backlink");
+        $this->params()->fromQuery("searchId");
+        $view->params = $params = $this->getRequest()->getQuery()->toArray()
+            + $this->getRequest()->getPost()->toArray();
+
+        $lookfor0 = $this->params()->fromQuery("lookfor0");
+
+        $view->searchType = !empty($lookfor0) && is_array($lookfor0) ? 'advanced' : 'simple';
         return $view;
     }
 
