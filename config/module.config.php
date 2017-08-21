@@ -161,7 +161,7 @@ $config = [
                     'route' => '/Admin/Staticpages',
                     'defaults' => [
                         'controller' => 'adminstaticpages',
-                        'action' => 'Home',
+                        'action' => 'home',
                     ]
                 ],
                 'may_terminate' => true,
@@ -171,20 +171,40 @@ $config = [
                         'options' => [
                             'route' => '/View/:id',
                             'defaults' => [
-                                'action' => 'View'
+                                'action' => 'view'
                             ],
                             'constraints' => [
                                 'id' => '\d+'
                             ]
                         ]
                     ],
-
+                    'add' => [
+                        'type' => 'Zend\Mvc\Router\Http\Literal',
+                        'options' => [
+                            'route' => '/Add',
+                            'defaults' => [
+                                'action' => 'add'
+                            ]
+                        ]
+                    ],
                     'edit' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
                             'route' => '/Edit/:id',
                             'defaults' => [
                                 'action' => 'edit'
+                            ],
+                            'constraints' => [
+                                'id' => '\d+'
+                            ]
+                        ]
+                    ],
+                    'json' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/:id/Json/:method',
+                            'defaults' => [
+                                'action' => 'json',
                             ],
                             'constraints' => [
                                 'id' => '\d+'
@@ -202,20 +222,11 @@ $config = [
                                 'id' => '\d+'
                             ]
                         ]
-                    ],
-                    'add' => [
-                        'type' => 'Zend\Mvc\Router\Http\Literal',
-                        'options' => [
-                            'route' => '/Add',
-                            'defaults' => [
-                                'action' => 'add'
-                            ]
-                        ]
                     ]
                 ]
-            ],
-        ],
-    ],
+            ]
+        ]
+    ]
 
 ];
 

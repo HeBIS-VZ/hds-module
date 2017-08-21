@@ -13,14 +13,14 @@ class StaticPost extends Gateway
     }
 
 
-    public function createStaticPage()
+    /*public function createStaticPage()
     {
         $page = $this->createRow();
         //$page->createDate = (new \DateTime('now'))->format()
 
         return $page;
 
-    }
+    }*/
 
     public function getPost($id)
     {
