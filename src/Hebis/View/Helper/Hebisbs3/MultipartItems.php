@@ -129,7 +129,7 @@ class MultipartItems extends AbstractRecordViewHelper
                 $str = '<a href="' . $uri->toString() . '">' . $str . '</a>';
             }
             if (!empty($link = $this->renderShowAllVolumesLink())) {
-                $str .= " (" . $link . ")";
+                $str .= "<br />" . $link;
             }
             $arr[] = $str;
         }
@@ -145,22 +145,22 @@ class MultipartItems extends AbstractRecordViewHelper
         if (substr($leader, 19, 1) === "c" || substr($leader, 19, 1) === "b") {
             $fields = $marcRecord->getFields(800);
             foreach ($fields as $field) {
-                $arr[] = $this->generate800($field) . $this->renderShowAllVolumesLink8xx($field);
+                $arr[] = $this->generate800($field) . "<br />" . $this->renderShowAllVolumesLink8xx($field);
             }
 
             $fields = $marcRecord->getFields(810);
             foreach ($fields as $field) {
-                $arr[] = $this->generate810($field) . $this->renderShowAllVolumesLink8xx($field);
+                $arr[] = $this->generate810($field) . "<br />" . $this->renderShowAllVolumesLink8xx($field);
             }
 
             $fields = $marcRecord->getFields(811);
             foreach ($fields as $field) {
-                $arr[] = $this->generate811($field) . $this->renderShowAllVolumesLink8xx($field);
+                $arr[] = $this->generate811($field) . "<br />" . $this->renderShowAllVolumesLink8xx($field);
             }
 
             $fields = $marcRecord->getFields(830);
             foreach ($fields as $field) {
-                $arr[] = $this->generate830($field) . $this->renderShowAllVolumesLink8xx($field);
+                $arr[] = $this->generate830($field) . "<br />" . $this->renderShowAllVolumesLink8xx($field);
             }
         }
 
@@ -480,7 +480,7 @@ class MultipartItems extends AbstractRecordViewHelper
             "join" => "AND"
         ];
 
-        return $this->generateSearchLink($linkText, $searchParams);
+        return '<span class="hds-icon-list-bullet">' . $this->generateSearchLink($linkText, $searchParams);
 
     }
 }
