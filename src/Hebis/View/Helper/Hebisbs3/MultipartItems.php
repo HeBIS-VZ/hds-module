@@ -210,13 +210,14 @@ class MultipartItems extends AbstractRecordViewHelper
         $ret = $this->createLink($field, $ret);
 
         $n = Helper::getSubFieldDataOfGivenField($field, 'n');
-        if (strpos($n, "[...]") === false) {
+        if ($n !== false && strpos($n, "[...]") === false) {
             $n = " : $n";
         } else {
             $n = "";
         }
-
-        $ret .= $n;
+        if (!empty($n)) {
+            $ret .= $n;
+        }
         $ret .= !empty($p = Helper::getSubFieldDataOfGivenField($field, 'p')) ? ", $p" : "";
 
 
