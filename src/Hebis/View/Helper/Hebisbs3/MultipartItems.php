@@ -138,7 +138,7 @@ class MultipartItems extends AbstractRecordViewHelper
                 $str = '<a href="' . $uri->toString() . '">' . $str . '</a>';
             }
             if (!empty($link = $this->renderShowAllVolumesLink())) {
-                $str .= "<br />" . $link;
+                $str .= "<br />" . '<span class="hds-icon-list-bullet">' . $link . '</span>';
             }
             $arr[] = $str;
         }
@@ -467,9 +467,8 @@ class MultipartItems extends AbstractRecordViewHelper
                 "join" => "AND"
             ];
 
-            $link = $this->generateSearchLink($linkText, $searchParams);
-            if (!empty($link)) {
-                $link = ' (' . $link . ')';
+            if (!empty($link = $this->generateSearchLink($linkText, $searchParams))) {
+                $link = "<br />" . '<span class="hds-icon-list-bullet">' . $link . '</span>';
             }
             return $link;
         }
@@ -500,7 +499,7 @@ class MultipartItems extends AbstractRecordViewHelper
             "join" => "AND"
         ];
 
-        return '<span class="hds-icon-list-bullet">' . $this->generateSearchLink($linkText, $searchParams);
+        return $this->generateSearchLink($linkText, $searchParams);
 
     }
 }
