@@ -204,8 +204,15 @@ class MultipartItems extends AbstractRecordViewHelper
         //800 $a_$b,_$c:_$t_:_$n,_$p_;_$v
         $ret .= implode(" ", $this->getSubFieldsDataArrayOfField($field, ['a', 'b']));
 
-        $c_t = implode(": ", $this->getSubFieldsDataArrayOfField($field, ['c', 't']));
-        $ret .= (!empty($c_t)) ? ", $c_t" : "";
+        $c_t = $this->getSubFieldsDataArrayOfField($field, ['c', 't']);
+
+        if (array_key_exists('c', $c_t)) {
+            $ret .= ", " . $c_t['c'];
+        }
+
+        if (array_key_exists('t', $c_t)) {
+            $ret .= ": " . $c_t['t'];
+        }
 
         $ret = $this->createLink($field, $ret);
 
