@@ -31,6 +31,9 @@ use Hebis\RecordDriver\SolrMarc;
 
 class Helper
 {
+
+    const DEFAULT_CHARSET = "UTF-8";
+
     /**
      * returns the data of the subField if field and subField exists, otherwise false
      *
@@ -62,7 +65,7 @@ class Helper
     {
         if ($field && $field instanceof \File_MARC_Data_Field) {
             $subField = $field->getSubfield($subFieldCode);
-            return !empty($subField) ? htmlentities($subField->getData()) : false;
+            return !empty($subField) ? htmlentities(Helper::utf8_encode($subField->getData())) : false;
         }
 
         return false;
@@ -70,8 +73,6 @@ class Helper
 
     public static function removeControlSigns($str)
     {
-
-
         $len = strlen($str);
         if (strpos($str, '@') === 0) {
             $str = substr($str, 1, $len - 1);
@@ -105,5 +106,11 @@ class Helper
             }
         }
         return $str;
+    }
+
+    public static function utf8_encode($str) {
+
+        $enc = mb_detect_encoding($str);
+        return $enc !== self::DEFAULT_CHARSET ? mb_convert_encoding($str, self::DEFAULT_CHARSET) : $str;
     }
 }
