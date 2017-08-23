@@ -64,7 +64,7 @@ class SingleRecordInternationalStandardBookNumber extends AbstractRecordViewHelp
             if ($field->getIndicator(1) === "1") {
                 $z = Helper::getSubFieldDataOfGivenField($field, 'z');
                 if (!empty($z)) {
-                    $arr[] = $z;
+                    $arr[] = "$z (Sekudärausgabe)";
                 }
             }
         }
