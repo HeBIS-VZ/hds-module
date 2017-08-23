@@ -454,21 +454,25 @@ class MultipartItems extends AbstractRecordViewHelper
      */
     private function renderShowAllVolumesLink8xx($field)
     {
-        $ppn = $this->getPPNFrom($field);
+        $_7 = $field->getSubfield(7);
+        if (!empty($_7) && substr($_7->getData(), 1, 1) === "m") {
+            $ppn = $this->getPPNFrom($field);
 
-        $linkText = $this->getView()->transEsc('show_all_volumes');
-        $searchParams = [
-            "sort" => "relevance",
-            "type0[]" => "part_of",
-            "lookfor0[]" => $ppn,
-            "join" => "AND"
-        ];
+            $linkText = $this->getView()->transEsc('show_all_volumes');
+            $searchParams = [
+                "sort" => "relevance",
+                "type0[]" => "part_of",
+                "lookfor0[]" => $ppn,
+                "join" => "AND"
+            ];
 
-        $link = $this->generateSearchLink($linkText, $searchParams);
-        if (!empty($link)) {
-            $link = ' (' . $link . ')';
+            $link = $this->generateSearchLink($linkText, $searchParams);
+            if (!empty($link)) {
+                $link = ' (' . $link . ')';
+            }
+            return $link;
         }
-        return $link;
+        return "";
     }
 
 
