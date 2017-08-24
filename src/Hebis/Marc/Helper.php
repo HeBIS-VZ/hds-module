@@ -113,4 +113,14 @@ class Helper
         $enc = mb_detect_encoding($str);
         return $enc !== self::DEFAULT_CHARSET ? mb_convert_encoding($str, self::DEFAULT_CHARSET) : $str;
     }
+
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @param $subFieldCode
+     * @return string
+     */
+    public static function getSubField($field, $subFieldCode)
+    {
+        return !$field->getSubfield($subFieldCode) ? '' : trim($field->getSubfield($subFieldCode)->getData());
+    }
 }
