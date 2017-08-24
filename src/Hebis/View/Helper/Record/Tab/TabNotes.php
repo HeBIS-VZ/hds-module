@@ -50,9 +50,12 @@ class TabNotes extends AbstractRecordViewHelper
         /** @var \File_MARC_Data_Field $field */
         foreach ($fields246 as $field) {
             $i = $this->getSubField($field, "i");
-            if (!empty($i)) {
+            if (
+                ($field->getIndicator(1) == 0 && !empty($i)) ||
+                ($field->getIndicator(1) == 1 && !empty($i))
+            ) {
                 if ($field->getIndicator(1) == "0" || $field->getIndicator(1) == "1") {
-                    $arr[] = $this->getSubField($field, "a");
+                    $arr[] = "$i: " . $this->getSubField($field, "a");
                 }
             }
         }
