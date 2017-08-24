@@ -120,11 +120,12 @@ class StaticPagesController extends AbstractAdmin
             $row->visible == 1 ? $row->visible = 0 : $row->visible = 1;
             $row->save();
         } catch (\Exception $e) {
-            $this->output($e->getMessage() . '\n' . 'Change Visibility: ', self::STATUS_ERROR, 400);
+            $this->output($e->getMessage() . '\n' . 'Change Visibility Failed!', self::STATUS_ERROR, 400);
         }
-        return $this->output('Change Visibility: ', self::STATUS_OK, 200);
-    }
+        $this->layout()->setTemplate('adminstaticpages/list');
 
+        return $this->output($row->visible == 1, self::STATUS_OK, 200);
+    }
 
     public function jsonAction()
     {
