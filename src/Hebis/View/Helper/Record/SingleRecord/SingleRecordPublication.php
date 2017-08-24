@@ -63,7 +63,22 @@ class SingleRecordPublication extends ResultListPublication
         /** @var \File_MARC_Data_Field $_264 */
         foreach ($_264__ as $_264) {
             $_264c = empty($_264) ? "" : Helper::getSubFieldDataOfGivenField($_264, 'c');
-            $r = implode(" : ", $this->getSubFieldsStringArrayOfGivenField($_264, ['a', 'b']));
+
+            $_264a_ = $_264->getSubfields('a');
+            $a = [];
+            foreach ($_264a_ as $_264a) {
+                $a[] = $_264a->getData();
+            }
+
+            $_264b_ = $_264->getSubfields('b');
+            $b = [];
+            foreach ($_264b_ as $_264b) {
+                $b[] = $_264b->getData();
+            }
+            $ab = [];
+            $ab[] = implode("; ", $a);
+            $ab[] = implode("; ", $b);
+            $r = implode(" : ", $ab);
             $r .= empty($_264c) ? "" : (!empty($r) ? ", $_264c" : $_264c);
             $arr[] = $r;
         }
