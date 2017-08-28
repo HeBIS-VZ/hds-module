@@ -467,12 +467,7 @@ class MultipartItems extends AbstractRecordViewHelper
             $ppn = $this->getPPNFrom($field);
 
             $linkText = $this->getView()->transEsc('show_all_volumes');
-            $searchParams = [
-                "sort" => "relevance",
-                "type0[]" => "part_of",
-                "lookfor0[]" => $ppn,
-                "join" => "AND"
-            ];
+            $searchParams = $this->getShowAllVolumesLinkParams($ppn);
 
             if (!empty($link = $this->generateSearchLink($linkText, $searchParams))) {
                 $link = "<br />" . '<span class="hds-icon-list-bullet">' . $link . '</span>';
@@ -499,14 +494,22 @@ class MultipartItems extends AbstractRecordViewHelper
         }
 
         $linkText = $this->getView()->transEsc('show_all_volumes');
-        $searchParams = [
-            "sort" => "relevance",
+        $searchParams = $this->getShowAllVolumesLinkParams($ppn);
+
+        return $this->generateSearchLink($linkText, $searchParams);
+
+    }
+    /**
+     * @param $ppn
+     * @return array
+     */
+    private function getShowAllVolumesLinkParams($ppn)
+    {
+       return [
+            "sort" => "pub_date_max desc",
             "type0[]" => "part_of",
             "lookfor0[]" => $ppn,
             "join" => "AND"
         ];
-
-        return $this->generateSearchLink($linkText, $searchParams);
-
     }
 }
