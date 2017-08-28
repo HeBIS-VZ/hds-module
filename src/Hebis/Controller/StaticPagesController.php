@@ -102,14 +102,16 @@ class StaticPagesController extends AbstractAdmin
         return $this->forwardTo('adminstaticpages', 'home');
     }
 
-    public function deleteAction()
+    public function deleteAjax()
     {
-        $view = $this->createViewModel();
-        $view->setTemplate('adminstaticpages/delete');
-        // TODO: Delete query
-
-        return $view;
-
+        try {
+            $id = $this->params()->fromRoute('id');
+            $row = $this->table->getPost($id);
+            $row->delete();
+        } catch (\Exception $e) {
+            return $this->output(0, self::STATUS_ERROR, 400);
+        }
+        return $this->output(1, self::STATUS_OK, 200);
     }
 
     public function visibleAjax()
