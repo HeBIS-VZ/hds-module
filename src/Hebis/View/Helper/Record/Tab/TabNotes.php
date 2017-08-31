@@ -38,60 +38,10 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
  */
 class TabNotes extends AbstractRecordViewHelper
 {
+    use TabDescriptionTrait;
 
     public function __invoke(SolrMarc $record)
     {
-        $arr = [];
-
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
-
-        $fields246 = $marcRecord->getFields(246);
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($fields246 as $field) {
-            $i = $this->getSubField($field, "i");
-            if (!empty($i)) {
-                if ($field->getIndicator(1) == "0" || $field->getIndicator(1) == "1") {
-                    $arr[] = $this->getSubField($field, "a");
-                }
-            }
-        }
-
-        $fields247 = $marcRecord->getFields(247);
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($fields247 as $field) {
-
-            if ($field->getIndicator(2) == "0") {
-                $a = $this->getSubField($field, "a");
-                $f = $this->getSubField($field, "f");
-                $res = !empty($a) ? "$a" : "";
-                $res .= !empty($f) ? ", $f" : "";
-                $arr[] = $res;
-            }
-
-        }
-
-        foreach ([500, 501, 504, 511, 515, 518, 538, 546, 550, 555] as $fieldNum) {
-            $fields = $marcRecord->getFields($fieldNum);
-            /** @var \File_MARC_Data_Field $field */
-            foreach ($fields as $field) {
-                $a = $this->getSubField($field, "a");
-                if (!empty($a)) {
-                    $arr[] = $a;
-                }
-            }
-        }
-
-        foreach ($marcRecord->getFields(583) as $field) {
-            $a = $this->getSubField($field, "a");
-            $h = $this->getSubField($field, "h");
-            $res = !empty($a) ? "$a" : "";
-            $res .= !empty($h) ? " : $h" : "";
-            if (!empty($res)) {
-                $arr[] = $res;
-            }
-        }
-
-        return implode("<br />\n", $arr);
+        return $this->getNotes($record);
     }
 }
