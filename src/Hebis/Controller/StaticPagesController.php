@@ -102,6 +102,9 @@ class StaticPagesController extends AbstractAdmin
         return $this->forwardTo('adminstaticpages', 'home');
     }
 
+    /*
+     * static page ajax delete action
+     */
     public function deleteAjax()
     {
         try {
@@ -109,7 +112,7 @@ class StaticPagesController extends AbstractAdmin
             $row = $this->table->getPost($id);
             $row->delete();
         } catch (\Exception $e) {
-            return $this->output(0, self::STATUS_ERROR, 400);
+            return $this->output(0, self::STATUS_ERROR . '\n' . $e->getMessage(), 400);
         }
         return $this->output(1, self::STATUS_OK, 200);
     }
