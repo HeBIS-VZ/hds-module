@@ -46,23 +46,27 @@ class SingleRecordTitleContains extends AbstractRecordViewHelper
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
         $_249 = $marcRecord->getFields('249');
-        $_505 = $marcRecord->getFields('505');
-
 
         /** @var \File_MARC_Data_Field $field */
-        $i = 0;
-        $j = 0;
         foreach ($_249 as $field) {
-            $av = Helper::getSubFieldDataOfGivenField($field, 'a');
+            $subFields_a = $field->getSubfields('a');
+            $subFields_v = $field->getSubfields('v');
+            $arr_av = [];
 
-            if (!empty($v = Helper::getSubFieldDataOfGivenField($field, 'v'))) {
-                $av .= " / $v";
+            // Wenn mehrere $a in 249, dann jeweils auf neuer Zeile anzeigen.
+            // Die Kombi $a_/_$v als Pärchen zusammen anzeigen
+            for ($i = 0; $i < count($subFields_a); ++$i) {
+                /** @var \File_MARC_Subfield $subField_a */
+                $subField_a = $subFields_a[$i];
+                $av = htmlentities(Helper::utf8_encode($subField_a->getData()));
+                if (array_key_exists($i, $subFields_v)) {
+                    $av .= " / " . htmlentities(Helper::utf8_encode($subFields_v[$i]->getData()));
+                }
+                $arr_av[] = Helper::removeControlSigns($av);
             }
+            $arr[] = implode("<br />", $arr_av);
 
-            if (!empty($av)) {
-                $arr[] = Helper::removeControlSigns($av);
-            }
-
+            // 249 $b_/_$c
             $bc = Helper::getSubFieldDataOfGivenField($field, 'b');
             if (!empty($c = Helper::getSubFieldDataOfGivenField($field, 'c'))) {
                 $bc .= " / $c";
@@ -72,7 +76,7 @@ class SingleRecordTitleContains extends AbstractRecordViewHelper
             }
         }
 
-
+        //505 $a_$t_/_$r
         $_505 = $marcRecord->getFields('505');
 
         foreach ($_505 as $field) {

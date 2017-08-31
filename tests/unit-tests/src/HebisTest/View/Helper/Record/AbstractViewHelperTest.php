@@ -32,6 +32,7 @@ use Box\Spout\Common\Type;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Reader\ReaderInterface;
 use Hebis\Exception\HebisException;
+use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use HebisTest\View\Helper\SpreadsheetTestsTrait;
