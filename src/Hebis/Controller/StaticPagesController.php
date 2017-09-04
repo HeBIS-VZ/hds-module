@@ -4,8 +4,8 @@
 namespace Hebis\Controller;
 
 use Hebis\Db\Table\StaticPost;
+use VuFind\Date\Converter;
 use VuFindAdmin\Controller\AbstractAdmin;
-use Zend\Json\Server\Response\Http;
 
 
 /**
@@ -58,6 +58,11 @@ class StaticPagesController extends AbstractAdmin
         $row = $this->table->getPost($id);
         $visible = $row->visible;
         $view->row = $row;
+        $DateConverter = new Converter();       // How to get/set timezone TODO view timezone
+        $view->cDate = str_replace('-', '.',
+            $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->createDate, ' ~ '));
+        $view->modDate = (isset($row->changeDate)) ? str_replace('-', '.',
+            $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->changeDate, ' ~ ')) : 'nie';
 
         return $view;
     }
@@ -97,6 +102,7 @@ class StaticPagesController extends AbstractAdmin
 
         $row->headline = $this->params()->fromPost('headline');
         $row->content = $this->params()->fromPost('content');
+        $row->changeDate = getdate();
         $row->save();
 
         return $this->forwardTo('adminstaticpages', 'home');
@@ -115,6 +121,42 @@ class StaticPagesController extends AbstractAdmin
             return $this->output(0, self::STATUS_ERROR . '\n' . $e->getMessage(), 400);
         }
         return $this->output(1, self::STATUS_OK, 200);
+    }
+
+    /**
+     * Send output data and exit.
+     *
+     * @param mixed $data The response data
+     * @param string $status Status of the request
+     * @param int $httpCode A custom HTTP Status Code
+     *
+     * @return \Zend\Http\Response
+     * @throws \Exception
+     */
+    protected function output($data, $status, $httpCode = null)
+    {
+        $response = $this->getResponse();
+        $headers = $response->getHeaders();
+        $headers->addHeaderLine('Cache-Control', 'no-cache, must-revalidate');
+        $headers->addHeaderLine('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
+        if ($httpCode !== null) {
+            $response->setStatusCode($httpCode);
+        }
+        if ($this->outputMode == 'json') {
+            $headers->addHeaderLine('Content-type', 'application/javascript');
+            $output = ['data' => $data, 'status' => $status];
+            /*if ('development' == APPLICATION_ENV && count(self::$php_errors) > 0) {
+                $output['php_errors'] = self::$php_errors;
+            }*/
+            $response->setContent(json_encode($output));
+            return $response;
+        } else if ($this->outputMode == 'plaintext') {
+            $headers->addHeaderLine('Content-type', 'text/plain');
+            $response->setContent($data ? $status . " $data" : $status);
+            return $response;
+        } else {
+            throw new \Exception('Unsupported output mode: ' . $this->outputMode);
+        }
     }
 
     public function visibleAjax()
@@ -156,42 +198,6 @@ class StaticPagesController extends AbstractAdmin
             return $this->output(
                 $this->translate('Invalid Method'), self::STATUS_ERROR, 400
             );
-        }
-    }
-
-    /**
-     * Send output data and exit.
-     *
-     * @param mixed $data The response data
-     * @param string $status Status of the request
-     * @param int $httpCode A custom HTTP Status Code
-     *
-     * @return \Zend\Http\Response
-     * @throws \Exception
-     */
-    protected function output($data, $status, $httpCode = null)
-    {
-        $response = $this->getResponse();
-        $headers = $response->getHeaders();
-        $headers->addHeaderLine('Cache-Control', 'no-cache, must-revalidate');
-        $headers->addHeaderLine('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
-        if ($httpCode !== null) {
-            $response->setStatusCode($httpCode);
-        }
-        if ($this->outputMode == 'json') {
-            $headers->addHeaderLine('Content-type', 'application/javascript');
-            $output = ['data' => $data, 'status' => $status];
-            /*if ('development' == APPLICATION_ENV && count(self::$php_errors) > 0) {
-                $output['php_errors'] = self::$php_errors;
-            }*/
-            $response->setContent(json_encode($output));
-            return $response;
-        } else if ($this->outputMode == 'plaintext') {
-            $headers->addHeaderLine('Content-type', 'text/plain');
-            $response->setContent($data ? $status . " $data" : $status);
-            return $response;
-        } else {
-            throw new \Exception('Unsupported output mode: ' . $this->outputMode);
         }
     }
 
