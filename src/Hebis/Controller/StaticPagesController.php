@@ -139,23 +139,19 @@ class StaticPagesController extends AbstractAdmin
         $headers = $response->getHeaders();
         $headers->addHeaderLine('Cache-Control', 'no-cache, must-revalidate');
         $headers->addHeaderLine('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
+
         if ($httpCode !== null) {
+
             $response->setStatusCode($httpCode);
         }
-        if ($this->outputMode == 'json') {
+        if ($this->outputMode !== 'json') {
+            throw new \Exception('Unsupported output mode: ' . $this->outputMode);
+        } else {
             $headers->addHeaderLine('Content-type', 'application/javascript');
             $output = ['data' => $data, 'status' => $status];
-            /*if ('development' == APPLICATION_ENV && count(self::$php_errors) > 0) {
-                $output['php_errors'] = self::$php_errors;
-            }*/
+
             $response->setContent(json_encode($output));
             return $response;
-        } else if ($this->outputMode == 'plaintext') {
-            $headers->addHeaderLine('Content-type', 'text/plain');
-            $response->setContent($data ? $status . " $data" : $status);
-            return $response;
-        } else {
-            throw new \Exception('Unsupported output mode: ' . $this->outputMode);
         }
     }
 
