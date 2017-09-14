@@ -59,10 +59,9 @@ class StaticPagesController extends AbstractAdmin
         $visible = $row->visible;
         $view->row = $row;
         $DateConverter = new Converter();       // How to get/set timezone TODO view timezone
-        $view->cDate = str_replace('-', '.',
-            $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->createDate, ' ~ '));
-        $view->modDate = (isset($row->changeDate)) ? str_replace('-', '.',
-            $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->changeDate, ' ~ ')) : 'nie';
+        $view->cDate = //str_replace('-', '.', 'DATE-EN');
+            $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->createDate, ' ~ ');
+        $view->modDate = (isset($row->changeDate)) ? $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->changeDate, ' ~ ') : '---';
 
         return $view;
     }
