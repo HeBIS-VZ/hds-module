@@ -57,6 +57,15 @@ class StaticPagesController extends AbstractAdmin
     }
 
     /* helping function for page view */
+
+    /** Returns a view for static page with user template
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function viewAction()
+    {
+        return $this->pageView('staticpages/viewspage');
+    }
+
     private function pageView($template)
     {
         $view = $this->createViewModel();
@@ -69,14 +78,6 @@ class StaticPagesController extends AbstractAdmin
         $view->cDate = $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->createDate, ' ~ ');
         $view->modDate = (isset($row->changeDate)) ? $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->changeDate, ' ~ ') : '---';
         return $view;
-    }
-
-    /** Returns a view for static page with user template
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function viewAction()
-    {
-        return $this->pageView('staticpages/viewpage');
     }
 
     /** Returns a view for static page with admin template
