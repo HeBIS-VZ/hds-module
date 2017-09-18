@@ -151,7 +151,7 @@ $config = [
                     'route' => '/Admin/Logs',
                     'defaults' => [
                         'controller' => 'adminlogs',
-                        'action' => 'Home',
+                        'action' => 'home',
                     ],
                 ],
             ],
@@ -161,17 +161,17 @@ $config = [
                     'route' => '/Admin/Staticpages',
                     'defaults' => [
                         'controller' => 'adminstaticpages',
-                        'action' => 'home',
+                        'action' => 'list',
                     ]
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
-                    'view' => [
+                    'preview' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
                             'route' => '/View/:id',
                             'defaults' => [
-                                'action' => 'view'
+                                'action' => 'preview'
                             ],
                             'constraints' => [
                                 'id' => '\d+'
@@ -210,13 +210,26 @@ $config = [
                                 'id' => '\d+'
                             ]
                         ]
-                    ],
-                    'delete' => [
+                    ]
+                ]
+            ],
+            'staticpages' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route' => '/Staticpages',
+                    'defaults' => [
+                        'controller' => 'adminstaticpages',
+                        'action' => 'home',
+                    ]
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'view' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
-                            'route' => '/!Delete=:id',
+                            'route' => '/View/:id',
                             'defaults' => [
-                                'action' => 'delete'
+                                'action' => 'view'
                             ],
                             'constraints' => [
                                 'id' => '\d+'

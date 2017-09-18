@@ -31,12 +31,23 @@ class StaticPagesController extends AbstractAdmin
         $this->table = $table;
     }
 
+
+    public function homeAction()
+    {
+        $view = $this->createViewModel();
+        $view->setTemplate('adminstaticpages/sp-home');
+
+        $view->rows = $this->table->getAll();
+
+        return $view;
+    }
+
     /**
      * Static Pages Administrator Home View
      *
      * @return \Zend\View\Model\ViewModel
      */
-    public function homeAction()
+    public function listAction()
     {
 
         $view = $this->createViewModel();
@@ -47,23 +58,31 @@ class StaticPagesController extends AbstractAdmin
         return $view;
     }
 
-    /** Action: view static page by route
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function viewAction()
+    private function pageView($template)
     {
         $view = $this->createViewModel();
-        $view->setTemplate('adminstaticpages/view');
+        $view->setTemplate($template);
         $id = $this->params()->fromRoute();
         $row = $this->table->getPost($id);
         $visible = $row->visible;
         $view->row = $row;
         $DateConverter = new Converter();       // How to get/set timezone TODO view timezone
-        $view->cDate = //str_replace('-', '.', 'DATE-EN');
-            $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->createDate, ' ~ ');
+        $view->cDate = $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->createDate, ' ~ ');
         $view->modDate = (isset($row->changeDate)) ? $DateConverter->convertToDisplayDateAndTime('Y-m-d H:i', $row->changeDate, ' ~ ') : '---';
-
         return $view;
+    }
+
+    /** Action: view static page by route
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function viewAction()
+    {
+        return $this->pageView('staticpages/viewpage');
+    }
+
+    public function previewAction()
+    {
+        return $this->pageView('adminstaticpages/view');
     }
 
     /** Action adds new static page
@@ -79,8 +98,8 @@ class StaticPagesController extends AbstractAdmin
             return $view;
         }
         $row = $this->table->createRow();
-        $row->headline = $this->params()->fromPost('headline');
-        $row->content = $this->params()->fromPost('content');
+        $row->headline = $this->params()->fromPost('sp-headline');
+        $row->content = $this->params()->fromPost('sp-content');
         $row->save();
         $id = $row->id;
         return $this->forwardTo('adminstaticpages', 'view', ['id' => $id]);
