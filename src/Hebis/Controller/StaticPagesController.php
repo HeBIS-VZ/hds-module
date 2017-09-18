@@ -32,13 +32,14 @@ class StaticPagesController extends AbstractAdmin
     }
 
 
+    /** Staticpages home view for users
+     * @return \Zend\View\Model\ViewModel
+     */
     public function homeAction()
     {
         $view = $this->createViewModel();
-        $view->setTemplate('adminstaticpages/sp-home');
-
+        $view->setTemplate('staticpages/sp-home');
         $view->rows = $this->table->getAll();
-
         return $view;
     }
 
@@ -49,15 +50,13 @@ class StaticPagesController extends AbstractAdmin
      */
     public function listAction()
     {
-
         $view = $this->createViewModel();
         $view->setTemplate('adminstaticpages/list');
-
         $view->rows = $this->table->getAll();
-
         return $view;
     }
 
+    /* helping function for page view */
     private function pageView($template)
     {
         $view = $this->createViewModel();
@@ -72,7 +71,7 @@ class StaticPagesController extends AbstractAdmin
         return $view;
     }
 
-    /** Action: view static page by route
+    /** Returns a view for static page with user template
      * @return \Zend\View\Model\ViewModel
      */
     public function viewAction()
@@ -80,6 +79,9 @@ class StaticPagesController extends AbstractAdmin
         return $this->pageView('staticpages/viewpage');
     }
 
+    /** Returns a view for static page with admin template
+     * @return \Zend\View\Model\ViewModel
+     */
     public function previewAction()
     {
         return $this->pageView('adminstaticpages/view');
