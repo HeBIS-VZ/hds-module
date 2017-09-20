@@ -52,45 +52,8 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
         $marcRecord = $record->getMarcRecord();
         $id = $record->getUniqueID();
 
-        /** @var array $fields */
-        $fields = $marcRecord->getFields('775');
-
-        $arr = [];
-        foreach ($fields as $field) {
-            /* Nur anzeigen wenn Indikator 1 = 0 und Indikator 2 = 8: */
-            $ind1 = $field->getIndicator(1);
-            $ind2 = $field->getIndicator(2);
-            if ($ind1 == "0" && $ind2 == "8") {
-                $arr[] = $this->generateContents($field);
-            }
-        }
-
-        /** @var array $fields */
-        $fields = $marcRecord->getFields('776');
-
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($fields as $field) {
-            /* Nur anzeigen wenn Indikator 1 = 0 und Indikator 2 = 8: */
-            $ind1 = $field->getIndicator(1);
-            $ind2 = $field->getIndicator(2);
-            if ($ind1 == "0" && $ind2 == "8") {
-                $w_ = array_filter($field->getSubfields('w'), function (\File_MARC_Subfield $elem) {
-                    return strpos($elem->getData(), "(DE-603)") !== false;
-                });
-                if (!empty($w_)) {
-                    $str = $this->getView()->ppnLink()->getLink(
-                        $this->generateContents($field),
-                        $this->removePrefix($w_[0]->getData(), "(DE-603)"),
-                        ["backlink" => $this->record->getPPN()]
-                    );
-                } else {
-                    $str = $this->generateContents($field);
-                }
-
-
-                $arr[] = $this->generatePrefix($field).$str;
-            }
-        }
+        $arr = $this->generate77X($marcRecord, '775');
+        $arr = array_merge($arr, $this->generate77X($marcRecord, '776'));
 
         return implode("<br />", $arr);
     }
@@ -144,6 +107,10 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
 
         $arr = [];
 
+        $w_ = array_filter($field->getSubfields('w'), function (\File_MARC_Subfield $elem) {
+            return strpos($elem->getData(), "(DE-603)") !== false;
+        });
+
         foreach ($subFieldKeys as $pos => $key) {
             switch ($key) {
                 case 'a':
@@ -176,6 +143,15 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
                 case 't':
                     if (array_key_exists($key, $subFields)) {
                         $str = htmlentities($subFields[$key]);
+
+                        if (!empty($w_)) {
+                            $str = $this->getView()->ppnLink()->getLink(
+                                $str,
+                                $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                                ["backlink" => $this->record->getPPN()]
+                            );
+                        }
+
                         $arr[$key] = $str;
                     }
                     break;
@@ -195,5 +171,27 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
         $ppn = $this->removePrefix($w, "(DE-603)");
         $ppnLink = $this->getView()->ppnLink()->getLink($ppn);
         return $ppnLink;
+    }
+
+    /**
+     * @param $marcRecord
+     * @param $fieldNo
+     * @return array
+     */
+    private function generate77X($marcRecord, $fieldNo)
+    {
+        $arr = [];
+        $fields = $marcRecord->getFields($fieldNo);
+
+        foreach ($fields as $field) {
+            /* Nur anzeigen wenn Indikator 1 = 0 und Indikator 2 = 8: */
+            $ind1 = $field->getIndicator(1);
+            $ind2 = $field->getIndicator(2);
+            if ($ind1 == "0" && $ind2 == "8") {
+                $str = $this->generateContents($field);
+                $arr[] = $this->generatePrefix($field) . $str;
+            }
+        }
+        return $arr;
     }
 }
