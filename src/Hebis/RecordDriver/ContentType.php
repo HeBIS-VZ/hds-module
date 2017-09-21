@@ -42,19 +42,17 @@ class ContentType
             ],
             "m" => [
                 "xxx" => "book",
-                "tuy" => "hierarchy", //bei leader 19 = a
+                "tu" => "hierarchy", //bei leader 19 = a
                 "co" => "dvd",
                 "c " => "cd",
                 "c|" => "cd",
-                "cr" => "ebook",
-                "cry" => "hierarchy", //bei leader 19 = a
+                "cr" => "hierarchy", //bei leader 19 = a
                 "cu" => "ebook",
                 "h" => "microfilm",
                 "f" => "sensorimage",
-                "o" => "kit",
+                "o" => "hierarchy",
                 "r" => "retro",
                 "t" => "book",
-                "oy"
             ],
             "s" => [
                 "xxx" => "journal",
@@ -72,7 +70,7 @@ class ContentType
             "i" => [
                 "cr" => "electronic",
                 "t" => "book",
-                "tuy" => "hierarchy" //bei leader 19 = a
+                "tu" => "hierarchy",
             ]
         ],
         "c" => [
@@ -94,7 +92,7 @@ class ContentType
         "g" => [
             "m" => [
                 "m" => "video",
-                "v" => "video",
+                "v" => "hierarchy",
                 "xxx" => "video"
             ],
             "s" => [
@@ -132,10 +130,12 @@ class ContentType
         "o" => [
             "m" => [
                 "xxx" => "kit",
-                "o" => "kit",
+                "v" => "hierarchy",
+                "o" => "hierarchy",
+                "c" => "hierarchy",
             ],
             "i" => [
-                "oy" => "hierarchy",
+                "o" => "hierarchy",
             ],
         ],
         "r" => [
@@ -158,9 +158,87 @@ class ContentType
         return self::$physicalDescription;
     }
 
+
     public static function getContentType(SolrMarc $record)
     {
         /** @var \File_MARC_Record $marcRecord */
+        $marcRecord = $record->getMarcRecord();
+        $art = substr($marcRecord->getLeader(), 6, 1);
+        $level = substr($marcRecord->getLeader(), 7, 1);
+        $phys = " ";
+
+        if (!empty($_007 = $marcRecord->getField('007'))) {
+            $phys = substr($_007->getData(), 0, 1);
+        }
+
+        if ($phys === "c") {
+            $phys = substr($_007->getData(), 0, 2);
+        }
+
+
+        /*
+         * Exceptions for leader19 != a
+         * In case of leader19 != a the relevant fields in physicalDescription table will be overwritten
+        */
+
+        $leader19 = substr($marcRecord->getLeader(), 19, 1);
+        if ($leader19 != 'a') {
+            self::$physicalDescription["a"]["m"]["tu"] = "book";
+            self::$physicalDescription["a"]["i"]["tu"] = "book";
+            self::$physicalDescription["g"]["m"]["v"] = "video";
+            self::$physicalDescription["o"]["m"]["o"] = "kit";
+            self::$physicalDescription["o"]["m"]["c"] = "kit";
+        }
+
+        // Exceptions for CD/DVD
+        $_300_a = Helper::getSubFieldDataOfField($record, 300, 'a');
+        switch ($phys) {
+            case 'c':
+                $phys_ = $phys . substr($marcRecord->getField('007')->getData(), 1, 1);
+                /* $materialart["a"]["m"]["c "]: … wenn 338 $bvd oder wenn 300 $aDVD:  ="dvd"; … sonst: ="cd" */
+                if ($phys_ == "c " || $phys_ == "c|") {
+                    $_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
+                    if ($_338_b == "vd" || strpos($_300_a, "DVD") !== false) {
+                        $phys = "co";
+                    } else {
+                        $phys = "c ";
+                    }
+                }
+                break;
+            case " ":
+                $phys = "xxx";
+        }
+        if ($art == "a" && ($level == "m" || $level == "i")) {
+            if ($phys == "co") {
+                if (strpos($_300_a, "DVD") === false && strpos($_300_a, "Blu-Ray") === false) {
+                    $phys = "c ";
+                }
+            }
+            if ($phys == "c " || $phys == "c|") {
+                $_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
+                if (strpos($_300_a, "DVD") !== false || strpos($_338_b, "vd") !== false) {
+                    $phys = "co";
+                }
+            }
+        }
+
+
+        /* Falls in 856 $3 der Inhalt "Katalogkarte" vorhanden ist UND Art=a, Level=m und Phys=xxx, dann Phys = r. */
+        if ($art == "a" && $level == "m" && $phys == "xxx") {
+            $_856_3 = Helper::getSubFieldDataOfField($record, 856, '3');
+            if (is_string($_856_3) && strpos($_856_3, "Katalogkarte") !== false) {
+                $phys = "r";
+            }
+        }
+
+        $className = isset(self::$physicalDescription[$art][$level][$phys]) ? self::$physicalDescription[$art][$level][$phys] : "";
+        return $className;
+    }
+
+    /*
+    public static function getContentType(SolrMarc $record)
+    {
+
         $marcRecord = $record->getMarcRecord();
 
         $art = substr($marcRecord->getLeader(), 6, 1);
@@ -191,7 +269,7 @@ class ContentType
         switch ($phys) {
             case 'c':
                 $phys_ = $phys . substr($marcRecord->getField('007')->getData(), 1, 1);
-                /* $materialart["a"]["m"]["c "]: … wenn 338 $bvd oder wenn 300 $aDVD:  ="dvd"; … sonst: ="cd" */
+                // $materialart["a"]["m"]["c "]: … wenn 338 $bvd oder wenn 300 $aDVD:  ="dvd"; … sonst: ="cd"
                 if ($phys_ == "c " || $phys_ == "c|") {
                     $_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
                     if ($_338_b == "vd" || strpos($_300_a, "DVD") !== false) {
@@ -216,25 +294,15 @@ class ContentType
                     $phys = "co";
                 }
             }
-            if ($phys == "cr" || $phys == "oy") {
-                if (substr($marcRecord->getLeader(), 19, 1) == 'a') {
-                    $phys = "cry";
-                }
-            }
-            if ($phys == "xxx") {
-                if ($l19 = substr($marcRecord->getLeader(), 19, 1) == 'a') {
-                    $phys = "tuy";
-                }
-            }
         }
-        /*
-        $_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
-        if ($_338_b === "vd") {
-            $phys = "co";
-        }
-        */
 
-        /* Falls in 856 $3 der Inhalt "Katalogkarte" vorhanden ist UND Art=a, Level=m und Phys=xxx, dann Phys = r. */
+        //$_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
+        //if ($_338_b === "vd") {
+        //    $phys = "co";
+        //}
+
+
+        // Falls in 856 $3 der Inhalt "Katalogkarte" vorhanden ist UND Art=a, Level=m und Phys=xxx, dann Phys = r.
         if ($art == "a" && $level == "m" && $phys == "xxx") {
             $_856_3 = Helper::getSubFieldDataOfField($record, 856, '3');
             if (is_string($_856_3) && strpos($_856_3, "Katalogkarte") !== false) {
@@ -247,4 +315,5 @@ class ContentType
 
         return $className;
     }
+    */
 }
