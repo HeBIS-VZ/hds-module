@@ -46,7 +46,7 @@ class ContentType
                 "co" => "dvd",
                 "c " => "cd",
                 "c|" => "cd",
-                "cr" => "hierarchy", //bei leader 19 = a
+                "cr" => "ebook",
                 "cu" => "ebook",
                 "h" => "microfilm",
                 "f" => "sensorimage",
@@ -112,7 +112,8 @@ class ContentType
         "j" => [
             "m" => [
                 "xxx" => "audio",
-                "s" => "audio"
+                "s" => "audio",
+                "co" => "audio",
             ],
             "s" => [
                 "co" => "audio",
@@ -124,14 +125,15 @@ class ContentType
             "m" => [
                 "a" => "photo",
                 "k" => "photo",
-                "c" => "photo"
+                "c" => "photo",
+                "cr" => "photo"
             ]
         ],
         "o" => [
             "m" => [
                 "xxx" => "kit",
                 "v" => "hierarchy",
-                "o" => "hierarchy",
+                "o" => "kit",
                 "c" => "hierarchy",
             ],
             "i" => [
@@ -186,7 +188,6 @@ class ContentType
             self::$physicalDescription["a"]["m"]["tu"] = "book";
             self::$physicalDescription["a"]["i"]["tu"] = "book";
             self::$physicalDescription["g"]["m"]["v"] = "video";
-            self::$physicalDescription["o"]["m"]["o"] = "kit";
             self::$physicalDescription["o"]["m"]["c"] = "kit";
         }
 
@@ -231,7 +232,7 @@ class ContentType
             }
         }
 
-        $className = isset(self::$physicalDescription[$art][$level][$phys]) ? self::$physicalDescription[$art][$level][$phys] : "";
+        $className = isset(self::$physicalDescription[$art][$level][$phys]) ? self::$physicalDescription[$art][$level][$phys] : "unknown";
         return $className;
     }
 
