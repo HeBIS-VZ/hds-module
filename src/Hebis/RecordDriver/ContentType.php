@@ -32,7 +32,7 @@ use Hebis\RecordDriver\SolrMarc;
 
 class ContentType
 {
-    private static $physicalDescription = [
+    private $physicalDescription = [
         "a" => [
             "a" => [
                 //"xxx" => "article",
@@ -42,7 +42,6 @@ class ContentType
             ],
             "m" => [
                 "xxx" => "book",
-                "tu" => "hierarchy", //bei leader 19 = a
                 "co" => "dvd",
                 "c " => "cd",
                 "c|" => "cd",
@@ -52,7 +51,8 @@ class ContentType
                 "f" => "sensorimage",
                 "o" => "hierarchy",
                 "r" => "retro",
-                "t" => "book",
+                "t" => "hierarchy",
+                "tu" => "hierarchy", //bei leader 19 = a
             ],
             "s" => [
                 "xxx" => "journal",
@@ -69,7 +69,7 @@ class ContentType
             ],
             "i" => [
                 "cr" => "electronic",
-                "t" => "book",
+                "t" => "hierarchy",
                 "tu" => "hierarchy",
             ]
         ],
@@ -133,7 +133,7 @@ class ContentType
             "m" => [
                 "xxx" => "kit",
                 "v" => "hierarchy",
-                "o" => "kit",
+                "o" => "hierarchy", // leader 19 = a
                 "c" => "hierarchy",
             ],
             "i" => [
@@ -155,13 +155,13 @@ class ContentType
     ];
 
 
-    public static function getPhysicalDescription()
+    public function getPhysicalDescription()
     {
         return self::$physicalDescription;
     }
 
 
-    public static function getContentType(SolrMarc $record)
+    public function getContentType(SolrMarc $record)
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
@@ -185,10 +185,13 @@ class ContentType
 
         $leader19 = substr($marcRecord->getLeader(), 19, 1);
         if ($leader19 != 'a') {
-            self::$physicalDescription["a"]["m"]["tu"] = "book";
-            self::$physicalDescription["a"]["i"]["tu"] = "book";
-            self::$physicalDescription["g"]["m"]["v"] = "video";
-            self::$physicalDescription["o"]["m"]["c"] = "kit";
+            $this->physicalDescription["a"]["m"]["t"] = "book";
+            $this->physicalDescription["a"]["i"]["t"] = "book";
+            $this->physicalDescription["a"]["m"]["tu"] = "book";
+            $this->physicalDescription["a"]["i"]["tu"] = "book";
+            $this->physicalDescription["g"]["m"]["v"] = "video";
+            $this->physicalDescription["o"]["m"]["c"] = "kit";
+            $this->physicalDescription["o"]["m"]["o"] = "kit";
         }
 
         // Exceptions for CD/DVD
@@ -232,7 +235,7 @@ class ContentType
             }
         }
 
-        $className = isset(self::$physicalDescription[$art][$level][$phys]) ? self::$physicalDescription[$art][$level][$phys] : "unknown";
+        $className = isset($this->physicalDescription[$art][$level][$phys]) ? $this->physicalDescription[$art][$level][$phys] : "unknown";
         return $className;
     }
 

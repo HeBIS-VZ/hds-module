@@ -80,7 +80,8 @@ class MultipartItems extends AbstractRecordViewHelper
     public function __invoke($driver)
     {
         $this->driver = $driver;
-        $this->isMultipartItem = ContentType::getContentType($driver) === "hierarchy";
+        $contentType = new ContentType();
+        $this->isMultipartItem = $contentType->getContentType($driver) === "hierarchy";
         return $this;
     }
 

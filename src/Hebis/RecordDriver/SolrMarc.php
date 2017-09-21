@@ -202,7 +202,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function getThumbnail($size = 'small')
     {
         $arr = parent::getThumbnail($size);
-        $arr['contenttype'] = ContentType::getContentType($this);
+        $contentType = new ContentType();
+        $arr['contenttype'] = $contentType->getContentType($this);
         return $arr;
     }
 
