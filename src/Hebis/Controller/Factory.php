@@ -37,12 +37,12 @@ use Zend\ServiceManager\ServiceManager;
 class Factory
 {
 
-
     public static function getStaticPagesController(ServiceManager $sm)
     {
         $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
             ->get('static_post');
-        $staticPagesController = new StaticPagesController($table);
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        $staticPagesController = new StaticPagesController($table, $translator);
         return $staticPagesController;
     }
 

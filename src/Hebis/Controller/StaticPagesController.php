@@ -5,6 +5,7 @@ namespace Hebis\Controller;
 
 use Hebis\Db\Table\StaticPost;
 use VuFind\Date\Converter;
+use VuFind\I18n\Translator\TranslatorAwareTrait;
 use VuFindAdmin\Controller\AbstractAdmin;
 
 
@@ -16,6 +17,7 @@ use VuFindAdmin\Controller\AbstractAdmin;
  */
 class StaticPagesController extends AbstractAdmin
 {
+    use TranslatorAwareTrait;
 
     // define some status constants
     const STATUS_OK = 'OK';                  // good
@@ -26,9 +28,10 @@ class StaticPagesController extends AbstractAdmin
 
     protected $outputMode;
 
-    public function __construct(StaticPost $table)
+    public function __construct(StaticPost $table, $translator)
     {
         $this->table = $table;
+        $this->setTranslator($translator);
     }
 
 
@@ -95,6 +98,8 @@ class StaticPagesController extends AbstractAdmin
     {
         $view = $this->createViewModel();
         $view->setTemplate('adminstaticpages/add');
+        $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
+        $view->langs = $allLanguages;
 
         $request = $this->getRequest();
         if (!$request->isPost()) {
@@ -105,6 +110,10 @@ class StaticPagesController extends AbstractAdmin
         $row->content = $this->params()->fromPost('sp-content');
         $row->save();
         $id = $row->id;
+
+//        $pid = $this->getLastPid();
+//        $view->pid = ++$pid;
+
         return $this->forwardTo('adminstaticpages', 'view', ['id' => $id]);
     }
 
