@@ -36,6 +36,15 @@ $config = [
                     'solr' => 'Hebis\Search\Results\Factory::getSolr',
                 ],
             ],
+            'search_options' => [
+                'abstract_factories' => ['Hebis\Search\Options\PluginFactory'],
+                'factories' => [
+                    'eds' => 'VuFind\Search\Options\Factory::getEDS',
+                ],
+            ],
+            'search_params' => [
+                'abstract_factories' => ['Hebis\Search\Params\PluginFactory'],
+            ],
             'recommend' => [
                 'factories' => [
                     'topfacets' => 'Hebis\Recommend\Factory::getTopFacets',
@@ -87,6 +96,8 @@ $config = [
             'VuFind\SearchResultsPluginManager' => 'VuFind\Service\Factory::getSearchResultsPluginManager',
             'VuFind\RecordTabPluginManager' => 'Hebis\Service\Factory::getRecordTabPluginManager',
             'VuFind\Search\Memory' => 'Hebis\Service\Factory::getSearchMemory',
+            'VuFind\SearchOptionsPluginManager' => 'Hebis\Service\Factory::getSearchOptionsPluginManager',
+            'VuFind\SearchParamsPluginManager' => 'Hebis\Service\Factory::getSearchParamsPluginManager',
         ],
         'invokables' => [
             'VuFind\Terms' => 'Hebis\Search\Service',
