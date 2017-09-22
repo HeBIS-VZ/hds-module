@@ -105,13 +105,12 @@ class SearchController extends \VuFind\Controller\SearchController
             [
                 'results' => $this->getHomePageFacets(),
                 'hierarchicalFacets' => $this->getHierarchicalFacets(),
-                'hierarchicalFacetSortOptions'
-                => $this->getHierarchicalFacetSortSettings()
+                'hierarchicalFacetSortOptions' => $this->getHierarchicalFacetSortSettings()
             ]
         );
 
         $view->searchId = $this->params()->fromRoute('searchId',false);
-        $view->lookfor = $this->params()->fromQuery("lookfor");
+
         $view->backlink = $this->params()->fromQuery("backlink");
         $this->params()->fromQuery("searchId");
         $view->params = $params = $this->getRequest()->getQuery()->toArray()
@@ -120,6 +119,8 @@ class SearchController extends \VuFind\Controller\SearchController
         $lookfor0 = $this->params()->fromQuery("lookfor0");
 
         $view->searchType = !empty($lookfor0) && is_array($lookfor0) ? 'advanced' : 'simple';
+
+        $view->lookfor = !empty($lookfor0) && is_array($lookfor0) ? $this->params()->fromQuery("lookfor0") : $this->params()->fromQuery("lookfor");
         return $view;
     }
 
