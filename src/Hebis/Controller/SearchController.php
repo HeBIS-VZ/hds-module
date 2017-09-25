@@ -37,6 +37,12 @@ class SearchController extends \VuFind\Controller\SearchController
     const STATUS_ERROR = 'ERROR';            // bad
     const STATUS_NEED_AUTH = 'NEED_AUTH';    // must login first
 
+
+    const SPECIAL_CHARS_MAP = [
+        "+" => "und",
+        "&" => "und"
+    ];
+
     public function homeAction()
     {
         $results = $hierarchicalFacets = $hierarchicalFacetSortOptions = [];
@@ -186,4 +192,11 @@ class SearchController extends \VuFind\Controller\SearchController
 
     }
 
+    private function solrSpecialChars($lookfor)
+    {
+
+        return preg_replace_callback("/\s([&+])\s/", function($matches) {
+            return " ".self::SPECIAL_CHARS_MAP[$matches[1]]." ";
+        }, $lookfor);
+    }
 }
