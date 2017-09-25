@@ -100,14 +100,21 @@ class StaticPagesController extends AbstractAdmin
         $view->setTemplate('adminstaticpages/add');
         $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
         $view->langs = $allLanguages;
-
+        $sessionManager = $this->getServiceLocator()->get('VuFind\SessionManager');
         $request = $this->getRequest();
         if (!$request->isPost()) {
             return $view;
         }
+
+        $language = $this->params()->fromPost('sp-lang');
+        $headline = $this->params()->fromPost('sp-headline');
+        $content = $this->params()->fromPost('sp-content');
+
         $row = $this->table->createRow();
+        $row->language = $this->params()->fromPost('sp-lang');
         $row->headline = $this->params()->fromPost('sp-headline');
         $row->content = $this->params()->fromPost('sp-content');
+        $row->author = $this->params()->fromPost('sp-author');
         $row->save();
         $id = $row->id;
 
@@ -115,6 +122,8 @@ class StaticPagesController extends AbstractAdmin
 //        $view->pid = ++$pid;
 
         return $this->forwardTo('adminstaticpages', 'view', ['id' => $id]);
+
+        //return $view;
     }
 
     public function editAction()
