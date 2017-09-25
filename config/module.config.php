@@ -104,6 +104,7 @@ $config = [
             'OAuth' => 'Hebis\Controller\Factory::getOAuth',
             'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder',
             'Xisbn' => 'Hebis\Controller\Factory::getXisbn',
+            'record' => 'Hebis\Controller\Factory::getRecordController',
         ],
         'invokables' => [
             'ajax' => 'Hebis\Controller\AjaxController',
