@@ -3,6 +3,7 @@
 
 namespace Hebis\Controller;
 
+use function GuzzleHttp\Promise\all;
 use Hebis\Db\Table\StaticPost;
 use VuFind\Date\Converter;
 use VuFind\I18n\Translator\TranslatorAwareTrait;
@@ -109,22 +110,32 @@ class StaticPagesController extends AbstractAdmin
         $language = $this->params()->fromPost('sp-lang');
         $headline = $this->params()->fromPost('sp-headline');
         $content = $this->params()->fromPost('sp-content');
+        $author = $this->params()->fromPost('sp-author');
 
-        $row = $this->table->createRow();
-        $row->language = $this->params()->fromPost('sp-lang');
-        $row->headline = $this->params()->fromPost('sp-headline');
-        $row->content = $this->params()->fromPost('sp-content');
-        $row->author = $this->params()->fromPost('sp-author');
-        $row->save();
-        $id = $row->id;
+
+        for ($i = 0; $i < sizeof($allLanguages); $i++) {
+            $this->saveRow($language[$i], $headline[$i], $content[$i], $author);
+        }
 
 //        $pid = $this->getLastPid();
 //        $view->pid = ++$pid;
 
-        return $this->forwardTo('adminstaticpages', 'view', ['id' => $id]);
+        return $this->forwardTo('adminstaticpages', 'list');
 
         //return $view;
     }
+
+
+    private function saveRow($language, $headline, $content, $author)
+    {
+        $row = $this->table->createRow();
+        $row->language = $language;
+        $row->headline = $headline;
+        $row->content = $content;
+        $row->author = $author;
+        $row->save();
+    }
+
 
     public function editAction()
     {
@@ -147,9 +158,6 @@ class StaticPagesController extends AbstractAdmin
         return $this->forwardTo('adminstaticpages', 'home');
     }
 
-    /*
-     * static page ajax delete action
-     */
     public function deleteAjax()
     {
         try {
@@ -161,6 +169,10 @@ class StaticPagesController extends AbstractAdmin
         }
         return $this->output(1, self::STATUS_OK, 200);
     }
+
+    /*
+     * static page ajax delete action
+     */
 
     /**
      * Send output data and exit.
@@ -234,6 +246,20 @@ class StaticPagesController extends AbstractAdmin
                 $this->translate('Invalid Method'), self::STATUS_ERROR, 400
             );
         }
+    }
+
+    /* checks whether the inputs array has an empty element*/
+
+    private function inputIsEmpty($input)
+    {
+        if (!is_array($input)) {
+            throw new \Exception('Input is not an array');
+        }
+        foreach ($input as $inputString) {
+            if (strlen($inputString) < 1)
+                return true;
+        }
+        return false;
     }
 
 }
