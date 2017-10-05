@@ -63,13 +63,15 @@ class AbstractRecordViewHelper extends AbstractHelper
      * checks if subField exists, if true it returns the subField containing data
      * otherwise it returns an empty string
      *
+     * @deprecated use \Hebis\Marc\Helper::getSubField instead
+     *
      * @param File_MARC_Data_Field $field
      * @param string $subFieldCode
      * @return string
      */
     protected function getSubField(File_MARC_Data_Field $field, $subFieldCode)
     {
-        return !$field->getSubfield($subFieldCode) ? '' : trim($field->getSubfield($subFieldCode)->getData());
+        return Helper::getSubField($field, $subFieldCode);
     }
 
     /**

@@ -28,6 +28,7 @@
 namespace Hebis\RecordTab;
 
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\View\Helper\Record\Tab\TabDescriptionTrait;
 
 /**
  * Interface TabInterface
@@ -36,27 +37,23 @@ use Hebis\RecordDriver\SolrMarc;
  */
 class Description extends \VuFind\RecordTab\Description implements TabInterface
 {
+
+    use TabDescriptionTrait;
+
     public function hasContents()
     {
+        /** @var SolrMarc $record */
         $record = $this->getRecordDriver();
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
+
         return
-            $this->has($marcRecord, 510, "a") ||
-            $this->has($marcRecord, 770) ||
-            $this->has($marcRecord, 772) ||
-            $this->has($marcRecord, 787) ||
-            $this->has($marcRecord, 500) ||
-            $this->has($marcRecord, 501) ||
-            $this->has($marcRecord, 504) ||
-            $this->has($marcRecord, 511) ||
-            $this->has($marcRecord, 515) ||
-            $this->has($marcRecord, 518) ||
-            $this->has($marcRecord, 538) ||
-            $this->has($marcRecord, 546) ||
-            $this->has($marcRecord, 550) ||
-            $this->has($marcRecord, 555) ||
-            $this->has($marcRecord, 583);
+            !empty($this->getReferenceNote($record)) ||
+            !empty($this->getNotes($record)) ||
+                $this->has($marcRecord, 770) ||
+                $this->has($marcRecord, 772) ||
+                $this->has($marcRecord, 777) ||
+                $this->has($marcRecord, 787);
     }
 
     /**

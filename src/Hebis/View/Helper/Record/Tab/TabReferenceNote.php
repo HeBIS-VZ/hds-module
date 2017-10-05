@@ -38,23 +38,10 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
  */
 class TabReferenceNote extends AbstractRecordViewHelper
 {
-
+    use TabDescriptionTrait;
+    
     public function __invoke(SolrMarc $record)
     {
-        $arr = [];
-
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
-        $fields510 = $marcRecord->getFields(510);
-
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($fields510 as $field) {
-            $a = $field->getSubfield("a");
-            if (!empty($a)) {
-                $arr[] = $a->getData();
-            }
-        }
-
-        return implode("<br />", $arr);
+        return $this->getReferenceNote($record);
     }
 }

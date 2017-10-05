@@ -41,10 +41,13 @@ class Options extends AbstractHelper
 
     private $edsOptions;
 
+    private $facetOptions;
+
     public function __construct(\Zend\ServiceManager\ServiceManager $sm)
     {
         $this->options = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
         $this->edsOptions = $sm->getServiceLocator()->get('VuFind\Config')->get('EDS');
+        $this->facetOptions = $sm->getServiceLocator()->get('VuFind\Config')->get('facets');
     }
 
     public function theme()
@@ -70,5 +73,10 @@ class Options extends AbstractHelper
     public function edsFacetLimit()
     {
         return $this->edsOptions->Facet_Settings->facet_limit;
+    }
+
+    public function solrOnlineFacet()
+    {
+        return $this->facetOptions->Advanced_Settings->online_facet;
     }
 }

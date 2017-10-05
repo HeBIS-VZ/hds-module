@@ -85,8 +85,16 @@ class XisbnController extends SearchController
         $this->layout()->setTemplate('layout/lightbox');
         $view = $this->createViewModel();
 
-        $isbn = $this->params()->fromQuery('isbn');
-        $lookfor = "isxn:(" . implode(" ", $this->worldCatUtils->getXISBN($isbn)) . ")";
+        $isbn = $this->params()->fromQuery('lookfor');
+        $xids = $this->worldCatUtils->getXISBN($isbn);
+
+        if (empty($xids)) {
+            $isbns = "00000000";
+        } else {
+            $isbns = implode(" ", $xids);
+        }
+
+        $lookfor = $isbns;
         $limit = 5;
 
         $runner = $this->getServiceLocator()->get('VuFind\SearchRunner');
@@ -97,12 +105,16 @@ class XisbnController extends SearchController
          * @param string $searchId
          */
         $cb = function ($runner, $params, $searchId) use ($lookfor, $limit) {
-            //$params->initFromRecordDriver($driver);
+            //$params->initFromRecordDriver($runner);
             $params->setLimit($limit);
-            $params->setBasicSearch($lookfor);
+            $params->setBasicSearch($lookfor, "xid");
+
         };
 
-        $results = $runner->run([], $this->searchClassId, $cb);
+        $request = $this->getRequest()->getQuery()->toArray();
+        unset($request['lookfor']);
+
+        $results = $runner->run($request, $this->searchClassId, $cb);
         $results->filterResults(self::getFilterCallback([$isbn]));
         $view->results = $results;
         // Make view

@@ -41,8 +41,8 @@ class SearchMemory extends \VuFind\View\Helper\Root\SearchMemory
         $url = parse_url($this->memory->retrieveSearchOf($searchClassId));
         if (array_key_exists('query', $url)) {
             $query = $url['query'];
-            if (preg_match("/lookfor\=([^&]*){1}/", $query, $match)) {
-                $searchTerm = !empty($match) ? explode(" ", urldecode($match[1])) : null;
+            if (preg_match("/(lookfor|lookfor0%5B%5D)\=([^&]*){1}/", $query, $match)) {
+                $searchTerm = !empty($match) ? explode(" ", urldecode($match[2])) : null;
 
                 if (count($searchTerm) > 1) {
                     $ret = "";

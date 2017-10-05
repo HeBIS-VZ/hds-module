@@ -27,6 +27,7 @@
 
 namespace Hebis\View\Helper\Record\Tab;
 
+use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -75,16 +76,16 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
             return strpos($elem->getData(), "(DE-603)") !== false;
         });
 
-        $i = $this->getSubField($field7xx, "i");
-        $a = $this->getSubField($field7xx, "a");
-        $t = $this->getSubField($field7xx, "t");
-        $b = $this->getSubField($field7xx, "b");
-        $d = $this->getSubField($field7xx, "d");
-        $g = $this->getSubField($field7xx, "g");
-        $h = $this->getSubField($field7xx, "h");
+        $i = Helper::getSubField($field7xx, "i");
+        $a = Helper::getSubField($field7xx, "a");
+        $t = Helper::getSubField($field7xx, "t");
+        $b = Helper::getSubField($field7xx, "b");
+        $d = Helper::getSubField($field7xx, "d");
+        $g = Helper::getSubField($field7xx, "g");
+        $h = Helper::getSubField($field7xx, "h");
         $z = $this->getSubFieldsDataArrayOfField($field7xx, ["z"]);
-        $o = $this->getSubField($field7xx, "o");
-        $x = $this->getSubField($field7xx, "x");
+        $o = Helper::getSubField($field7xx, "o");
+        $x = Helper::getSubField($field7xx, "x");
 
 
         $ret .= !empty($i) ? "$i" : "";
@@ -98,7 +99,7 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
         }
 
         $ltext = "";
-        $ltext .= !empty($t) ? "$t" : "$t";
+        $ltext .= !empty($t) ? ". $t" : "";
         $ltext .= !empty($b) ? " - $b" : "";
         $ltext .= !empty($d) ? " - $d" : "";
         $ltext .= !empty($g) ? " - $g" : "";

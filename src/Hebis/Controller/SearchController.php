@@ -37,6 +37,12 @@ class SearchController extends \VuFind\Controller\SearchController
     const STATUS_ERROR = 'ERROR';            // bad
     const STATUS_NEED_AUTH = 'NEED_AUTH';    // must login first
 
+
+    const SPECIAL_CHARS_MAP = [
+        "+" => "und",
+        "&" => "und"
+    ];
+
     public function homeAction()
     {
         $results = $hierarchicalFacets = $hierarchicalFacetSortOptions = [];
@@ -105,13 +111,12 @@ class SearchController extends \VuFind\Controller\SearchController
             [
                 'results' => $this->getHomePageFacets(),
                 'hierarchicalFacets' => $this->getHierarchicalFacets(),
-                'hierarchicalFacetSortOptions'
-                => $this->getHierarchicalFacetSortSettings()
+                'hierarchicalFacetSortOptions' => $this->getHierarchicalFacetSortSettings()
             ]
         );
 
         $view->searchId = $this->params()->fromRoute('searchId',false);
-        $view->lookfor = $this->params()->fromQuery("lookfor");
+
         $view->backlink = $this->params()->fromQuery("backlink");
         $this->params()->fromQuery("searchId");
         $view->params = $params = $this->getRequest()->getQuery()->toArray()
@@ -120,6 +125,8 @@ class SearchController extends \VuFind\Controller\SearchController
         $lookfor0 = $this->params()->fromQuery("lookfor0");
 
         $view->searchType = !empty($lookfor0) && is_array($lookfor0) ? 'advanced' : 'simple';
+
+        $view->lookfor = !empty($lookfor0) && is_array($lookfor0) ? $this->params()->fromQuery("lookfor0") : $this->params()->fromQuery("lookfor");
         return $view;
     }
 
@@ -186,4 +193,11 @@ class SearchController extends \VuFind\Controller\SearchController
 
     }
 
+    private function solrSpecialChars($lookfor)
+    {
+
+        return preg_replace_callback("/\s([&+])\s/", function($matches) {
+            return " ".self::SPECIAL_CHARS_MAP[$matches[1]]." ";
+        }, $lookfor);
+    }
 }

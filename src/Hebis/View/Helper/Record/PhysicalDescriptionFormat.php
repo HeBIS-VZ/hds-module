@@ -46,6 +46,7 @@ class PhysicalDescriptionFormat extends AbstractRecordViewHelper
     public function __invoke(SolrMarc $record)
     {
         $id = $record->getUniqueID();
-        return ContentType::getContentType($record);
+        $contentType = new ContentType();
+        return $contentType->getContentType($record);
     }
 }
