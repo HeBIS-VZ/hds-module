@@ -56,6 +56,7 @@ if (file_exists('vendor/autoload.php')) {
     $loader = new Composer\Autoload\ClassLoader();
     $loader->add('HebisTest', __DIR__ . '/unit-tests/src');
     $loader->add('Hebis', __DIR__ . '/../src');
+    $loader->addPsr4('VuFindTest\\', 'module/VuFindSearch/tests/unit-tests/src/VuFindTest');
     // Dynamically discover all module src directories:
     $modules = opendir(__DIR__ . '/../..');
     while ($mod = readdir($modules)) {

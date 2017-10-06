@@ -40,6 +40,11 @@ class EDS extends \VuFind\RecordDriver\EDS
         return $this->fields;
     }
 
+    public function setFields(array $fields)
+    {
+        $this->fields = $fields;
+    }
+
     /**
      * Return a URL to a thumbnail preview of the record, if available; false
      * otherwise.
