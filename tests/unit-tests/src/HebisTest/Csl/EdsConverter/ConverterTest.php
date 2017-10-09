@@ -3,6 +3,7 @@
 namespace HebisTest\Csl\EdsConverter;
 
 use Hebis\Csl\EdsConverter\Converter;
+use Hebis\Csl\Model\Name;
 use Hebis\RecordDriver\EDS;
 use VuFindTest\Backend\EDS\BackendTest;
 use \InvalidArgumentException;
@@ -51,9 +52,12 @@ class ConverterTest extends BackendTest
 
     public function testConvertArticle()
     {
-        $record = $this->getRecord("lfh,124311561");
+        $record = $this->getRecord("30h,61912725");
         $type = $record->getPubTypeId();
-
+        $author = new Name();
+        $author->setFamily()
 
     }
+
+
 }
