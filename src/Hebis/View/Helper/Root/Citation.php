@@ -27,10 +27,13 @@
 
 namespace Hebis\View\Helper\Root;
 
-use Hebis\Csl\MarcConverter\Converter;
+use Hebis\Csl\MarcConverter\Converter as MarcConverter;
+use Hebis\Csl\EdsConverter\Converter as EdsConverter;
 use Hebis\Csl\Model\Layout\CslRecord;
 use Seboettg\CiteProc\CiteProc;
 use Seboettg\CiteProc\StyleSheet;
+use VuFind\RecordDriver\EDS;
+use VuFind\RecordDriver\SolrMarc;
 use Zend\Config\Config;
 
 /**
@@ -100,7 +103,12 @@ class Citation extends \VuFind\View\Helper\Root\Citation
     public function __invoke($driver)
     {
         $this->driver = $driver;
-        $this->cslRecord = Converter::convert($driver);
+        if ($driver instanceof SolrMarc) {
+            $this->cslRecord = MarcConverter::convert($driver);
+        } else if ($driver instanceof EDS) {
+            $this->cslRecord = EdsConverter::convert($driver);
+        }
+
         return $this;
     }
 

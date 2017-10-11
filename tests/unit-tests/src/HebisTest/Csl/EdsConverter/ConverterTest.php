@@ -53,9 +53,11 @@ class ConverterTest extends BackendTest
     public function testConvertArticle()
     {
         $record = $this->getRecord("30h,61912725");
-        $type = $record->getPubTypeId();
-        $author = new Name();
-        $author->setFamily()
+        $article = Converter::convert($record);
+        $this->assertNotEmpty($article->getAuthor());
+        $this->assertNotEmpty($article->getAuthor()[1]);
+        $this->assertEquals($article->getAuthor()[0]->getFamily(), "Fedotov");
+        $this->assertEquals($article->getPage(), "174-181");
 
     }
 

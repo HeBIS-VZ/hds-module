@@ -65,4 +65,85 @@ class EDS extends \VuFind\RecordDriver\EDS
         }
         return false;
     }
+
+    public function getCleanDOI()
+    {
+        if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity']) &&
+            array_key_exists('Identifiers', $bibEntity)) {
+
+            foreach ($bibEntity['Identifiers'] as $identifier) {
+                if (strcasecmp($identifier['Type'],"doi") === 0) {
+                    return $identifier['Value'];
+                }
+            }
+        }
+        return false;
+    }
+
+    public function getContainerIssue()
+    {
+        return $this->getNumbering("issue");
+    }
+
+    public function getContainerVolume()
+    {
+        return $this->getNumbering("volume");
+    }
+
+    /**
+     * @param string $type (issue|volume)
+     * @return string
+     */
+    private function getNumbering($type)
+    {
+        if (!empty($bibRelationships = $this->fields['RecordInfo']['BibRecord']['BibRelationships'])) {
+            if (array_key_exists('IsPartOfRelationships', $bibRelationships) &&
+                !empty($bibRelationships['IsPartOfRelationships'])) {
+                $bibEntity = $bibRelationships['IsPartOfRelationships'][0]['BibEntity'];
+                if (array_key_exists('Numbering', $bibEntity) &&
+                    !empty($bibEntity['Numbering'])) {
+
+                    foreach ($bibEntity['Numbering'] as $numbering) {
+                        if (!strcasecmp($numbering['Type'], $type)) {
+                            return $numbering['Value'];
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public function getContainerStartPage()
+    {
+        if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity'])) {
+            if (array_key_exists("PhysicalDescription", $bibEntity) && array_key_exists("Pagination", $bibEntity["PhysicalDescription"])) {
+                $pagination = $bibEntity["PhysicalDescription"]["Pagination"];
+                return $pagination["StartPage"];
+            }
+        }
+        return false;
+    }
+
+    public function getContainerEndPage()
+    {
+        $endPage = 0;
+        if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity'])) {
+            if (array_key_exists("PhysicalDescription", $bibEntity) && array_key_exists("Pagination", $bibEntity["PhysicalDescription"])) {
+                $pagination = $bibEntity["PhysicalDescription"]["Pagination"];
+                $endPage = $pagination["PageCount"];
+            }
+        }
+
+        if (!empty($startPage = $this->getContainerStartPage())) {
+            if (!empty($endPage)) {
+                return intval($startPage) + intval($endPage);
+            }
+            return $startPage;
+        } elseif (!empty($endPage)) {
+            return $endPage;
+        }
+
+        return false;
+    }
 }

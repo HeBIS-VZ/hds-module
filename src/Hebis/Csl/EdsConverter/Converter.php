@@ -27,6 +27,8 @@
 
 namespace Hebis\Csl\EdsConverter;
 
+use Hebis\Csl\Model\Date;
+use Hebis\Csl\Model\Name;
 use Hebis\Csl\Model\Record;
 use Hebis\RecordDriver\ContentType;
 use Hebis\RecordDriver\EDS;
@@ -43,40 +45,129 @@ class Converter
     public static function convert(EDS $record)
     {
 
-        $type = $record->getPubType();
+        $type = $record->getPubTypeId();
 
         switch ($type) {
             case 'featureArticle':
             case 'academicJournal':
             case 'serialPeriodical':
-                return static::convertArticle($record);
+                return json_encode(static::convertArticle($record));
             case 'musicalscore':
-                return MusicalScoreConverter::convert($record->getMarcRecord());
+                //return MusicalScoreConverter::convert($record->getMarcRecord());
             case 'map':
-                return MapConverter::convert($record->getMarcRecord());
+                //return MapConverter::convert($record->getMarcRecord());
             case 'book':
             default:
+                /*
                 if (self::isThesis($record->getMarcRecord())) {
                     return ThesisConverter::convert($record->getMarcRecord());
                 }
                 return BookConverter::convert($record->getMarcRecord());
+                */
         }
     }
 
-    public static function isThesis($marcRecord)
-    {
-        return !empty($marcRecord->getField("502"));
-    }
 
     public static function convertArticle(EDS $record)
     {
         $article = new Record();
         $article->setType("article");
-        //$article->setAuthor()
+
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['BibRelationships'])) {
+            $article->setAuthor(self::convertPersonEntities($record->getFields()['RecordInfo']['BibRecord']['BibRelationships']['HasContributorRelationships']));
+        }
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships'])) {
+            $article->setAuthority(self::convertOrganizationEntity($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships']['HasPubAgent']));
+        }
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['BibRelationships']) &&
+            !empty($record->getFields()['RecordInfo']['BibRecord']['BibRelationships']['IsPartOfRelationships'])) {
+            $article->setContainerTitle(self::convertBibEntity($record->getFields()['RecordInfo']['BibRecord']['BibRelationships']));
+        }
+        if (!empty($doi = $record->getCleanDOI())) {
+            $article->setDOI($doi);
+        }
+        if (!empty($issue = $record->getContainerIssue())) {
+            $article->setIssue($issue);
+        }
+        if (!empty($volume = $record->getContainerVolume())) {
+            $article->setVolume($volume);
+        }
+        if (!empty($title = $record->getTitle())) {
+            $article->setTitle($title);
+        }
+        if (!empty($issued = self::getDateParts($record))) {
+            $article->setIssued($issued);
+        }
+        $endPage = $record->getContainerEndPage();
+        if (!empty($startPage = $record->getContainerStartPage()) || !empty($endPage)) {
+            $article->setPage($startPage . "-" . $endPage);
+        } elseif (!empty($endPage)) {
+            $article->setPage($startPage);
+        }
+
+
         return $article;
     }
 
-    private static function getContentType($record)
+    private static function convertPersonEntities($personEntities)
     {
+        $authors = [];
+        array_map(function(&$personEntity) use (&$authors) {
+            $author = new Name();
+            $name = $personEntity['PersonEntity']['Name']['NameFull'];
+            $delimiterPos = strpos($name, ', ');
+            $author->setFamily(substr($name, 0, $delimiterPos - 1));
+            $author->setGiven(substr($name, $delimiterPos + 2));
+            $authors[] = $author;
+        }, $personEntities);
+
+        return $authors;
     }
+
+
+    private static function convertOrganizationEntity(array $pubAgents)
+    {
+        $authorities = [];
+        array_map(function(&$pubAgent) use (&$authorities) {
+            $authorities[] = $pubAgent['OrganizationEntity']['Name']['FullName'];
+        }, $pubAgents);
+        return implode($authorities, "; ");
+    }
+
+    private static function convertBibEntity($bibRelationships)
+    {
+        return $bibRelationships['IsPartOfRelationships'][0]['BibEntity']['Titles'][0]['TitleFull'];
+    }
+
+    /**
+     * @param EDS $record
+     * @return Date|bool
+     */
+    private static function getDateParts($record)
+    {
+        if (!empty($bibRelationships = $record->getFields()['RecordInfo']['BibRecord']['BibRelationships']) &&
+            !empty($bibRelationships['IsPartOfRelationships'])) {
+            $bibEntity = $bibRelationships['IsPartOfRelationships'][0];
+            if (array_key_exists("Dates", $bibEntity['BibEntity'])) {
+                $dates = $bibEntity['BibEntity']['Dates'][0];
+                $issued = new Date();
+                if ($dates['Type'] == "published") {
+                    $dateParts = [];
+                    uasort($dates, function ($a, $b) {
+                        return -1 * strcmp($a, $b);
+                    });
+                    array_walk($dates, function ($value, $key) use (&$dateParts) {
+                        if (in_array($key, ['Y', 'M', 'D'])) {
+                            $dateParts[] = [$value];
+                        }
+                    });
+                    $issued->setDateParts($dateParts);
+                    return $issued;
+                }
+            }
+        }
+        return false;
+    }
+
+
 }
