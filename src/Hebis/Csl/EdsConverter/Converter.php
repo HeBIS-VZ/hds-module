@@ -52,11 +52,20 @@ class Converter
             case 'academicJournal':
             case 'serialPeriodical':
                 return json_encode(static::convertArticle($record));
+            case 'newspaperArticle':
+            case 'transcript':
+                $newspaperArticle = static::convertArticle($record);
+                $newspaperArticle->setType("newspaper-article");
+                return json_encode($newspaperArticle);
+            case 'book':
+                $book = static::convertBook($record);
+                return json_encode($book);
             case 'musicalscore':
                 //return MusicalScoreConverter::convert($record->getMarcRecord());
             case 'map':
                 //return MapConverter::convert($record->getMarcRecord());
-            case 'book':
+
+
             default:
                 /*
                 if (self::isThesis($record->getMarcRecord())) {
@@ -108,6 +117,56 @@ class Converter
 
         return $article;
     }
+
+    /**
+     * @param EDS $record
+     * @return Record
+     */
+    private static function convertBook($record)
+    {
+        $book = new Record();
+        $book->setType("book");
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['BibRelationships'])) {
+            $book->setAuthor(self::convertPersonEntities($record->getFields()['RecordInfo']['BibRecord']['BibRelationships']['HasContributorRelationships']));
+        }
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships'])) {
+            $book->setAuthority(self::convertOrganizationEntity($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships']['HasPubAgent']));
+        }
+        if (!empty($collection = self::getFormItems($record->getFields()["Items"], "SeriesInfo"))) {
+            $book->setCollectionTitle($collection);
+        }
+        if (!empty($container = self::getFormItems($record->getFields()["Items"], "TitleSource"))) {
+            $book->setContainerTitle($collection);
+        }
+        if (!empty($doi = $record->getCleanDOI())) {
+            $book->setDOI($doi);
+        }
+        if (!empty($isbn = self::getFormItems($record->getFields()["Items"], "ISBN"))) {
+            $book->setISBN($isbn);
+        }
+        if (!empty($issued = self::getDateParts($record))) {
+            $book->setIssued($issued);
+        }
+        if (!empty($pageCount = $record->getContainerPageCount())) {
+            $book->setNumberOfPages($pageCount);
+        }
+        if (!empty($publisher = self::getFormItems($record->getFields()["Items"], "Publisher")) ||
+            !empty($publisher = self::getFormItems($record->getFields()["Items"], "PubInfo"))) {
+            $book->setPublisher($publisher);
+        }
+        if (!empty($pubPlace = self::getFormItems($record->getFields()["Items"], "PlacePub"))) {
+            $book->setPublisherPlace($pubPlace);
+        }
+        if (!empty($title = $record->getTitle())) {
+            $book->setTitle($title);
+        }
+        if (!empty($url = self::getUrlFormItems($record->getFields()["Items"], "URL"))) {
+            $book->setURL($url);
+        }
+        return $book;
+
+    }
+
 
     private static function convertPersonEntities($personEntities)
     {
@@ -167,6 +226,27 @@ class Converter
             }
         }
         return false;
+    }
+
+    private static function getFormItems($items, $name)
+    {
+        foreach ($items as $item) {
+            if ($item["Name"] === $name) {
+                return strip_tags($item["Data"]);
+            }
+        }
+        return null;
+    }
+
+    private static function getUrlFormItems($items, $string)
+    {
+        $link = self::getFormItems($items, $string);
+        if (!empty($link)) {
+            if (preg_match("/linkTerm=\"(.+)\"\slinkWindow/", html_entity_decode($link), $match)) {
+                return $match[1];
+            }
+        }
+        return null;
     }
 
 

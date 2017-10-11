@@ -127,13 +127,7 @@ class EDS extends \VuFind\RecordDriver\EDS
 
     public function getContainerEndPage()
     {
-        $endPage = 0;
-        if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity'])) {
-            if (array_key_exists("PhysicalDescription", $bibEntity) && array_key_exists("Pagination", $bibEntity["PhysicalDescription"])) {
-                $pagination = $bibEntity["PhysicalDescription"]["Pagination"];
-                $endPage = $pagination["PageCount"];
-            }
-        }
+        $endPage = $this->getContainerPageCount();
 
         if (!empty($startPage = $this->getContainerStartPage())) {
             if (!empty($endPage)) {
@@ -144,6 +138,17 @@ class EDS extends \VuFind\RecordDriver\EDS
             return $endPage;
         }
 
+        return false;
+    }
+
+    public function getContainerPageCount()
+    {
+        if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity'])) {
+            if (array_key_exists("PhysicalDescription", $bibEntity) && array_key_exists("Pagination", $bibEntity["PhysicalDescription"])) {
+                $pagination = $bibEntity["PhysicalDescription"]["Pagination"];
+                return $pagination["PageCount"];
+            }
+        }
         return false;
     }
 }
