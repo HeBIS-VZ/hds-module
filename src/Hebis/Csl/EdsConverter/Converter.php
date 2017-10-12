@@ -60,11 +60,19 @@ class Converter
             case 'book':
                 $book = static::convertBook($record);
                 return json_encode($book);
-            case 'musicalscore':
-                //return MusicalScoreConverter::convert($record->getMarcRecord());
+            case 'image':
+            case 'tableChart':
+                $graphic = static::convertGraphic($record);
+                return json_encode($graphic);
+            case 'videoRecording':
+                $video = static::converMotionPicture($record);
+                return json_encode($video);
+            case 'score':
+                return json_encode(static::convertMusicalScore($record));
             case 'map':
-                //return MapConverter::convert($record->getMarcRecord());
-
+                return json_encode(static::convertMap($record));
+            case 'conference':
+                return json_encode(static::convertConference($record));
 
             default:
                 /*
@@ -132,16 +140,16 @@ class Converter
         if (!empty($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships'])) {
             $book->setAuthority(self::convertOrganizationEntity($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships']['HasPubAgent']));
         }
-        if (!empty($collection = self::getFormItems($record->getFields()["Items"], "SeriesInfo"))) {
+        if (!empty($collection = self::getFromItems($record->getFields()["Items"], "SeriesInfo"))) {
             $book->setCollectionTitle($collection);
         }
-        if (!empty($container = self::getFormItems($record->getFields()["Items"], "TitleSource"))) {
+        if (!empty($container = self::getFromItems($record->getFields()["Items"], "TitleSource"))) {
             $book->setContainerTitle($collection);
         }
         if (!empty($doi = $record->getCleanDOI())) {
             $book->setDOI($doi);
         }
-        if (!empty($isbn = self::getFormItems($record->getFields()["Items"], "ISBN"))) {
+        if (!empty($isbn = self::getFromItems($record->getFields()["Items"], "ISBN"))) {
             $book->setISBN($isbn);
         }
         if (!empty($issued = self::getDateParts($record))) {
@@ -150,11 +158,14 @@ class Converter
         if (!empty($pageCount = $record->getContainerPageCount())) {
             $book->setNumberOfPages($pageCount);
         }
-        if (!empty($publisher = self::getFormItems($record->getFields()["Items"], "Publisher")) ||
-            !empty($publisher = self::getFormItems($record->getFields()["Items"], "PubInfo"))) {
+        if (!empty($language = $record->getLanguages())) {
+            $book->setLanguage($language);
+        }
+        if (!empty($publisher = self::getFromItems($record->getFields()["Items"], "Publisher")) ||
+            !empty($publisher = self::getFromItems($record->getFields()["Items"], "PubInfo"))) {
             $book->setPublisher($publisher);
         }
-        if (!empty($pubPlace = self::getFormItems($record->getFields()["Items"], "PlacePub"))) {
+        if (!empty($pubPlace = self::getFromItems($record->getFields()["Items"], "PlacePub"))) {
             $book->setPublisherPlace($pubPlace);
         }
         if (!empty($title = $record->getTitle())) {
@@ -164,9 +175,248 @@ class Converter
             $book->setURL($url);
         }
         return $book;
-
     }
 
+    /**
+     * @param $record
+     * @return Record
+     */
+    private static function convertGraphic($record)
+    {
+        $graphic = new Record();
+        $graphic->setType("graphic");
+        if (!empty($bibRelationships = $record->getFields()['RecordInfo']['BibRecord']['BibRelationships'])) {
+            //$graphic->setAuthor(self::convertPersonEntities($bibRelationships['HasContributorRelationships']));
+            $graphic->setIllustrator($graphic->getAuthor());
+        }
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships'])) {
+            $graphic->setAuthority(self::convertOrganizationEntity($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships']['HasPubAgent']));
+        }
+        if (!empty($collection = self::getFromItems($record->getFields()["Items"], "SeriesInfo"))) {
+            $graphic->setCollectionTitle($collection);
+        }
+        if (!empty($container = self::getFromItems($record->getFields()["Items"], "TitleSource"))) {
+            $graphic->setContainerTitle($collection);
+        }
+        if (!empty($doi = $record->getCleanDOI())) {
+            $graphic->setDOI($doi);
+        }
+        if (!empty($issued = self::getDateParts($record))) {
+            $graphic->setIssued($issued);
+        }
+        if (!empty($medium = self::getUrlFormItems($record->getFields()["Items"], "PhysDesc"))) {
+            $graphic->setURL($medium);
+        }
+        if (!empty($publisher = self::getFromItems($record->getFields()["Items"], "Publisher")) ||
+            !empty($publisher = self::getFromItems($record->getFields()["Items"], "PubInfo"))) {
+            $graphic->setPublisher($publisher);
+        }
+        if (!empty($pubPlace = self::getFromItems($record->getFields()["Items"], "PlacePub"))) {
+            $graphic->setPublisherPlace($pubPlace);
+        }
+        if (!empty($title = $record->getTitle())) {
+            $graphic->setTitle($title);
+        }
+        if (!empty($url = self::getUrlFormItems($record->getFields()["Items"], "URL"))) {
+            $graphic->setURL($url);
+        }
+        return $graphic;
+    }
+
+    /**
+     * @param EDS $record
+     * @return Record
+     */
+    private static function convertMap($record)
+    {
+        $map = new Record();
+        $map->setType("map");
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['BibRelationships'])) {
+            $map->setAuthor(self::convertPersonEntities($record->getFields()['RecordInfo']['BibRecord']['BibRelationships']['HasContributorRelationships']));
+        }
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships'])) {
+            $map->setAuthority(self::convertOrganizationEntity($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships']['HasPubAgent']));
+        }
+        if (!empty($collection = self::getFromItems($record->getFields()["Items"], "SeriesInfo"))) {
+            $map->setCollectionTitle($collection);
+        }
+        if (!empty($container = self::getFromItems($record->getFields()["Items"], "TitleSource"))) {
+            $map->setContainerTitle($collection);
+        }
+        if (!empty($dimension = self::getFromItems($record->getFields()["Items"], "Format"))) {
+            $map->setDimensions($dimension);
+        }
+        if (!empty($issued = self::getDateParts($record))) {
+            $map->setIssued($issued);
+        }
+        if (!empty($language = $record->getLanguages())) {
+            $map->setLanguage($language);
+        }
+        if (!empty($publisher = self::getFromItems($record->getFields()["Items"], "Publisher")) ||
+            !empty($publisher = self::getFromItems($record->getFields()["Items"], "PubInfo"))) {
+            $map->setPublisher($publisher);
+        }
+        if (!empty($pubPlace = self::getFromItems($record->getFields()["Items"], "PlacePub"))) {
+            $map->setPublisherPlace($pubPlace);
+        }
+        if (!empty($title = $record->getTitle())) {
+            $map->setTitle($title);
+        }
+        if (!empty($url = self::getUrlFormItems($record->getFields()["Items"], "URL"))) {
+            $map->setURL($url);
+        }
+        return $map;
+    }
+
+    /**
+     * @param EDS $record
+     * @return Record
+     */
+    private static function converMotionPicture($record)
+    {
+        $video = new Record();
+        $video->setType("motion_picture");
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['BibRelationships'])) {
+            $video->setAuthor(self::convertPersonEntities($record->getFields()['RecordInfo']['BibRecord']['BibRelationships']['HasContributorRelationships']));
+        }
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships'])) {
+            $video->setAuthority(self::convertOrganizationEntity($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships']['HasPubAgent']));
+        }
+        if (!empty($collection = self::getFromItems($record->getFields()["Items"], "SeriesInfo"))) {
+            $video->setCollectionTitle($collection);
+        }
+        if (!empty($container = self::getFromItems($record->getFields()["Items"], "TitleSource"))) {
+            $video->setContainerTitle($collection);
+        }
+        if (!empty($issued = self::getDateParts($record))) {
+            $video->setIssued($issued);
+        }
+        if (!empty($language = $record->getLanguages())) {
+            $video->setLanguage($language);
+        }
+        if (!empty($medium = self::getFromItems($record->getFields()["Items"], "PhysDesc"))) {
+            $video->setMedium($medium);
+        }
+        if (!empty($publisher = self::getFromItems($record->getFields()["Items"], "Publisher")) ||
+            !empty($publisher = self::getFromItems($record->getFields()["Items"], "PubInfo"))) {
+            $video->setPublisher($publisher);
+        }
+        if (!empty($pubPlace = self::getFromItems($record->getFields()["Items"], "PlacePub"))) {
+            $video->setPublisherPlace($pubPlace);
+        }
+        if (!empty($title = $record->getTitle())) {
+            $video->setTitle($title);
+        }
+        if (!empty($url = self::getUrlFormItems($record->getFields()["Items"], "URL"))) {
+            $video->setURL($url);
+        }
+        return $video;
+    }
+
+    /**
+     * @param EDS $record
+     * @return Record
+     */
+    private static function convertMusicalScore($record)
+    {
+        $score = new Record();
+        $score->setType("musical_score");
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['BibRelationships'])) {
+            $score->setComposer(self::convertPersonEntities($record->getFields()['RecordInfo']['BibRecord']['BibRelationships']['HasContributorRelationships']));
+        }
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships'])) {
+            $score->setAuthority(self::convertOrganizationEntity($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships']['HasPubAgent']));
+        }
+        if (!empty($collection = self::getFromItems($record->getFields()["Items"], "SeriesInfo"))) {
+            $score->setCollectionTitle($collection);
+        }
+        if (!empty($container = self::getFromItems($record->getFields()["Items"], "TitleSource"))) {
+            $score->setContainerTitle($collection);
+        }
+        if (!empty($doi = $record->getCleanDOI())) {
+            $score->setDOI($doi);
+        }
+        if (!empty($issued = self::getDateParts($record))) {
+            $score->setIssued($issued);
+        }
+        if (!empty($language = $record->getLanguages())) {
+            $score->setLanguage($language);
+        }
+        if (!empty($medium = self::getFromItems($record->getFields()["Items"], "PhysDesc"))) {
+            $score->setMedium($medium);
+        }
+        if (!empty($publisher = self::getFromItems($record->getFields()["Items"], "Publisher")) ||
+            !empty($publisher = self::getFromItems($record->getFields()["Items"], "PubInfo"))) {
+            $score->setPublisher($publisher);
+        }
+        if (!empty($pubPlace = self::getFromItems($record->getFields()["Items"], "PlacePub"))) {
+            $score->setPublisherPlace($pubPlace);
+        }
+        if (!empty($title = $record->getTitle())) {
+            $score->setTitle($title);
+        }
+        if (!empty($url = self::getUrlFormItems($record->getFields()["Items"], "URL"))) {
+            $score->setURL($url);
+        }
+        return $score;
+    }
+
+    /**
+     * @param EDS $record
+     * @return Record
+     */
+    private static function convertConference($record)
+    {
+        $conference = new Record();
+        $conference->setType("paper-conference");
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['BibRelationships'])) {
+            $conference->setAuthor(self::convertPersonEntities($record->getFields()['RecordInfo']['BibRecord']['BibRelationships']['HasContributorRelationships']));
+        }
+        if (!empty($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships'])) {
+            $conference->setAuthority(self::convertOrganizationEntity($record->getFields()['RecordInfo']['BibRecord']['HasPubAgentRelationships']['HasPubAgent']));
+        }
+        if (!empty($collection = self::getFromItems($record->getFields()["Items"], "SeriesInfo"))) {
+            $conference->setCollectionTitle($collection);
+        }
+        if (!empty($container = self::getFromItems($record->getFields()["Items"], "TitleSource"))) {
+            $conference->setContainerTitle($collection);
+        }
+        if (!empty($doi = $record->getCleanDOI())) {
+            $conference->setDOI($doi);
+        }
+        if (!empty($isbn = self::getFromItems($record->getFields()["Items"], "ISBN"))) {
+            $conference->setISBN($isbn);
+        }
+        if (!empty($issue = $record->getContainerIssue())) {
+            $conference->setIssue($issue);
+        }
+        if (!empty($issued = self::getDateParts($record))) {
+            $conference->setIssued($issued);
+        }
+        if (!empty($pageCount = $record->getContainerPageCount())) {
+            $conference->setNumberOfPages($pageCount);
+        }
+        if (!empty($language = $record->getLanguages())) {
+            $conference->setLanguage($language);
+        }
+        if (!empty($publisher = self::getFromItems($record->getFields()["Items"], "Publisher")) ||
+            !empty($publisher = self::getFromItems($record->getFields()["Items"], "PubInfo"))) {
+            $conference->setPublisher($publisher);
+        }
+        if (!empty($pubPlace = self::getFromItems($record->getFields()["Items"], "PlacePub"))) {
+            $conference->setPublisherPlace($pubPlace);
+        }
+        if (!empty($title = $record->getTitle())) {
+            $conference->setTitle($title);
+        }
+        if (!empty($url = self::getUrlFormItems($record->getFields()["Items"], "URL"))) {
+            $conference->setURL($url);
+        }
+        if (!empty($volume = $record->getContainerVolume())) {
+            $conference->setVolume($volume);
+        }
+        return $conference;
+    }
 
     private static function convertPersonEntities($personEntities)
     {
@@ -228,7 +478,7 @@ class Converter
         return false;
     }
 
-    private static function getFormItems($items, $name)
+    private static function getFromItems($items, $name)
     {
         foreach ($items as $item) {
             if ($item["Name"] === $name) {
@@ -240,7 +490,7 @@ class Converter
 
     private static function getUrlFormItems($items, $string)
     {
-        $link = self::getFormItems($items, $string);
+        $link = self::getFromItems($items, $string);
         if (!empty($link)) {
             if (preg_match("/linkTerm=\"(.+)\"\slinkWindow/", html_entity_decode($link), $match)) {
                 return $match[1];
@@ -248,6 +498,5 @@ class Converter
         }
         return null;
     }
-
 
 }

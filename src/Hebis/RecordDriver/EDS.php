@@ -151,4 +151,39 @@ class EDS extends \VuFind\RecordDriver\EDS
         }
         return false;
     }
+
+    public function getLanguages()
+    {
+        if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity'])) {
+            if (array_key_exists("Languages", $bibEntity)) {
+                $languages = $bibEntity["Languages"];
+                return $languages[0]["Text"];
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Obtain the title of the record from the record info section
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        if (isset($this->fields['RecordInfo']['BibRecord']['BibEntity']['Titles'])) {
+            foreach ($this->fields['RecordInfo']['BibRecord']['BibEntity']['Titles']
+                     as $titleRecord
+            ) {
+                if (isset($titleRecord['Type']) && 'main' == $titleRecord['Type']) {
+                    return $titleRecord['TitleFull'];
+                }
+            }
+        }
+        foreach ($this->fields["Items"] as $item) {
+            if ($item["Name"] === "Title") {
+                return $item["Data"];
+            }
+        }
+        return '';
+    }
 }
