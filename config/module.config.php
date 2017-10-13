@@ -126,6 +126,11 @@ $config = [
             'adminlogs' => 'Hebis\Controller\AdminLogs'
         ]
     ],
+    'controller_plugins' => [
+        'factories' => [
+            'result-scroller' => 'Hebis\Controller\Plugin\Factory::getResultScroller',
+        ],
+    ],
     'router' => [
         'routes' => [
             'oauth' => [
