@@ -68,28 +68,21 @@ class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $field */
         foreach ($fields as $field) {
-            $n = $p = "";
-            /** @var \File_MARC_Subfield $subField */
-            foreach ($field->getSubfields() as $subField) {
-                $key = $subField->getCode();
-                switch ($key) {
-                    case 'n':
-                        //if (strpos($subField->getData(), "[...]") === false) {
-                        $n = htmlentities($this->removeControlSigns($subField->getData()));
-                        //}
-                        break;
-                    case 'p':
-                        $p = htmlentities($this->removeControlSigns($subField->getData()));
-                        break;
+
+            $nps = $this->getSubFieldsDataArrayOfField($field, ['n', 'p']);
+            $first = array_shift($nps);
+            if (is_array($first)) {
+                $second = array_shift($nps);
+            } else {
+                $first = [$first];
+            }
+
+            for ($i = 0; $i < count($first); ++$i) {
+                $str = $first[$i];
+                if (isset($second) && isset($second[$i])) {
+                    $str .= ". " . $second[$i];
                 }
-
-                if ($n && $p) {
-                    $np = "$n. $p";
-                    $n = $p = "";
-                    $arr[] = $np;
-                }
-
-
+                $arr[] = $str;
             }
         }
         return $arr;
