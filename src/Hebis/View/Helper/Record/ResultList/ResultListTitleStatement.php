@@ -64,8 +64,6 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
             }
         }
 
-        $_245 = $marcRecord->getField(245);
-
         /** @var \File_MARC_Data_Field $field */
         $field = $marcRecord->getField('245');
 
@@ -79,7 +77,10 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
 
         $ret .= !empty($a) ? trim($a) : "";
         $ret .= !empty($h) ? " " . trim($h) : "";
-        $ret .= !empty($b) ? " : " . trim($b) : "";
+        $ret .= !empty($b) ? (!empty($ret) ? " : " : "") . trim($b) : "";
+
+        $url = $this->getView()->recordLink()->getUrl($record);
+        $ret = '<a href="' . $url . '" class="title">' . $ret . '</a>';
 
         $sectionOfAWork = $this->getView()->singleRecordSectionOfAWork($record);
         $np = $sectionOfAWork->getNp();
