@@ -507,7 +507,7 @@ class MultipartItems extends AbstractRecordViewHelper
     private function getShowAllVolumesLinkParams($ppn)
     {
        return [
-            "sort" => "pub_date_max desc",
+            "sort" => "part_of_$ppn asc",
             "type0[]" => "part_of",
             "lookfor0[]" => $ppn,
             "join" => "AND"

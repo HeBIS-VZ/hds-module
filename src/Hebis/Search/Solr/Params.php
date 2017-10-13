@@ -78,4 +78,37 @@ class Params extends \VuFind\Search\Solr\Params
 
         return $filter;
     }
+
+    /**
+     * Überschreibt Methode aus VuFind\Search\Base\Params um den Sortierschlüssel part_of_PPN zuzulassen.
+     *
+     * Set the sorting value (note: sort will be set to default if an illegal
+     * or empty value is passed in).
+     *
+     * @param string $sort  New sort value (null for default)
+     * @param bool   $force Set sort value without validating it?
+     *
+     * @return void
+     */
+    public function setSort($sort, $force = false)
+    {
+        // Skip validation if requested:
+        if ($force) {
+            $this->sort = $sort;
+            return;
+        }
+
+        // Validate and assign the sort value:
+        $valid = array_keys($this->getOptions()->getSortOptions());
+        if (!empty($sort) && (in_array($sort, $valid) || strpos( $sort, "part_of_") !== false)) {
+            $this->sort = $sort;
+        } else {
+            $this->sort = $this->getDefaultSort();
+        }
+
+        // In RSS mode, we may want to adjust sort settings:
+        if (!$this->skipRssSort && $this->getView() == 'rss') {
+            $this->sort = $this->getOptions()->getRssSort($this->sort);
+        }
+    }
 }
