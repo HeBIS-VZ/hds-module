@@ -39,31 +39,36 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
  */
 class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
 {
+    protected $record;
 
     public function __invoke(SolrMarc $record)
     {
+        $this->record = $record;
+        return $this;
+    }
+
+    public function render()
+    {
         /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
+        $marcRecord = $this->record->getMarcRecord();
         $leader = $marcRecord->getLeader();
 
         $char = $leader{19};
         $arr = [];
 
         if (preg_match("/\s/", $char)) {
-            $arr = $this->createOutput($marcRecord, $arr);
+            $arr = $this->getNp();
         }
         return implode("<br />", $arr);
     }
 
     /**
-     * @param $marcRecord
-     * @param $arr
      * @return array
      */
-    protected function createOutput($marcRecord, $arr)
+    public function getNp()
     {
         $arr = [];
-        $fields = $marcRecord->getFields('245');
+        $fields = $this->record->getMarcRecord()->getFields('245');
 
 
         /** @var \File_MARC_Data_Field $field */

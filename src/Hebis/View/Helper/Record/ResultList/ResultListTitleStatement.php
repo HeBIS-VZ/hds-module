@@ -77,19 +77,13 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
         $b = array_key_exists(0, $b) ? $this->getSubFieldDataArrayOfGivenField($field, 'b')[0] : "";
         $h = array_key_exists(0, $h) ? $this->getSubFieldDataArrayOfGivenField($field, 'h')[0] : "";
 
-        $n_p = $this->getNp($field);
         $ret .= !empty($a) ? trim($a) : "";
         $ret .= !empty($h) ? " " . trim($h) : "";
         $ret .= !empty($b) ? " : " . trim($b) : "";
 
-        if (!empty($n_p)) {
-            $ret .= "<br />";
-            $ret .= $n_p;
-        }
-
-
-        $str = str_replace("  ", " ", $ret);
-
+        $sectionOfAWork = $this->getView()->singleRecordSectionOfAWork($record);
+        $np = $sectionOfAWork->getNp();
+        $str = $ret . (!empty($np) ? "<br />" : "") . implode("<br />", $np);
         return $str;
     }
 
