@@ -56,9 +56,9 @@ class SingleRecordPhysicalDescription extends AbstractRecordViewHelper
             $c = Helper::getSubFieldDataOfGivenField($field, 'c');
             $e = Helper::getSubFieldDataOfGivenField($field, 'e');
             $ret .= ($a) ? $a : "";
-            $ret .= ($b) ? " : " . $b : "";
-            $ret .= ($c) ? " ; " . $c : "";
-            $ret .= ($e) ? " + " . $e : "";
+            $ret .= ($b) ? (!empty($ret) ? " : $b" : $b) : "";
+            $ret .= ($c) ? (!empty($ret) ? " ; $c" : $c) : "";
+            $ret .= ($e) ? (!empty($ret) ? " + $e" : $e) : "";
             $arr[] = $ret;
         }
 

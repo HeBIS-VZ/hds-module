@@ -90,16 +90,12 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
 
         $ret .= !empty($i) ? "$i" : "";
 
-        if (!empty($ret)) {
-            if (empty($a)) {
-                $ret .= ": ";
-            } else {
-                $ret .= ". $a";
-            }
+        if (!empty($a)) {
+            $ret .= ": $a";
         }
 
         $ltext = "";
-        $ltext .= !empty($t) ? ". $t" : "";
+        $ltext .= !empty($t) ? (!empty($a) ? ": " : ". ") . $t : "";
         $ltext .= !empty($b) ? " - $b" : "";
         $ltext .= !empty($d) ? " - $d" : "";
         $ltext .= !empty($g) ? " - $g" : "";
