@@ -58,6 +58,6 @@ class PluginFactory extends \VuFind\Search\Options\PluginFactory
                 $serviceLocator->getServiceLocator()->get('VuFind\Config')
             );
         }
-        return parent::createServiceWithName($serviceLocator);
+        return parent::createServiceWithName($serviceLocator, $name, $requestedName);
     }
 }

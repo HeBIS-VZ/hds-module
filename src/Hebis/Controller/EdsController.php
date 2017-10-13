@@ -27,8 +27,6 @@
 
 namespace Hebis\Controller;
 
-use Zend\Stdlib\Parameters;
-
 /**
  * Class EdsController
  * @package Hebis\Controller
@@ -157,7 +155,7 @@ class EdsController extends \VuFind\Controller\EdsController
             $searchUrl = $this->url()->fromRoute(
                     $results->getOptions()->getSearchAction()
                 ) . $results->getUrlQuery()->getParams(false);
-            $this->getSearchMemory()->rememberLastSearchOf('EDS', $searchUrl);
+            $this->getSearchMemory()->rememberLastSearchOf($searchUrl, 'EDS');
         }
 
         // Always save search parameters, since these are namespaced by search
