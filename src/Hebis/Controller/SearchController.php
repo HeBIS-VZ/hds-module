@@ -77,7 +77,7 @@ class SearchController extends \VuFind\Controller\SearchController
         } else {
             $view = parent::resultsAction();
         }
-
+        $view->originLookfor = $this->params()->fromQuery("lookfor");
 
         /** @var Results $results */
         $results = $view->results;
@@ -99,6 +99,7 @@ class SearchController extends \VuFind\Controller\SearchController
                 return $this->forwardTo("search", "record_not_found", $request);
             }
         }
+
         return $view; //else return results list
     }
 
