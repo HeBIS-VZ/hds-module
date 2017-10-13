@@ -81,8 +81,8 @@ class SingleRecordProduction extends AbstractRecordViewHelper
             $c = implode("; ", $this->getSubFieldsStringArrayOfGivenField($field, ['c']));
 
             $str = $a;
-            $str .= (!empty($b) ? " : $b" : "");
-            $str .= (!empty($c) ? ", $c" : "");
+            $str .= (!empty($b) ? (!empty($str) ? " : " : "") . $b : "");
+            $str .= (!empty($c) ? (!empty($str) ? ", " :  "") . $c : "");
             $arr[] = $str;
         }
         return implode("<br />", $arr);
