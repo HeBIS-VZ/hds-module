@@ -69,13 +69,9 @@ class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
         /** @var \File_MARC_Data_Field $field */
         foreach ($fields as $field) {
 
-            $nps = $this->getSubFieldsDataArrayOfField($field, ['n', 'p']);
+            $nps = $this->normalizeArrayStructure($this->getSubFieldsDataArrayOfField($field, ['n', 'p']));
             $first = array_shift($nps);
-            if (is_array($first)) {
-                $second = array_shift($nps);
-            } else {
-                $first = [$first];
-            }
+            $second = array_shift($nps);
 
             for ($i = 0; $i < count($first); ++$i) {
                 $str = $first[$i];
@@ -86,5 +82,18 @@ class SingleRecordSectionOfAWork extends AbstractRecordViewHelper
             }
         }
         return $arr;
+    }
+
+    private function normalizeArrayStructure($arr)
+    {
+        $array = [];
+        foreach ($arr as $key => $value) {
+            if (!is_array($value)) {
+                $array[$key] = [$value];
+            } else {
+                $array[$key] = $value;
+            }
+        }
+        return $array;
     }
 }
