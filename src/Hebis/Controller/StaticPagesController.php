@@ -3,7 +3,6 @@
 
 namespace Hebis\Controller;
 
-use function GuzzleHttp\Promise\all;
 use Hebis\Db\Table\StaticPost;
 use VuFind\Date\Converter;
 use VuFind\I18n\Translator\TranslatorAwareTrait;
@@ -14,7 +13,7 @@ use VuFindAdmin\Controller\AbstractAdmin;
  * Class to manage static pages
  *
  * @package Hebis\Controller
- * @author Roshak Zarhoun <roshak.zarhoun@stud.tu-darmstadt.de>
+ * @author Roshak Zarhoun <roshakz@gmail.com>
  */
 class StaticPagesController extends AbstractAdmin
 {

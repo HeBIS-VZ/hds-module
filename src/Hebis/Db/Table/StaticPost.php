@@ -12,16 +12,6 @@ class StaticPost extends Gateway
         parent::__construct('static_post', $rowClass);
     }
 
-
-    /*public function createStaticPage()
-    {
-        $page = $this->createRow();
-        //$page->createDate = (new \DateTime('now'))->format()
-
-        return $page;
-
-    }*/
-
     public function getPost($id)
     {
         $staticPostRow = $this->select(['id' => $id])->current();
@@ -29,7 +19,6 @@ class StaticPost extends Gateway
         if (!$staticPostRow) {
             throw new \Exception("Could not find post $id");
         }
-
         return $staticPostRow;
     }
 
@@ -42,7 +31,4 @@ class StaticPost extends Gateway
     {
         return $this->select();
     }
-
-
-
 }

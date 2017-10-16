@@ -83,4 +83,9 @@ class Factory extends \VuFind\View\Helper\Root\Factory
             $sm->getServiceLocator()->get('VuFind\Search\Memory')
         );
     }
+
+    public static function getStaticPageNavigation(ServiceManager $sm)
+    {
+        return new StaticPageNavigation();
+    }
 }
