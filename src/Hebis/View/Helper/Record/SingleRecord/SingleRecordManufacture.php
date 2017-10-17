@@ -70,10 +70,10 @@ class SingleRecordManufacture extends AbstractRecordViewHelper
                         $ret .= htmlentities($sf);
                         break;
                     case "b":
-                        $ret .= ", " . htmlentities($sf);
+                        $ret .= !empty($ret) ? ", " : "" . htmlentities($sf);
                         break;
                     case "c":
-                        $ret .= ", " . htmlentities($sf);
+                        $ret .= !empty($ret) ? ", " : "" . htmlentities($sf);
 
                 }
             }

@@ -49,14 +49,49 @@ class SingleRecordTitleContains extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $field */
         foreach ($_249 as $field) {
-            $a = Helper::getSubFieldDataOfGivenField($field, 'a');
-            $b = Helper::getSubFieldDataOfGivenField($field, 'b');
+            $subFields_a = $field->getSubfields('a');
+            $subFields_v = $field->getSubfields('v');
+            $arr_av = [];
 
-            if ($a) {
-                $arr[] = $this->removeControlSigns($a);
+            // Wenn mehrere $a in 249, dann jeweils auf neuer Zeile anzeigen.
+            // Die Kombi $a_/_$v als Pärchen zusammen anzeigen
+            for ($i = 0; $i < count($subFields_a); ++$i) {
+                /** @var \File_MARC_Subfield $subField_a */
+                $subField_a = $subFields_a[$i];
+                $av = htmlentities(Helper::utf8_encode($subField_a->getData()));
+                if (array_key_exists($i, $subFields_v)) {
+                    $av .= " / " . htmlentities(Helper::utf8_encode($subFields_v[$i]->getData()));
+                }
+                $arr_av[] = Helper::removeControlSigns($av);
             }
-            if ($b) {
-                $arr[] = $this->removeControlSigns($b);
+            $arr[] = implode("<br />", $arr_av);
+
+            // 249 $b_/_$c
+            $bc = Helper::getSubFieldDataOfGivenField($field, 'b');
+            if (!empty($c = Helper::getSubFieldDataOfGivenField($field, 'c'))) {
+                $bc .= " / $c";
+            }
+            if (!empty($bc)) {
+                $arr[] = Helper::removeControlSigns($bc);
+            }
+        }
+
+        //505 $a_$t_/_$r
+        $_505 = $marcRecord->getFields('505');
+
+        foreach ($_505 as $field) {
+            $atr = Helper::getSubFieldDataOfGivenField($field, 'a');
+
+            if (!empty($t = Helper::getSubFieldDataOfGivenField($field, 't'))) {
+                $atr .= " $t";
+            }
+
+            if (!empty($r = Helper::getSubFieldDataOfGivenField($field, 'r'))) {
+                $atr .= " / $r";
+            }
+
+            if (!empty($atr)) {
+                $arr[] = trim(Helper::removeControlSigns($atr));
             }
         }
 

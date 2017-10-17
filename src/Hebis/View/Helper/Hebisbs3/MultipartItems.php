@@ -80,7 +80,8 @@ class MultipartItems extends AbstractRecordViewHelper
     public function __invoke($driver)
     {
         $this->driver = $driver;
-        $this->isMultipartItem = ContentType::getContentType($driver) === "hierarchy";
+        $contentType = new ContentType();
+        $this->isMultipartItem = $contentType->getContentType($driver) === "hierarchy";
         return $this;
     }
 
@@ -91,34 +92,6 @@ class MultipartItems extends AbstractRecordViewHelper
     {
         return $this->isMultipartItem;
     }
-
-    public function renderShowAllVolumesLink()
-    {
-        if ($this->isMultipartItem) {
-            $ppn = substr($this->driver->getPPN(), 3);
-        } else {
-            $ppn = $this->getPPNFrom773();
-            if (empty($ppn)) {
-                return "";
-            }
-        }
-
-        if (empty($ppn)) {
-            throw new HebisException("Invalid state. No PPN present to generate link");
-        }
-
-        $linkText = $this->getView()->transEsc('show_all_volumes');
-        $searchParams = [
-            "sort" => "relevance",
-            "type0[]" => "part_of",
-            "lookfor0[]" => $ppn,
-            "join" => "AND"
-        ];
-
-        return $this->generateSearchLink($linkText, $searchParams);
-
-    }
-
 
     public function isPartOfMultipartItem()
     {
@@ -151,52 +124,64 @@ class MultipartItems extends AbstractRecordViewHelper
             if (!empty($c = Helper::getSubFieldDataOfGivenField($field, 'c'))) {
                 $str .= " / $c";
             }
+            $np = $this->getSubFieldsDataArrayOfField($field, ['n', 'p']);
+            if (!empty($np)) {
+                $str .= "; " . $np['n'];
+                if (array_key_exists("p", $np)) {
+                    $str .= ". " . $np['p'];
+                }
+            }
+
+
             $ppn = $this->getPPNFrom773();
             if (!empty($ppn)) {
                 $uri = new Uri($this->getView()->url('recordfinder') . "HEB" . $ppn);
-                $arr[] = '<a href="' . $uri->toString() . '">' . $str . '</a>';
-            } else {
-                $arr[] = $str;
+                $str = '<a href="' . $uri->toString() . '">' . $str . '</a>';
             }
+            if (!empty($link = $this->renderShowAllVolumesLink())) {
+                $str .= "<br />" . '<span class="hds-icon-list-bullet">' . $link . '</span>';
+            }
+            $arr[] = $str;
         }
 
-        /* Wenn Leader Pos. 19 = b oder c:
+        /*
         800 $a_$b,_$c:_$t_:_$n,_$p_;_$v
         810 $a._$b_($g)_($n):_$t_:_$n,_$p_;_$v
         811 $a_($g)_($n_:_$c_:_$d):_$t_:_$n,_$p_;_$v
         830 $a_:_$n,_$p_;_$v
         + Zusatzregeln (s. Anmerkungen) */
 
-
-        if (substr($leader, 19, 1) === "c" || substr($leader, 19, 1) === "b") {
-            $fields = $marcRecord->getFields(800);
-            foreach ($fields as $field) {
-                $arr[] = $this->generate800($field);
-            }
-
-            $fields = $marcRecord->getFields(810);
-            foreach ($fields as $field) {
-                $arr[] = $this->generate810($field);
-            }
-
-            $fields = $marcRecord->getFields(811);
-            foreach ($fields as $field) {
-                $arr[] = $this->generate811($field);
-            }
-
-            $fields = $marcRecord->getFields(830);
-            foreach ($fields as $field) {
-                $arr[] = $this->generate830($field);
-            }
+        $fields = $marcRecord->getFields(800);
+        foreach ($fields as $field) {
+            $arr[] = $this->generate800($field) . $this->renderShowAllVolumesLink8xx($field);
         }
+
+        $fields = $marcRecord->getFields(810);
+        foreach ($fields as $field) {
+            $arr[] = $this->generate810($field) . $this->renderShowAllVolumesLink8xx($field);
+        }
+
+        $fields = $marcRecord->getFields(811);
+        foreach ($fields as $field) {
+            $arr[] = $this->generate811($field) . $this->renderShowAllVolumesLink8xx($field);
+        }
+
+        $fields = $marcRecord->getFields(830);
+        foreach ($fields as $field) {
+            $arr[] = $this->generate830($field) . $this->renderShowAllVolumesLink8xx($field);
+        }
+
 
         /*
         Wenn Leader Pos. 19 = # oder a:
         490 $a,_$x_;_$v
         "ISSN_" vor $x ergänzen */
-        if (substr($leader, 19, 1) === " " || substr($leader, 19, 1) === "a") {
-            $fields = $marcRecord->getFields(490);
-            foreach ($fields as $field) {
+        $fields = $marcRecord->getFields(490);
+
+        /** @var \File_MARC_Data_Field $field */
+        foreach ($fields as $field) {
+            $ind1 = $field->getIndicator(1);
+            if ($ind1 == "0") {
                 $ax = $this->getSubFieldsDataArrayOfField($field, ['a', 'x']);
                 if (array_key_exists('x', $ax)) {
                     $ax['x'] = "ISSN " . $ax['x'];
@@ -208,6 +193,7 @@ class MultipartItems extends AbstractRecordViewHelper
                 }
                 $arr[] = trim($str);
             }
+
         }
 
         return implode("<br />", $arr);
@@ -219,17 +205,27 @@ class MultipartItems extends AbstractRecordViewHelper
         //800 $a_$b,_$c:_$t_:_$n,_$p_;_$v
         $ret .= implode(" ", $this->getSubFieldsDataArrayOfField($field, ['a', 'b']));
 
-        $c_t = implode(": ", $this->getSubFieldsDataArrayOfField($field, ['c', 't']));
-        $ret .= (!empty($c_t)) ? ", $c_t" : "";
+        $c_t = $this->getSubFieldsDataArrayOfField($field, ['c', 't']);
+
+        if (array_key_exists('c', $c_t)) {
+            $ret .= ", " . $c_t['c'];
+        }
+
+        if (array_key_exists('t', $c_t)) {
+            $ret .= ": " . $c_t['t'];
+        }
+
+        $ret = $this->createLink($field, $ret);
 
         $n = Helper::getSubFieldDataOfGivenField($field, 'n');
-        if (strpos($n, "[...]") === false) {
+        if ($n !== false && strpos($n, "[...]") === false) {
             $n = " : $n";
         } else {
             $n = "";
         }
-
-        $ret .= $n;
+        if (!empty($n)) {
+            $ret .= $n;
+        }
         $ret .= !empty($p = Helper::getSubFieldDataOfGivenField($field, 'p')) ? ", $p" : "";
 
 
@@ -253,7 +249,7 @@ class MultipartItems extends AbstractRecordViewHelper
                     $ret .= $subfield->getData();
                     break;
                 case 'b':
-                    $ret .= ". " . $subfield->getData();
+                    $ret .= (!empty($ret) ? ". " : "") . $subfield->getData();
                     break;
                 case 'g':
                     $ret .= " (" . $subfield->getData() . ")";
@@ -263,7 +259,7 @@ class MultipartItems extends AbstractRecordViewHelper
                         $ret .= " (" . $subfield->getData() . ")";
                     } else {
                         if (strpos($subfield->getData(), "[...]") === false) {
-                            $ret .= " : " . $subfield->getData();
+                            $ret .= (!empty($ret) ? " : " : "") . $subfield->getData();
                         }
                     }
                     break;
@@ -271,6 +267,13 @@ class MultipartItems extends AbstractRecordViewHelper
                     $tCalled = true;
                     $ret .= ": " . $subfield->getData();
                     break;
+            }
+        }
+
+        $ret = $this->createLink($field, $ret);
+
+        foreach ($field->getSubfields() as $code => $subfield) {
+            switch ($code) {
                 case 'p':
                     $ret .= ", " . $subfield->getData();
                     break;
@@ -340,6 +343,13 @@ class MultipartItems extends AbstractRecordViewHelper
                     $tCalled = true;
                     $ret .= ": " . $subfield->getData();
                     break;
+            }
+        }
+
+        $ret = $this->createLink($field, $ret);
+
+        foreach ($field->getSubfields() as $code => $subfield) {
+            switch ($code) {
                 case 'p':
                     $ret .= ", " . $subfield->getData();
                     break;
@@ -365,6 +375,16 @@ class MultipartItems extends AbstractRecordViewHelper
                 case 'a':
                     $ret .= htmlentities($subfield->getData());
                     break;
+                case 't':
+                    $ret .= (!empty($ret) ? ": " : "") . htmlentities($subfield->getData());
+                    break;
+            }
+        }
+
+        $ret = $this->createLink($field, $ret);
+
+        foreach ($field->getSubfields() as $code => $subfield) {
+            switch ($code) {
                 case 'n':
                     if (strpos($subfield->getData(), "[...]") === false) {
                         $ret .= " : " . htmlentities($subfield->getData());
@@ -377,6 +397,7 @@ class MultipartItems extends AbstractRecordViewHelper
                     $ret .= " ; " . htmlentities($subfield->getData());
             }
         }
+
         return $ret;
     }
 
@@ -405,8 +426,13 @@ class MultipartItems extends AbstractRecordViewHelper
 
         /** @var \File_MARC_Data_Field $_773 */
         $_773 = $marcRecord->getField(773);
-        if (!empty($_773)) {
-            $w = $_773->getSubfield("w");
+        return $this->getPPNFrom($_773);
+    }
+
+    private function getPPNFrom($field)
+    {
+        if (!empty($field)) {
+            $w = $field->getSubfield("w");
             if (!empty($w) && !empty($w->getData())) {
                 $ppn = substr($w->getData(), 8);
             }
@@ -415,4 +441,76 @@ class MultipartItems extends AbstractRecordViewHelper
         return "";
     }
 
+    /**
+     * @param string $field
+     * @param string $ret
+     * @return string
+     */
+    private function createLink($field, $ret)
+    {
+        $ppn = $this->getPPNFrom($field);
+        $_7 = $field->getSubfield(7);
+        if (!empty($ppn) && !empty($_7) && substr($_7->getData(), 1, 1) === "m") {
+            $uri = new Uri($this->getView()->url('recordfinder') . "HEB" . $ppn);
+            $ret = '<a href="' . $uri->toString() . '">' . $ret . '</a>';
+        }
+        return $ret;
+    }
+
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @return string
+     */
+    private function renderShowAllVolumesLink8xx($field)
+    {
+        $_7 = $field->getSubfield(7);
+        if (!empty($_7) && substr($_7->getData(), 1, 1) === "m") {
+            $ppn = $this->getPPNFrom($field);
+
+            $linkText = $this->getView()->transEsc('show_all_volumes');
+            $searchParams = $this->getShowAllVolumesLinkParams($ppn);
+
+            if (!empty($link = $this->generateSearchLink($linkText, $searchParams))) {
+                $link = "<br />" . '<span class="hds-icon-list-bullet">' . $link . '</span>';
+            }
+            return $link;
+        }
+        return "";
+    }
+
+
+    public function renderShowAllVolumesLink()
+    {
+        if ($this->isMultipartItem) {
+            $ppn = substr($this->driver->getPPN(), 3);
+        } else {
+            $ppn = $this->getPPNFrom773();
+            if (empty($ppn)) {
+                return "";
+            }
+        }
+
+        if (empty($ppn)) {
+            throw new HebisException("Invalid state. No PPN present to generate link");
+        }
+
+        $linkText = $this->getView()->transEsc('show_all_volumes');
+        $searchParams = $this->getShowAllVolumesLinkParams($ppn);
+
+        return $this->generateSearchLink($linkText, $searchParams);
+
+    }
+    /**
+     * @param $ppn
+     * @return array
+     */
+    private function getShowAllVolumesLinkParams($ppn)
+    {
+       return [
+            "sort" => "part_of_$ppn asc",
+            "type0[]" => "part_of",
+            "lookfor0[]" => $ppn,
+            "join" => "AND"
+        ];
+    }
 }

@@ -36,6 +36,15 @@ $config = [
                     'solr' => 'Hebis\Search\Results\Factory::getSolr',
                 ],
             ],
+            'search_options' => [
+                'abstract_factories' => ['Hebis\Search\Options\PluginFactory'],
+                'factories' => [
+                    'eds' => 'VuFind\Search\Options\Factory::getEDS',
+                ],
+            ],
+            'search_params' => [
+                'abstract_factories' => ['Hebis\Search\Params\PluginFactory'],
+            ],
             'recommend' => [
                 'factories' => [
                     'topfacets' => 'Hebis\Recommend\Factory::getTopFacets',
@@ -86,6 +95,9 @@ $config = [
             'VuFind\AutocompletePluginManager' => 'VuFind\Service\Factory::getAutocompletePluginManager',
             'VuFind\SearchResultsPluginManager' => 'VuFind\Service\Factory::getSearchResultsPluginManager',
             'VuFind\RecordTabPluginManager' => 'Hebis\Service\Factory::getRecordTabPluginManager',
+            'VuFind\Search\Memory' => 'Hebis\Service\Factory::getSearchMemory',
+            'VuFind\SearchOptionsPluginManager' => 'Hebis\Service\Factory::getSearchOptionsPluginManager',
+            'VuFind\SearchParamsPluginManager' => 'Hebis\Service\Factory::getSearchParamsPluginManager',
         ],
         'invokables' => [
             'VuFind\Terms' => 'Hebis\Search\Service',
@@ -103,6 +115,7 @@ $config = [
             'OAuth' => 'Hebis\Controller\Factory::getOAuth',
             'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder',
             'Xisbn' => 'Hebis\Controller\Factory::getXisbn',
+            'record' => 'Hebis\Controller\Factory::getRecordController',
         ],
         'invokables' => [
             'ajax' => 'Hebis\Controller\AjaxController',
@@ -110,7 +123,13 @@ $config = [
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
             'edsrecord' => 'Hebis\Controller\EdsrecordController',
+            'adminlogs' => 'Hebis\Controller\AdminLogs'
         ]
+    ],
+    'controller_plugins' => [
+        'factories' => [
+            'result-scroller' => 'Hebis\Controller\Plugin\Factory::getResultScroller',
+        ],
     ],
     'router' => [
         'routes' => [
@@ -143,7 +162,17 @@ $config = [
                         'action' => 'xid'
                     ]
                 ]
-            ]
+            ],
+            'logs' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route' => '/Admin/Logs',
+                    'defaults' => [
+                        'controller' => 'AdminLogs',
+                        'action' => 'Home',
+                    ]
+                ]
+            ],
         ],
     ],
 

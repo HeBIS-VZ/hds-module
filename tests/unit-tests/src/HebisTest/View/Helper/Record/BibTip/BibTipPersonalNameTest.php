@@ -26,8 +26,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace HebisTest\View\Helper\Record;
+namespace HebisTest\View\Helper\Record\BibTip;
 
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
 /**
  * Class BibTipTest

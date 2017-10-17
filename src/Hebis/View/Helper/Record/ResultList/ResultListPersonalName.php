@@ -85,19 +85,19 @@ class ResultListPersonalName extends AbstractRecordViewHelper
      * @param \File_MARC_Data_Field $field
      * @return string
      */
-    protected function getFieldContents($field)
+    protected function getFieldContents($field, $inclusiveE = true)
     {
         $ret = "";
-        $a = Helper::getSubFieldDataOfGivenField($field, 'a');
-        $b = Helper::getSubFieldDataOfGivenField($field, 'b');
-        $c = Helper::getSubFieldDataOfGivenField($field, 'c');
+        $a = Helper::removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'a'));
+        $b = Helper::removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'b'));
+        $c = Helper::removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'c'));
         $eArray = !is_bool($field) ? $field->getSubfields("e") : [];
 
         $ret .= $a ? $a : "";
         $ret .= $b ? " $b" : "";
         $ret .= $c ? " &lt;$c&gt;" : "";
 
-        if (count($eArray) > 0) {
+        if ($inclusiveE && count($eArray) > 0) {
             $ret .= " (";
             $i = 0;
             /** @var \File_MARC_Subfield $e_ */
@@ -107,7 +107,7 @@ class ResultListPersonalName extends AbstractRecordViewHelper
                     $ret .= ", ";
                 }
 
-                $ret .= $e ? htmlentities($e) : "";
+                $ret .= $e ? htmlentities(Helper::removeControlSigns($e)) : "";
             }
             $ret .= ")";
         }

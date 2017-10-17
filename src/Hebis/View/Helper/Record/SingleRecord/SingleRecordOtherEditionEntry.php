@@ -52,33 +52,48 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
         $marcRecord = $record->getMarcRecord();
         $id = $record->getUniqueID();
 
-        /** @var array $fields */
-        $fields = $marcRecord->getFields('775');
-
-        $arr = [];
-        foreach ($fields as $field) {
-            /* Nur anzeigen wenn Indikator 1 = 0 und Indikator 2 = 8: */
-            $ind1 = $field->getIndicator(1);
-            $ind2 = $field->getIndicator(2);
-            if ($ind1 == "0" && $ind2 == "8") {
-                $arr[] = $this->generateContents($field);
-            }
-        }
-
-        /** @var array $fields */
-        $fields = $marcRecord->getFields('776');
-
-        /** @var \File_MARC_Data_Field $field */
-        foreach ($fields as $field) {
-            /* Nur anzeigen wenn Indikator 1 = 0 und Indikator 2 = 8: */
-            $ind1 = $field->getIndicator(1);
-            $ind2 = $field->getIndicator(2);
-            if ($ind1 == "0" && $ind2 == "8") {
-                $arr[] = $this->generateContents($field);
-            }
-        }
+        $arr = $this->generate77X($marcRecord, '775');
+        $arr = array_merge($arr, $this->generate77X($marcRecord, '776'));
 
         return implode("<br />", $arr);
+    }
+
+    protected function generatePrefix($field)
+    {
+        $subFieldKeys = ['t', 'b', 'd', 'g', 'h', 'z', 'o', 'x'];
+        $subFields = $this->getSubfieldsAsArray($field);
+
+        $prefix = "";
+        /* Wenn kein $a vorhanden, dann nach Inhalt aus
+        $i bzw. $n ":_" (Doppelpunkt Blank) ergänzen statt
+        vorgegebenem Deskriptionszeichen */
+        if (!array_key_exists('a', $subFields)) {
+            if (array_key_exists('i', $subFields) && array_key_exists('n', $subFields)) {
+                $prefix .= htmlentities($subFields['i']) . " " . htmlentities($subFields['n']) . ": ";
+            } else {
+                if (array_key_exists('i', $subFields)) {
+                    $prefix .= htmlentities($subFields['i']) . ": ";
+                } else {
+                    if (array_key_exists('n', $subFields)) {
+                        $prefix .= htmlentities($subFields['n']) . ": ";
+                    }
+                }
+            }
+        } else {
+            if (array_key_exists('i', $subFields) && array_key_exists('n', $subFields)) {
+                $prefix .= htmlentities($subFields['i']) . " " . htmlentities($subFields['n']) . ": ";
+            } else {
+                if (array_key_exists('i', $subFields)) {
+                    $prefix .= htmlentities($subFields['i']) . ": ";
+                } else {
+                    if (array_key_exists('n', $subFields)) {
+                        $prefix .= htmlentities($subFields['n']) . ": ";
+                    }
+                }
+            }
+            $prefix .= htmlentities($subFields['a']) . ". "; // a nachtragen
+        }
+        return $prefix;
     }
 
     /**
@@ -90,12 +105,12 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
         $subFieldKeys = ['t', 'b', 'd', 'g', 'h', 'z', 'o', 'x'];
         $subFields = $this->getSubfieldsAsArray($field);
 
+        $arr = [];
+
         $w_ = array_filter($field->getSubfields('w'), function (\File_MARC_Subfield $elem) {
             return strpos($elem->getData(), "(DE-603)") !== false;
         });
 
-        $arr = [];
-        $tCalled = false;
         foreach ($subFieldKeys as $pos => $key) {
             switch ($key) {
                 case 'a':
@@ -106,11 +121,6 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
                             $linkText .= htmlentities($subFields['t']);
                             $tCalled = true;
                         }
-                        $str = $this->getView()->ppnLink()->getLink(
-                            $linkText,
-                            $this->removePrefix($w_[0]->getData(), "(DE-603)"),
-                            ["backlink" => $this->record->getPPN()]
-                        );
 
                         $arr[] = $str;
                     } else {
@@ -131,17 +141,17 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
                     break;
 
                 case 't':
-                    if (!$tCalled && array_key_exists($key, $subFields)) {
-                        if (!empty($w_) && !array_key_exists('a', $subFields)) {
-                            //$str = '<a href="' . $this->link($w_[0]->getData()) . '">' . htmlentities($subFields[$key]) . '</a>';
+                    if (array_key_exists($key, $subFields)) {
+                        $str = htmlentities($subFields[$key]);
+
+                        if (!empty($w_)) {
                             $str = $this->getView()->ppnLink()->getLink(
-                                htmlentities($subFields[$key]),
+                                $str,
                                 $this->removePrefix($w_[0]->getData(), "(DE-603)"),
                                 ["backlink" => $this->record->getPPN()]
                             );
-                        } else {
-                            $str = htmlentities($subFields[$key]);
                         }
+
                         $arr[$key] = $str;
                     }
                     break;
@@ -153,43 +163,35 @@ class SingleRecordOtherEditionEntry extends AbstractRecordViewHelper
             }
         }
 
-        $prefix = "";
-        /* Wenn kein $a vorhanden, dann nach Inhalt aus
-        $i bzw. $n ":_" (Doppelpunkt Blank) ergänzen statt
-        vorgegebenem Deskriptionszeichen */
-        if (!array_key_exists('a', $subFields)) {
-            if (array_key_exists('i', $subFields) && array_key_exists('n', $subFields)) {
-                $prefix .= htmlentities($subFields['i']) . " " . htmlentities($subFields['n']) . ": ";
-            } else {
-                if (array_key_exists('i', $subFields)) {
-                    $prefix .= htmlentities($subFields['i']) . ": ";
-                } else {
-                    if (array_key_exists('n', $subFields)) {
-                        $prefix .= htmlentities($subFields['n']) . ": ";
-                    }
-                }
-            }
-        } else {
-
-            if (array_key_exists('i', $subFields) && array_key_exists('n', $subFields)) {
-                $prefix .= htmlentities($subFields['i']) . " " . htmlentities($subFields['n']) . ": ";
-            } else {
-                if (array_key_exists('i', $subFields)) {
-                    $prefix .= htmlentities($subFields['i']) . ": ";
-                } else {
-                    if (array_key_exists('n', $subFields)) {
-                        $prefix .= htmlentities($subFields['n']) . ": ";
-                    }
-                }
-            }
-            $prefix .= htmlentities($subFields['a']) . ". "; // a nachtragen
-        }
-
-        return $prefix . implode(". - ", $arr);
+        return implode(". - ", $arr);
     }
 
     protected function link($w)
     {
-        return $this->getView()->basePath() . '/RecordFinder/HEB' . $this->removePrefix($w, "(DE-603)");
+        $ppn = $this->removePrefix($w, "(DE-603)");
+        $ppnLink = $this->getView()->ppnLink()->getLink($ppn);
+        return $ppnLink;
+    }
+
+    /**
+     * @param $marcRecord
+     * @param $fieldNo
+     * @return array
+     */
+    private function generate77X($marcRecord, $fieldNo)
+    {
+        $arr = [];
+        $fields = $marcRecord->getFields($fieldNo);
+
+        foreach ($fields as $field) {
+            /* Nur anzeigen wenn Indikator 1 = 0 und Indikator 2 = 8: */
+            $ind1 = $field->getIndicator(1);
+            $ind2 = $field->getIndicator(2);
+            if ($ind1 == "0" && $ind2 == "8") {
+                $str = $this->generateContents($field);
+                $arr[] = $this->generatePrefix($field) . $str;
+            }
+        }
+        return $arr;
     }
 }

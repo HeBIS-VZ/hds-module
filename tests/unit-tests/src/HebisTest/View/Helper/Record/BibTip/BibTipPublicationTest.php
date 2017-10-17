@@ -5,7 +5,8 @@
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
  * 
- * Copyright (C) 2017 
+ * Copyright (C) 2016 
+ * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -25,37 +26,37 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\Search;
+namespace HebisTest\View\Helper\Record\BibTip;
+
+use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
 /**
- * Class UrlQueryHelper
- * @package Hebis\Search
+ * Class BibTipTest
+ * @package Hebis\View\Helper
+ *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class UrlQueryHelper extends \VuFind\Search\UrlQueryHelper
+class BibTipPublicationTest extends AbstractViewHelperTest
 {
 
-    /**
-     * Add a facet to the parameters.
-     *
-     * @param array $fields Facet fields
-     * @return string
-     */
-    public function addFacets($fields, $paramArray = null)
+    public function setUp()
     {
-        $filters = is_null($paramArray) ? $this->getParamArray() : $paramArray;
-        if (!isset($filters['filter'])) {
-            $filters['filter'] = [];
-        }
-        // Facets are just a special case of filters:
-        foreach ($fields as $field) {
-            $fieldName = $field['field'];
-            $value = $field['value'];
-            $operator = $field['operator'];
-            $prefix = ($operator == 'NOT') ? '-' : ($operator == 'OR' ? '~' : '');
-            $filters['filter'][] = $prefix . $fieldName . ':"' . $value . '"';
-        }
+        $this->spreadSheetName = "BibTip.xlsx";
+        $this->viewHelperClass = "BibTipPublication";
+        $this->testResultField = "";
+        $this->testRecordIds = [];
 
-        return '?' . $this->buildQueryString($filters);
+        $this->testSheetName = "Veröffentlicht";
+        parent::setUp();
+    }
+
+    /**
+     * Get plugins to register to support view helper being tested
+     *
+     * @return array
+     */
+    protected function getPlugins()
+    {
+        return [];
     }
 }

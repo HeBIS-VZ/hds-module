@@ -27,8 +27,6 @@
 
 namespace Hebis\Search\Results;
 
-use Zend\ServiceManager\ServiceLocatorInterface;
-
 /**
  * Search results plugin factory
  *
@@ -49,6 +47,4 @@ class PluginFactory extends \VuFind\Search\Results\PluginFactory
         $this->defaultNamespace = 'Hebis\Search';
         $this->classSuffix = '\Results';
     }
-
-
 }

@@ -53,6 +53,9 @@ class EdsrecordController extends \VuFind\Controller\EdsrecordController
             $first = array_values($fields["FullText"]["CustomLinks"])[0];
             $html = $this->fetchRediLink($first["Url"]);
             $view->infoLink = $this->parseInfoLink($html);
+            if (empty($infoLink)) {
+                $view->rediLink = $first;
+            }
             $view->ezbLinks = $this->parseEzbLinks($html);
         }
         $view->driver = $driver;

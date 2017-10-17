@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an 
  * extension of the open source library search engine VuFind, that 
@@ -29,9 +28,7 @@
 namespace Hebis\RecordDriver;
 
 use HAB\Pica\Record\Record as PicaRecord;
-
 use VuFindSearch\Backend\Exception\BackendException;
-
 
 /**
  * Model for MARC records in Solr.
@@ -44,7 +41,6 @@ use VuFindSearch\Backend\Exception\BackendException;
  */
 class SolrMarc extends \VuFind\RecordDriver\SolrMarc
 {
-
     /**
      * @var PicaRecord
      */
@@ -142,24 +138,27 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             // When indexing over HTTP, SolrMarc may use entities instead of certain
             // control characters; we should normalize these:
             $marc = str_replace(
-                ['#29;', '#30;', '#31;'], ["\x1D", "\x1E", "\x1F"], $marc
+                ['#29;', '#30;', '#31;'],
+                ["\x1D", "\x1E", "\x1F"],
+                $marc
             );
-
             //$marc = str_replace(["<", ">"], ["&lt;", "&gt;"], $marc);
-
-
             $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
         }
+
+        //TODO: solve PICA problems
+        /*
         try {
             $picaParser = PicaRecordParser::getInstance();
             $this->picaRecord = $picaParser->parse($data['raw_fullrecord'])->getRecord();
             self::$currentPicaRecord = $this->picaRecord;
         } catch (\Exception $e) {
-            /** @var  \Zend\Log\LoggerInterface $logger */
+            // @var  \Zend\Log\LoggerInterface $logger
             //$logger = $this->getLogger();
             //$logger->err("Could not parse pica record ".$data['id']." in class ". __CLASS__ . ", line: " . __LINE__);
-            throw new BackendException("Error parsing PICA", 0, $e);
+            //throw new BackendException("Error parsing PICA", 0, $e);
         }
+        */
         $this->marcRecord = $marc->next();
 
         if (!$this->marcRecord) {
@@ -202,9 +201,9 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
      */
     public function getThumbnail($size = 'small')
     {
-
         $arr = parent::getThumbnail($size);
-        $arr['contenttype'] = ContentType::getContentType($this);
+        $contentType = new ContentType();
+        $arr['contenttype'] = $contentType->getContentType($this);
         return $arr;
     }
 
@@ -255,5 +254,4 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         }
         return null;
     }
-
 }

@@ -65,6 +65,9 @@ class ResultListOWTitleStatement extends AbstractRecordViewHelper
                 $ret .= !empty($h) ? " " . trim($h) : "";
                 $ret .= !empty($b) ? " : " . trim($b) : "";
 
+                $url = $this->getView()->recordLink()->getUrl($record);
+                $ret = '<a href="' . $url . '" class="title">' . $ret . '</a>';
+
                 if (!empty($n_p)) {
                     $ret .= "<br />";
                     $ret .= $n_p;

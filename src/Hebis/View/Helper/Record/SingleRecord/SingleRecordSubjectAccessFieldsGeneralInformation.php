@@ -243,44 +243,40 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     {
         $arr = [];
         foreach ($record->getMarcRecord()->getFields(630) as $field) {
-
             $subFields = $field->getSubfields();
             $arr_ = [];
 
             foreach ($subFields as $sf) {
-
                 $data = htmlentities($sf->getData());
                 $code = $sf->getCode();
-
-
                 // 630 $a,_$d,_$e,_$f_<$g>,_$n._$s_/_$t,_$x
 
                 switch ($code) {
-                    case 'a' :
+                    case 'a':
                         $arr_[] = $data;
                         break;
-                    case 'd' :
+                    case 'd':
                         $arr_[] = ", " . $data;
                         break;
-                    case 'e' :
+                    case 'e':
                         $arr_[] = ", " . $data;
                         break;
-                    case 'f' :
+                    case 'f':
                         $arr_[] = ", " . $data;
                         break;
-                    case 'g' :
+                    case 'g':
                         $arr_[] = " &lt;" . $data . "&gt;";
                         break;
-                    case 'n' :
+                    case 'n':
                         $arr_[] = ", " . $data;
                         break;
-                    case 's' :
+                    case 's':
                         $arr_[] = ". " . $data;
                         break;
-                    case 't' :
+                    case 't':
                         $arr_[] = " / " . $data;
                         break;
-                    case 'x' :
+                    case 'x':
                         $arr_[] = ", " . $data;
                         break;
 
@@ -293,8 +289,7 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
             if (!empty($generatedKeywords)) {
                 $arr[] = "<nobr>" . $generatedKeywords . "</nobr>";
             }
-    }
-
+        }
         return implode("<br />", $arr);
     }
 
@@ -333,8 +328,8 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     private function add651($record)
     {
         $arr = [];
-        foreach ($record->getMarcRecord()->getFields(651) as $field) {
 
+        foreach ($record->getMarcRecord()->getFields(651) as $field) {
             $sf_ = $this->getSubFieldsDataOfField($field, ['a', 'g', 'x', 'z']);
             $arr_ = [];
             foreach ($sf_ as $sf) {
@@ -384,14 +379,16 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
     private function generateTag($field, $arr)
     {
         if (!empty($field)) {
-            $_0 = array_filter($field->getSubfields('0'), function ($f) {
-                return strpos($f, "(DE-603)") !== false;
-            });
-
+            $_0 = $field->getSubfields('0');
             if (!empty($_0)) {
                 $gnd = str_replace("(DE-603)", "", array_pop($_0)->getData());
-                $completeTag = '<a href="' . $this->getUrl($gnd) . '">' . implode($arr) . '</a>';
+                $completeTag = '<a href="' . $this->getUrl($gnd) . '">' . Helper::removeControlSigns(implode("", $arr)) . '</a>';
                 return $this->makeCheckboxField($gnd, $completeTag);
+            } else {
+                // search for string in topic
+                $topic = Helper::removeControlSigns(implode("", $arr));
+                $completeTag = '<a href="' . $this->getSearchTopicUrl($topic) . '">' . $topic . '</a>';
+                return $this->makeCheckboxTopicField($topic, $completeTag);
             }
         }
         return implode(" ", $arr);
@@ -399,8 +396,11 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
 
     private function getUrl($gnd)
     {
-        return $this->getView()->basePath() . "/" . sprintf("Search/Results?lookfor=%s&type=allfields",
-                "uses_authority:%22$gnd%22");
+        return $this->getView()->basePath() . "/" .
+            sprintf(
+                "Search/Results?lookfor=%s&type=allfields",
+                "uses_authority:%22$gnd%22"
+            );
     }
 
     private function makeCheckboxField($gnd, $content)
@@ -409,5 +409,20 @@ class SingleRecordSubjectAccessFieldsGeneralInformation extends AbstractRecordVi
         $value = "uses_authority:&quot;$gnd&quot;";
         return '<label class="checkbox-inline"><input type="checkbox" name="lookfor0[]" value="' . $value . '" />'
             . '<input type="hidden" name="type0[]" value="allfields" />' . $content . '</label>';
+    }
+
+    private function makeCheckboxTopicField($topic, $content)
+    {
+        return '<label class="checkbox-inline"><input type="checkbox" name="lookfor0[]" value="' . trim($topic) . '" />'
+            . '<input type="hidden" name="type0[]" value="topic" />' . $content . '</label>';
+    }
+
+    private function getSearchTopicUrl($topic)
+    {
+        return $this->getView()->basePath() . "/" .
+            sprintf(
+                "Search/Results?lookfor=%s&type=topic",
+                "%22$topic%22"
+            );
     }
 }

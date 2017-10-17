@@ -25,25 +25,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
 namespace Hebis\ILS\Driver;
 
 use HAB\Pica\Record\CopyRecord;
 use HAB\Pica\Record\Field;
 use HAB\Pica\Record\LocalRecord;
-use HAB\Pica\Record\SubField;
 use HAB\Pica\Record\TitleRecord;
-use Hebis\RecordDriver\PicaRecord;
 use Hebis\RecordDriver\SolrMarc;
 use League\OAuth2\Client\Provider\GenericProvider;
-use Zend\Session\SessionManager;
+use VuFind\Date\Converter;
 use VuFind\Exception\ILS as ILSException;
-
+use Zend\Session\SessionManager;
 
 class Hebis extends PAIA
 {
 
-    public function __construct(\VuFind\Date\Converter $converter, \Zend\Session\SessionManager $sessionManager)
+    public function __construct(Converter $converter, SessionManager $sessionManager)
     {
         parent::__construct($converter, $sessionManager);
     }
@@ -58,11 +55,9 @@ class Hebis extends PAIA
         }
 
         $this->provider = new GenericProvider([
-            'clientId' => $this->config['PAIA']['client_id'],
-            // The client ID assigned to you by the provider
-            'clientSecret' => $this->config['PAIA']['client_secret'],
-            // The client password assigned to you by the provider
-            'redirectUri' => 'http://sbpc2.hebis.uni-frankfurt.de/vufind2/oauth/callback',
+            'clientId' => $this->config['PAIA']['client_id'],    // The client ID assigned to you by the provider
+            'clientSecret' => $this->config['PAIA']['client_secret'], // client password assigned to you by the provider
+            'redirectUri' => 'http://hds2.dev/ubffm/oauth/callback',
             'urlAuthorize' => $this->config['PAIA']['baseUrl'] . 'oauth/v2/auth',
             'urlAccessToken' => $this->config['PAIA']['baseUrl'] . 'oauth/v2/token',
             'urlResourceOwnerDetails' => $this->config['PAIA']['baseUrl'] . 'core/',
@@ -86,7 +81,7 @@ class Hebis extends PAIA
      */
     protected function parseDaiaArray($id, $daiaArray)
     {
-        $picaRecord = SolrMarc::getCurrentPicaRecord();
+        //$picaRecord = SolrMarc::getCurrentPicaRecord();
         $doc_id = null;
 
 
@@ -108,11 +103,11 @@ class Hebis extends PAIA
 
         $epn = trim(str_replace("epn:", "", $daiaArray['item'][0]['id']));
 
-        /** @var LocalRecord $picaLevel2 */
+        /* @var LocalRecord $picaLevel2 *
         $picaLevel2 = array_filter($picaRecord->getLocalRecords(), function ($localRecord) use ($epn) {
-            /** @var LocalRecord $localRecord */
+            // @var LocalRecord $localRecord
             $copyRecords = $localRecord->getCopyRecords();
-            /** @var CopyRecord $copyRecord */
+            // @var CopyRecord $copyRecord
             foreach ($copyRecords as $copyRecord) {
                 $epn_c = trim($copyRecord->getEPN());
                 if ($epn_c == $epn) {
@@ -121,6 +116,7 @@ class Hebis extends PAIA
             }
             return false;
         });
+        */
         // if one or more items exist, iterate and build result-item
         if (isset($daiaArray['item']) && is_array($daiaArray['item'])) {
             $number = 0;

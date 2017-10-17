@@ -27,6 +27,7 @@
 
 namespace Hebis\View\Helper\Record\SingleRecord;
 
+use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -41,6 +42,6 @@ class SingleRecordCartographicMathematicalData extends AbstractRecordViewHelper
 {
     public function __invoke(SolrMarc $record)
     {
-        return $record->getScale();
+        return Helper::getSubFieldDataOfField($record, "255", "a");
     }
 }

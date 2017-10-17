@@ -32,12 +32,15 @@ use Box\Spout\Common\Type;
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Reader\ReaderInterface;
 use Hebis\Exception\HebisException;
+use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use HebisTest\View\Helper\SpreadsheetTestsTrait;
 use HebisTest\View\Helper\TestRecordFromIndexTrait;
 use HebisTest\View\Helper\TestRunnerTrait;
 use Zend\Http\Client;
+use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\PhpRenderer;
 
 
 /**
@@ -121,7 +124,6 @@ abstract class AbstractViewHelperTest extends \VuFindTest\Unit\ViewHelperTestCas
 
         /** @var AbstractRecordViewHelper $helper */
         $helper = new $className();
-
         return $helper;
     }
 

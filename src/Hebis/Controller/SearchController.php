@@ -33,6 +33,16 @@ use Hebis\Search\Solr\Results;
 class SearchController extends \VuFind\Controller\SearchController
 {
 
+    const STATUS_OK = 'OK';                  // good
+    const STATUS_ERROR = 'ERROR';            // bad
+    const STATUS_NEED_AUTH = 'NEED_AUTH';    // must login first
+
+
+    const SPECIAL_CHARS_MAP = [
+        "+" => "und",
+        "&" => "und"
+    ];
+
     public function homeAction()
     {
         $results = $hierarchicalFacets = $hierarchicalFacetSortOptions = [];
@@ -58,6 +68,7 @@ class SearchController extends \VuFind\Controller\SearchController
         //results->getUrlQuery()
         $lookfor = $this->params()->fromQuery("lookfor");
         $backlink = $this->params()->fromQuery("backlink");
+
         if (preg_match("/\s([&+])\s/u", $lookfor)) {
             $encodedLookfor = $this->solrSpecialChars($lookfor);
             $this->getRequest()->getQuery()->set("lookfor", $encodedLookfor); //call by reference
@@ -66,7 +77,7 @@ class SearchController extends \VuFind\Controller\SearchController
         } else {
             $view = parent::resultsAction();
         }
-
+        $view->originLookfor = $this->params()->fromQuery("lookfor");
 
         /** @var Results $results */
         $results = $view->results;
@@ -82,10 +93,13 @@ class SearchController extends \VuFind\Controller\SearchController
             return $this->forwardTo("record", "home", $params);
         } else {
             if ($results->getResultTotal() === 0) {
-                $lookfor = $this->params()->fromQuery("lookfor");
-                return $this->forwardTo("search", "record_not_found", ["lookfor" => $lookfor]);
+                $request = $this->getRequest()->getQuery()->toArray()
+                    + $this->getRequest()->getPost()->toArray()
+                    + ["searchId" => $results->getSearchId()];
+                return $this->forwardTo("search", "record_not_found", $request);
             }
         }
+
         return $view; //else return results list
     }
 
@@ -98,13 +112,93 @@ class SearchController extends \VuFind\Controller\SearchController
             [
                 'results' => $this->getHomePageFacets(),
                 'hierarchicalFacets' => $this->getHierarchicalFacets(),
-                'hierarchicalFacetSortOptions'
-                => $this->getHierarchicalFacetSortSettings()
+                'hierarchicalFacetSortOptions' => $this->getHierarchicalFacetSortSettings()
             ]
         );
-        $view->params = $this->params();
-        $view->lookfor = $this->params()->fromQuery("lookfor");
+
+        $view->searchId = $this->params()->fromRoute('searchId',false);
+
         $view->backlink = $this->params()->fromQuery("backlink");
+        $this->params()->fromQuery("searchId");
+        $view->params = $params = $this->getRequest()->getQuery()->toArray()
+            + $this->getRequest()->getPost()->toArray();
+
+        $lookfor0 = $this->params()->fromQuery("lookfor0");
+
+        $view->searchType = !empty($lookfor0) && is_array($lookfor0) ? 'advanced' : 'simple';
+
+        $view->lookfor = !empty($lookfor0) && is_array($lookfor0) ? $this->params()->fromQuery("lookfor0") : $this->params()->fromQuery("lookfor");
         return $view;
+    }
+
+
+    /**
+     * Overrides VuFind\Controller\AbstractSearch::rememberSearch in order to distinguish
+     * Solr Searches from EDS Searches in SearchMemory
+     * @param \VuFind\Search\Base\Results $results
+     */
+    public function rememberSearch($results)
+    {
+        // Only save search URL if the property tells us to...
+        if ($this->rememberSearch) {
+            $searchUrl = $this->url()->fromRoute(
+                    $results->getOptions()->getSearchAction()
+                ) . $results->getUrlQuery()->getParams(false);
+            $this->getSearchMemory()->rememberLastSearchOf('Solr', $searchUrl);
+        }
+
+        // Always save search parameters, since these are namespaced by search
+        // class ID.
+        $this->getSearchMemory()->rememberParams($results->getParams());
+    }
+
+    /**
+     * @return \Zend\Http\Response
+     */
+    public function ajaxAction()
+    {
+        $this->outputMode = "json";
+        $view = $this->resultsAction();
+        $results = $view->results;
+        $resultTotal = $results->getResultTotal();
+        return $this->output($resultTotal, static::STATUS_OK);
+    }
+
+    /**
+     * Send output data and exit.
+     *
+     * @param mixed $data The response data
+     * @param string $status Status of the request
+     * @param int $httpCode A custom HTTP Status Code
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     * @throws \Exception
+     */
+    protected function output($data, $status, $httpCode = null)
+    {
+        $response = $this->getResponse();
+        $headers = $response->getHeaders();
+        $headers->addHeaderLine('Cache-Control', 'no-cache, must-revalidate');
+        $headers->addHeaderLine('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
+        if ($httpCode !== null) {
+            $response->setStatusCode($httpCode);
+        }
+
+        $headers->addHeaderLine('Content-type', 'application/javascript');
+        $output = ['data' => $data, 'status' => $status];
+        //if ('development' == APPLICATION_ENV && count(self::$php_errors) > 0) {
+        //    $output['php_errors'] = self::$php_errors;
+        //}
+        $response->setContent(json_encode($output));
+        return $response;
+
+    }
+
+    private function solrSpecialChars($lookfor)
+    {
+
+        return preg_replace_callback("/\s([&+])\s/", function($matches) {
+            return " ".self::SPECIAL_CHARS_MAP[$matches[1]]." ";
+        }, $lookfor);
     }
 }

@@ -49,6 +49,9 @@ trait TestRunnerTrait
                 $expectedSingleRecordResult,
                 $expectedRecordListResult) = array_slice($row, 0, 5);
 
+            if (empty($ppn)) {
+                break;
+            }
             $record = $this->getRecordFromIndex($ppn);
 
             if (is_null($record)) {

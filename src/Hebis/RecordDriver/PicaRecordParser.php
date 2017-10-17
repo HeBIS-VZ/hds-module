@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is a part of HDS (HeBIS Discovery System). HDS is an
  * extension of the open source library search engine VuFind, that
@@ -30,7 +29,6 @@ namespace Hebis\RecordDriver;
 
 use HAB\Pica\Record\Record as PicaRecord;
 
-
 class PicaRecordParser
 {
 
@@ -52,7 +50,6 @@ class PicaRecordParser
     public static function getInstance()
     {
         if (self::$instance == null) {
-
             self::$instance = new PicaRecordParser();
         }
 
@@ -98,4 +95,3 @@ class PicaRecordParser
         return $this->picaRecord;
     }
 }
-

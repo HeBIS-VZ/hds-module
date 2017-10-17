@@ -27,11 +27,13 @@
 
 namespace Hebis\Marc;
 
-
 use Hebis\RecordDriver\SolrMarc;
 
 class Helper
 {
+
+    const DEFAULT_CHARSET = "UTF-8";
+
     /**
      * returns the data of the subField if field and subField exists, otherwise false
      *
@@ -62,12 +64,63 @@ class Helper
     public static function getSubFieldDataOfGivenField($field, $subFieldCode)
     {
         if ($field && $field instanceof \File_MARC_Data_Field) {
-
             $subField = $field->getSubfield($subFieldCode);
-
-            return !empty($subField) ? htmlentities($subField->getData()) : false;
+            return !empty($subField) ? htmlentities(Helper::utf8_encode($subField->getData())) : false;
         }
 
         return false;
+    }
+
+    public static function removeControlSigns($str)
+    {
+        $len = strlen($str);
+        if (strpos($str, '@') === 0) {
+            $str = substr($str, 1, $len - 1);
+        }
+
+        $str = str_replace(" @", " ", $str);
+        $ret = str_replace(["", ""], "", $str);
+        return trim($ret);
+    }
+
+    public static function sortByIndicator1()
+    {
+        return function (\File_MARC_Data_Field $a, \File_MARC_Data_Field $b) {
+            $aInd1 = $a->getIndicator(1);
+            if ($aInd1 === " ") {
+                $aInd1 = "1";
+            }
+            $bInd1 = $b->getIndicator(1);
+            if ($bInd1 === " ") {
+                $bInd1 = "1";
+            }
+            return $aInd1 >= $bInd1 ? -1 : 1;
+        };
+    }
+
+    public static function subStrTill($str, $signs)
+    {
+        foreach ($signs as $sign) {
+            if (($pos = strpos($str, $sign)) !== false) {
+                $str = substr($str, 0, $pos);
+            }
+        }
+        return $str;
+    }
+
+    public static function utf8_encode($str) {
+
+        $enc = mb_detect_encoding($str);
+        return $enc !== self::DEFAULT_CHARSET ? mb_convert_encoding($str, self::DEFAULT_CHARSET) : $str;
+    }
+
+    /**
+     * @param \File_MARC_Data_Field $field
+     * @param $subFieldCode
+     * @return string
+     */
+    public static function getSubField($field, $subFieldCode)
+    {
+        return !$field->getSubfield($subFieldCode) ? '' : trim($field->getSubfield($subFieldCode)->getData());
     }
 }

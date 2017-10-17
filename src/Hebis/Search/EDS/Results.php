@@ -27,9 +27,7 @@
 
 namespace Hebis\Search\EDS;
 
-
 class Results extends \VuFind\Search\EDS\Results
 {
-
 
 }

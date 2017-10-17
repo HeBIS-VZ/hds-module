@@ -48,10 +48,11 @@ class Factory
     public static function getSolr(ServiceManager $sm)
     {
         $factory = new PluginFactory();
-        $solr = $factory->createServiceWithName($sm, 'solr', 'Solr');
+        //$solr = $factory->createServiceWithName($sm, 'solr', 'Solr');
 
-        $params = $sm->getServiceLocator()->get('VuFind\SearchParamsPluginManager')->get('Solr');
-        $class = ""; //$this->getClassName($name, $requestedName);
+        $searchParamsPluginManager = $sm->getServiceLocator()->get('VuFind\SearchParamsPluginManager');//
+        $params = $searchParamsPluginManager->get('Solr');
+        //$class = ""; //$this->getClassName($name, $requestedName);
         $solr = new Solr($params);
 
 
