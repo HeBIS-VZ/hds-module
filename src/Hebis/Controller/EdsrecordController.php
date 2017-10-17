@@ -187,4 +187,5 @@ class EdsrecordController extends \VuFind\Controller\EdsrecordController
         }
         return "";
     }
+
 }
