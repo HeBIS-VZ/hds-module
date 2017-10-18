@@ -102,7 +102,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
                 );
                 $retVal[] = $this->createBasicTab($key, $class, $label, $newUrl);
             } else if ($type == 'advanced') {
-                $retVal[] = $this->createAdvancedTab($key, $class, $label, $filters);
+                $retVal[] = $this->createAdvancedTab_($key, $class, $label, $filters, $activeSearchClass, $query, $handler);
             } else if (($controller = $this->getView()->controllerName()) === "Record" || $controller === "Edsrecord") {
                 list($query, $handler, $type) = $this->extractQueryAndHandlerAndType($this->searchMemory->getLastUrl($activeSearchClass));
                 if (!isset($activeOptions)) {
@@ -115,7 +115,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
                     );
                     $retVal[] = $this->createBasicTab($key, $class, $label, $newUrl);
                 } else { //advanced search
-                    $retVal[] = $this->createAdvancedTab($key, $class, $label, $filters);
+                    $retVal[] = $this->createAdvancedTab_($key, $class, $label, $filters, $activeSearchClass);
                 }
             }
             else {
@@ -158,31 +158,50 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
     /**
      * Create information representing an advanced search tab.
      *
-     * @param string $id      Tab ID
-     * @param string $class   Search class ID
-     * @param string $label   Display text for tab
-     * @param array  $filters Tab filters
+     * @param string $id Tab ID
+     * @param string $class Search class ID
+     * @param string $label Display text for tab
+     * @param array $filters Tab filters
      *
+     * @param $activeClass
+     * @param $query
+     * @param $handler
      * @return array
      */
-    protected function createAdvancedTab($id, $class, $label, $filters)
+    protected function createAdvancedTab_($id, $class, $label, $filters, $activeClass, $query = "", $handler = "")
     {
         if (empty($this->searchMemory)) {
             $this->searchMemory = $this->getView()->searchMemory();
         }
         // If an advanced search is available, link there; otherwise, just go
         // to the search home:
-        $results = $this->results->get($class);
-        $options = $results->getOptions();
-        $advSearch = $options->getAdvancedSearchAction();
-        $url = $this->searchMemory->getLastUrl($class);
-        $url = str_replace("Results", "Advanced", $url);
+        if ($class != $activeClass) {
+            $activeOptions
+                = $this->results->get($activeClass)->getOptions();
+            $newUrl = $this->remapBasicSearch(
+                $activeOptions, $class, $query, $handler, $filters
+            );
+            if ($class === "EDS") {
+                $newUrl = str_replace("Search", "Advanced", $newUrl);
+            } else {
+                $newUrl = str_replace("Results", "Advanced", $newUrl);
+            }
+
+
+        } else {
+            $results = $this->results->get($class);
+            $options = $results->getOptions();
+            $advSearch = $options->getAdvancedSearchAction();
+            $newUrl = $this->searchMemory->getLastUrl($class);
+            $newUrl = str_replace("Results", "Advanced", $newUrl);
+        }
+
         return [
             'id' => $id,
             'class' => $class,
             'label' => $label,
             'selected' => false,
-            'url' => $url
+            'url' => $newUrl
         ];
     }
 }
