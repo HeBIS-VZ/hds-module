@@ -104,6 +104,7 @@ $config = [
             'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder',
             'Xisbn' => 'Hebis\Controller\Factory::getXisbn',
             'adminstaticpages' => 'Hebis\Controller\Factory::getStaticPagesController',
+            'page' => 'Hebis\Controller\Factory::getPageController',
         ],
         'invokables' => [
             'ajax' => 'Hebis\Controller\AjaxController',
@@ -205,31 +206,6 @@ $config = [
                             'route' => '/:id/Json/:method',
                             'defaults' => [
                                 'action' => 'json',
-                            ],
-                            'constraints' => [
-                                'id' => '\d+'
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            'staticpages' => [
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => [
-                    'route' => '/Staticpages[/]',
-                    'defaults' => [
-                        'controller' => 'adminstaticpages',
-                        'action' => 'home',
-                    ]
-                ],
-                'may_terminate' => true,
-                'child_routes' => [
-                    'view' => [
-                        'type' => 'Zend\Mvc\Router\Http\Segment',
-                        'options' => [
-                            'route' => '/View/:id',
-                            'defaults' => [
-                                'action' => 'view'
                             ],
                             'constraints' => [
                                 'id' => '\d+'

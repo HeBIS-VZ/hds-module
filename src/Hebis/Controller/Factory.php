@@ -47,6 +47,19 @@ class Factory
     }
 
     /**
+     * @param ServiceManager $sm
+     * @return PageController
+     */
+    public static function getPageController(ServiceManager $sm)
+    {
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('static_post');
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        $pageController = new PageController($table, $translator);
+        return $pageController;
+    }
+
+    /**
      * Construct the FlashMessenger plugin.
      *
      * @param ServiceManager $sm Service manager.

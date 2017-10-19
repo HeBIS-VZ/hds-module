@@ -6,17 +6,20 @@
  * Time: 11:45
  */
 
+
 namespace Hebis\View\Helper\Root;
 
+
+use Hebis\Db\Table\StaticPost;
 
 class StaticPageNavigation extends \Zend\View\Helper\AbstractHelper
 {
 
-    private $table;
+    protected $table;
 
-    public function __construct($table)
+    public function __construct(StaticPost $table)
     {
-
+        $this->table = $table;
     }
 
 
@@ -27,6 +30,13 @@ class StaticPageNavigation extends \Zend\View\Helper\AbstractHelper
 
     public function getNav()
     {
-        return "Navigation";
+        $arr = [];
+        $staticPagesList = $this->table->getNav();
+        foreach ($staticPagesList as $page) {
+            $pageArray = ["uid" => $page->id, "title" => $page->headline];
+            $arr[] = $pageArray;
+        }
+
+        return $arr;
     }
 }

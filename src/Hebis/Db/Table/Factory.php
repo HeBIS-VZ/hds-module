@@ -56,7 +56,6 @@ class Factory extends \VuFind\Db\Table\Factory
     public static function getStaticPost(ServiceManager $sm)
     {
         $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
-        // TODO Admin Authentication
         $rowClass = 'Hebis\Db\Row\StaticPost';
         return new StaticPost($rowClass);
     }

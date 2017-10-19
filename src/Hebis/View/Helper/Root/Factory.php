@@ -27,6 +27,7 @@
 
 namespace Hebis\View\Helper\Root;
 
+use Hebis\Db\Table\StaticPost;
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -86,6 +87,12 @@ class Factory extends \VuFind\View\Helper\Root\Factory
 
     public static function getStaticPageNavigation(ServiceManager $sm)
     {
-        return new StaticPageNavigation();
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('static_post');
+        $rowClass = 'Hebis\Db\Row\StaticPost';
+        //$table = new StaticPost($rowClass);
+
+        return new StaticPageNavigation($table);
     }
 }

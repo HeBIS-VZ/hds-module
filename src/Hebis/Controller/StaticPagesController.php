@@ -19,10 +19,10 @@ class StaticPagesController extends AbstractAdmin
 {
     use TranslatorAwareTrait;
 
-    // define some status constants
-    const STATUS_OK = 'OK';                  // good
-    const STATUS_ERROR = 'ERROR';            // bad
-    const STATUS_NEED_AUTH = 'NEED_AUTH';    // must login first
+    // define http status constants
+    const STATUS_OK = 'OK';
+    const STATUS_ERROR = 'ERROR';
+    const STATUS_NEED_AUTH = 'NEED_AUTH';
 
     protected $table;
 
@@ -35,17 +35,6 @@ class StaticPagesController extends AbstractAdmin
     }
 
 
-    /** Staticpages home view for users
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function homeAction()
-    {
-        $view = $this->createViewModel();
-        $view->setTemplate('staticpages/sp-home');
-        $view->rows = $this->table->getAll();
-        return $view;
-    }
-
     /**
      * Static Pages Administrator Home View
      *
@@ -55,7 +44,8 @@ class StaticPagesController extends AbstractAdmin
     {
         $view = $this->createViewModel();
         $view->setTemplate('adminstaticpages/list');
-        $view->rows = $this->table->getAll();
+        $rows = $this->table->getAll();
+        $view->rows = $rows;
         return $view;
     }
 
@@ -106,36 +96,44 @@ class StaticPagesController extends AbstractAdmin
             return $view;
         }
 
+        // get last pageID
+
+        $pageid = $this->table->getLastPageIDs();
+        if (!isset($pageid))
+            $pageid = 120;
+        else $pageid++;
+
         $language = $this->params()->fromPost('sp-lang');
         $headline = $this->params()->fromPost('sp-headline');
+        $navtitle = $this->params()->fromPost('sp-nav-title');
         $content = $this->params()->fromPost('sp-content');
         $author = $this->params()->fromPost('sp-author');
 
-
         for ($i = 0; $i < sizeof($allLanguages); $i++) {
-            $this->saveRow($language[$i], $headline[$i], $content[$i], $author);
+            $this->saveRow($pageid, $language[$i], $navtitle[$i], $headline[$i], $content[$i], $author);
         }
-
-//        $pid = $this->getLastPid();
-//        $view->pid = ++$pid;
 
         return $this->forwardTo('adminstaticpages', 'list');
 
-        //return $view;
     }
 
-
-    private function saveRow($language, $headline, $content, $author)
+    /* saves each row */
+    private function saveRow($pageid, $language, $headline, $navtitle, $content, $author)
     {
         $row = $this->table->createRow();
+        $row->page_id = $pageid;
         $row->language = $language;
         $row->headline = $headline;
+        $row->nav_title = $navtitle;
         $row->content = $content;
         $row->author = $author;
         $row->save();
     }
 
 
+    /**
+     * @return mixed|\Zend\View\Model\ViewModel
+     */
     public function editAction()
     {
         $view = $this->createViewModel();
@@ -212,11 +210,12 @@ class StaticPagesController extends AbstractAdmin
             $row = $this->table->getPost($id);
             $row->visible == 1 ? $row->visible = 0 : $row->visible = 1;
             $row->save();
+
         } catch (\Exception $e) {
             $this->output($e->getMessage() . '\n' . 'Change Visibility Failed!', self::STATUS_ERROR, 400);
         }
-        $this->layout()->setTemplate('adminstaticpages/list');
 
+        $this->layout()->setTemplate('adminstaticpages/list');
         return $this->output($row->visible == 1, self::STATUS_OK, 200);
     }
 
@@ -247,7 +246,7 @@ class StaticPagesController extends AbstractAdmin
         }
     }
 
-    /* checks whether the inputs array has an empty element*/
+    /* checks whether the inputs array has an empty element */
 
     private function inputIsEmpty($input)
     {
