@@ -80,7 +80,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         $type = 'basic', $hiddenFilters = []
     ) {
         $this->searchMemory = $this->getView()->searchMemory();
-
+        $controllerName = $this->getView()->controllerName();
         $retVal = [];
         $matchFound = false;
         $allFilters = $this->helper->getTabFilterConfig();
@@ -92,18 +92,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
             ) {
                 $matchFound = true;
                 $retVal[] = $this->createSelectedTab($key, $class, $label);
-            } else if ($type == 'basic') {
-                if (!isset($activeOptions)) {
-                    $activeOptions
-                        = $this->results->get($activeSearchClass)->getOptions();
-                }
-                $newUrl = $this->remapBasicSearch(
-                    $activeOptions, $class, $query, $handler, $filters
-                );
-                $retVal[] = $this->createBasicTab($key, $class, $label, $newUrl);
-            } else if ($type == 'advanced') {
-                $retVal[] = $this->createAdvancedTab_($key, $class, $label, $filters, $activeSearchClass, $query, $handler);
-            } else if (($controller = $this->getView()->controllerName()) === "Record" || $controller === "Edsrecord") {
+            } else if (($controller = $this->getView()->controllerName()) === "Record" || $controller === "EdsRecord") {
                 list($query, $handler, $type) = $this->extractQueryAndHandlerAndType($this->searchMemory->getLastUrl($activeSearchClass));
                 if (!isset($activeOptions)) {
                     $activeOptions
@@ -117,8 +106,22 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
                 } else { //advanced search
                     $retVal[] = $this->createAdvancedTab_($key, $class, $label, $filters, $activeSearchClass);
                 }
-            }
-            else {
+            } else if ($this->getView()->controllerName() === "index") {
+
+                $retVal[] = $this->createHomeTab($key, $class, $label, $filters);
+
+            } else if ($type == 'basic') {
+                if (!isset($activeOptions)) {
+                    $activeOptions
+                        = $this->results->get($activeSearchClass)->getOptions();
+                }
+                $newUrl = $this->remapBasicSearch(
+                    $activeOptions, $class, $query, $handler, $filters
+                );
+                $retVal[] = $this->createBasicTab($key, $class, $label, $newUrl);
+            } else if ($type == 'advanced') {
+                $retVal[] = $this->createAdvancedTab_($key, $class, $label, $filters, $activeSearchClass, $query, $handler);
+            } else {
                 $retVal[] = $this->createHomeTab($key, $class, $label, $filters);
             }
         }

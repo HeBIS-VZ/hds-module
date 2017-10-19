@@ -155,7 +155,7 @@ class EdsController extends \VuFind\Controller\EdsController
             $searchUrl = $this->url()->fromRoute(
                     $results->getOptions()->getSearchAction()
                 ) . $results->getUrlQuery()->getParams(false);
-            $this->getSearchMemory()->rememberLastSearchOf($searchUrl, 'EDS');
+            $this->getSearchMemory()->rememberLastSearchOf('EDS', $searchUrl);
         }
 
         // Always save search parameters, since these are namespaced by search
