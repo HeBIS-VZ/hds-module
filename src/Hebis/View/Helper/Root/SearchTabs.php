@@ -77,7 +77,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
      * @return array
      */
     public function getTabConfig($activeSearchClass, $query, $handler,
-        $type = 'basic', $hiddenFilters = []
+        $type = 'basic', $hiddenFilters = [], $recordTotal = null
     ) {
         $this->searchMemory = $this->getView()->searchMemory();
         $controllerName = $this->getView()->controllerName();
@@ -91,7 +91,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
                 && $this->helper->filtersMatch($class, $hiddenFilters, $filters)
             ) {
                 $matchFound = true;
-                $retVal[] = $this->createSelectedTab($key, $class, $label);
+                $retVal[] = $this->createSelectedTab_($key, $class, $label, $recordTotal);
             } else if (($controller = $this->getView()->controllerName()) === "Record" || $controller === "EdsRecord") {
                 list($query, $handler, $type) = $this->extractQueryAndHandlerAndType($this->searchMemory->getLastUrl($activeSearchClass));
                 if (!isset($activeOptions)) {
@@ -205,6 +205,24 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
             'label' => $label,
             'selected' => false,
             'url' => $newUrl
+        ];
+    }
+
+    /**
+     * @param string $id
+     * @param string $class
+     * @param string $label
+     * @param $count
+     * @return array
+     */
+    protected function createSelectedTab_($id, $class, $label, $count)
+    {
+        return [
+            'id' => $id,
+            'class' => $class,
+            'label' => $label,
+            'count' => $count,
+            'selected' => true
         ];
     }
 }
