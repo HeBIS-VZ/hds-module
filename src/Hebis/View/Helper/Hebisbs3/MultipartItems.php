@@ -249,7 +249,7 @@ class MultipartItems extends AbstractRecordViewHelper
                     $ret .= $subfield->getData();
                     break;
                 case 'b':
-                    $ret .= ". " . $subfield->getData();
+                    $ret .= (!empty($ret) ? ". " : "") . $subfield->getData();
                     break;
                 case 'g':
                     $ret .= " (" . $subfield->getData() . ")";
@@ -259,7 +259,7 @@ class MultipartItems extends AbstractRecordViewHelper
                         $ret .= " (" . $subfield->getData() . ")";
                     } else {
                         if (strpos($subfield->getData(), "[...]") === false) {
-                            $ret .= " : " . $subfield->getData();
+                            $ret .= (!empty($ret) ? " : " : "") . $subfield->getData();
                         }
                     }
                     break;
@@ -376,7 +376,7 @@ class MultipartItems extends AbstractRecordViewHelper
                     $ret .= htmlentities($subfield->getData());
                     break;
                 case 't':
-                    $ret .= ": " . htmlentities($subfield->getData());
+                    $ret .= (!empty($ret) ? ": " : "") . htmlentities($subfield->getData());
                     break;
             }
         }
@@ -507,7 +507,7 @@ class MultipartItems extends AbstractRecordViewHelper
     private function getShowAllVolumesLinkParams($ppn)
     {
        return [
-            "sort" => "pub_date_max desc",
+            "sort" => "part_of_$ppn asc",
             "type0[]" => "part_of",
             "lookfor0[]" => $ppn,
             "join" => "AND"
