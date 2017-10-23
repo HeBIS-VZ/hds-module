@@ -57,9 +57,6 @@ class Converter
                 $newspaperArticle = static::convertArticle($record);
                 $newspaperArticle->setType("newspaper-article");
                 return json_encode($newspaperArticle);
-            case 'book':
-                $book = static::convertBook($record);
-                return json_encode($book);
             case 'image':
             case 'tableChart':
                 $graphic = static::convertGraphic($record);
@@ -73,8 +70,10 @@ class Converter
                 return json_encode(static::convertMap($record));
             case 'conference':
                 return json_encode(static::convertConference($record));
-
+            case 'book':
             default:
+                $book = static::convertBook($record);
+                return json_encode($book);
                 /*
                 if (self::isThesis($record->getMarcRecord())) {
                     return ThesisConverter::convert($record->getMarcRecord());
