@@ -83,4 +83,20 @@ class Factory extends \VuFind\View\Helper\Root\Factory
             $sm->getServiceLocator()->get('VuFind\Search\Memory')
         );
     }
+
+    /**
+     * Construct the SearchTabs helper.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SearchTabs
+     */
+    public static function getSearchTabs(ServiceManager $sm)
+    {
+        return new SearchTabs(
+            $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager'),
+            $sm->get('url'),
+            $sm->getServiceLocator()->get('VuFind\SearchTabsHelper')
+        );
+    }
 }

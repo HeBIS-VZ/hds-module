@@ -187,4 +187,35 @@ class EdsrecordController extends \VuFind\Controller\EdsrecordController
         }
         return "";
     }
+
+
+    /**
+     * Home (default) action -- forward to requested (or default) tab.
+     *
+     * @return mixed
+     */
+    public function homeAction()
+    {
+        $view = parent::homeAction();
+        $memory = $this->serviceLocator->get("VuFind\Search\Memory");
+        // set lookfor and params from last search.
+        $lastUrl = $memory->retrieveSearchOf('EDS');
+        $queryString = substr($lastUrl, strpos($lastUrl, "?") + 1);
+        $queryString = urldecode($queryString);
+        parse_str($queryString, $queryArray);
+        $view->lookfor = $queryArray["lookfor"];
+
+        if (isset($queryArray["lookfor"])) {
+            $view->lookfor = $queryArray["lookfor"];
+            $view->searchType = $queryArray["type"];
+            $type = "basic";
+        } else if (isset($lookfor0)) {
+            $view->lookfor0 = $queryArray["lookfor0"];
+            $view->type0 = $queryArray["type0"];
+            $type = "advanced";
+        }
+
+        return $view;
+    }
+
 }

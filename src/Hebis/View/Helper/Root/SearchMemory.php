@@ -78,12 +78,21 @@ class SearchMemory extends \VuFind\View\Helper\Root\SearchMemory
      */
     public function getLastSearchLinkOfSearchClassId($link, $searchClassId, $prefix = '', $suffix = '')
     {
-        $last = $this->memory->retrieveSearchOf($searchClassId);
-        if (!empty($last)) {
-            $escaper = $this->getView()->plugin('escapeHtml');
-            return $prefix . '<a href="' . $escaper($last) . '">' . $link . '</a>'
+        $url = $this->getLastUrl($searchClassId);
+        if (!empty($url)) {
+            return $prefix . '<a href="' . $url . '">' . $link . '</a>'
                 . $suffix;
         }
         return '';
+    }
+
+    public function getLastUrl($searchClassId)
+    {
+        $last = $this->memory->retrieveSearchOf($searchClassId);
+        if (!empty($last)) {
+            $escaper = $this->getView()->plugin('escapeHtml');
+            return $escaper($last);
+        }
+        return false;
     }
 }
