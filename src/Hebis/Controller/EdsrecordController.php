@@ -203,7 +203,7 @@ class EdsrecordController extends \VuFind\Controller\EdsrecordController
         $queryString = substr($lastUrl, strpos($lastUrl, "?") + 1);
         $queryString = urldecode($queryString);
         parse_str($queryString, $queryArray);
-        $view->lookfor = $queryArray["lookfor"];
+        $view->lookfor = isset($queryArray["lookfor"]) ? $queryArray["lookfor"] : '';
 
         if (isset($queryArray["lookfor"])) {
             $view->lookfor = $queryArray["lookfor"];
