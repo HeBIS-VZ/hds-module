@@ -17,7 +17,7 @@ class StaticPost extends RowGateway
     public function __construct($adapter)
     {
 
-        parent::__construct('id', 'static_post', $adapter);
+        parent::__construct('uid', 'static_post', $adapter);
     }
 
 

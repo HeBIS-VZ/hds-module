@@ -3,6 +3,9 @@
 namespace Hebis\Db\Table;
 
 use VuFind\Db\Table\Gateway;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Predicate\Predicate;
+use Zend\Validator\Between;
 
 class StaticPost extends Gateway
 {
@@ -14,7 +17,7 @@ class StaticPost extends Gateway
 
     public function getPost($id)
     {
-        $staticPostRow = $this->select(['id' => $id])->current();
+        $staticPostRow = $this->select(['uid' => $id])->current();
 
         if (!$staticPostRow) {
             throw new \Exception("Could not find post $id");
@@ -34,9 +37,13 @@ class StaticPost extends Gateway
     public function getLastPageID()
     {
 
-        $lastPID = $this->query('SELECT MAX(page_id) FROM static_post', array(2))->current();
+        $select = $this->sql->select();
+        $select->columns([new Expression('MAX(pid)')]);
+        $resultSet = $this->select($select)->current();
 
-        return $lastPID;
+        $lastpid = $resultSet->pid;
+
+        return $lastpid;
 
     }
 

@@ -113,7 +113,7 @@ class StaticPagesController extends AbstractAdmin
 
         // get last pageID
 
-        $pageid = $this->table->query("SELECT MAX(page_id) FROM 'static_post'", array(2));
+        $pageid = $this->table->getLastPageID();
         if (!isset($pageid))
             $pageid = 120;
         else $pageid++;
