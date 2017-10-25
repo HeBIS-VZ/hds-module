@@ -30,13 +30,13 @@ class StaticPageNavigation extends \Zend\View\Helper\AbstractHelper
 
     public function getNav()
     {
-        $arr = [];
+        /*$arr = [];
         $staticPagesList = $this->table->getNav();
         foreach ($staticPagesList as $page) {
             $pageArray = ["uid" => $page->id, "title" => $page->headline];
             $arr[] = $pageArray;
-        }
+        }*/
 
-        return $arr;
+        return;
     }
 }

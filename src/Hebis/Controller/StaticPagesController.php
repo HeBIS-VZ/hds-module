@@ -49,16 +49,10 @@ class StaticPagesController extends AbstractAdmin
         return $view;
     }
 
-    /* helping function for page view */
-
-    /** Returns a view for static page with user template
+    /**
+     * @param String $template Path to template
      * @return \Zend\View\Model\ViewModel
      */
-    public function viewAction()
-    {
-        return $this->pageView('staticpages/viewspage');
-    }
-
     private function pageView($template)
     {
         $view = $this->createViewModel();
@@ -81,6 +75,27 @@ class StaticPagesController extends AbstractAdmin
         return $this->pageView('adminstaticpages/view');
     }
 
+    /** Returns a view for static page with user template
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function viewAction()
+    {
+        return $this->pageView('staticpages/viewspage');
+    }
+
+    /* saves each row */
+    private function saveRow($pageid, $language, $headline, $navtitle, $content, $author)
+    {
+        $row = $this->table->createRow();
+        $row->page_id = $pageid;
+        $row->language = $language;
+        $row->headline = $headline;
+        $row->nav_title = $navtitle;
+        $row->content = $content;
+        $row->author = $author;
+        $row->save();
+    }
+
     /** Action adds new static page
      * @return \Zend\View\Model\ViewModel
      */
@@ -98,7 +113,7 @@ class StaticPagesController extends AbstractAdmin
 
         // get last pageID
 
-        $pageid = $this->table->getLastPageIDs();
+        $pageid = $this->table->query("SELECT MAX(page_id) FROM 'static_post'", array(2));
         if (!isset($pageid))
             $pageid = 120;
         else $pageid++;
@@ -116,20 +131,6 @@ class StaticPagesController extends AbstractAdmin
         return $this->forwardTo('adminstaticpages', 'list');
 
     }
-
-    /* saves each row */
-    private function saveRow($pageid, $language, $headline, $navtitle, $content, $author)
-    {
-        $row = $this->table->createRow();
-        $row->page_id = $pageid;
-        $row->language = $language;
-        $row->headline = $headline;
-        $row->nav_title = $navtitle;
-        $row->content = $content;
-        $row->author = $author;
-        $row->save();
-    }
-
 
     /**
      * @return mixed|\Zend\View\Model\ViewModel
@@ -166,10 +167,6 @@ class StaticPagesController extends AbstractAdmin
         }
         return $this->output(1, self::STATUS_OK, 200);
     }
-
-    /*
-     * static page ajax delete action
-     */
 
     /**
      * Send output data and exit.

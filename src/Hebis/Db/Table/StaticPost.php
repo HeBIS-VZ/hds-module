@@ -3,8 +3,6 @@
 namespace Hebis\Db\Table;
 
 use VuFind\Db\Table\Gateway;
-use Zend\Db\Sql\Select;
-use Zend\Stdlib\ArrayObject;
 
 class StaticPost extends Gateway
 {
@@ -33,12 +31,12 @@ class StaticPost extends Gateway
         return $this->select();
     }
 
-    public function getLastPageIDs()
+    public function getLastPageID()
     {
-        $select = $this->sql->select();
-        $select->columns(['page_id']);
 
-        return $this->selectWith($select);
+        $lastPID = $this->query('SELECT MAX(page_id) FROM static_post', array(2))->current();
+
+        return $lastPID;
 
     }
 
