@@ -138,7 +138,7 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         return $retVal;
     }
 
-    private function extractQueryAndHandlerAndType($url)
+    public function extractQueryAndHandlerAndType($url)
     {
         $query = null;
         $handler = null;

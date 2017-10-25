@@ -89,13 +89,17 @@ class SearchController extends \VuFind\Controller\SearchController
             if (!empty($backlink)) {
                 $params = array_merge($params, ['backlink' => $backlink]);
             }
-
+            $params = array_merge($params, ['forwardedType' => $this->params()->fromQuery('type')]);
             return $this->forwardTo("record", "home", $params);
         } else {
             if ($results->getResultTotal() === 0) {
                 $request = $this->getRequest()->getQuery()->toArray()
                     + $this->getRequest()->getPost()->toArray()
-                    + ["searchId" => $results->getSearchId()];
+                    + [
+                        "searchId" => $results->getSearchId(),
+                        "resultCount" => $results->getResultTotal()
+                    ];
+
                 return $this->forwardTo("search", "record_not_found", $request);
             }
         }
@@ -158,7 +162,7 @@ class SearchController extends \VuFind\Controller\SearchController
     public function ajaxAction()
     {
         $this->outputMode = "json";
-        $view = $this->resultsAction();
+        $view = parent::resultsAction();
         $results = $view->results;
         $resultTotal = $results->getResultTotal();
         return $this->output($resultTotal, static::STATUS_OK);
