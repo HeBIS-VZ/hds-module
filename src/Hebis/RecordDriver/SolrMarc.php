@@ -239,19 +239,4 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         return $isbns;
     }
 
-    /**
-     * Get an array of lines from the table of contents.
-     *
-     * @return array
-     */
-    public function getTOC()
-    {
-        /** @var $tabTocSummary */
-        $tabTocSummary = \Hebis\View\Helper\Record\Factory::getTabTocSummary(null);
-        $content = $tabTocSummary($this);
-        if (!empty($content)) {
-            return $content;
-        }
-        return null;
-    }
 }

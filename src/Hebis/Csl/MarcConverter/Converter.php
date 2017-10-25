@@ -36,7 +36,7 @@ class Converter
     public static function convert(SolrMarc $record)
     {
 
-        $type = ContentType::getContentType($record);
+        $type = (new ContentType())->getContentType($record);
 
         switch ($type) {
             case 'article':

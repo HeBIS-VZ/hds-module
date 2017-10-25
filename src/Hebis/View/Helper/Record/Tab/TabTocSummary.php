@@ -65,8 +65,8 @@ class TabTocSummary extends AbstractRecordViewHelper
             if (!empty($u) && !empty($_3) && $_3 !== "Umschlagbild" && $_3 !== "Cover") {
                 $ret[] = '<a href="' . $u . '">' . htmlentities($_3) . '</a>';
             } else {
-                if (empty($_3)) {
-                    $ret[] = $this->getView()->transEsc("tab_description_note_about_content");
+                if (!empty($u) && empty($_3)) {
+                    $ret[] = '<a href="' . $u . '">' . $this->getView()->transEsc("tab_description_note_about_content") . '</a>';
                 }
             }
         }

@@ -20,4 +20,11 @@
         <log type="tap" target="storage/logs/tap.log" logIncompleteSkipped="false" />
     </logging>
     -->
+    <php>
+        <var name="EDS_ip_auth" value="" />
+        <var name="EDS_user_name" value="" />
+        <var name="EDS_password" value="" />
+        <var name="EDS_profile" value="" />
+        <var name="EDS_organization_id" value="" />
+    </php>
 </phpunit>

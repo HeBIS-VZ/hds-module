@@ -132,17 +132,17 @@ class EdsController extends \VuFind\Controller\EdsController
             }
         } elseif (!empty($type0 = $this->getRequest()->getQuery()->get("type0"))) {
             if (is_array($type0)) {
-                if (($pos = array_search("IS", $type0)) !== false) {
+                if ( ($pos = array_search("IS", $type0)) !== false || ($pos = array_search("IB", $type0)) !== false) {
                     $lookfor0 = $this->getRequest()->getQuery()->get("lookfor0");
                     if (preg_match($issnPattern, $lookfor0[$pos], $match)) {
+                        $lookfor = $lookfor0;
                         $lookfor[$pos] = $match[1] . $match[2];
                         $this->getRequest()->getQuery()->set("lookfor0", $lookfor);
+                    } elseif (preg_match("/-/", $lookfor0[$pos])) {
+                        $lookfor = $lookfor0;
+                        $lookfor[$pos] = str_replace("-", "", $lookfor0[$pos]);
+                        $this->getRequest()->getQuery()->set("lookfor0", $lookfor);
                     }
-                } elseif (($pos = array_search("IB", $type0)) !== false) {
-                    $lookfor0 = $this->getRequest()->getQuery()->get("lookfor0");
-                    $lookfor_ = str_replace("-", "", $lookfor0[$pos]);
-                    $lookfor[$pos] = $lookfor_;
-                    $this->getRequest()->getQuery()->set("lookfor0", $lookfor);
                 }
             }
         }
