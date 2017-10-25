@@ -158,7 +158,7 @@ class SearchController extends \VuFind\Controller\SearchController
     public function ajaxAction()
     {
         $this->outputMode = "json";
-        $view = $this->resultsAction();
+        $view = parent::resultsAction();
         $results = $view->results;
         $resultTotal = $results->getResultTotal();
         return $this->output($resultTotal, static::STATUS_OK);
