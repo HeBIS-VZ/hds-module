@@ -4,8 +4,6 @@ namespace Hebis\Db\Table;
 
 use VuFind\Db\Table\Gateway;
 use Zend\Db\Sql\Expression;
-use Zend\Db\Sql\Predicate\Predicate;
-use Zend\Validator\Between;
 
 class StaticPost extends Gateway
 {
@@ -34,19 +32,31 @@ class StaticPost extends Gateway
         return $this->select();
     }
 
+    /**
+     * @return mixed
+     */
     public function getLastPageID()
     {
-
         $select = $this->sql->select();
-        $select->columns([new Expression('MAX(pid)')]);
-        $resultSet = $this->select($select)->current();
 
-        $lastpid = $resultSet->pid;
+
+        $select->columns(['lastPid' => new Expression('MAX(pid)')]);
+
+        $resultSet = $this->executeSelect($select);
+
+        $rowset = $resultSet->getDataSource()->current();
+
+        $lastpid = $rowset['lastPid'];
 
         return $lastpid;
 
     }
 
+    /**
+     * @param string $lang language filter
+     * @param bool $visibilty visibility filter
+     * @return \Zend\Db\ResultSet\ResultSet
+     */
     public function getNav($lang = 'en', $visibilty = true)
     {
         return $this->select(['language' => $lang, 'visible' => intval($visibilty)]);

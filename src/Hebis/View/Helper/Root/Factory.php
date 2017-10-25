@@ -27,7 +27,6 @@
 
 namespace Hebis\View\Helper\Root;
 
-use Hebis\Db\Table\StaticPost;
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -92,7 +91,7 @@ class Factory extends \VuFind\View\Helper\Root\Factory
             ->get('static_post');
         $rowClass = 'Hebis\Db\Row\StaticPost';
         //$table = new StaticPost($rowClass);
-
-        return new StaticPageNavigation($table);
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        return new StaticPageNavigation($table, $translator);
     }
 }

@@ -24,6 +24,9 @@ class StaticPagesController extends AbstractAdmin
     const STATUS_ERROR = 'ERROR';
     const STATUS_NEED_AUTH = 'NEED_AUTH';
 
+    /**
+     * @var StaticPost
+     */
     protected $table;
 
     protected $outputMode;
@@ -33,7 +36,6 @@ class StaticPagesController extends AbstractAdmin
         $this->table = $table;
         $this->setTranslator($translator);
     }
-
 
     /**
      * Static Pages Administrator Home View
@@ -87,10 +89,10 @@ class StaticPagesController extends AbstractAdmin
     private function saveRow($pageid, $language, $headline, $navtitle, $content, $author)
     {
         $row = $this->table->createRow();
-        $row->page_id = $pageid;
+        $row->pid = $pageid;
         $row->language = $language;
         $row->headline = $headline;
-        $row->nav_title = $navtitle;
+        $row->nav_title = (strlen($navtitle) == 0) ? substr($headline, 0, 10) : $navtitle;
         $row->content = $content;
         $row->author = $author;
         $row->save();
@@ -105,13 +107,12 @@ class StaticPagesController extends AbstractAdmin
         $view->setTemplate('adminstaticpages/add');
         $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
         $view->langs = $allLanguages;
-        $sessionManager = $this->getServiceLocator()->get('VuFind\SessionManager');
+        // $sessionManager = $this->getServiceLocator()->get('VuFind\SessionManager');
         $request = $this->getRequest();
+
         if (!$request->isPost()) {
             return $view;
         }
-
-        // get last pageID
 
         $pageid = $this->table->getLastPageID();
         if (!isset($pageid))
@@ -125,7 +126,14 @@ class StaticPagesController extends AbstractAdmin
         $author = $this->params()->fromPost('sp-author');
 
         for ($i = 0; $i < sizeof($allLanguages); $i++) {
-            $this->saveRow($pageid, $language[$i], $navtitle[$i], $headline[$i], $content[$i], $author);
+            $this->saveRow(
+                $pageid,
+                $language[$i],
+                $headline[$i],
+                $navtitle[$i],
+                $content[$i],
+                $author
+            );
         }
 
         return $this->forwardTo('adminstaticpages', 'list');

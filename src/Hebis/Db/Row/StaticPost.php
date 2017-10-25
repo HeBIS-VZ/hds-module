@@ -8,7 +8,7 @@ use VuFind\Db\Row\RowGateway;
 /**
  * Class StaticPost
  * @package Hebis\Db\Row
- * @author Roshak Zarhoun <roshak.zarhoun@stud.tu-darmstadt.de>
+ * @author Roshak Zarhoun <roshakz@gmail.com>
  */
 class StaticPost extends RowGateway
 {
@@ -19,7 +19,5 @@ class StaticPost extends RowGateway
 
         parent::__construct('uid', 'static_post', $adapter);
     }
-
-
 
 }

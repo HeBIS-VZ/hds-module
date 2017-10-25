@@ -11,15 +11,20 @@ namespace Hebis\View\Helper\Root;
 
 
 use Hebis\Db\Table\StaticPost;
+use VuFind\I18n\Translator\TranslatorAwareTrait;
+
 
 class StaticPageNavigation extends \Zend\View\Helper\AbstractHelper
 {
 
+    use TranslatorAwareTrait;
+
     protected $table;
 
-    public function __construct(StaticPost $table)
+    public function __construct(StaticPost $table, $translator)
     {
         $this->table = $table;
+        $this->setTranslator($translator);
     }
 
 
@@ -28,15 +33,23 @@ class StaticPageNavigation extends \Zend\View\Helper\AbstractHelper
         return $this;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function getNav()
     {
-        /*$arr = [];
-        $staticPagesList = $this->table->getNav();
-        foreach ($staticPagesList as $page) {
-            $pageArray = ["uid" => $page->id, "title" => $page->headline];
-            $arr[] = $pageArray;
-        }*/
+        $arr = array();
 
-        return;
+        $staticPagesList = $this->table->getNav();
+
+        if (sizeof($staticPagesList) == 0)
+            $arr[] = ["pid" => 0, "title" => $this->translate('No Page Found')];
+
+        else foreach ($staticPagesList as $page) {
+            $arr[] = ["pid" => $page->pid, "title" => $page->nav_title];
+        }
+
+        return $arr;
     }
 }
