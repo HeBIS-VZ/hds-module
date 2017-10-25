@@ -87,7 +87,7 @@ class SearchController extends \VuFind\Controller\SearchController
             $ppn = $record->getPPN();
             $params = ['id' => $ppn];
             if (!empty($backlink)) {
-                $params = array_merge($params, ['backlink' => $backlink]);
+                $params = array_merge($params, ['backlink' => $backlink, 'resultCount' => $results->getResultTotal()]);
             }
 
             return $this->forwardTo("record", "home", $params);
@@ -95,7 +95,11 @@ class SearchController extends \VuFind\Controller\SearchController
             if ($results->getResultTotal() === 0) {
                 $request = $this->getRequest()->getQuery()->toArray()
                     + $this->getRequest()->getPost()->toArray()
-                    + ["searchId" => $results->getSearchId()];
+                    + [
+                        "searchId" => $results->getSearchId(),
+                        "resultCount" => $results->getResultTotal()
+                    ];
+
                 return $this->forwardTo("search", "record_not_found", $request);
             }
         }

@@ -13,6 +13,7 @@ class RecordController extends \VuFind\Controller\RecordController
     public function showTab($tab, $ajax = false)
     {
         $view = parent::showTab($tab, $ajax);
+        $resultCount = $this->params()->fromQuery('resultCount');
         $config = $this->getConfig();
         $view->showPublicationDate = $config->Record->show_publication_date;
         return $view;
