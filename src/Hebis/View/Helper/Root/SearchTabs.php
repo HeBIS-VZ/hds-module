@@ -65,6 +65,24 @@ class SearchTabs extends \VuFind\View\Helper\Root\SearchTabs
         parent::__construct($results, $url, $helper);
     }
 
+
+    public function getAdvancedTabConfig($handler)
+    {
+        $retVal = [];
+        $tabConfig = $this->helper->getTabConfig();
+        foreach ($tabConfig as $key => $label) {
+            if ($key === $handler) { // selected
+                $retVal[] = $this->createSelectedTab_($key, $key, $label, 0);
+            } else { //not active
+                $newUrl  = $this->getView()->url('home');
+                $newUrl .= ($key === "Solr") ? "Search/" : "$key/";
+                $newUrl .= "Advanced";
+                $retVal[] = $this->createBasicTab($key, $key, $label, $newUrl);
+            }
+        }
+        return $retVal;
+    }
+
     /**
      * Determine information about search tabs
      *
