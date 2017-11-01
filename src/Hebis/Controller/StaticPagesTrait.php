@@ -20,12 +20,13 @@ trait StaticPagesTrait
      * @param string $template Path to view template
      * @return ViewModel
      */
-    protected function prepareViewStaticPages($template)
+    protected function prepareViewStaticPages($template, $lang)
     {
         $view = $this->createViewModel();
         $view->setTemplate($template);
-        $uid = $this->params()->fromRoute();
-        $row = $this->table->getPost($uid);
+        $pid = $this->params()->fromRoute();
+
+        $row = $this->table->getPost($pid, $lang);
         $view->row = $row;
         $visible = $row->visible;
         $DateConverter = new Converter();       // How to get/set timezone TODO view timezone

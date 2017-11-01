@@ -13,9 +13,9 @@ class StaticPost extends Gateway
         parent::__construct('static_post', $rowClass);
     }
 
-    public function getPost($id)
+    public function getPost($id, $lang)
     {
-        $staticPostRow = $this->select(['uid' => $id])->current();
+        $staticPostRow = $this->select(['pid' => $id, 'language' => $lang])->current();
 
         if (!$staticPostRow) {
             throw new \Exception("Could not find post $id");
@@ -39,7 +39,6 @@ class StaticPost extends Gateway
     {
         $select = $this->sql->select();
 
-
         $select->columns(['lastPid' => new Expression('MAX(pid)')]);
 
         $resultSet = $this->executeSelect($select);
@@ -61,5 +60,14 @@ class StaticPost extends Gateway
     {
         return $this->select(['language' => $lang, 'visible' => intval($visibilty)]);
 
+    }
+
+    public function getPostByPid($pid)
+    {
+        $select = $this->sql->select();
+        $select->where(['pid' => $pid]);
+        $resultSet = $this->executeSelect($select);
+        $rowSet = $resultSet;
+        return $rowSet;
     }
 }

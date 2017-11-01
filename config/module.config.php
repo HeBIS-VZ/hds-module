@@ -172,12 +172,12 @@ $config = [
                     'preview' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
-                            'route' => '/View/:uid',
+                            'route' => '/View/:pid',
                             'defaults' => [
                                 'action' => 'vvview'
                             ],
                             'constraints' => [
-                                'uid' => '\d+'
+                                'pid' => '\d+'
                             ]
                         ]
                     ]
@@ -197,12 +197,12 @@ $config = [
                     'preview' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
-                            'route' => '/View/:uid',
+                            'route' => '/View/:pid',
                             'defaults' => [
                                 'action' => 'preview'
                             ],
                             'constraints' => [
-                                'uid' => '\d+'
+                                'pid' => '\d+'
                             ]
                         ]
                     ],

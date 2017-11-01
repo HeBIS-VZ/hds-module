@@ -57,7 +57,8 @@ class StaticPagesAdmin extends AbstractAdmin
      */
     public function previewAction()
     {
-        return $this->prepareViewStaticPages('staticpagesadmin/view');
+        $lang = $this->getTranslatorLocale();
+        return $this->prepareViewStaticPages('staticpagesadmin/view', $lang);
     }
 
     /* saves each row */
@@ -123,20 +124,26 @@ class StaticPagesAdmin extends AbstractAdmin
     {
         $view = $this->createViewModel();
         $view->setTemplate('staticpagesadmin/edit');
-        $uid = $this->params()->fromRoute();
-        $request = $this->getRequest();
-        $row = $this->table->getPost($uid);
-        $view->row = $row;
 
+        $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
+        $view->langs = $allLanguages;
+
+        $pid = $this->params()->fromRoute();
+        $request = $this->getRequest();
+        $rowSet = $this->table->getPostByPid($pid);
+        $view->rowSet = $rowSet->getDataSource();;
         if (!$request->isPost()) {
             return $view;
         }
 
-        $row->headline = $this->params()->fromPost('sp-headline');
-        $row->nav_title = $this->params()->fromPost('sp-nav-title');
-        $row->content = $this->params()->fromPost('sp-content');
-        $row->changeDate = getdate();
-        $row->save();
+        $i = 0;
+        foreach ($rowSet as $row) {
+            $row->headline = $this->params()->fromPost('sp-headline')[$i];
+            $row->content = $this->params()->fromPost('sp-content')[$i];
+            $row->nav_title = $this->params()->fromPost('sp-navtitle')[$i];
+            $row->save();
+            ++$i;
+        }
 
         return $this->forwardTo('staticpagesadmin', 'list');
     }
