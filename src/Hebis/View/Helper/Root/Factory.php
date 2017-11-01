@@ -84,14 +84,12 @@ class Factory extends \VuFind\View\Helper\Root\Factory
         );
     }
 
-    public static function getStaticPageNavigation(ServiceManager $sm)
+    public static function getStaticPagesNavigation(ServiceManager $sm)
     {
         $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
         $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
             ->get('static_post');
-        $rowClass = 'Hebis\Db\Row\StaticPost';
-        //$table = new StaticPost($rowClass);
         $translator = $sm->getServiceLocator()->get('VuFind\Translator');
-        return new StaticPageNavigation($table, $translator);
+        return new StaticPagesNavigation($table, $translator);
     }
 }

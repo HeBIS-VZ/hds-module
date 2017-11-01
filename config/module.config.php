@@ -1,4 +1,5 @@
 <?php
+
 namespace Hebis\Module\Configuration;
 
 
@@ -103,7 +104,8 @@ $config = [
             'OAuth' => 'Hebis\Controller\Factory::getOAuth',
             'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder',
             'Xisbn' => 'Hebis\Controller\Factory::getXisbn',
-            'adminstaticpages' => 'Hebis\Controller\Factory::getStaticPagesController',
+            'staticpagesadmin' => 'Hebis\Controller\Factory::getStaticPagesAdminController',
+            'staticpages' => 'Hebis\Controller\Factory::getStaticPagesController',
             'page' => 'Hebis\Controller\Factory::getPageController',
         ],
         'invokables' => [
@@ -156,12 +158,37 @@ $config = [
                     ],
                 ],
             ],
-            'adminstaticpages' => [
+            'staticpages' => [
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => [
+                    'route' => '/Staticpages',
+                    'defaults' => [
+                        'controller' => 'staticpages',
+                        'action' => '',
+                    ]
+                ],
+                'may_terminate' => false,
+                'child_routes' => [
+                    'preview' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/View/:uid',
+                            'defaults' => [
+                                'action' => 'vvview'
+                            ],
+                            'constraints' => [
+                                'uid' => '\d+'
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'staticpagesadmin' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
                     'route' => '/Admin/Staticpages',
                     'defaults' => [
-                        'controller' => 'adminstaticpages',
+                        'controller' => 'staticpagesadmin',
                         'action' => 'list',
                     ]
                 ],
@@ -170,12 +197,12 @@ $config = [
                     'preview' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
-                            'route' => '/View/:id',
+                            'route' => '/View/:uid',
                             'defaults' => [
                                 'action' => 'preview'
                             ],
                             'constraints' => [
-                                'id' => '\d+'
+                                'uid' => '\d+'
                             ]
                         ]
                     ],
