@@ -27,16 +27,16 @@
 
 namespace Hebis\Db\Table;
 
+use VuFind\Db\Table\Gateway;
 use Zend\Config\Config;
 use Zend\Session\Container;
-use Hebis\Db\Row\UserOAuth as UserOAuthRow;
 
 /**
  * Class UserOAuth
  *
  * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
  */
-class UserOAuth extends \VuFind\Db\Table\Gateway
+class UserOAuth extends Gateway
 {
 
     private $config;
@@ -50,10 +50,11 @@ class UserOAuth extends \VuFind\Db\Table\Gateway
      * @param Container $session Session container to inject into rows (optional;
      * used for privacy mode)
      */
-    public function __construct(Config $config, $rowClass = 'VuFind\Db\Row\UserOAuth',
-                                Container $session = null
-    )
-    {
+    public function __construct(
+        Config $config,
+        $rowClass = 'VuFind\Db\Row\UserOAuth',
+        Container $session = null
+    ) {
         parent::__construct('user_oauth', $rowClass);
         $this->config = $config;
         $this->session = $session;
@@ -64,7 +65,7 @@ class UserOAuth extends \VuFind\Db\Table\Gateway
      *
      * @param string $username Username to use for retrieval.
      *
-     * @return UserOAuthRow
+     * @return object
      */
     public function createRowForUsername($username)
     {
@@ -85,7 +86,7 @@ class UserOAuth extends \VuFind\Db\Table\Gateway
      * @param string $username Username to use for retrieval.
      * @param bool $create Should we create users that don't already exist?
      *
-     * @return UserRow
+     * @return object
      */
     public function getByUsername($username, $create = true)
     {

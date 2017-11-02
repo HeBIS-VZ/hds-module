@@ -49,7 +49,7 @@ class PicaRecordFactory
 
         /** @var Field $field */
         foreach ($fields as $field) {
-            if (Field::match('002@/00', $field)) {
+            if (Field::match('002@/00')) {
                 $typeSubField = $field->getNthSubField('0', 0);
                 if ($typeSubField) {
                     $type = $typeSubField->getValue();

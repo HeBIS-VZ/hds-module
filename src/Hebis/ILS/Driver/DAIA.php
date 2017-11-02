@@ -131,9 +131,4 @@ class DAIA extends \VuFind\ILS\Driver\DAIA
 
         return (empty($storage) ? 'Unknown' : $storage);
     }
-
-    private function getItemStorageId($item)
-    {
-
-    }
 }

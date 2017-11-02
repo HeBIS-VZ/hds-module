@@ -29,7 +29,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordDatesOfPublicationOrSequentialDesignation
@@ -50,8 +50,10 @@ class SingleRecordDatesOfPublicationSequentialDesignation extends AbstractRecord
 
         /** @var \File_MARC_Data_Field $field */
         foreach ($_362 as $field) {
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            if ($a) $arr[] = htmlentities($a);
+            $a = Helper::getSubFieldDataOfGivenField($field, 'a');
+            if ($a) {
+                $arr[] = htmlentities($a);
+            }
 
         }
 

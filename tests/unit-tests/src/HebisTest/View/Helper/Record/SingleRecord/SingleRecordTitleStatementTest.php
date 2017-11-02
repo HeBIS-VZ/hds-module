@@ -67,8 +67,12 @@ class SingleRecordTitleStatementTest extends AbstractViewHelperTest
         $basePath = $this->getMock('Zend\View\Helper\BasePath');
         $basePath->expects($this->any())->method('__invoke')
             ->will($this->returnValue('/vufind2'));
+        $url = $this->getMock('Zend\View\Helper\Url');
+        $url->expects($this->any())->method('__invoke')
+            ->will($this->returnValue("/foobar"));
 
         return [
+            'url' => $url,
             'basepath' => $basePath
         ];
     }

@@ -40,6 +40,11 @@ class EDS extends \VuFind\RecordDriver\EDS
         return $this->fields;
     }
 
+    public function setFields(array $fields)
+    {
+        $this->fields = $fields;
+    }
+
     /**
      * Return a URL to a thumbnail preview of the record, if available; false
      * otherwise.
@@ -59,5 +64,126 @@ class EDS extends \VuFind\RecordDriver\EDS
             }
         }
         return false;
+    }
+
+    public function getCleanDOI()
+    {
+        if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity']) &&
+            array_key_exists('Identifiers', $bibEntity)) {
+
+            foreach ($bibEntity['Identifiers'] as $identifier) {
+                if (strcasecmp($identifier['Type'],"doi") === 0) {
+                    return $identifier['Value'];
+                }
+            }
+        }
+        return false;
+    }
+
+    public function getContainerIssue()
+    {
+        return $this->getNumbering("issue");
+    }
+
+    public function getContainerVolume()
+    {
+        return $this->getNumbering("volume");
+    }
+
+    /**
+     * @param string $type (issue|volume)
+     * @return string
+     */
+    private function getNumbering($type)
+    {
+        if (!empty($bibRelationships = $this->fields['RecordInfo']['BibRecord']['BibRelationships'])) {
+            if (array_key_exists('IsPartOfRelationships', $bibRelationships) &&
+                !empty($bibRelationships['IsPartOfRelationships'])) {
+                $bibEntity = $bibRelationships['IsPartOfRelationships'][0]['BibEntity'];
+                if (array_key_exists('Numbering', $bibEntity) &&
+                    !empty($bibEntity['Numbering'])) {
+
+                    foreach ($bibEntity['Numbering'] as $numbering) {
+                        if (!strcasecmp($numbering['Type'], $type)) {
+                            return $numbering['Value'];
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public function getContainerStartPage()
+    {
+        if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity'])) {
+            if (array_key_exists("PhysicalDescription", $bibEntity) && array_key_exists("Pagination", $bibEntity["PhysicalDescription"])) {
+                $pagination = $bibEntity["PhysicalDescription"]["Pagination"];
+                return $pagination["StartPage"];
+            }
+        }
+        return false;
+    }
+
+    public function getContainerEndPage()
+    {
+        $endPage = $this->getContainerPageCount();
+
+        if (!empty($startPage = $this->getContainerStartPage())) {
+            if (!empty($endPage)) {
+                return intval($startPage) + intval($endPage);
+            }
+            return $startPage;
+        } elseif (!empty($endPage)) {
+            return $endPage;
+        }
+
+        return false;
+    }
+
+    public function getContainerPageCount()
+    {
+        if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity'])) {
+            if (array_key_exists("PhysicalDescription", $bibEntity) && array_key_exists("Pagination", $bibEntity["PhysicalDescription"])) {
+                $pagination = $bibEntity["PhysicalDescription"]["Pagination"];
+                return $pagination["PageCount"];
+            }
+        }
+        return false;
+    }
+
+    public function getLanguages()
+    {
+        if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity'])) {
+            if (array_key_exists("Languages", $bibEntity)) {
+                $languages = $bibEntity["Languages"];
+                return $languages[0]["Text"];
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Obtain the title of the record from the record info section
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        if (isset($this->fields['RecordInfo']['BibRecord']['BibEntity']['Titles'])) {
+            foreach ($this->fields['RecordInfo']['BibRecord']['BibEntity']['Titles']
+                     as $titleRecord
+            ) {
+                if (isset($titleRecord['Type']) && 'main' == $titleRecord['Type']) {
+                    return $titleRecord['TitleFull'];
+                }
+            }
+        }
+        foreach ($this->fields["Items"] as $item) {
+            if ($item["Name"] === "Title") {
+                return $item["Data"];
+            }
+        }
+        return '';
     }
 }

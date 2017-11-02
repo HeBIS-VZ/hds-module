@@ -5,8 +5,7 @@
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
  * 
- * Copyright (C) 2016 
- * Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ * Copyright (C) 2017 
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -26,38 +25,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace HebisTest\View\Helper\Record;
+namespace HebisTest\View\Helper;
 
+use Box\Spout\Writer\Common\Sheet;
 
-/**
- * Class BibTipTest
- * @package Hebis\View\Helper
- *
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
- */
-class BibTipTest extends AbstractViewHelperTest
+trait SpreadsheetTestsTrait
 {
-
-    public function setUp()
+    public function spreadsheetTestCases($spreadsheetReader, $testSheetName)
     {
-        $this->viewHelperClass = "BibTip";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
+        $relevantRows = [];
+        /** @var Sheet $sheet */
+        foreach ($spreadsheetReader->getSheetIterator() as $sheet) {
 
-        $this->testSheetName = "BibTip";
-        parent::setUp();
-    }
+            if ($sheet->getName() === $testSheetName) {
+                $isRelevantRow = false;
+                $relevantRows = [];
+                /** @var array $row */
+                foreach ($sheet->getRowIterator() as $row) {
 
-    /**
-     * Get plugins to register to support view helper being tested
-     *
-     * @return array
-     */
-    protected function getPlugins()
-    {
-        $singleRecordAddedEntryPersonalName = $this->getMock('Hebis\View\Helper\Record\SingleRecordAddedEntryPersonalName');
-        return [
-            'singleRecordAddedEntryPersonalName' => $singleRecordAddedEntryPersonalName
-        ];
+                    if (strpos($row[0], "Genutzte Felder") !== false) {
+                        $isRelevantRow = true;
+                        continue;
+                    }
+                    if ($isRelevantRow) {
+                        if (empty($row[0])) {
+                            break;
+                        }
+                        $relevantRows[] = array_slice($row, 0, 6);
+                    }
+                }
+
+                break;
+            }
+        }
+        return $relevantRows;
     }
 }

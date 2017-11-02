@@ -24,11 +24,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 namespace Hebis\View\Helper\Record\BibTip;
 
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
+use Hebis\Marc\Helper;
 
 /**
  * Class BibTipPublication
@@ -39,12 +41,16 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 class BibTipPublication extends AbstractRecordViewHelper
 {
 
+    /**
+     * @param SolrMarc $record
+     * @return string
+     */
     public function __invoke(SolrMarc $record)
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $_533_d = $this->getSubFieldDataOfField($record, 533, 'd');
+        $_533_d = Helper::getSubFieldDataOfField($record, 533, 'd');
 
         if (!empty($_533_d)) {
             return $_533_d;
@@ -53,9 +59,7 @@ class BibTipPublication extends AbstractRecordViewHelper
         $_264__ = $marcRecord->getFields(264);
         $_264_ = $this->filterByIndicator($_264__, 2, "1");
 
-        usort($_264_, function (\File_MARC_Data_Field $a, \File_MARC_Data_Field $b) {
-            return $a->getIndicator(1) > $b->getIndicator(1) ? -1 : 1;
-        });
+        usort($_264_, Helper::sortByIndicator1());
 
         if (!empty($_264_)) {
             $a = current($_264_);

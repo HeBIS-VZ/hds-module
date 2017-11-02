@@ -28,8 +28,10 @@
 namespace Hebis\Recommend;
 
 use VuFind\Config\PluginManager;
+use VuFind\Recommend\AbstractFacets;
 use VuFind\Solr\Utils as SolrUtils;
 use VuFind\Search\Solr\HierarchicalFacetHelper;
+use Zend\Config\Config;
 
 /**
  * SideFacets Recommendations Module
@@ -132,7 +134,7 @@ class TopFacets extends \VuFind\Recommend\TopFacets
      * Constructor
      *
      * @param PluginManager $configLoader Configuration loader
-     * @param HierarchicalFacetHelper      $facetHelper  Helper for handling
+     * @param HierarchicalFacetHelper $facetHelper Helper for handling
      * hierarchical facets
      */
     public function __construct(
@@ -232,8 +234,8 @@ class TopFacets extends \VuFind\Recommend\TopFacets
      * recommendation module and for reading any existing search parameters that may
      * be needed.
      *
-     * @param \VuFind\Search\Base\Params $params  Search parameter object
-     * @param \Zend\StdLib\Parameters    $request Parameter object representing user
+     * @param \VuFind\Search\Base\Params $params Search parameter object
+     * @param \Zend\StdLib\Parameters $request Parameter object representing user
      * request.
      *
      * @return void
@@ -273,7 +275,7 @@ class TopFacets extends \VuFind\Recommend\TopFacets
                 );
                 $facetSet[$hierarchicalFacet]['list']
                     = $this->hierarchicalFacetHelper
-                        ->flattenFacetHierarchy($facetArray);
+                    ->flattenFacetHierarchy($facetArray);
             }
         }
 

@@ -76,6 +76,6 @@ class PaperConferenceConverter
 
     private static function getEvent($record)
     {
-
+        return "";
     }
 }

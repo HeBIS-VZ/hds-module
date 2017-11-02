@@ -98,4 +98,19 @@ class Factory
         $ajaxController->init();
         return $ajaxController;
     }
+
+    /**
+     * Construct the RecordController.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return RecordController
+     */
+    public static function getRecordController(ServiceManager $sm)
+    {
+        return new RecordController(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config')
+        );
+    }
+
 }

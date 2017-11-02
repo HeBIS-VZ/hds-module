@@ -78,6 +78,8 @@ class Record implements CslRecord, JsonSerializable
 
     private $issue;
 
+    private $language;
+
     /**
      * number identifying the item (e.g. a report number)
      * @var string
@@ -1407,4 +1409,21 @@ class Record implements CslRecord, JsonSerializable
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
+     * @param mixed $language
+     * @return $this
+     */
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+        return $this;
+    }
 }

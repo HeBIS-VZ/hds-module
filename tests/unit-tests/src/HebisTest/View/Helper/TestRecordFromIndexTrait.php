@@ -25,38 +25,49 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace Hebis\Search;
+namespace HebisTest\View\Helper;
+
+use Hebis\RecordDriver\SolrMarc;
+use Zend\Http\Client;
 
 /**
- * Class UrlQueryHelper
- * @package Hebis\Search
- * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ * Trait TestRecordFromIndexTrait
+ * @package HebisTest\View\Helper
  */
-class UrlQueryHelper extends \VuFind\Search\UrlQueryHelper
+trait TestRecordFromIndexTrait
 {
 
     /**
-     * Add a facet to the parameters.
-     *
-     * @param array $fields Facet fields
-     * @param null $paramArray
-     * @return string
+     * @param $ppn
+     * @return SolrMarc|null
+     * @throws \HttpException
      */
-    public function addFacets($fields, $paramArray = null)
+    protected function getRecordFromIndex($ppn)
     {
-        $filters = is_null($paramArray) ? $this->getParamArray() : $paramArray;
-        if (!isset($filters['filter'])) {
-            $filters['filter'] = [];
+        $url = SOLR_HOST_TEST . '/solr/hebis/select?wt=json&q=id:HEB' . $ppn;
+        $client = new Client($url, array(
+            'maxredirects' => 3,
+            'timeout' => 10
+        ));
+        $response = $client->send();
+
+        if ($response->getStatusCode() > 299) {
+            throw new \HttpException("Status code " . $response->getStatusCode() . " for $url.");
         }
-        // Facets are just a special case of filters:
-        foreach ($fields as $field) {
-            $fieldName = $field['field'];
-            $value = $field['value'];
-            $operator = $field['operator'];
-            $prefix = ($operator == 'NOT') ? '-' : ($operator == 'OR' ? '~' : '');
-            $filters['filter'][] = $prefix . $fieldName . ':"' . $value . '"';
+        $jsonString = trim($response->getBody());
+        $jsonObject = json_decode($jsonString, true);
+        $marcObject = new SolrMarc();
+
+        if ($jsonObject['response']['numFound'] < 1) {
+            return null;
         }
 
-        return '?' . $this->buildQueryString($filters);
+        try {
+            $marcObject->setRawData($jsonObject['response']['docs'][0]);
+        } catch (\File_MARC_Exception $e) {
+            echo "Record HEB$ppn: " . $e->getMessage() . "\n";
+            return null;
+        }
+        return $marcObject;
     }
 }

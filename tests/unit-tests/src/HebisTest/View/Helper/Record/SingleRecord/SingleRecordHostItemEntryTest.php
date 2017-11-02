@@ -52,7 +52,28 @@ class SingleRecordHostItemEntryTest extends AbstractViewHelperTest
         $basePath = $this->getMock('Zend\View\Helper\BasePath');
         $basePath->expects($this->any())->method('__invoke')
             ->will($this->returnValue('/vufind2'));
+
+
+
+        $ppnLink = $this->getMock('Hebis\View\Helper\Hebisbs3\PpnLink');
+
+        //invoke method returns "$this"
+        $ppnLink->expects($this->any())->method('__invoke')
+            ->will($this->returnValue($ppnLink));
+
+        $ppnLink->expects($this->any())->method('getLink')
+            ->will($this->returnValue("bar"));
+
+        $multipartItems = $this->getMock('Hebis\View\Helper\Hebisbs3\MultipartItems');
+
+        $multipartItems->expects($this->any())->method('__invoke')
+            ->will($this->returnValue($multipartItems));
+        $multipartItems->expects($this->any())->method('renderShowAllVolumesLink')
+            ->will($this->returnValue("show_all_volumes"));
+
         return [
+            'multipartItems' => $multipartItems,
+            'ppnLink' => $ppnLink,
             'basepath' => $basePath,
         ];
     }

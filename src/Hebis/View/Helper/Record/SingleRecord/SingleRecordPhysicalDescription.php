@@ -30,7 +30,7 @@ namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
-
+use Hebis\Marc\Helper;
 
 /**
  * Class SingleRecordPhysicalDescription
@@ -51,14 +51,14 @@ class SingleRecordPhysicalDescription extends AbstractRecordViewHelper
         /** @var \File_MARC_Data_Field $field */
         foreach ($_300_ as $field) {
             $ret = "";
-            $a = $this->getSubFieldDataOfGivenField($field, 'a');
-            $b = $this->getSubFieldDataOfGivenField($field, 'b');
-            $c = $this->getSubFieldDataOfGivenField($field, 'c');
-            $e = $this->getSubFieldDataOfGivenField($field, 'e');
+            $a = Helper::getSubFieldDataOfGivenField($field, 'a');
+            $b = Helper::getSubFieldDataOfGivenField($field, 'b');
+            $c = Helper::getSubFieldDataOfGivenField($field, 'c');
+            $e = Helper::getSubFieldDataOfGivenField($field, 'e');
             $ret .= ($a) ? $a : "";
-            $ret .= ($b) ? " : " . $b : "";
-            $ret .= ($c) ? " ; " . $c : "";
-            $ret .= ($e) ? " + " . $e : "";
+            $ret .= ($b) ? (!empty($ret) ? " : $b" : $b) : "";
+            $ret .= ($c) ? (!empty($ret) ? " ; $c" : $c) : "";
+            $ret .= ($e) ? (!empty($ret) ? " + $e" : $e) : "";
             $arr[] = $ret;
         }
 

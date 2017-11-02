@@ -64,7 +64,8 @@ class SingleRecordTitleStatement extends AbstractRecordViewHelper
         /** @var \File_MARC_Data_Field $field */
         $field = $marcRecord->getField('245');
 
-        $a = $this->removeSpecialChars(trim(Helper::getSubFieldDataOfGivenField($field, 'a')));
+        $a = trim(Helper::getSubFieldDataOfGivenField($field, 'a'));
+        $a = $this->removeSpecialChars($a);
         $b = Helper::getSubFieldDataOfGivenField($field, 'b');
         $c = Helper::getSubFieldDataOfGivenField($field, 'c');
         $h = Helper::getSubFieldDataOfGivenField($field, 'h');

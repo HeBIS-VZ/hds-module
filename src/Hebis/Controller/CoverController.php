@@ -27,6 +27,14 @@
 
 namespace Hebis\Controller;
 
+use Hebis\Cover\Loader;
+use VuFind\ServiceManager\Initializer;
+
+/**
+ * Class CoverController
+ * @package Hebis\Controller
+ * @author Sebastian Böttger <boettger@hebis.uni-frankfurt.de>
+ */
 class CoverController extends \VuFind\Controller\CoverController
 {
 
@@ -47,8 +55,9 @@ class CoverController extends \VuFind\Controller\CoverController
                 $this->getServiceLocator()->get('VuFind\Http')->createClient(),
                 $cacheDir
             );
-            \VuFind\ServiceManager\Initializer::initInstance(
-                $this->loader, $this->getServiceLocator()
+            Initializer::initInstance(
+                $this->loader,
+                $this->getServiceLocator()
             );
         }
         return $this->loader;

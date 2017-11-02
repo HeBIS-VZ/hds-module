@@ -26,6 +26,8 @@
  */
 
 namespace Hebis\View\Helper\Record\Tab;
+
+use Hebis\Marc\Helper;
 use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 
@@ -37,9 +39,12 @@ use Hebis\View\Helper\Record\AbstractRecordViewHelper;
  */
 class TabRelationshipEntry extends AbstractRecordViewHelper
 {
+    private $record;
 
     public function __invoke(SolrMarc $record)
     {
+        $this->record = $record;
+
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
@@ -49,6 +54,10 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
         }
 
         foreach ($marcRecord->getFields(772) as $field) {
+            $ret[] = $this->generate7xx($field);
+        }
+
+        foreach ($marcRecord->getFields(777) as $field) {
             $ret[] = $this->generate7xx($field);
         }
 
@@ -67,30 +76,26 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
             return strpos($elem->getData(), "(DE-603)") !== false;
         });
 
-        $i = $this->getSubField($field7xx, "i");
-        $a = $this->getSubField($field7xx, "a");
-        $t = $this->getSubField($field7xx, "t");
-        $b = $this->getSubField($field7xx, "b");
-        $d = $this->getSubField($field7xx, "d");
-        $g = $this->getSubField($field7xx, "g");
-        $h = $this->getSubField($field7xx, "h");
+        $i = Helper::getSubField($field7xx, "i");
+        $a = Helper::getSubField($field7xx, "a");
+        $t = Helper::getSubField($field7xx, "t");
+        $b = Helper::getSubField($field7xx, "b");
+        $d = Helper::getSubField($field7xx, "d");
+        $g = Helper::getSubField($field7xx, "g");
+        $h = Helper::getSubField($field7xx, "h");
         $z = $this->getSubFieldsDataArrayOfField($field7xx, ["z"]);
-        $o = $this->getSubField($field7xx, "o");
-        $x = $this->getSubField($field7xx, "x");
+        $o = Helper::getSubField($field7xx, "o");
+        $x = Helper::getSubField($field7xx, "x");
 
 
-        $ret.= !empty($i) ? "$i" : "";
+        $ret .= !empty($i) ? "$i" : "";
 
-        if (!empty($ret)) {
-            if (empty($a)) {
-                $ret .= ": ";
-            } else {
-                $ret .= ". $a";
-            }
+        if (!empty($a)) {
+            $ret .= ": $a";
         }
 
         $ltext = "";
-        $ltext .= !empty($t) ? "$t" : "$t";
+        $ltext .= !empty($t) ? (!empty($a) ? ": " : ". ") . $t : "";
         $ltext .= !empty($b) ? " - $b" : "";
         $ltext .= !empty($d) ? " - $d" : "";
         $ltext .= !empty($g) ? " - $g" : "";
@@ -100,7 +105,11 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
         $ltext .= !empty($x) ? " - $x" : "";
 
         if (!empty($w_)) {
-            $ret .= ' <a href="' . $this->link($w_[0]->getData()) . '">' . htmlentities(trim($ltext)) . '</a>';
+            $ret .= $this->getView()->ppnLink()->getLink(
+                htmlentities($ltext),
+                $this->removePrefix($w_[0]->getData(), "(DE-603)"),
+                ["backlink" => $this->record->getPPN()]
+            );
         } else {
             $ret .= $ltext;
         }
@@ -108,8 +117,4 @@ class TabRelationshipEntry extends AbstractRecordViewHelper
         return $ret;
     }
 
-    protected function link($w)
-    {
-        return $this->getView()->basePath() . '/RecordFinder/HEB' . $this->removePrefix($w, "(DE-603)");
-    }
 }

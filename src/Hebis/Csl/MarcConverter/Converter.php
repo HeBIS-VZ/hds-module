@@ -24,6 +24,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 namespace Hebis\Csl\MarcConverter;
 
 use Hebis\RecordDriver\ContentType;
@@ -35,7 +36,7 @@ class Converter
     public static function convert(SolrMarc $record)
     {
 
-        $type = ContentType::getContentType($record);
+        $type = (new ContentType())->getContentType($record);
 
         switch ($type) {
             case 'article':

@@ -20,8 +20,6 @@ class PICACharsetMappingTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @test
-     * @covers PICACharsetMapping::toUTF8
      */
     public function testToUTF8()
     {

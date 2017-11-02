@@ -31,7 +31,6 @@ use \Hebis\Csl\Model\Record as Thesis;
 
 class ThesisConverter
 {
-
     use SubfieldsTrait;
 
     public static function convert(\File_MARC_Record $record)

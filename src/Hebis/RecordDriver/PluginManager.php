@@ -60,9 +60,9 @@ class PluginManager extends \VuFind\RecordDriver\PluginManager implements Servic
             return $this->initDriver($driver, $data);
         }
 
-        $picaRecord = $this->initPica($data);
-
-        $driver->setPicaRecord($picaRecord); //set Pica Record
+        //TODO: solve PICA problems
+        //$picaRecord = $this->initPica($data);
+        //$driver->setPicaRecord($picaRecord); //set Pica Record
 
         return $driver;
     }
@@ -104,7 +104,7 @@ class PluginManager extends \VuFind\RecordDriver\PluginManager implements Servic
 
     /**
      * @param array $data
-     * @return PicaRecord
+     * @return PicaRecordParser
      */
     private function initPica(array $data)
     {

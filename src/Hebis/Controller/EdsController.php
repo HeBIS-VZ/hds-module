@@ -67,11 +67,11 @@ class EdsController extends \VuFind\Controller\EdsController
     /**
      * Send output data and exit.
      *
-     * @param mixed  $data     The response data
-     * @param string $status   Status of the request
-     * @param int    $httpCode A custom HTTP Status Code
+     * @param mixed $data The response data
+     * @param string $status Status of the request
+     * @param int $httpCode A custom HTTP Status Code
      *
-     * @return \Zend\Http\Response
+     * @return \Zend\Stdlib\ResponseInterface
      * @throws \Exception
      */
     protected function output($data, $status, $httpCode = null)
@@ -91,14 +91,75 @@ class EdsController extends \VuFind\Controller\EdsController
             }
             $response->setContent(json_encode($output));
             return $response;
-        } else if ($this->outputMode == 'plaintext') {
-            $headers->addHeaderLine('Content-type', 'text/plain');
-            $response->setContent($data ? $status . " $data" : $status);
-            return $response;
         } else {
-            throw new \Exception('Unsupported output mode: ' . $this->outputMode);
+            if ($this->outputMode == 'plaintext') {
+                $headers->addHeaderLine('Content-type', 'text/plain');
+                $response->setContent($data ? $status . " $data" : $status);
+                return $response;
+            } else {
+                throw new \Exception('Unsupported output mode: ' . $this->outputMode);
+            }
         }
     }
 
+    /**
+     * Clean ISSN before starting search request
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function resultsAction()
+    {
+        $this->cleanISXNParameter();
+        return parent::resultsAction();
+    }
 
+    /**
+     * removes '-' from the search query
+     */
+    public function cleanISXNParameter()
+    {
+        $issnPattern = "/(\d{4})-(\d{4})/";
+        if (!empty($type = $this->getRequest()->getQuery()->get("type"))) {
+            $lookfor = $this->getRequest()->getQuery()->get("lookfor");
+            if ($type === "IS") {
+                if (preg_match($issnPattern, $lookfor, $match)) {
+                    $lookfor = $match[1] . $match[2];
+                    $this->getRequest()->getQuery()->set("lookfor", $lookfor);
+                }
+            }
+            if ($type === "IB") {
+                $lookfor = str_replace("-", "", $lookfor);
+                $this->getRequest()->getQuery()->set("lookfor", $lookfor);
+            }
+        } elseif (!empty($type0 = $this->getRequest()->getQuery()->get("type0"))) {
+            if (is_array($type0)) {
+                if ( ($pos = array_search("IS", $type0)) !== false || ($pos = array_search("IB", $type0)) !== false) {
+                    $lookfor0 = $this->getRequest()->getQuery()->get("lookfor0");
+                    if (preg_match($issnPattern, $lookfor0[$pos], $match)) {
+                        $lookfor = $lookfor0;
+                        $lookfor[$pos] = $match[1] . $match[2];
+                        $this->getRequest()->getQuery()->set("lookfor0", $lookfor);
+                    } elseif (preg_match("/-/", $lookfor0[$pos])) {
+                        $lookfor = $lookfor0;
+                        $lookfor[$pos] = str_replace("-", "", $lookfor0[$pos]);
+                        $this->getRequest()->getQuery()->set("lookfor0", $lookfor);
+                    }
+                }
+            }
+        }
+    }
+
+    public function rememberSearch($results)
+    {
+        // Only save search URL if the property tells us to...
+        if ($this->rememberSearch) {
+            $searchUrl = $this->url()->fromRoute(
+                    $results->getOptions()->getSearchAction()
+                ) . $results->getUrlQuery()->getParams(false);
+            $this->getSearchMemory()->rememberLastSearchOf('EDS', $searchUrl);
+        }
+
+        // Always save search parameters, since these are namespaced by search
+        // class ID.
+        $this->getSearchMemory()->rememberParams($results->getParams());
+    }
 }

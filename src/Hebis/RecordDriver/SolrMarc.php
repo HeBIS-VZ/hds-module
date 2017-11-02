@@ -145,16 +145,20 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
             //$marc = str_replace(["<", ">"], ["&lt;", "&gt;"], $marc);
             $marc = new \File_MARC($marc, \File_MARC::SOURCE_STRING);
         }
+
+        //TODO: solve PICA problems
+        /*
         try {
             $picaParser = PicaRecordParser::getInstance();
             $this->picaRecord = $picaParser->parse($data['raw_fullrecord'])->getRecord();
             self::$currentPicaRecord = $this->picaRecord;
         } catch (\Exception $e) {
-            /** @var  \Zend\Log\LoggerInterface $logger */
+            // @var  \Zend\Log\LoggerInterface $logger
             //$logger = $this->getLogger();
             //$logger->err("Could not parse pica record ".$data['id']." in class ". __CLASS__ . ", line: " . __LINE__);
-            throw new BackendException("Error parsing PICA", 0, $e);
+            //throw new BackendException("Error parsing PICA", 0, $e);
         }
+        */
         $this->marcRecord = $marc->next();
 
         if (!$this->marcRecord) {
@@ -198,7 +202,8 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
     public function getThumbnail($size = 'small')
     {
         $arr = parent::getThumbnail($size);
-        $arr['contenttype'] = ContentType::getContentType($this);
+        $contentType = new ContentType();
+        $arr['contenttype'] = $contentType->getContentType($this);
         return $arr;
     }
 
@@ -234,19 +239,4 @@ class SolrMarc extends \VuFind\RecordDriver\SolrMarc
         return $isbns;
     }
 
-    /**
-     * Get an array of lines from the table of contents.
-     *
-     * @return array
-     */
-    public function getTOC()
-    {
-        /** @var $tabTocSummary */
-        $tabTocSummary = \Hebis\View\Helper\Record\Factory::getTabTocSummary(null);
-        $content = $tabTocSummary($this);
-        if (!empty($content)) {
-            return $content;
-        }
-        return null;
-    }
 }

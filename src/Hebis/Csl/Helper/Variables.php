@@ -27,7 +27,6 @@
 
 namespace Hebis\Csl\Helper;
 
-
 class Variables
 {
     const NAME_VARIABLES = [
@@ -54,6 +53,4 @@ class Variables
         "original-date",
         "submitted"
     ];
-
-
 }

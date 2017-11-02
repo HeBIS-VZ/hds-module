@@ -28,8 +28,8 @@
 
 namespace Hebis\View\Helper\Record;
 
-
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\Marc\Helper;
 
 /**
  * Class RecordGetSubFieldDataOfField
@@ -50,6 +50,6 @@ class RecordGetSubFieldDataOfField extends AbstractRecordViewHelper
      */
     public function __invoke(SolrMarc $record, $fieldCode, $subFieldCode)
     {
-        return $this->getSubFieldDataOfField($record, $fieldCode, $subFieldCode);
+        return Helper::getSubFieldDataOfField($record, $fieldCode, $subFieldCode);
     }
 }

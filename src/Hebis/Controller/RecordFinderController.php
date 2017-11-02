@@ -29,7 +29,7 @@ namespace Hebis\Controller;
 
 use VuFind\Controller\AbstractRecord;
 use VuFind\Exception\RecordMissing as RecordMissingException;
-
+use Zend\Http\Client\Adapter\Exception\RuntimeException;
 
 /**
  * Class RecordController
@@ -40,14 +40,17 @@ use VuFind\Exception\RecordMissing as RecordMissingException;
 class RecordFinderController extends AbstractRecord
 {
 
+    /**
+     * @return \Zend\View\Model\ViewModel
+     */
     public function homeAction()
     {
         $id = $this->params()->fromRoute('id', $this->params()->fromQuery('id'));
 
         $recordNotFound = false;
         try {
-            $record = $this->loadRecord();
-        } catch (\Zend\Http\Client\Adapter\Exception\RuntimeException $e) {
+            $this->loadRecord();
+        } /** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */ catch (RuntimeException $e) {
             // Connection Error
             throw $e;
         } catch (RecordMissingException $e) {
@@ -60,7 +63,6 @@ class RecordFinderController extends AbstractRecord
         } else {
             $request = $this->request;
             $this->redirect()->toUrl($request->getBaseUrl() . '/Record/' . $id);
-
         }
 
         return $this->createViewModel();

@@ -51,7 +51,8 @@ class PicaRecordUtils
             // With ILN do exact match, without ILN find matching EPNs
             $lok = $picaRecord->getIln() ? 'lok: ' . $picaRecord->getEpn() . ' ' . $picaRecord->getIln() : $picaRecord->getEpn();
 
-            $found = $picaRecord->getIln() ? (($key === $lok) ? true : false) : (strpos($key, $lok) > -1 ? true : false);
+            $found = $picaRecord->getIln() ? (($key === $lok) ? true : false) : (strpos($key,
+                $lok) > -1 ? true : false);
 
             if ($found) {
                 $klassArray = array();
@@ -121,7 +122,7 @@ class PicaRecordUtils
                     }
 
                     if ($field === '036F') {
-                        $f036F = self::f036f($subField, $f036F, $count);
+                        $f036F = self::f036f($subField, $f036F);
                         break;
                     }
 
@@ -155,13 +156,18 @@ class PicaRecordUtils
 
                                 $subFieldArray98ac = [
                                     '9' => isset($subField['$9']) ? $subField['$9'][$index] : false,
-                                    '8' => isset($subField['$8']) ? preg_replace(self::PICA_TIT_SEARCH_PATTERN2, '', preg_replace(self::PICA_TIT_SEARCH_PATTERN, '', $subField['$8'][$index])) : false,
+                                    '8' => isset($subField['$8']) ? preg_replace(self::PICA_TIT_SEARCH_PATTERN2, '',
+                                        preg_replace(self::PICA_TIT_SEARCH_PATTERN, '',
+                                            $subField['$8'][$index])) : false,
                                     'a' => $subField['$a'][$index],
                                     'c' => isset($subField['$c']) ? $subField['$c'][$index] : false
                                 ];
 
                                 // getJBibContext
-                                if ((strpos($picaTit['002@']['0']['$0']['0'], "b") === 1 || strpos($picaTit['002@']['0']['$0']['0'], "d") === 1) && $field === '039B') {
+                                if ((strpos($picaTit['002@']['0']['$0']['0'],
+                                            "b") === 1 || strpos($picaTit['002@']['0']['$0']['0'],
+                                            "d") === 1) && $field === '039B'
+                                ) {
                                     $jBibContext[] = $subFieldArray98ac;
                                     continue;
                                 }
@@ -250,8 +256,9 @@ class PicaRecordUtils
 
     private static function getVolumes($picaTit)
     {
-        if (strpos($picaTit['002@']['0']['$0']['0'], "c") === 1 ||
-            strpos($picaTit['002@']['0']['$0']['0'], "d") === 1) {
+        if (strpos($picaTit['002@']['0']['$0']['0'], "c") === 1 || strpos($picaTit['002@']['0']['$0']['0'],
+                "d") === 1
+        ) {
             $volumes[$picaTit['003@']['0']['$0']['0']] = 'allvolumes';
         }
         return $volumes;
@@ -267,6 +274,7 @@ class PicaRecordUtils
         ) {
             $retroUrl = array($picaTit['009R']['0']['$u']['0'], $picaTit['009R']['0']['$3']['0']);
         }
+
         return $retroUrl;
     }
 
@@ -481,6 +489,7 @@ class PicaRecordUtils
                     if ($fieldsKey === '145Z') {
                         $klassArray[] = $value;
                     }
+
                     // Schlagworte
                     if ($fieldsKey === '144Z') {
                         $schlagArray[] = "#;#;#" . $value;

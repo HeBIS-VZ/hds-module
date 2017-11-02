@@ -27,6 +27,8 @@
 
 namespace Hebis\Search\Solr;
 
+use Hebis\Search\Service as SearchService;
+
 class Terms extends \VuFind\Search\Solr\Results
 {
     /**

@@ -84,6 +84,22 @@ class Factory extends \VuFind\View\Helper\Root\Factory
         );
     }
 
+    /**
+     * Construct the SearchTabs helper.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SearchTabs
+     */
+    public static function getSearchTabs(ServiceManager $sm)
+    {
+        return new SearchTabs(
+            $sm->getServiceLocator()->get('VuFind\SearchResultsPluginManager'),
+            $sm->get('url'),
+            $sm->getServiceLocator()->get('VuFind\SearchTabsHelper')
+        );
+    }
+
     public static function getPageNavigation(ServiceManager $sm)
     {
         $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');

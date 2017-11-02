@@ -30,6 +30,7 @@ namespace Hebis\View\Helper\Record\ResultList;
 
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\RecordDriver\SolrMarc;
+use Hebis\Marc\Helper;
 
 /**
  * Class ResultListTitleStatement
@@ -49,7 +50,7 @@ class ResultListOWTitleStatement extends AbstractRecordViewHelper
         $_880__ = $marcRecord->getFields('880');
 
         foreach ($_880__ as $_880) {
-            $_880_6 = empty($_880) ? "" : $this->getSubFieldDataOfGivenField($_880, '6');
+            $_880_6 = empty($_880) ? "" : Helper::getSubFieldDataOfGivenField($_880, '6');
             if (strncmp("245", $_880_6, 3) == 0) {
                 $a = $this->getSubFieldDataArrayOfGivenField($_880, 'a')[0];
                 $b = $this->getSubFieldDataArrayOfGivenField($_880, 'b');
@@ -63,6 +64,9 @@ class ResultListOWTitleStatement extends AbstractRecordViewHelper
                 $ret .= !empty($a) ? trim($a) : "";
                 $ret .= !empty($h) ? " " . trim($h) : "";
                 $ret .= !empty($b) ? " : " . trim($b) : "";
+
+                $url = $this->getView()->recordLink()->getUrl($record);
+                $ret = '<a href="' . $url . '" class="title">' . $ret . '</a>';
 
                 if (!empty($n_p)) {
                     $ret .= "<br />";

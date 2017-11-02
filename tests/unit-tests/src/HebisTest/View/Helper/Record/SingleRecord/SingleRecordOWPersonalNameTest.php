@@ -4,8 +4,8 @@
  * extension of the open source library search engine VuFind, that 
  * allows users to search and browse beyond resources. More 
  * Information about VuFind you will find on http://www.vufind.org
- * 
- * Copyright (C) 2016 
+ *
+ * Copyright (C) 2016
  * HeBIS Verbundzentrale des HeBIS-Verbundes 
  * Goethe-Universität Frankfurt / Goethe University of Frankfurt
  * http://www.hebis.de
@@ -27,21 +27,27 @@
 
 namespace HebisTest\View\Helper\Record\SingleRecord;
 
-
 use HebisTest\View\Helper\Record\AbstractViewHelperTest;
 
-class SingleRecordSeriesStatementAddedEntryTest extends AbstractViewHelperTest
+/**
+ * Class SingleRecordOWTitleStatementTest
+ * @package Hebis\View\Helper\Record
+ *
+ * @author Claudia Grote <grote@hebis.uni-frankfurt.de>
+ */
+class SingleRecordOWPersonalNameTest extends AbstractViewHelperTest
 {
-
     public function setUp()
     {
-        $this->viewHelperClass = "SingleRecordSeriesStatementAddedEntry";
-        $this->testResultField = "";
-        $this->testRecordIds = [];
-        $this->testSheetName = "serie_mehrbaendig";
 
+        $this->viewHelperClass = "SingleRecordOWPersonalName";
+        $this->testRecordIds = [];
+        $this->testResultField = '';
+        $this->testSheetName = "Originalschrift Verantwortlich";
         parent::setUp();
     }
+
+    // So, hier fehlen jetzt aber noch substanzielle Tests.
 
     /**
      * Get plugins to register to support view helper being tested
@@ -50,6 +56,16 @@ class SingleRecordSeriesStatementAddedEntryTest extends AbstractViewHelperTest
      */
     protected function getPlugins()
     {
-        return [];
+        $basePath = $this->getMock('Zend\View\Helper\BasePath');
+        $basePath->expects($this->any())->method('__invoke')
+            ->will($this->returnValue('/vufind2'));
+        $url = $this->getMock('Zend\View\Helper\Url');
+        $url->expects($this->any())->method('__invoke')
+            ->will($this->returnValue("/foobar"));
+
+        return [
+            'url' => $url,
+            'basepath' => $basePath
+        ];
     }
 }

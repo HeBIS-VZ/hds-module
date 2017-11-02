@@ -47,14 +47,13 @@ class SingleRecordTitleStatementSectionOfWork extends SingleRecordTitleStatement
 
         $arr = [];
 
-        if ($marcRecord->getLeader()['19'] == " ") {
+        if (substr($marcRecord->getLeader(), 19, 1) == " ") {
             /** @var \File_MARC_Data_Field $field */
             $field = $marcRecord->getField('245');
             $ret = "";
 
             /** @var \File_MARC_Subfield $subField */
             foreach ($field->getSubfields() as $subField) {
-
                 switch ($subField->getCode()) {
                     case 'n':
                         if (!preg_match('/^\[^\]\]$/', trim($subField->getData()))) {

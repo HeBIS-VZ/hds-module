@@ -35,8 +35,10 @@ namespace Hebis\ILS\Driver;
 use Hebis\Db\Table\UserOAuth as UserOAuthTable;
 use Hebis\Db\Row\UserOAuth as UserOAuthRow;
 use League\OAuth2\Client\Provider\GenericProvider;
+use VuFind\Date\Converter;
 use VuFind\Exception\ILS as ILSException;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Session\SessionManager;
 
 /**
  * PAIA ILS Driver for VuFind to get patron information
@@ -118,9 +120,10 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     /**
      * Constructor
      *
-     * @param \VuFind\Date\Converter $converter Date converter
+     * @param Converter $converter Date converter
+     * @param SessionManager $sessionManager
      */
-    public function __construct(\VuFind\Date\Converter $converter, \Zend\Session\SessionManager $sessionManager)
+    public function __construct(Converter $converter, SessionManager $sessionManager)
     {
         parent::__construct($converter);
         $this->sessionManager = $sessionManager;
@@ -277,7 +280,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         }
 
         $details = [];
-
+        $count = 0;
         if (array_key_exists('error', $array_response)) {
             $details[] = [
                 'success' => false,
@@ -285,7 +288,6 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
                 'sysMessage' => $array_response['error']
             ];
         } else {
-            $count = 0;
             $elements = $array_response['doc'];
             foreach ($elements as $element) {
                 $item_id = $element['item'];
@@ -352,8 +354,6 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
                 'status' => $e->getMessage(),
             ];
         }
-
-        $details = [];
 
         if (isset($array_response['error'])) {
             // on error
@@ -634,6 +634,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         return [];
     }
 
+    // @codingStandardsIgnoreStart
     /**
      * Get Pick Up Locations
      *
@@ -656,7 +657,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
         // How to get valid PickupLocations for a PICA LBS?
         return [];
     }
-
+    // @codingStandardsIgnoreEnd
     /**
      * This method returns a string to use as the input form value for renewing
      * each hold item. (optional, but required if you implement the
@@ -704,8 +705,8 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     /**
      * PAIA helper function to map session data to return value of patronLogin()
      *
-     * @param $details  Patron details returned by patronLogin
-     * @param $password Patron cataloge password
+     * @param $details  - patron details returned by patronLogin
+     * @param $password - patron cataloge password
      * @return mixed
      */
     protected function enrichUserDetails($details, $password)

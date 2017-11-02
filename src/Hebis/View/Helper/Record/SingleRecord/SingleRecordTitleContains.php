@@ -31,7 +31,6 @@ use Hebis\RecordDriver\SolrMarc;
 use Hebis\View\Helper\Record\AbstractRecordViewHelper;
 use Hebis\Marc\Helper;
 
-
 /**
  * Class SingleRecordTitleContains
  * @package Hebis\View\Helper\Record\SingleRecord
@@ -47,53 +46,53 @@ class SingleRecordTitleContains extends AbstractRecordViewHelper
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
         $_249 = $marcRecord->getFields('249');
-        $_505 = $marcRecord->getFields('505');
-
 
         /** @var \File_MARC_Data_Field $field */
-        $i = 0;
-        $j = 0;
         foreach ($_249 as $field) {
-            $a_249 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'a'));
-            $b_249 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'b'));
-            $c_249 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'c'));
-            $v_249 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'v'));
+            $subFields_a = $field->getSubfields('a');
+            $subFields_v = $field->getSubfields('v');
+            $arr_av = [];
 
-
-            if ($a_249) {
-                $arr[] = $a_249;
-                if ($v_249) {
-                    $arr[$i] .= ' / ' . $v_249;
+            // Wenn mehrere $a in 249, dann jeweils auf neuer Zeile anzeigen.
+            // Die Kombi $a_/_$v als Pärchen zusammen anzeigen
+            for ($i = 0; $i < count($subFields_a); ++$i) {
+                /** @var \File_MARC_Subfield $subField_a */
+                $subField_a = $subFields_a[$i];
+                $av = htmlentities(Helper::utf8_encode($subField_a->getData()));
+                if (array_key_exists($i, $subFields_v)) {
+                    $av .= " / " . htmlentities(Helper::utf8_encode($subFields_v[$i]->getData()));
                 }
+                $arr_av[] = Helper::removeControlSigns($av);
             }
+            $arr[] = implode("<br />", $arr_av);
 
-            if ($b_249) {
-                $arr[] = $b_249;
-                if ($c_249) {
-                    $arr[$i] .= ' / ' . $c_249;
-                }
+            // 249 $b_/_$c
+            $bc = Helper::getSubFieldDataOfGivenField($field, 'b');
+            if (!empty($c = Helper::getSubFieldDataOfGivenField($field, 'c'))) {
+                $bc .= " / $c";
             }
-            $i++;
+            if (!empty($bc)) {
+                $arr[] = Helper::removeControlSigns($bc);
+            }
         }
 
+        //505 $a_$t_/_$r
+        $_505 = $marcRecord->getFields('505');
+
         foreach ($_505 as $field) {
-            $a_505 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'a'));
-            $t_505 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 't'));
-            $r_505 = $this->removeControlSigns(Helper::getSubFieldDataOfGivenField($field, 'r'));
+            $atr = Helper::getSubFieldDataOfGivenField($field, 'a');
 
-
-            if ($a_505) {
-                $arr[] = $a_505;
-                if ($t_505) {
-                    $arr[$j] .= ' ' . $t_505;
-                }
+            if (!empty($t = Helper::getSubFieldDataOfGivenField($field, 't'))) {
+                $atr .= " $t";
             }
-            else if ($t_505) {
-                    $arr[] = $t_505;
-            }
-            if ($r_505) $arr[$j] .= ' / ' . $r_505;
 
-            $j++;
+            if (!empty($r = Helper::getSubFieldDataOfGivenField($field, 'r'))) {
+                $atr .= " / $r";
+            }
+
+            if (!empty($atr)) {
+                $arr[] = trim(Helper::removeControlSigns($atr));
+            }
         }
 
         return implode("<br />", $arr);

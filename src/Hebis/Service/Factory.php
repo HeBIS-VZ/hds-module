@@ -157,4 +157,50 @@ class Factory extends \VuFind\Service\Factory
             )
         );
     }
+
+    /**
+     * Construct the search memory helper.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Search\Memory
+     */
+    public static function getSearchMemory(ServiceManager $sm)
+    {
+        return new \Hebis\Search\Memory(
+            new \Zend\Session\Container('Search', $sm->get('VuFind\SessionManager'))
+        );
+    }
+
+    /**
+     * Construct the Search\Options Plugin Manager.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return \VuFind\Search\Options\PluginManager
+     */
+    public static function getSearchOptionsPluginManager(ServiceManager $sm)
+    {
+
+        $config = $sm->get('Config');
+        $searchParams = $config['vufind']['plugin_managers']['search_options'];
+        return new \Hebis\Search\Options\PluginManager(
+            new \Zend\ServiceManager\Config(
+                $searchParams
+            )
+        );
+    }
+
+    public static function getSearchParamsPluginManager(ServiceManager $sm)
+    {
+
+        $config = $sm->get('Config');
+        $searchParams = $config['vufind']['plugin_managers']['search_params'];
+        return new \Hebis\Search\Params\PluginManager(
+            new \Zend\ServiceManager\Config(
+                $searchParams
+            )
+        );
+    }
+
 }

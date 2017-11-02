@@ -37,6 +37,15 @@ $config = [
                     'solr' => 'Hebis\Search\Results\Factory::getSolr',
                 ],
             ],
+            'search_options' => [
+                'abstract_factories' => ['Hebis\Search\Options\PluginFactory'],
+                'factories' => [
+                    'eds' => 'VuFind\Search\Options\Factory::getEDS',
+                ],
+            ],
+            'search_params' => [
+                'abstract_factories' => ['Hebis\Search\Params\PluginFactory'],
+            ],
             'recommend' => [
                 'factories' => [
                     'topfacets' => 'Hebis\Recommend\Factory::getTopFacets',
@@ -87,6 +96,9 @@ $config = [
             'VuFind\AutocompletePluginManager' => 'VuFind\Service\Factory::getAutocompletePluginManager',
             'VuFind\SearchResultsPluginManager' => 'VuFind\Service\Factory::getSearchResultsPluginManager',
             'VuFind\RecordTabPluginManager' => 'Hebis\Service\Factory::getRecordTabPluginManager',
+            'VuFind\Search\Memory' => 'Hebis\Service\Factory::getSearchMemory',
+            'VuFind\SearchOptionsPluginManager' => 'Hebis\Service\Factory::getSearchOptionsPluginManager',
+            'VuFind\SearchParamsPluginManager' => 'Hebis\Service\Factory::getSearchParamsPluginManager',
         ],
         'invokables' => [
             'VuFind\Terms' => 'Hebis\Search\Service',
@@ -104,8 +116,8 @@ $config = [
             'OAuth' => 'Hebis\Controller\Factory::getOAuth',
             'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder',
             'Xisbn' => 'Hebis\Controller\Factory::getXisbn',
+            'record' => 'Hebis\Controller\Factory::getRecordController',
             'pageadmin' => 'Hebis\Controller\Factory::getPageAdminController',
-            'staticpages' => 'Hebis\Controller\Factory::getStaticPagesController',
             'page' => 'Hebis\Controller\Factory::getPageController',
         ],
         'invokables' => [
@@ -113,8 +125,14 @@ $config = [
             'eds' => 'Hebis\Controller\EdsController',
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
+            'edsrecord' => 'Hebis\Controller\EdsrecordController',
             'adminlogs' => 'Hebis\Controller\AdminLogsController',
         ]
+    ],
+    'controller_plugins' => [
+        'factories' => [
+            'result-scroller' => 'Hebis\Controller\Plugin\Factory::getResultScroller',
+        ],
     ],
     'router' => [
         'routes' => [
@@ -225,5 +243,6 @@ $recordRoutes = ['recordfinder' => 'RecordFinder'];
 
 $routeGenerator = new \VuFind\Route\RouteGenerator();
 $routeGenerator->addRecordRoutes($config, $recordRoutes);
+$routeGenerator->addStaticRoutes($config, ['EdsRecord/redilink']);
 
 return $config;

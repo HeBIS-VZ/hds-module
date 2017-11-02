@@ -28,7 +28,7 @@ defined('DEFAULT_SEARCH_BACKEND') || define('DEFAULT_SEARCH_BACKEND', 'Solr');
 defined('LOCAL_OVERRIDE_DIR')
 || define(
     'LOCAL_OVERRIDE_DIR',
-    (getenv('VUFIND_LOCAL_DIR') ? getenv('VUFIND_LOCAL_DIR') : '')
+    (getenv('VUFIND_LOCAL_DIR') ? getenv('VUFIND_LOCAL_DIR') : realpath(APPLICATION_PATH . '/local-ubffm/'))
 );
 
 // Define path to cache directory
@@ -39,8 +39,6 @@ defined('LOCAL_CACHE_DIR')
         ? getenv('VUFIND_CACHE_DIR')
         : (strlen(LOCAL_OVERRIDE_DIR) > 0 ? LOCAL_OVERRIDE_DIR . '/cache' : ''))
 );
-
-echo LOCAL_CACHE_DIR . "\n";
 
 chdir(APPLICATION_PATH);
 
@@ -56,8 +54,9 @@ set_include_path(implode(PATH_SEPARATOR, $pathParts));
 if (file_exists('vendor/autoload.php')) {
     $loader = include 'vendor/autoload.php';
     $loader = new Composer\Autoload\ClassLoader();
-    $loader->add('VuFindTest', __DIR__ . '/unit-tests/src');
-    $loader->add('VuFindTest', __DIR__ . '/../src');
+    $loader->add('HebisTest', __DIR__ . '/unit-tests/src');
+    $loader->add('Hebis', __DIR__ . '/../src');
+    $loader->addPsr4('VuFindTest\\', 'module/VuFindSearch/tests/unit-tests/src/VuFindTest');
     // Dynamically discover all module src directories:
     $modules = opendir(__DIR__ . '/../..');
     while ($mod = readdir($modules)) {
@@ -71,7 +70,7 @@ if (file_exists('vendor/autoload.php')) {
 }
 
 define('PHPUNIT_FIXTURES_HEBIS', realpath(__DIR__ . '/../tests/unit-tests/fixtures'));
-//define('SOLR_HOST_TEST', 'http://silbendrechsler.hebis.uni-frankfurt.de:8983');
 define('SOLR_HOST_TEST', 'http://silbendrechsler.hebis.uni-frankfurt.de:6798');
+
 // Use output buffering -- some tests involve HTTP headers and will fail if there is output.
 //ob_start();

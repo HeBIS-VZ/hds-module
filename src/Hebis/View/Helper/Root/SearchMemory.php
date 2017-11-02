@@ -27,6 +27,7 @@
 
 namespace Hebis\View\Helper\Root;
 
+
 /**
  * Class SearchMemory
  * @package Hebis\View\Helper\Root
@@ -35,13 +36,13 @@ namespace Hebis\View\Helper\Root;
 class SearchMemory extends \VuFind\View\Helper\Root\SearchMemory
 {
 
-    public function getLastSearchTerm($shorten = false, $maxLength = 16)
+    public function getLastSearchTerm($searchClassId, $shorten = false, $maxLength = 16)
     {
-        $url = parse_url($this->memory->retrieveSearch());
+        $url = parse_url($this->memory->retrieveSearchOf($searchClassId));
         if (array_key_exists('query', $url)) {
             $query = $url['query'];
-            if (preg_match("/lookfor\=([^&]*){1}/", $query, $match)) {
-                $searchTerm = !empty($match) ? explode(" ", urldecode($match[1])) : null;
+            if (preg_match("/(lookfor|lookfor0%5B%5D)\=([^&]*){1}/", $query, $match)) {
+                $searchTerm = !empty($match) ? explode(" ", urldecode($match[2])) : null;
 
                 if (count($searchTerm) > 1) {
                     $ret = "";
@@ -64,4 +65,34 @@ class SearchMemory extends \VuFind\View\Helper\Root\SearchMemory
         return "";
     }
 
+
+    /**
+     * If a previous search is recorded in the session, return a link to it;
+     * otherwise, return a blank string.
+     *
+     * @param string $link   Text to use as body of link
+     * @param string $prefix Text to place in front of link
+     * @param string $suffix Text to place after link
+     *
+     * @return string
+     */
+    public function getLastSearchLinkOfSearchClassId($link, $searchClassId, $prefix = '', $suffix = '')
+    {
+        $url = $this->getLastUrl($searchClassId);
+        if (!empty($url)) {
+            return $prefix . '<a href="' . $url . '">' . $link . '</a>'
+                . $suffix;
+        }
+        return '';
+    }
+
+    public function getLastUrl($searchClassId)
+    {
+        $last = $this->memory->retrieveSearchOf($searchClassId);
+        if (!empty($last)) {
+            $escaper = $this->getView()->plugin('escapeHtml');
+            return $escaper($last);
+        }
+        return false;
+    }
 }
