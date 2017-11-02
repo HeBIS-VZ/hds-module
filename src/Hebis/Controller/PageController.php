@@ -47,7 +47,8 @@ class PageController extends AbstractBase
     public function showAction()
     {
         $pid = $this->params()->fromQuery('pid');
-        return $this->prepareViewStaticPages($pid, $this->getTranslatorLocale());
+        $lang = $this->getTranslatorLocale();
+        return $this->prepareViewStaticPages($pid, $lang);
     }
 
 

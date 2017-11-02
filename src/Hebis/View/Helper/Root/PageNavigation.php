@@ -38,8 +38,8 @@ class PageNavigation extends AbstractHelper
     public function getNav()
     {
         $arr = array();
-
-        $staticPagesList = $this->table->getNav();
+        $lang = $this->getTranslatorLocale();
+        $staticPagesList = $this->table->getNav($lang);
 
         foreach ($staticPagesList as $page) {
             $url = $this->getView()->url('home') . 'Page/Show?pid=' . $page->pid;

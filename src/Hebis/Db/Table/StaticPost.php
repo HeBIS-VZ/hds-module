@@ -70,4 +70,12 @@ class StaticPost extends Gateway
         $rowSet = $resultSet;
         return $rowSet;
     }
+
+    public function getPostByPidAndLang($pid, $lang = "en") {
+        $select = $this->sql->select();
+        $select->where(['pid' => $pid, 'language' => $lang]);
+        $resultSet = $this->executeSelect($select);
+        $rowSet = $resultSet;
+        return $rowSet;
+    }
 }

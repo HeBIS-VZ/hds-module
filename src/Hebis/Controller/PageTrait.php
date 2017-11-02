@@ -28,7 +28,8 @@ trait PageTrait
         if (!empty($template)) {
             $view->setTemplate($template);
         }
-        $rowSet = $this->table->getPostByPid($pid, $lang);
+        $rowSet = $this->table->getPostByPidAndLang($pid, $lang);
+
         $view->row = $rowSet->current();
         $DateConverter = new Converter();       // How to get/set timezone TODO view timezone
         $view->cDate = $DateConverter->convert('Y-m-d H:i', 'd.m.Y  H:i', $view->row->createDate);

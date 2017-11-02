@@ -48,7 +48,6 @@ class PageAdminController extends AbstractAdmin
         $view->setTemplate('pageadmin/list');
         $rows = $this->table->getAll();
         $view->rows = $rows;
-        $url = $this->url();
         return $view;
     }
 
