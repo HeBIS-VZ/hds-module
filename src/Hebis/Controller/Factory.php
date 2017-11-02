@@ -41,30 +41,17 @@ class Factory
      * Construct the Static Pages administrator controller
      *
      * @param ServiceManager $sm
-     * @return StaticPagesAdmin
+     * @return PageAdminController
      */
-    public static function getStaticPagesAdminController(ServiceManager $sm)
+    public static function getPageAdminController(ServiceManager $sm)
     {
         $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
             ->get('static_post');
         $translator = $sm->getServiceLocator()->get('VuFind\Translator');
 
-        return new StaticPagesAdmin($table, $translator);
+        return new PageAdminController($table, $translator);
     }
 
-    /**
-     * Construct the Static Pages controller
-     *
-     * @param ServiceManager $sm
-     * @return StaticPagesController
-     */
-    public static function getStaticPagesController(ServiceManager $sm)
-    {
-        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
-            ->get('static_post');
-        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
-        return new StaticPagesController($table);
-    }
 
     /**
      * @param ServiceManager $sm

@@ -12,7 +12,7 @@ use Zend\View\Helper\AbstractHelper;
  *
  * @package Hebis\View\Helper\Root
  */
-class StaticPagesNavigation extends AbstractHelper
+class PageNavigation extends AbstractHelper
 {
 
     use TranslatorAwareTrait;
@@ -41,21 +41,16 @@ class StaticPagesNavigation extends AbstractHelper
 
         $staticPagesList = $this->table->getNav();
 
-        if (sizeof($staticPagesList) == 0)
+        foreach ($staticPagesList as $page) {
+            $url = $this->getView()->url('home') . 'Page/Show?pid=' . $page->pid;
             $arr[] = [
-                "pid" => 0,
-                "title" => $this->translate('No Page Found'),
-                "url" => ''
+                "pid" => $page->pid,
+                "nav_title" => $page->nav_title,
+                "headline" => $page->headline,
+                "url" => $url
             ];
-        else
-            foreach ($staticPagesList as $page) {
-                $url = $this->getView()->url('home') . 'Staticpages/View/' . $page->uid;
-                $arr[] = [
-                    "pid" => $page->pid,
-                    "title" => $page->nav_title,
-                    "url" => $url
-                ];
         }
+
         return $arr;
     }
 }

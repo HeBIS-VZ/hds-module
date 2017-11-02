@@ -104,7 +104,7 @@ $config = [
             'OAuth' => 'Hebis\Controller\Factory::getOAuth',
             'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder',
             'Xisbn' => 'Hebis\Controller\Factory::getXisbn',
-            'staticpagesadmin' => 'Hebis\Controller\Factory::getStaticPagesAdminController',
+            'pageadmin' => 'Hebis\Controller\Factory::getPageAdminController',
             'staticpages' => 'Hebis\Controller\Factory::getStaticPagesController',
             'page' => 'Hebis\Controller\Factory::getPageController',
         ],
@@ -158,37 +158,12 @@ $config = [
                     ],
                 ],
             ],
-            'staticpages' => [
+            'pageadmin' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
-                    'route' => '/Staticpages',
+                    'route' => '/Admin/Page',
                     'defaults' => [
-                        'controller' => 'staticpages',
-                        'action' => '',
-                    ]
-                ],
-                'may_terminate' => false,
-                'child_routes' => [
-                    'preview' => [
-                        'type' => 'Zend\Mvc\Router\Http\Segment',
-                        'options' => [
-                            'route' => '/View/:pid',
-                            'defaults' => [
-                                'action' => 'vvview'
-                            ],
-                            'constraints' => [
-                                'pid' => '\d+'
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            'staticpagesadmin' => [
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => [
-                    'route' => '/Admin/Staticpages',
-                    'defaults' => [
-                        'controller' => 'staticpagesadmin',
+                        'controller' => 'pageadmin',
                         'action' => 'list',
                     ]
                 ],
@@ -218,7 +193,7 @@ $config = [
                     'edit' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
-                            'route' => '/Edit/:id',
+                            'route' => '/Edit/:pid',
                             'defaults' => [
                                 'action' => 'edit'
                             ],
@@ -230,7 +205,7 @@ $config = [
                     'json' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
-                            'route' => '/:id/Json/:method',
+                            'route' => '/Json/:pid/:method',
                             'defaults' => [
                                 'action' => 'json',
                             ],

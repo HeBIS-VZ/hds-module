@@ -14,10 +14,10 @@ use VuFindAdmin\Controller\AbstractAdmin;
  * @package Hebis\Controller
  * @author Roshak Zarhoun <roshakz@gmail.com>
  */
-class StaticPagesAdmin extends AbstractAdmin
+class PageAdminController extends AbstractAdmin
 {
     use TranslatorAwareTrait;
-    use StaticPagesTrait;
+    use PageTrait;
 
     // define http status constants
     const STATUS_OK = 'OK';
@@ -45,7 +45,7 @@ class StaticPagesAdmin extends AbstractAdmin
     public function listAction()
     {
         $view = $this->createViewModel();
-        $view->setTemplate('staticpagesadmin/list');
+        $view->setTemplate('pageadmin/list');
         $rows = $this->table->getAll();
         $view->rows = $rows;
         $url = $this->url();
@@ -58,10 +58,40 @@ class StaticPagesAdmin extends AbstractAdmin
     public function previewAction()
     {
         $lang = $this->getTranslatorLocale();
-        return $this->prepareViewStaticPages('staticpagesadmin/view', $lang);
+        $pid = $this->params()->fromRoute('pid');
+        return $this->prepareViewStaticPages($pid, $lang, 'pageadmin/view');
     }
 
-    /* saves each row */
+    /**
+     * @return mixed|\Zend\View\Model\ViewModel
+     */
+    public function editAction()
+    {
+        $view = $this->createViewModel();
+        $view->setTemplate('pageadmin/edit');
+
+        $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
+        $view->langs = $allLanguages;
+
+        $pid = $this->params()->fromRoute('pid');
+        $request = $this->getRequest();
+        $rowSet = $this->table->getPostByPid($pid);
+        $view->rowSet = $rowSet->getDataSource();;
+        if (!$request->isPost()) {
+            return $view;
+        }
+
+        $i = 0;
+        foreach ($rowSet as $row) {
+            $row->headline = $this->params()->fromPost('sp-headline')[$i];
+            $row->content = $this->params()->fromPost('sp-content')[$i];
+            $row->nav_title = $this->params()->fromPost('sp-nav-title')[$i];
+            $row->save();
+            ++$i;
+        }
+
+        return $this->redirect()->toRoute('pageadmin/preview', ['pid' => $pid]); //$this->forwardTo('staticpagesadmin', 'list');
+    }
 
     /** Action adds new static page
      * @return \Zend\View\Model\ViewModel
@@ -69,7 +99,7 @@ class StaticPagesAdmin extends AbstractAdmin
     public function addAction()
     {
         $view = $this->createViewModel();
-        $view->setTemplate('staticpagesadmin/add');
+        $view->setTemplate('pageadmin/add');
         $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
         $view->langs = $allLanguages;
         // $sessionManager = $this->getServiceLocator()->get('VuFind\SessionManager');
@@ -80,9 +110,8 @@ class StaticPagesAdmin extends AbstractAdmin
         }
 
         $pageid = $this->table->getLastPageID();
-        if (!isset($pageid))
-            $pageid = 120;
-        else $pageid++;
+        $pageid++;
+
 
         $language = $this->params()->fromPost('sp-lang');
         $headline = $this->params()->fromPost('sp-headline');
@@ -101,7 +130,7 @@ class StaticPagesAdmin extends AbstractAdmin
             );
         }
 
-        return $this->forwardTo('staticpagesadmin', 'list');
+        return $this->forwardTo('pageadmin', 'list');
 
     }
 
@@ -117,48 +146,6 @@ class StaticPagesAdmin extends AbstractAdmin
         $row->save();
     }
 
-    /**
-     * @return mixed|\Zend\View\Model\ViewModel
-     */
-    public function editAction()
-    {
-        $view = $this->createViewModel();
-        $view->setTemplate('staticpagesadmin/edit');
-
-        $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
-        $view->langs = $allLanguages;
-
-        $pid = $this->params()->fromRoute();
-        $request = $this->getRequest();
-        $rowSet = $this->table->getPostByPid($pid);
-        $view->rowSet = $rowSet->getDataSource();;
-        if (!$request->isPost()) {
-            return $view;
-        }
-
-        $i = 0;
-        foreach ($rowSet as $row) {
-            $row->headline = $this->params()->fromPost('sp-headline')[$i];
-            $row->content = $this->params()->fromPost('sp-content')[$i];
-            $row->nav_title = $this->params()->fromPost('sp-navtitle')[$i];
-            $row->save();
-            ++$i;
-        }
-
-        return $this->forwardTo('staticpagesadmin', 'list');
-    }
-
-    public function deleteAjax()
-    {
-        try {
-            $id = $this->params()->fromRoute('id');
-            $row = $this->table->getPost($id);
-            $row->delete();
-        } catch (\Exception $e) {
-            return $this->output(0, self::STATUS_ERROR . '\n' . $e->getMessage(), 400);
-        }
-        return $this->output(1, self::STATUS_OK, 200);
-    }
 
     /**
      * Send output data and exit.
@@ -200,17 +187,33 @@ class StaticPagesAdmin extends AbstractAdmin
     public function visibleAjax()
     {
         try {
-            $id = $this->params()->fromRoute('id');
-            $row = $this->table->getPost($id);
-            $row->visible == 1 ? $row->visible = 0 : $row->visible = 1;
-            $row->save();
-
+            $pid = $this->params()->fromRoute('pid');
+            $rows = $this->table->getPostByPid($pid);
+            foreach ($rows as $row) {
+                $row->visible == 1 ? $row->visible = 0 : $row->visible = 1;
+                $row->save();
+            }
         } catch (\Exception $e) {
             $this->output($e->getMessage() . '\n' . 'Change Visibility Failed!', self::STATUS_ERROR, 400);
         }
 
-        $this->layout()->setTemplate('staticpagesadmin/list');
+        $this->layout()->setTemplate('pageadmin/list');
         return $this->output($row->visible == 1, self::STATUS_OK, 200);
+    }
+
+
+    public function deleteAjax()
+    {
+        try {
+            $pid = $this->params()->fromRoute('pid');
+            $rows = $this->table->getPostByPid($pid);
+            foreach ($rows as $row) {
+                $row->delete();
+            }
+        } catch (\Exception $e) {
+            return $this->output(0, self::STATUS_ERROR . '\n' . $e->getMessage(), 400);
+        }
+        return $this->output(1, self::STATUS_OK, 200);
     }
 
     public function jsonAction()
@@ -237,19 +240,5 @@ class StaticPagesAdmin extends AbstractAdmin
             );
         }
     }
-
-    /* checks whether the inputs array has an empty element
-
-    private function inputIsEmpty($input)
-    {
-        if (!is_array($input)) {
-            throw new \Exception('Input is not an array');
-        }
-        foreach ($input as $inputString) {
-            if (strlen($inputString) < 1)
-                return true;
-        }
-        return false;
-    }*/
 
 }

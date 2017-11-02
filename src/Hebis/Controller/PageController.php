@@ -8,13 +8,13 @@
 
 namespace Hebis\Controller;
 
-
 use VuFind\Controller\AbstractBase;
 use VuFind\I18n\Translator\TranslatorAwareTrait;
 
 class PageController extends AbstractBase
 {
     use TranslatorAwareTrait;
+    use PageTrait;
 
     protected $table;
 
@@ -29,7 +29,8 @@ class PageController extends AbstractBase
 
     }
 
-    /** Staticpages home view for users
+    /**
+     * Staticpages home view for users
      * @return \Zend\View\Model\ViewModel
      */
     public function homeAction()
@@ -40,16 +41,13 @@ class PageController extends AbstractBase
         return $view;
     }
 
+    /**
+     * @return \Zend\View\Model\ViewModel
+     */
     public function showAction()
     {
-        $view = $this->createViewModel();
-        $id = $this->params()->fromQuery('id');
-        $row = $this->table->getPost($id);
-        $visible = $row->visible;
-        $view->row = $row;
-        $view->title = $row->headline;
-
-        return $view;
+        $pid = $this->params()->fromQuery('pid');
+        return $this->prepareViewStaticPages($pid, $this->getTranslatorLocale());
     }
 
 

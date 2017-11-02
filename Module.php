@@ -267,7 +267,7 @@ class Module
                 'eds_subject_result_list' => function($sm) {
                     return new \Hebis\View\Helper\Record\EDS\EdsSubjectResultList();
                 },
-                'static_pages_navigation' => 'Hebis\View\Helper\Root\Factory::getStaticPagesNavigation'
+                'page_navigation' => 'Hebis\View\Helper\Root\Factory::getPageNavigation'
             )
         );
     }

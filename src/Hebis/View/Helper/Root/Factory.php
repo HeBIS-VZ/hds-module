@@ -84,12 +84,12 @@ class Factory extends \VuFind\View\Helper\Root\Factory
         );
     }
 
-    public static function getStaticPagesNavigation(ServiceManager $sm)
+    public static function getPageNavigation(ServiceManager $sm)
     {
         $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
         $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
             ->get('static_post');
         $translator = $sm->getServiceLocator()->get('VuFind\Translator');
-        return new StaticPagesNavigation($table, $translator);
+        return new PageNavigation($table, $translator);
     }
 }

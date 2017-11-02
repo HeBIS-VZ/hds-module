@@ -13,9 +13,9 @@ class StaticPost extends Gateway
         parent::__construct('static_post', $rowClass);
     }
 
-    public function getPost($id, $lang)
+    public function getPost($pid, $lang = "en")
     {
-        $staticPostRow = $this->select(['pid' => $id, 'language' => $lang])->current();
+        $staticPostRow = $this->select(['pid' => $pid, 'language' => $lang])->current();
 
         if (!$staticPostRow) {
             throw new \Exception("Could not find post $id");
