@@ -93,7 +93,7 @@ class PageAdminController extends AbstractAdmin
     }
 
     /** Action adds new static page
-     * @return \Zend\View\Model\ViewModel
+     * @return mixed|\Zend\View\Model\ViewModel
      */
     public function addAction()
     {
@@ -108,8 +108,8 @@ class PageAdminController extends AbstractAdmin
             return $view;
         }
 
-        $pageid = $this->table->getLastPageID();
-        $pageid++;
+        $pid = $this->table->getLastPageID();
+        $pid++;
 
 
         $language = $this->params()->fromPost('sp-lang');
@@ -118,9 +118,22 @@ class PageAdminController extends AbstractAdmin
         $content = $this->params()->fromPost('sp-content');
         $author = $this->params()->fromPost('sp-author');
 
-        for ($i = 0; $i < sizeof($allLanguages); $i++) {
+        $notEmpty = false;
+
+        for ($i = 0; $i < count($allLanguages); ++$i) {
+            $contents = strip_tags($headline[$i] . $content[$i]);
+            $len = strlen($contents);
+            $notEmpty |= ($len > 0);
+        }
+
+        if (!$notEmpty) {
+            $view->error = true;
+            return $view;
+        }
+
+        for ($i = 0; $notEmpty && $i < sizeof($allLanguages); $i++) {
             $this->saveRow(
-                $pageid,
+                $pid,
                 $language[$i],
                 $headline[$i],
                 $navtitle[$i],
@@ -128,9 +141,7 @@ class PageAdminController extends AbstractAdmin
                 $author
             );
         }
-
-        return $this->forwardTo('pageadmin', 'list');
-
+        return $this->redirect()->toRoute('pageadmin');
     }
 
     private function saveRow($pageid, $language, $headline, $navtitle, $content, $author)

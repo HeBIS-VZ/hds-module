@@ -68,6 +68,9 @@ class StaticPost extends Gateway
         $select->where(['pid' => $pid]);
         $resultSet = $this->executeSelect($select);
         $rowSet = $resultSet;
+        if ($rowSet->count() < 1) {
+            throw new \Zend\Db\Exception\UnexpectedValueException("Could not find row(s) with PID $pid.");
+        }
         return $rowSet;
     }
 
