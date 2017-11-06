@@ -466,10 +466,10 @@ class Converter
                     });
                     array_walk($dates, function ($value, $key) use (&$dateParts) {
                         if (in_array($key, ['Y', 'M', 'D'])) {
-                            $dateParts[] = [$value];
+                            $dateParts[] = $value;
                         }
                     });
-                    $issued->setDateParts($dateParts);
+                    $issued->setDateParts([$dateParts]);
                     return $issued;
                 }
             }

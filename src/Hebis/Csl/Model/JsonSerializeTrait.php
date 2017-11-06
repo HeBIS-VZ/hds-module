@@ -53,8 +53,10 @@ trait JsonSerializeTrait
                 $name = $method->getName();
                 if (substr($name, 0, 3) === "get" && $name !== "getPropertyName") {
                     $val = $method->invoke($this);
-                    $property = $this->getPropertyName(substr($name, 3));
-                    $jsonFormat->{$property} = $val;
+                    if (!empty($val)) {
+                        $property = $this->getPropertyName(substr($name, 3));
+                        $jsonFormat->{$property} = $val;
+                    }
                 }
             }
             $this->jsonClass = $jsonFormat;
