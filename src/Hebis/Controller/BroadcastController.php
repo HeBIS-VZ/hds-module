@@ -5,19 +5,18 @@ namespace Hebis\Controller;
 
 use Hebis\Db\Table\Broadcast;
 use VuFind\I18n\Translator\TranslatorAwareTrait;
-use VuFindAdmin\Controller\AbstractAdmin;
+use VuFind\Controller\AbstractBase;
 
 
 /**
- * Class controls Static Pages administration
+ * Class controls Broadcasts
  *
  * @package Hebis\Controller
  * @author Roshak Zarhoun <roshakz@gmail.com>
  */
-class BroadcastAdminController extends AbstractAdmin
+class BroadcastController extends AbstractBase
 {
     use TranslatorAwareTrait;
-    use PageTrait;
 
     /**
      * @var Broadcast
@@ -28,16 +27,6 @@ class BroadcastAdminController extends AbstractAdmin
     {
         $this->table = $table;
         $this->setTranslator($translator);
-    }
-
-    public function addAction()
-    {
-        // TODO
-    }
-
-    public function listAction()
-    {
-        // TODO
     }
 
 

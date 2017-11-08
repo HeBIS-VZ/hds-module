@@ -119,6 +119,8 @@ $config = [
             'record' => 'Hebis\Controller\Factory::getRecordController',
             'pageadmin' => 'Hebis\Controller\Factory::getPageAdminController',
             'page' => 'Hebis\Controller\Factory::getPageController',
+            'broadcastadmin' => 'Hebis\Controller\Factory::getBroadcastAdminController',
+            'broadcast' => 'Hebis\Controller\Factory::getBroadcastController'
         ],
         'invokables' => [
             'ajax' => 'Hebis\Controller\AjaxController',
@@ -233,10 +235,26 @@ $config = [
                         ]
                     ]
                 ]
+            ],
+            /*'broadcast' => [
+
+            ],*/
+            'broadcastadmin' => [
+                'type' => 'segment',
+                'options' => [
+                    'route' => '/Admin/Broadcast[/:action][/:bcid]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'bcid' => '[0-9]+'
+                    ]
+                ],
+                'defaults' => [
+                    'controller' => 'broadcastadmin',
+                    'action' => 'list'
+                ]
             ]
         ]
     ]
-
 ];
 
 $recordRoutes = ['recordfinder' => 'RecordFinder'];

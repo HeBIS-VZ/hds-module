@@ -67,6 +67,30 @@ class Factory
     }
 
     /**
+     * @param ServiceManager $sm
+     * @return BroadcastAdminController
+     */
+    public static function getBroadcastAdminController(ServiceManager $sm)
+    {
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('broadcasts');
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        return new BroadcastAdminController($table, $translator);
+    }
+
+    /**
+     * @param ServiceManager $sm
+     * @return BroadcastController
+     */
+    public static function getBroadcastController(ServiceManager $sm)
+    {
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('broadcasts');
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        return new BroadcastController($table, $translator);
+    }
+
+    /**
      * Construct the FlashMessenger plugin.
      *
      * @param ServiceManager $sm Service manager.
