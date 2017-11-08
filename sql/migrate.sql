@@ -28,6 +28,26 @@ CREATE TABLE `static_post` (
   UNIQUE KEY `pid_lang_pk` (`pid`,`language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+# Export von Tabelle broadcasts
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `broadcasts`;
+
+CREATE TABLE broadcasts
+(
+  uid        INT(9) AUTO_INCREMENT,
+  bcid       INT(7) DEFAULT '0'                                             NOT NULL,
+  language   VARCHAR(3) DEFAULT ''                                          NOT NULL,
+  message    VARCHAR(80)                                                    NULL,
+  type       ENUM ('success', 'info', 'warning', 'error') DEFAULT 'warning' NULL,
+  createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP                            NOT NULL,
+  expireDate TIMESTAMP                                                      NULL,
+  `show`     TINYINT(1) DEFAULT '0'                                         NULL,
+  CONSTRAINT broadcasts_uid_uindex
+  UNIQUE (uid),
+  CONSTRAINT bcid_lang_pk
+  UNIQUE (bcid, language)
+);
+
 
 
 # Export von Tabelle user_oauth

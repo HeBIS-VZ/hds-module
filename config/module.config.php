@@ -16,7 +16,8 @@ $config = [
                 'abstract_factories' => ['VuFind\Db\Table\PluginFactory'],
                 'factories' => [
                     'user_oauth' => 'Hebis\Db\Table\Factory::getUserOAuth',
-                    'static_post' => 'Hebis\Db\Table\Factory::getStaticPost'
+                    'static_post' => 'Hebis\Db\Table\Factory::getStaticPost',
+                    'broadcasts' => 'Hebis\Db\Table\Factory::getBroadcast',
                 ]
             ],
             'ils_driver' => [
@@ -179,7 +180,7 @@ $config = [
                 ],
             ],
             'pageadmin' => [
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => [
                     'route' => '/Admin/Page',
                     'defaults' => [
@@ -236,23 +237,73 @@ $config = [
                     ]
                 ]
             ],
-            /*'broadcast' => [
-
-            ],*/
             'broadcastadmin' => [
-                'type' => 'segment',
+                'type' => 'Zend\Mvc\Router\Http\Segment',
                 'options' => [
-                    'route' => '/Admin/Broadcast[/:action][/:bcid]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'bcid' => '[0-9]+'
+                    'route' => '/Admin/Broadcasts[/:action][/:bcid]',
+                    'defaults' => [
+                        'controller' => 'broadcastadmin',
+                    ]
+                ]
+            ],
+            /*'broadcastadmin' => [
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => [
+                    'route' => '/Admin/Broadcasts',
+                    'defaults' => [
+                        'controller' => 'broadcastadmin',
+                        'action' => 'bchome',
                     ]
                 ],
-                'defaults' => [
-                    'controller' => 'broadcastadmin',
-                    'action' => 'list'
+                'may_terminate' => true,
+                'child_routes' => [
+                    'preview' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/View/:bcid',
+                            'defaults' => [
+                                'action' => 'preview'
+                            ],
+                            'constraints' => [
+                                'bcid' => '\d+'
+                            ]
+                        ]
+                    ],
+                    'add' => [
+                        'type' => 'Zend\Mvc\Router\Http\Literal',
+                        'options' => [
+                            'route' => '/Add',
+                            'defaults' => [
+                                'action' => 'add'
+                            ]
+                        ]
+                    ],
+                    'edit' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/Edit/:bcid',
+                            'defaults' => [
+                                'action' => 'edit'
+                            ],
+                            'constraints' => [
+                                'bcid' => '\d+'
+                            ]
+                        ]
+                    ],
+                    'json' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/Json/:bcid/:method',
+                            'defaults' => [
+                                'action' => 'json',
+                            ],
+                            'constraints' => [
+                                'bcid' => '\d+'
+                            ]
+                        ]
+                    ]
                 ]
-            ]
+            ]*/
         ]
     ]
 ];

@@ -17,7 +17,6 @@ use VuFindAdmin\Controller\AbstractAdmin;
 class BroadcastAdminController extends AbstractAdmin
 {
     use TranslatorAwareTrait;
-    use PageTrait;
 
     /**
      * @var Broadcast
@@ -26,8 +25,18 @@ class BroadcastAdminController extends AbstractAdmin
 
     public function __construct(Broadcast $table, $translator)
     {
+        parent::__construct();
         $this->table = $table;
         $this->setTranslator($translator);
+    }
+
+    public function bchomeAction()
+    {
+        $view = $this->createViewModel();
+        $view->setTemplate('broadcastadmin/bc-home');
+        $rows = $this->table->getAll();
+        $view->rows = $rows;
+        return $view;
     }
 
     public function addAction()
@@ -35,9 +44,20 @@ class BroadcastAdminController extends AbstractAdmin
         // TODO
     }
 
-    public function listAction()
+    public function previewAction()
     {
-        // TODO
+        $view = $this->createViewModel();
+        $view->setTemplate('broadcastadmin/bc-preview');
+        $bcid = $this->params()->fromRoute('bcid');
+        $lang = $this->getTranslatorLocale();
+        $row = $this->table->getBroadcast($bcid, $lang);
+
+        $view->row = $row;
+        /*$DateConverter = new Converter();       // How to get/set timezone TODO view timezone
+        $view->cDate = $DateConverter->convert('Y-m-d H:i', 'd.m.Y  H:i', $view->row->createDate);
+        $view->modDate = isset($row->changeDate) ? $DateConverter->convert('Y-m-d H:i', 'd.m.Y  H:i', $view->row->changeDate) : '';
+        */
+        return $view;
     }
 
 

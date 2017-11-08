@@ -27,6 +27,7 @@
 
 namespace Hebis\Controller;
 
+use Zend\Di\ServiceLocator;
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -68,6 +69,7 @@ class Factory
 
     /**
      * @param ServiceManager $sm
+     * @param ServiceLocator $sl
      * @return BroadcastAdminController
      */
     public static function getBroadcastAdminController(ServiceManager $sm)

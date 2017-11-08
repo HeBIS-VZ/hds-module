@@ -14,7 +14,6 @@ class Broadcast extends RowGateway
 {
     public function __construct($adapter)
     {
-
         parent::__construct('uid', 'broadcasts', $adapter);
     }
 }

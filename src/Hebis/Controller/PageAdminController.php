@@ -33,6 +33,7 @@ class PageAdminController extends AbstractAdmin
 
     public function __construct(StaticPost $table, $translator)
     {
+        parent::__construct();
         $this->table = $table;
         $this->setTranslator($translator);
     }
