@@ -461,7 +461,7 @@ class Converter
                 $issued = new Date();
                 if ($dates['Type'] == "published") {
                     $dateParts = [];
-                    uasort($dates, function ($a, $b) {
+                    uksort($dates, function ($a, $b) {
                         return -1 * strcmp($a, $b);
                     });
                     array_walk($dates, function ($value, $key) use (&$dateParts) {
