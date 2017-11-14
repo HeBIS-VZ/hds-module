@@ -49,7 +49,9 @@ class Converter
             case 'featureArticle':
             case 'academicJournal':
             case 'serialPeriodical':
-                return json_encode(static::convertArticle($record));
+                $article = static::convertArticle($record);
+                $article->setType('article-journal');
+                return json_encode($article);
             case 'newspaperArticle':
             case 'transcript':
                 $newspaperArticle = static::convertArticle($record);
