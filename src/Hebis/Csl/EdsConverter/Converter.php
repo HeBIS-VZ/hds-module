@@ -27,12 +27,10 @@
 
 namespace Hebis\Csl\EdsConverter;
 
-use Hebis\Csl\Model\Date;
-use Hebis\Csl\Model\Name;
-use Hebis\Csl\Model\Record;
-use Hebis\RecordDriver\ContentType;
+use Seboettg\CiteData\Csl\Date;
+use Seboettg\CiteData\Csl\Name;
+use Seboettg\CiteData\Csl\Record;
 use Hebis\RecordDriver\EDS;
-use Hebis\RecordDriver\SolrMarc;
 
 /**
  * Class Converter
@@ -424,8 +422,8 @@ class Converter
             $author = new Name();
             $name = $personEntity['PersonEntity']['Name']['NameFull'];
             $delimiterPos = strpos($name, ', ');
-            $author->setFamily(substr($name, 0, $delimiterPos - 1));
-            $author->setGiven(substr($name, $delimiterPos + 2));
+            $author->setFamily(mb_convert_encoding(substr($name, 0, $delimiterPos - 1), "UTF-8"));
+            $author->setGiven(mb_convert_encoding(substr($name, $delimiterPos + 2), "UTF-8"));
             $authors[] = $author;
         }, $personEntities);
 
@@ -437,14 +435,14 @@ class Converter
     {
         $authorities = [];
         array_map(function(&$pubAgent) use (&$authorities) {
-            $authorities[] = $pubAgent['OrganizationEntity']['Name']['FullName'];
+            $authorities[] = mb_convert_encoding($pubAgent['OrganizationEntity']['Name']['FullName'], "UTF-8");
         }, $pubAgents);
         return implode($authorities, "; ");
     }
 
     private static function convertBibEntity($bibRelationships)
     {
-        return $bibRelationships['IsPartOfRelationships'][0]['BibEntity']['Titles'][0]['TitleFull'];
+        return mb_convert_encoding($bibRelationships['IsPartOfRelationships'][0]['BibEntity']['Titles'][0]['TitleFull'], "UTF-8");
     }
 
     /**
@@ -489,10 +487,11 @@ class Converter
 
     private static function getUrlFormItems($items, $string)
     {
-        $link = self::getFromItems($items, $string);
-        if (!empty($link)) {
-            if (preg_match("/linkTerm=\"(.+)\"\slinkWindow/", html_entity_decode($link), $match)) {
-                return $match[1];
+        $linkStrings = html_entity_decode(self::getFromItems($items, $string));
+        if (!empty($linkStrings)) {
+            $links = explode("<br />", $linkStrings);
+            if (preg_match("/linkTerm=\"(.+)\"\slinkWindow/", html_entity_decode($links[0]), $match)) {
+                return mb_convert_encoding($match[1], "UTF-8");
             }
         }
         return null;
