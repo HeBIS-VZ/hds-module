@@ -30,7 +30,7 @@ class BroadcastAdminController extends AbstractAdmin
         $this->setTranslator($translator);
     }
 
-    public function bchomeAction()
+    public function homeAction()
     {
         $view = $this->createViewModel();
         $view->setTemplate('broadcastadmin/bc-home');
@@ -41,9 +41,59 @@ class BroadcastAdminController extends AbstractAdmin
 
     public function addAction()
     {
-        // TODO
+        $view = $this->createViewModel();
+        $view->setTemplate('broadcastadmin/bc-add');
+        $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
+        $view->langs = $allLanguages;
+        $request = $this->getRequest();
+
+        if (!$request->isPost()) {
+            return $view;
+        }
+
+        $bcid = $this->table->getLastBcId() + 1;
+        //$bcid++;
+
+        $language = $this->params()->fromPost('bc-lang');
+        $message = $this->params()->fromPost('bc-message');
+        $type = $this->params()->fromPost('bc-type');
+        $expireDate = $this->params()->fromPost('bc-expireDate');
+
+        $notEmpty = false;
+
+        for ($i = 0; $i < count($allLanguages); ++$i) {
+            $len = strlen(strip_tags($message[$i]));
+            $notEmpty |= ($len > 0);
+        }
+
+        if (!$notEmpty) {
+            $view->error = true;
+            return $view;
+        }
+
+        for ($i = 0; $notEmpty && $i < sizeof($allLanguages); $i++) {
+            $this->saveRow(
+                $bcid,
+                $language[$i],
+                $message[$i],
+                $type,
+                $expireDate
+            );
+        }
+        return $this->redirect()->toRoute('broadcastadmin', ['action' => 'home']);
     }
 
+    /* saves a single row to the table */
+    private function saveRow($bcid, $language, $message, $type, $expireDate)
+    {
+        $row = $this->table->createRow();
+        $row->bcid = $bcid;
+        $row->language = $language;
+        $row->message = $message;
+        $row->type = $type;
+        $row->expireDate = $expireDate;
+        $row->save();
+    }
     public function previewAction()
     {
         $view = $this->createViewModel();
