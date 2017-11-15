@@ -52,17 +52,35 @@ class EdsSubjectResultList extends AbstractHelper
 
             $i = 0;
             foreach ($subjects as $subject) {
-                $ret[] = '<span class="label label-primary">' . $this->getView()->truncate($subject['SubjectFull'], 24) . '</span>';
+                $ret[] = '<span class="label label-subject" title="' . $this->getView()->escapeHtmlAttr($subject['SubjectFull']) . '">' . $this->getView()->truncate($subject['SubjectFull'], 24) . '</span>';
                 ++$i;
 
-                if ($i >= 6) {
-                    if (count($subjects) > 6) {
-                        $ret[] = '<span class="label label-primary">&hellip;</span>';
-                    }
+                if ($i >= 6 && count($subjects) > 6) {
+                    $ret[] = '<span class="label label-subject" title="' . $this->subjectsFrom($subjects, 6) . '">&hellip;</span>';
                     break;
                 }
             }
         }
         return implode(" ", $ret);
+    }
+
+    /**
+     * @param $subjects
+     * @param $from
+     */
+    private function subjectsFrom($subjects, $from)
+    {
+        $res = [];
+        $i = 0;
+        foreach ($subjects as $subject) {
+            if ($i < 6) {
+                ++$i;
+                continue;
+            }
+            $res[] = $subject['SubjectFull'];
+            ++$i;
+        }
+
+        return $this->getView()->escapeHtmlAttr(implode("; ", $res));
     }
 }
