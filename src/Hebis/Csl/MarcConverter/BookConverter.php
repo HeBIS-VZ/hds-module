@@ -27,7 +27,7 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-use \Hebis\Csl\Model\Record as Book;
+use Seboettg\CiteData\Csl\Record as Book;
 
 class BookConverter
 {

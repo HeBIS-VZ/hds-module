@@ -27,7 +27,7 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-use Hebis\Csl\Model\Record as Map;
+use Seboettg\CiteData\Csl\Record as Map;
 
 class MapConverter
 {

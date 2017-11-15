@@ -27,9 +27,7 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-use Hebis\Csl\MarcConverter\Name;
-use Hebis\Csl\MarcConverter\Record;
-use Hebis\Csl\Model\Record as Article;
+use Seboettg\CiteData\Csl\Record as Article;
 
 class ArticleConverter
 {
