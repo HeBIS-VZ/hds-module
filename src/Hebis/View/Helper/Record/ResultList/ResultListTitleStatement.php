@@ -47,7 +47,7 @@ class ResultListTitleStatement extends AbstractRecordViewHelper
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $retro = strpos(Helper::getSubFieldDataOfField($record, 856, '3'), "Katalogkarte") !== false;
+        $retro = strpos(Helper::getSubFieldDataOfField($marcRecord, 856, '3'), "Katalogkarte") !== false;
 
         $id = $record->getUniqueID();
         if ($retro) {

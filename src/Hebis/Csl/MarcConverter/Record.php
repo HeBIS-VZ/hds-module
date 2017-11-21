@@ -27,6 +27,8 @@
 
 namespace Hebis\Csl\MarcConverter;
 
+use Hebis\RecordDriver\ContentType;
+
 class Record
 {
 
@@ -81,7 +83,10 @@ class Record
     public static function getPage($record)
     {
         $page = self::getSubfield($record, "773", "g");
-        if (!empty($page) && strpos($page, ",") !== false) {
+
+        if (preg_match("/,?\s?S\.\s([0-9\-]+)$/", trim($page), $match)) {
+            return $match[1];
+        } else if (!empty($page) && strpos($page, ",") !== false) {
             $pos = strrpos($page, ",");
             return trim(substr($page, $pos));
         }
@@ -117,7 +122,7 @@ class Record
 
     public static function getISBN($record)
     {
-        return self::getSubfield($record, "490", "x");
+        return self::getSubfield($record, "020", "a");
     }
 
     public static function getCollectionNumber(\File_MARC_Record $record)
@@ -186,6 +191,30 @@ class Record
      */
     public static function getVolume(\File_MARC_Record $record)
     {
-        return self::getSubfield($record, "490", "v");
+        $volume = self::getSubfield($record, "490", "v");
+        if (empty($volume))
+        {
+            /* Für Artikel ist das aus Volume 773g zu ziehen, da 490 für Aufsätze leer ist */
+            if ((new ContentType())->getContentTypeFromMarcRecord($record) === "article") {
+                $_773b = self::getSubfield($record, "773", "g");
+                if (preg_match("/^(\d+).+H\.\s\d+/", $_773b, $match)) {
+                    return $match[1];
+                }
+                return "";
+            }
+        }
+        return $volume;
+    }
+
+
+    public static function getIssue(\File_MARC_Record $record)
+    {
+        //773 $b._-_$g
+        $_773b = self::getSubfield($record, "773", "g");
+
+        if (preg_match("/H\.\s(\d+)/", $_773b, $match)) {
+            return $match[1];
+        }
+        return "";
     }
 }

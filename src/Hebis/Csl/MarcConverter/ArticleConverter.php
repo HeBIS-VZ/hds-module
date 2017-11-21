@@ -50,7 +50,17 @@ class ArticleConverter
         $article->setPublisherPlace(Record::getPublisherPlace($record));
         $article->setTitle(Record::getTitle($record));
         $article->setURL(Record::getURL($record));
-        $article->setType("article");
+
+        if (!empty($issue = Record::getIssue($record))) {
+            $article->setIssue($issue);
+        }
+
+        if (!empty($volume = Record::getVolume($record))) {
+            $article->setVolume($volume);
+        }
+
+
+        $article->setType("article-journal");
         return json_encode($article);
     }
 }

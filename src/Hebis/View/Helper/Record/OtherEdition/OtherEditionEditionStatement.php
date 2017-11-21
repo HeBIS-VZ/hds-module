@@ -47,7 +47,7 @@ class OtherEditionEditionStatement extends AbstractRecordViewHelper
      */
     public function __invoke(SolrMarc $record)
     {
-        $_250a = Helper::getSubFieldDataOfField($record, '250', 'a');
+        $_250a = Helper::getSubFieldDataOfField($record->getMarcRecord(), '250', 'a');
 
         return !empty($_250a) ? $_250a : "";
     }
