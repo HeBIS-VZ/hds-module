@@ -76,7 +76,7 @@ class PageAdminController extends AbstractAdmin
         $pid = $this->params()->fromRoute('pid');
         $request = $this->getRequest();
         $rowSet = $this->table->getPostByPid($pid);
-        $view->rowSet = $rowSet->getDataSource();;
+        $view->rowSet = $rowSet->getDataSource();
         if (!$request->isPost()) {
             return $view;
         }

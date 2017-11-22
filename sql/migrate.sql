@@ -37,10 +37,10 @@ CREATE TABLE broadcasts
   uid        INT(9) AUTO_INCREMENT,
   bcid       INT(7) DEFAULT '0'                                             NOT NULL,
   language   VARCHAR(3) DEFAULT ''                                          NOT NULL,
-  message    VARCHAR(80)                                                    NULL,
-  type       ENUM ('success', 'info', 'warning', 'error') DEFAULT 'warning' NULL,
+  message    TINYTEXT                                                       NULL,
+  type       ENUM ('success', 'info', 'warning', 'error')                   NULL,
   createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP                            NOT NULL,
-  expireDate TIMESTAMP                                                      NULL,
+  expireDate DATE                                                           NULL,
   `show`     TINYINT(1) DEFAULT '0'                                         NULL,
   CONSTRAINT broadcasts_uid_uindex
   UNIQUE (uid),
