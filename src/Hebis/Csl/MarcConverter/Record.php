@@ -61,14 +61,6 @@ class Record
         return $c;
     }
 
-    public static function getDOI(\File_MARC_Record $record)
-    {
-        return self::getSubfield($record, "024", "a", function ($field) {
-            /** @var \File_MARC_Data_Field $field */
-            return $field->getIndicator(1) === "7";
-        });
-    }
-
     public static function getEdition($record)
     {
         return self::getSubfield($record, "250", "a");
@@ -216,5 +208,22 @@ class Record
             return $match[1];
         }
         return "";
+    }
+
+    public static function getURN(\File_MARC_Record $record)
+    {
+        return self::getSubfield($record, "024", "a", function ($field) {
+            /** @var \File_MARC_Data_Field $field */
+            return $field->getIndicator(1) === "7" && $field->getSubfield('2')->getData() === "urn";
+        });
+    }
+
+
+    public static function getDOI(\File_MARC_Record $record)
+    {
+        return self::getSubfield($record, "024", "a", function ($field) {
+            /** @var \File_MARC_Data_Field $field */
+            return $field->getIndicator(1) === "7" && $field->getSubfield('2')->getData() === "doi";
+        });
     }
 }
