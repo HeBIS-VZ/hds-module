@@ -29,5 +29,9 @@ class BroadcastController extends AbstractBase
         $this->setTranslator($translator);
     }
 
+    public function helloWorld()
+    {
+        return "helloWorld";
+    }
 
 }
