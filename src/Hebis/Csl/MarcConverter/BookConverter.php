@@ -53,7 +53,10 @@ class BookConverter
         $book->setIssued(Date::getIssued($record));
         $book->setNumberOfPages(Record::getNumberOfPages($record));
         $book->setDOI(Record::getDOI($record));
-        $book->setURL("https://nbn-resolving.org/" . Record::getURN($record));
+        $urn = Record::getURN($record);
+        if (!empty($urn)) {
+            $book->setURL("https://nbn-resolving.org/" . $urn);
+        }
         $book->setType("book");
 
         return json_encode($book);
