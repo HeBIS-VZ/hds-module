@@ -18,7 +18,7 @@ class StaticPost extends Gateway
         $staticPostRow = $this->select(['pid' => $pid, 'language' => $lang])->current();
 
         if (!$staticPostRow) {
-            throw new \Exception("Could not find post $id");
+            throw new \Exception("Could not find post $pid");
         }
         return $staticPostRow;
     }
@@ -58,8 +58,11 @@ class StaticPost extends Gateway
      */
     public function getNav($lang = 'en', $visibilty = true)
     {
-        return $this->select(['language' => $lang, 'visible' => intval($visibilty)]);
-
+        $select = $this->sql->select();
+        $select->where(['language' => $lang, 'visible' => intval($visibilty)]);
+        $resultSet = $this->executeSelect($select);
+        $rowSet = $resultSet;
+        return $rowSet;
     }
 
     public function getPostByPid($pid)

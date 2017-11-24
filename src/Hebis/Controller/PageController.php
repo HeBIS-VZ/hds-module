@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rosh
- * Date: 19.10.17
- * Time: 14:11
- */
 
 namespace Hebis\Controller;
 

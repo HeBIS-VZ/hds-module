@@ -27,6 +27,7 @@
 
 namespace Hebis\Controller;
 
+use Zend\Di\ServiceLocator;
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -64,6 +65,31 @@ class Factory
         $translator = $sm->getServiceLocator()->get('VuFind\Translator');
         $pageController = new PageController($table, $translator);
         return $pageController;
+    }
+
+    /**
+     * @param ServiceManager $sm
+     * @param ServiceLocator $sl
+     * @return BroadcastAdminController
+     */
+    public static function getBroadcastAdminController(ServiceManager $sm)
+    {
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('broadcasts');
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        return new BroadcastAdminController($table, $translator);
+    }
+
+    /**
+     * @param ServiceManager $sm
+     * @return BroadcastController
+     */
+    public static function getBroadcastController(ServiceManager $sm)
+    {
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('broadcasts');
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        return new BroadcastController($table, $translator);
     }
 
     /**
