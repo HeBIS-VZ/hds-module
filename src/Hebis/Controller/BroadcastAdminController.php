@@ -63,6 +63,7 @@ class BroadcastAdminController extends AbstractAdmin
         $language = $this->params()->fromPost('bc-lang');
         $message = $this->params()->fromPost('bc-message');
         $type = $this->params()->fromPost('bc-type');
+        $show = $this->params()->fromPost('bc-show');
         $expireDate = $this->DateTimeConverter->convertFromDisplayDate('Y-m-d', $this->params()->fromPost('bc-expireDate'));
 
         $notEmpty = false;
@@ -83,7 +84,8 @@ class BroadcastAdminController extends AbstractAdmin
                 $language[$i],
                 $message[$i],
                 $type,
-                $expireDate
+                $expireDate,
+                $show
             );
         }
         return $this->redirect()->toRoute('broadcastadmin', ['action' => 'home']);
