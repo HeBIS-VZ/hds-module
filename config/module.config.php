@@ -81,6 +81,12 @@ $config = [
                     'Details' => 'StaffViewMARC',
                 ],
                 'defaultTab' => 'Holdings',
+                'backgroundLoadedTabs' => [
+                    'Holdings',
+                    'Description',
+                    'TOC',
+                    'Details'
+                ]
             ],
         ]
 
