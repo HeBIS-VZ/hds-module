@@ -88,6 +88,7 @@ class TabTocSummary extends AbstractRecordViewHelper
 
     public function getContentNotes()
     {
+        $ret = [];
         $marcRecord = $this->record->getMarcRecord();
         $fields856 = array_filter($marcRecord->getFields(856), function($field) {
             /** @var \File_MARC_Data_Field $field */
