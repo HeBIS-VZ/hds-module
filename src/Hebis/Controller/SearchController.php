@@ -205,4 +205,25 @@ class SearchController extends \VuFind\Controller\SearchController
             return " ".self::SPECIAL_CHARS_MAP[$matches[1]]." ";
         }, $lookfor);
     }
+
+    /**
+     * Handle search history display && purge
+     *
+     * @return mixed
+     */
+    public function historyAction()
+    {
+        // Force login if necessary
+        $user = $this->getUser();
+        if ($this->params()->fromQuery('require_login', 'no') !== 'no' && !$user) {
+            return $this->forceLogin();
+        }
+        $purge = (bool) $this->params()->fromQuery('purge');
+        /** @var \VuFind\Search\History $searchHistoryHelper */
+        $searchHistoryHelper = $this->getServiceLocator()->get('VuFind\Search\History');
+        $lastSearches = $searchHistoryHelper->getSearchHistory(is_object($user) ? $user->id : null, $purge);
+        return $this->createViewModel(
+            $lastSearches
+        );
+    }
 }
