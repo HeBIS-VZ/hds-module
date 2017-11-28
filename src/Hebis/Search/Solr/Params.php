@@ -83,6 +83,14 @@ class Params extends \VuFind\Search\Solr\Params
         return $filter;
     }
 
+    public function getDisplayQueryInputField()
+    {
+        $query = $this->getQuery();
+        if ($query instanceof  \VuFindSearch\Query\Query) {
+            return $query->getString();
+        }
+    }
+
     /**
      * Build a string for onscreen display showing the
      *   query used in the search (not the filters).
@@ -102,7 +110,8 @@ class Params extends \VuFind\Search\Solr\Params
     {
         // Simple case -- basic query:
         if ($query instanceof  \VuFindSearch\Query\Query) {
-            return $query->getString();
+            return '(' . call_user_func($showName, $query->getHandler()) . ':'
+                . '<i>' . $query->getString() . '</i>)';
         }
 
         // Complex case -- advanced query:
@@ -122,7 +131,7 @@ class Params extends \VuFind\Search\Solr\Params
                         // Build this group individually as a basic search
                         $thisGroup[]
                             = call_user_func($showName, $group->getHandler()) . ':'
-                            . $group->getString();
+                            . '<i>' . $group->getString() . '</i>';
                     } else {
                         throw new \Exception('Unexpected ' . get_class($group));
                     }
@@ -188,4 +197,6 @@ class Params extends \VuFind\Search\Solr\Params
             $this->sort = $this->getOptions()->getRssSort($this->sort);
         }
     }
+
+
 }

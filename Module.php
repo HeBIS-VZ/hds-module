@@ -266,6 +266,10 @@ class Module
                 },
                 'eds_subject_result_list' => function ($sm) {
                     return new \Hebis\View\Helper\Record\EDS\EdsSubjectResultList();
+                },
+                'search_handler' => function ($sm) {
+                    $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+                    return new \Hebis\View\Helper\Root\SearchHandler($config->get('SearchTabs'));
                 }
             )
         );
