@@ -65,7 +65,7 @@ class Params extends \VuFind\Search\EDS\Params
                             $queryOperator . ' ' : '';
                         $all[] = $op
                             . call_user_func($showName, $group->getHandler()) . ':'
-                            . $group->getString();
+                            . '<i>' . $group->getString() . '</i>';
                     } else {
                         throw new \Exception('Unexpected ' . get_class($group));
                     }
