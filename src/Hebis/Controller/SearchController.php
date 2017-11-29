@@ -201,7 +201,6 @@ class SearchController extends \VuFind\Controller\SearchController
 
     private function solrSpecialChars($lookfor)
     {
-
         return preg_replace_callback("/\s([&+])\s/", function($matches) {
             return " ".self::SPECIAL_CHARS_MAP[$matches[1]]." ";
         }, $lookfor);
