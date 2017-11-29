@@ -108,4 +108,13 @@ class Factory extends \VuFind\View\Helper\Root\Factory
         $translator = $sm->getServiceLocator()->get('VuFind\Translator');
         return new PageNavigation($table, $translator);
     }
+
+    public static function getBroadcastMessage(ServiceManager $sm)
+    {
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('broadcasts');
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        return new BroadcastMessage($table, $translator);
+    }
 }

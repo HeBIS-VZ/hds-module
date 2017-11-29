@@ -4,7 +4,11 @@
 namespace Hebis\Db\Table;
 
 use VuFind\Db\Table\Gateway;
+use VuFind\View\Helper\Root\DateTime;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Predicate\Predicate;
+use Zend\Db\Sql\Where;
+use Zend\Http\Header\Date;
 
 /**
  * Class Broadcast
@@ -41,6 +45,37 @@ class Broadcast extends Gateway
         $select = $this->sql->select();
         $select->where(['bcid' => $bcid]);
         $resultSet = $this->executeSelect($select);
+        return $resultSet;
+    }
+
+    /** returns a all broadcasts filtered by
+     * @param string $lang language of broadcast
+     * @param String $show determines wether show or not
+     * @param bool $expired
+     * @return \Zend\Db\ResultSet\ResultSet
+     * @internal param String $type type (color) of broadcast alert
+     * @internal param bool $expired due date past
+     */
+    public function getAllByParameter($lang = 'en', $show = null, $expired = false)
+    {
+        $select = $this->sql->select();
+        $where = new Where();
+        //$select->where(['language'=>$lang, 'show'=> $show, 'type'=> $type]);
+
+        $where->equalTo('language', $lang);
+
+        if ($show !== null) {
+            $where->equalTo('show', $show);
+        }
+
+        if ($expired) {
+            $where->lessThanOrEqualTo('expireDate', date('Y-m-d H:i:s'));
+        } else {
+            $where->greaterThan('expireDate', date('Y-m-d H:i:s'));
+        }
+
+
+        $resultSet = $this->executeSelect($select->where($where));
         return $resultSet;
     }
 

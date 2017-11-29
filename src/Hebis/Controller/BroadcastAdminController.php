@@ -38,8 +38,11 @@ class BroadcastAdminController extends AbstractAdmin
     {
         $view = $this->createViewModel();
         $view->setTemplate('broadcastadmin/bc-home');
-        $rows = $this->table->getAll();
+        $lang = $this->getTranslatorLocale();
+        $rows = $this->table->getAllByParameter($lang, null);
+        $expired = $this->table->getAllByParameter($lang, null, true);
         $view->rows = $rows;
+        $view->expired = $expired;
         return $view;
     }
 
