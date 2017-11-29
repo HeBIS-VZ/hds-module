@@ -162,4 +162,14 @@ class EdsController extends \VuFind\Controller\EdsController
         // class ID.
         $this->getSearchMemory()->rememberParams($results->getParams());
     }
+
+    /**
+     * @return String
+     */
+    public function getOutputMode()
+    {
+        return $this->outputMode;
+    }
+
+
 }

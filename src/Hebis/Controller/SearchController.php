@@ -37,6 +37,7 @@ class SearchController extends \VuFind\Controller\SearchController
     const STATUS_ERROR = 'ERROR';            // bad
     const STATUS_NEED_AUTH = 'NEED_AUTH';    // must login first
 
+    private $outputMode;
 
     const SPECIAL_CHARS_MAP = [
         "+" => "und",
@@ -204,6 +205,11 @@ class SearchController extends \VuFind\Controller\SearchController
         return preg_replace_callback("/\s([&+])\s/", function($matches) {
             return " ".self::SPECIAL_CHARS_MAP[$matches[1]]." ";
         }, $lookfor);
+    }
+
+    public function getOutputMode()
+    {
+        return $this->outputMode;
     }
 
     /**
