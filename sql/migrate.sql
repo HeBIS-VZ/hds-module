@@ -35,13 +35,13 @@ DROP TABLE IF EXISTS `broadcasts`;
 CREATE TABLE broadcasts
 (
   uid        INT(9) AUTO_INCREMENT,
-  bcid       INT(7) DEFAULT '0'                                             NOT NULL,
-  language   VARCHAR(3) DEFAULT ''                                          NOT NULL,
-  message    TINYTEXT                                                       NULL,
-  type       ENUM ('success', 'info', 'warning', 'error')                   NULL,
-  createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP                            NOT NULL,
-  expireDate DATE                                                           NULL,
-  `show`     TINYINT(1) DEFAULT '0'                                         NULL,
+  bcid       INT(7) DEFAULT '0'                            NOT NULL,
+  language   VARCHAR(3) DEFAULT ''                         NOT NULL,
+  message    TINYTEXT                                      NULL,
+  type       ENUM ('success', 'info', 'warning', 'danger') NULL,
+  createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP           NOT NULL,
+  expireDate DATETIME                                      NULL,
+  `show`     TINYINT(1) DEFAULT '0'                        NULL,
   CONSTRAINT broadcasts_uid_uindex
   UNIQUE (uid),
   CONSTRAINT bcid_lang_pk
