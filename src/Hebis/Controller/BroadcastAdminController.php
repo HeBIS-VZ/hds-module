@@ -54,6 +54,11 @@ class BroadcastAdminController extends AbstractAdmin
         $view->langs = $allLanguages;
         $request = $this->getRequest();
 
+        $view->language = [];
+        $view->message = [];
+        $view->type = "info";
+        $view->expireDate = "";
+
         if (!$request->isPost()) {
             return $view;
         }
@@ -66,7 +71,6 @@ class BroadcastAdminController extends AbstractAdmin
         $language = $this->params()->fromPost('bc-lang');
         $message = $this->params()->fromPost('bc-message');
         $type = $this->params()->fromPost('bc-type');
-        $show = $this->params()->fromPost('bc-show');
         $expireDate = $this->DateTimeConverter->convertFromDisplayDate('Y-m-d', $this->params()->fromPost('bc-expireDate'));
 
         $notEmpty = false;
@@ -80,7 +84,7 @@ class BroadcastAdminController extends AbstractAdmin
             $view->error = true;
             return $view;
         }
-
+        $show = ($this->params()->fromPost('bc-show') === "on") ? 1 : 0;
         for ($i = 0; $notEmpty && $i < sizeof($allLanguages); $i++) {
             $this->saveRow(
                 $bcid,
@@ -142,7 +146,7 @@ class BroadcastAdminController extends AbstractAdmin
     }
 
     /* saves a single row to the table */
-    private function saveRow($bcid, $language, $message, $type, $expireDate)
+    private function saveRow($bcid, $language, $message, $type, $expireDate, $show)
     {
         $row = $this->table->createRow();
         $row->bcid = $bcid;
@@ -150,6 +154,7 @@ class BroadcastAdminController extends AbstractAdmin
         $row->message = $message;
         $row->type = $type;
         $row->expireDate = $expireDate;
+        $row->show = $show;
         $row->save();
     }
 
