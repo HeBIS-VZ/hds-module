@@ -42,7 +42,7 @@ class BroadcastMessage extends AbstractHelper
     {
         $arr = [];
         $lang = $this->getTranslatorLocale();
-        $resultSet = $this->table->getAllByParameter($lang, 1, false);
+        $resultSet = $this->table->getAllByParameter($lang, 0);
 
         foreach ($resultSet as $broadcast) {
             $arr[] = [
