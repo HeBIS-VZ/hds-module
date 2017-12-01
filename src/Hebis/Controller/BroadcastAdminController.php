@@ -25,6 +25,12 @@ class BroadcastAdminController extends AbstractAdmin
      */
     protected $table;
     protected $DateTimeConverter;
+    protected $outputMode;
+
+    // define http status constants
+    const STATUS_OK = 'OK';
+    const STATUS_ERROR = 'ERROR';
+    const STATUS_NEED_AUTH = 'NEED_AUTH';
 
     public function __construct(Broadcast $table, $translator)
     {
@@ -110,8 +116,9 @@ class BroadcastAdminController extends AbstractAdmin
      * deletes a broadcast set
      * @return Response
      */
-    public function deleteAction()
+    public function deleteAjaxAction()
     {
+        $this->outputMode = 'json';
         try {
             $bcid = $this->params()->fromRoute('bcid');
             $rows = $this->table->getBroadcastsById($bcid);
@@ -119,11 +126,30 @@ class BroadcastAdminController extends AbstractAdmin
                 $row->delete();
             }
         } catch (\Exception $e) {
-            return $this->output(0, 'failed.' . '\n' . $e->getMessage(), 400);
+            return $this->output(0, self::STATUS_ERROR . '\n' . $e->getMessage(), 400);
         }
-        return $this->output(1, 'done', 200);
+        return $this->output(1, self::STATUS_OK, 200);
     }
 
+
+
+    public function visibilityAjaxAction()
+    {
+        $this->outputMode = 'json';
+        try {
+            $bcid = $this->params()->fromRoute('bcid');
+            $broadcasts = $this->table->getBroadcastSetById($bcid);
+            foreach ($broadcasts as $broadcast) {
+                $broadcast->show == 1 ? $broadcast->show = 0 : $broadcast->show = 1;
+                $broadcast->save();
+            }
+        } catch (\Exception $e) {
+            $this->output($e->getMessage() . '\n' . 'Change Visibility Failed!', self::STATUS_ERROR, 400);
+        }
+
+        //$this->layout()->setTemplate('pageadmin/list');
+        return $this->output($broadcast->show == 1, self::STATUS_OK, 200);
+    }
 
     /**
      * Send output data and exit.
@@ -143,18 +169,14 @@ class BroadcastAdminController extends AbstractAdmin
         $headers->addHeaderLine('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
 
         if ($httpCode !== null) {
-
             $response->setStatusCode($httpCode);
         }
-        if ($this->outputMode !== 'json') {
-            throw new \Exception('Unsupported output mode: ' . $this->outputMode);
-        } else {
-            $headers->addHeaderLine('Content-type', 'application/javascript');
-            $output = ['data' => $data, 'status' => $status];
 
-            $response->setContent(json_encode($output));
-            return $response;
-        }
+        $headers->addHeaderLine('Content-type', 'application/javascript');
+        $output = ['data' => $data, 'status' => $status];
+
+        $response->setContent(json_encode($output));
+        return $response;
     }
 
 
