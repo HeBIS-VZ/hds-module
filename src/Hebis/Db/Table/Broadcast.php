@@ -57,12 +57,12 @@ class Broadcast extends Gateway
     /** returns a all broadcasts filtered by
      * @param string $lang language of broadcast
      * @param String $show determines wether show or not
-     * @param bool $expired
+     * @param bool $outOfDate
      * @return \Zend\Db\ResultSet\ResultSet
      * @internal param String $type type (color) of broadcast alert
      * @internal param bool $expired due date past
      */
-    public function getAllByParameter($lang = 'en', $show = null, $expired = false)
+    public function getAllByParameter($lang = 'en', $hide = null, $outOfDate = false)
     {
         $select = $this->sql->select();
         $where = new Where();
@@ -70,18 +70,30 @@ class Broadcast extends Gateway
 
         $where->equalTo('language', $lang);
 
-        if ($show !== null) {
-            $where->equalTo('hide', !$show);
+        if ($hide !== null) {
+            $where->equalTo('hide', $hide);
         }
+        $now = date('Y-m-d H:i:s', strtotime(date("Y-m-d") . " 00:00:00"));
 
-        if ($expired) {
-            $where->lessThanOrEqualTo('expireDate', date('Y-m-d H:i:s'));
+        if (!$outOfDate) {
+
+            $where
+                ->NEST
+                ->lessThanOrEqualTo('startDate', $now)
+                ->and
+                ->greaterThanOrEqualTo('expireDate', $now)
+                ->UNNEST;
         } else {
-            $where->greaterThan('expireDate', date('Y-m-d H:i:s'));
+            $where
+                ->NEST
+                ->greaterThan('startDate', $now)
+                ->or
+                ->lessThan('expireDate', $now)
+                ->UNNEST;
         }
 
-
-        $resultSet = $this->executeSelect($select->where($where));
+        $select->where($where);
+        $resultSet = $this->executeSelect($select);
         return $resultSet;
     }
 

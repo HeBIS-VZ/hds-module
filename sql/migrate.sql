@@ -32,21 +32,20 @@ CREATE TABLE `static_post` (
 # ------------------------------------------------------------
 DROP TABLE IF EXISTS `broadcasts`;
 
-CREATE TABLE broadcasts
-(
-  uid        INT(9) AUTO_INCREMENT,
-  bcid       INT(7) DEFAULT '0'                            NOT NULL,
-  language   VARCHAR(3) DEFAULT ''                         NOT NULL,
-  message    TINYTEXT                                      NULL,
-  type       ENUM ('success', 'info', 'warning', 'danger') NULL,
-  createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP           NOT NULL,
-  expireDate DATETIME                                      NULL,
-  `show`     TINYINT(1) DEFAULT '0'                        NULL,
-  CONSTRAINT broadcasts_uid_uindex
-  UNIQUE (uid),
-  CONSTRAINT bcid_lang_pk
-  UNIQUE (bcid, language)
-);
+CREATE TABLE `broadcasts` (
+  `uid` int(9) NOT NULL AUTO_INCREMENT,
+  `bcid` int(7) NOT NULL DEFAULT 0,
+  `language` varchar(3) NOT NULL DEFAULT '',
+  `message` tinytext DEFAULT NULL,
+  `type` enum('success','info','warning','danger') DEFAULT NULL,
+  `createDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `startDate` datetime DEFAULT NULL,
+  `expireDate` datetime DEFAULT NULL,
+  `hide` tinyint(1) DEFAULT 0,
+  UNIQUE KEY `broadcasts_uid_uindex` (`uid`),
+  UNIQUE KEY `bcid_lang_pk` (`bcid`,`language`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 
