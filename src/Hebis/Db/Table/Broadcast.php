@@ -3,12 +3,14 @@
 
 namespace Hebis\Db\Table;
 
+use VuFind\Date\Converter;
 use VuFind\Db\Table\Gateway;
 use VuFind\View\Helper\Root\DateTime;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Db\Sql\Where;
 use Zend\Http\Header\Date;
+use Zend\Http\PhpEnvironment\Request;
 
 /**
  * Class Broadcast
@@ -40,10 +42,14 @@ class Broadcast extends Gateway
      * @param $bcid int broadcast ID
      * @return \Zend\Db\ResultSet\ResultSet Set of matched broadcasts rows
      */
-    public function getBroadcastSetById($bcid)
+    public function getBroadcastsById($bcid, $lang = null)
     {
         $select = $this->sql->select();
-        $select->where(['bcid' => $bcid]);
+        $where = ['bcid' => $bcid];
+        if ($lang !== null) {
+            $where['language'] = $lang;
+        }
+        $select->where($where);
         $resultSet = $this->executeSelect($select);
         return $resultSet;
     }
@@ -65,7 +71,7 @@ class Broadcast extends Gateway
         $where->equalTo('language', $lang);
 
         if ($show !== null) {
-            $where->equalTo('show', $show);
+            $where->equalTo('hide', !$show);
         }
 
         if ($expired) {
@@ -99,15 +105,46 @@ class Broadcast extends Gateway
         return $resultSet['lastBcId'];
     }
 
-    /**
-     * @param string $lang language filter
-     * @param bool $visibilty visibility filter
-     * @return \Zend\Db\ResultSet\ResultSet
 
-    public function getNav($lang = 'en', $visibilty = true)
-     * {
-     * return $this->select(['language' => $lang, 'visible' => intval($visibilty)]);
-     *
-     * }*/
+    public function persist(Request $request)
+    {
+
+        $params = $request->getPost();
+
+        $rowSet = $this->getBroadcastsById($params['bcid']);
+
+        foreach ($params['bc-lang'] as $langKey => $lang) {#
+
+            if ($rowSet->count() === 0) { //add message
+                if ($langKey === 0) {
+                    $bcid = $this->getLastBcId() + 1;
+                }
+                $row = $this->createRow();
+                $row->language = $lang;
+                $row->bcid = $bcid;
+            } else { // edit message
+                $bcid = $request['bcid'];
+                $row = $this->getBroadcastsById($bcid, $lang);
+            }
+            $row->type = $params['bc-type'];
+            $row->message = $params['bc-message'][$langKey];
+            $row->startDate = $this->dateTime($params['bc-startDate']);
+            $row->expireDate = $this->dateTime($params['bc-expireDate']);
+            $row->hide = !boolval($params['bc-hide']);
+
+            $row->save();
+        }
+    }
+
+    private function dateTime($dateTime)
+    {
+        $dateTimeConverter = new Converter();
+        try {
+            return $dateTimeConverter->convertFromDisplayDate('Y-m-d', $dateTime);
+        } catch (\VuFind\Exception\Date $e) {
+            //TODO: log error
+        }
+        return null;
+    }
 
 }

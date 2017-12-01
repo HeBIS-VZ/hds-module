@@ -16,4 +16,9 @@ class Broadcast extends RowGateway
     {
         parent::__construct('uid', 'broadcasts', $adapter);
     }
+
+    public function getByIdLang($bcid, $lang)
+    {
+        $data = $this->data;
+    }
 }

@@ -51,50 +51,24 @@ class BroadcastAdminController extends AbstractAdmin
         $view = $this->createViewModel();
         $view->setTemplate('broadcastadmin/bc-add');
         $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
-        $view->langs = $allLanguages;
         $request = $this->getRequest();
 
-        $view->language = [];
-        $view->message = [];
-        $view->type = "info";
-        $view->expireDate = "";
-
         if (!$request->isPost()) {
+            $view->langs = $allLanguages;
+
+            $view->bcid = 0;
+            $view->language = [];
+            $view->message = [];
+            $view->type = "info";
+            $view->startDate = "";
+            $view->expireDate = "";
+            $view->hide = 0;
+
             return $view;
         }
 
-        $Converter = new Converter();
+        $this->table->persist($request);
 
-        $bcid = $this->table->getLastBcId() + 1;
-        //$bcid++;
-
-        $language = $this->params()->fromPost('bc-lang');
-        $message = $this->params()->fromPost('bc-message');
-        $type = $this->params()->fromPost('bc-type');
-        $expireDate = $this->DateTimeConverter->convertFromDisplayDate('Y-m-d', $this->params()->fromPost('bc-expireDate'));
-
-        $notEmpty = false;
-
-        for ($i = 0; $i < count($allLanguages); ++$i) {
-            $len = strlen(strip_tags($message[$i]));
-            $notEmpty |= ($len > 0);
-        }
-
-        if (!$notEmpty) {
-            $view->error = true;
-            return $view;
-        }
-        $show = ($this->params()->fromPost('bc-show') === "on") ? 1 : 0;
-        for ($i = 0; $notEmpty && $i < sizeof($allLanguages); $i++) {
-            $this->saveRow(
-                $bcid,
-                $language[$i],
-                $message[$i],
-                $type,
-                $expireDate,
-                $show
-            );
-        }
         return $this->redirect()->toRoute('broadcastadmin', ['action' => 'home']);
     }
 
@@ -104,26 +78,31 @@ class BroadcastAdminController extends AbstractAdmin
         $view->setTemplate('broadcastadmin/bc-edit');
         $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
         $view->langs = $allLanguages;
-
-        $bcid = $this->params()->fromRoute('bcid');
         $request = $this->getRequest();
-        $rowSet = $this->table->getBroadcastSetById($bcid);
-        $view->rowSet = $rowSet->getDataSource();
-        $view->expireDate = $this->DateTimeConverter->convertToDisplayDate('Y-m-d', $rowSet->current()->expireDate);
 
         if (!$request->isPost()) {
+            $language = [];
+            $message = [];
+            $bcid = $this->params()->fromRoute('bcid');
+            $rowSet = $this->table->getBroadcastsById($bcid);
+            $params = $rowSet->toArray();
+
+            for ($i = 0; $i < count($params); ++$i) { // iterate over languages
+                $lang = $params[$i]['language'];
+                $language[$lang] = $lang;
+                $message[$lang] = $params[$i]['message'];
+            }
+            $view->language = $language;
+            $view->message = $message;
+            $view->type = $params[0]['type'];
+            $view->startDate = date("d.m.Y",strtotime($params[0]['startDate']));
+            $view->expireDate = date("d.m.Y",strtotime($params[0]['expireDate']));
+
+            $view->bcid = $params[0]['bcid'];
+            $view->hide = $params[0]['hide'];
             return $view;
         }
-
-        $i = 0;
-        foreach ($rowSet as $row) {
-            $row->message = $this->params()->fromPost('bc-message')[$i];
-            $row->type = $this->params()->fromPost('bc-type');
-            $row->expireDate = $this->DateTimeConverter->convertFromDisplayDate('Y-m-d', $this->params()->fromPost('bc-expireDate'));
-            $row->save();
-            ++$i;
-        }
-
+        $this->table->persist($request);
         return $this->redirect()->toRoute('broadcastadmin', ['action' => 'home']);
     }
 
@@ -135,7 +114,7 @@ class BroadcastAdminController extends AbstractAdmin
     {
         try {
             $bcid = $this->params()->fromRoute('bcid');
-            $rows = $this->table->getBroadcastSetById($bcid);
+            $rows = $this->table->getBroadcastsById($bcid);
             foreach ($rows as $row) {
                 $row->delete();
             }
@@ -145,18 +124,6 @@ class BroadcastAdminController extends AbstractAdmin
         return $this->output(1, 'done', 200);
     }
 
-    /* saves a single row to the table */
-    private function saveRow($bcid, $language, $message, $type, $expireDate, $show)
-    {
-        $row = $this->table->createRow();
-        $row->bcid = $bcid;
-        $row->language = $language;
-        $row->message = $message;
-        $row->type = $type;
-        $row->expireDate = $expireDate;
-        $row->show = $show;
-        $row->save();
-    }
 
     /**
      * Send output data and exit.
