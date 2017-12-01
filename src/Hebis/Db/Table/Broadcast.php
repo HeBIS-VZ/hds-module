@@ -112,7 +112,7 @@ class Broadcast extends Gateway
         $params = $request->getPost();
 
         $rowSet = $this->getBroadcastsById($params['bcid']);
-
+        $p = $params->toArray();
         foreach ($params['bc-lang'] as $langKey => $lang) {#
 
             if ($rowSet->count() === 0) { //add message
@@ -123,14 +123,14 @@ class Broadcast extends Gateway
                 $row->language = $lang;
                 $row->bcid = $bcid;
             } else { // edit message
-                $bcid = $request['bcid'];
-                $row = $this->getBroadcastsById($bcid, $lang);
+                $bcid = $params['bcid'];
+                $row = $this->getBroadcastsById($bcid, $lang)->current();
             }
             $row->type = $params['bc-type'];
             $row->message = $params['bc-message'][$langKey];
             $row->startDate = $this->dateTime($params['bc-startDate']);
             $row->expireDate = $this->dateTime($params['bc-expireDate']);
-            $row->hide = !boolval($params['bc-hide']);
+            $row->hide = intval($params['bc-hide'] == "on");
 
             $row->save();
         }
