@@ -52,7 +52,7 @@ class SingleRecordPrecedingSucceedingEntry extends SingleRecordOtherEditionEntry
 
         $arr = [];
 
-        $rda = Helper::getSubFieldDataOfField($record, '040', 'e') === "rda";
+        $rda = Helper::getSubFieldDataOfField($marcRecord, '040', 'e') === "rda";
         $_780_ = $marcRecord->getFields(780);
 
         foreach ($_780_ as $field) {

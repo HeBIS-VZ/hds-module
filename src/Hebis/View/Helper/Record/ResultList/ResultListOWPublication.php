@@ -91,7 +91,7 @@ class ResultListOWPublication extends AbstractRecordViewHelper
         $ret = "";
         $_264 = current($_264__);
 
-        $_533d = Helper::getSubFieldDataOfField($record, '533', 'd');
+        $_533d = Helper::getSubFieldDataOfField($record->getMarcRecord(), '533', 'd');
         $_264_ = empty($_264) ? [] : $this->getSubFieldsDataArrayOfField($_264, ['a', 'b']);
 
         if (!empty($_533d)) {

@@ -27,7 +27,7 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-use \Hebis\Csl\Model\Record as Thesis;
+use Seboettg\CiteData\Csl\Record as Thesis;
 
 class ThesisConverter
 {

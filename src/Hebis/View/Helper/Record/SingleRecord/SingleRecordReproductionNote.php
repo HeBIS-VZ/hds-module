@@ -61,20 +61,20 @@ class SingleRecordReproductionNote extends AbstractRecordViewHelper
 
         $str = "";
         $_533 = $marcRecord->getField('533');
-        $_530_a = Helper::getSubFieldDataOfField($record, '530', 'a');
-        $_533_b = Helper::getSubFieldDataOfField($record, '533', 'b');
-        $_533_d = Helper::getSubFieldDataOfField($record, '533', 'd');
-        $_533_e = Helper::getSubFieldDataOfField($record, '533', 'e');
-        $_533_f = Helper::getSubFieldDataOfField($record, '533', 'f');
+        $_530_a = Helper::getSubFieldDataOfField($marcRecord, '530', 'a');
+        $_533_b = Helper::getSubFieldDataOfField($marcRecord, '533', 'b');
+        $_533_d = Helper::getSubFieldDataOfField($marcRecord, '533', 'd');
+        $_533_e = Helper::getSubFieldDataOfField($marcRecord, '533', 'e');
+        $_533_f = Helper::getSubFieldDataOfField($marcRecord, '533', 'f');
 
         if (empty($_533) || (!empty($_533) && empty($_533->getSubfields('c')))) {
-            $_583_h = Helper::getSubFieldDataOfField($record, '583', 'h');
+            $_583_h = Helper::getSubFieldDataOfField($marcRecord, '583', 'h');
             $str .= !empty($_530_a) ? "$_530_a" : "";
             $str .= !empty($_533_b) ? " $_533_b" : "";
             $str .= !empty($_583_h) ? ": $_583_h" : "";
 
         } else {
-            $_533_c = Helper::getSubFieldDataOfField($record, '533', 'c');
+            $_533_c = Helper::getSubFieldDataOfField($marcRecord, '533', 'c');
             //$str .= !empty($_533_b) ? "$_530_a $_533_b : " : "$_530_a ";
             $str .= !empty($_530_a) ? "$_530_a" : "";
             $str .= !empty($_533_b) ? " $_533_b" : "";

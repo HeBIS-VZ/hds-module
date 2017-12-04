@@ -50,7 +50,7 @@ class BibTipPublication extends AbstractRecordViewHelper
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
-        $_533_d = Helper::getSubFieldDataOfField($record, 533, 'd');
+        $_533_d = Helper::getSubFieldDataOfField($marcRecord, 533, 'd');
 
         if (!empty($_533_d)) {
             return $_533_d;
