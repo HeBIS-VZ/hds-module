@@ -4,10 +4,11 @@
 namespace Hebis\Controller;
 
 use Hebis\Db\Table\Broadcast;
+use VuFind\Date\Converter;
 use VuFind\I18n\Translator\TranslatorAwareTrait;
 use VuFindAdmin\Controller\AbstractAdmin;
-use VuFind\Date\Converter;
 use Zend\Http\Response;
+use Zend\Json\Server\Exception\HttpException;
 
 
 /**
@@ -115,6 +116,7 @@ class BroadcastAdminController extends AbstractAdmin
     /**
      * deletes a broadcast set
      * @return Response
+     * @throws \Exception
      */
     public function deleteAjaxAction()
     {
@@ -125,7 +127,7 @@ class BroadcastAdminController extends AbstractAdmin
             foreach ($rows as $row) {
                 $row->delete();
             }
-        } catch (\Exception $e) {
+        } catch (HttpException $e) {
             return $this->output(0, self::STATUS_ERROR . '\n' . $e->getMessage(), 400);
         }
         return $this->output(1, self::STATUS_OK, 200);

@@ -73,22 +73,30 @@ class PageAdminController extends AbstractAdmin
         $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
         $view->langs = $allLanguages;
 
-        $pid = $this->params()->fromRoute('pid');
         $request = $this->getRequest();
-        $rowSet = $this->table->getPostByPid($pid)->getDataSource();
-        $view->rowSet = $rowSet;
+
+        $pid = $this->params()->fromRoute('pid');
+        $resultSet = $this->table->getPostByPid($pid);
+        $rowSet = $resultSet->getDataSource();
+
+        // prepare edit values for view
+        while ($rowSet->valid()) {
+            $rows[$rowSet->current()['language']] = $rowSet->current();
+            $rowSet->next();
+        }
+        $view->rows = $rows;
 
         if (!$request->isPost()) {
             return $view;
         }
 
         $i = 0;
-        foreach ($rowSet as $row) {
+        foreach ($resultSet as $row) {
             $row->headline = $this->params()->fromPost('sp-headline')[$i];
             $row->content = $this->params()->fromPost('sp-content')[$i];
             $row->nav_title = $this->params()->fromPost('sp-nav-title')[$i];
             $row->save();
-            ++$i;
+            $i++;
         }
 
         return $this->redirect()->toRoute('pageadmin/preview', ['pid' => $pid]); //$this->forwardTo('staticpagesadmin', 'list');
