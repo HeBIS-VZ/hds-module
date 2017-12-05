@@ -47,8 +47,12 @@ class PageAdminController extends AbstractAdmin
     {
         $view = $this->createViewModel();
         $view->setTemplate('pageadmin/list');
-        $rows = $this->table->getAll();
-        $view->rows = $rows;
+        $allRows = $this->table->getAll();
+        $rowsByLang = [];
+        foreach ($allRows as $row) {     // group the rows as lang => rows
+            $rowsByLang[$row['language']][] = $row;
+        }
+        $view->rows = $rowsByLang;
         return $view;
     }
 
@@ -76,30 +80,32 @@ class PageAdminController extends AbstractAdmin
         $request = $this->getRequest();
 
         $pid = $this->params()->fromRoute('pid');
-        $resultSet = $this->table->getPostByPid($pid);
-        $rowSet = $resultSet->getDataSource();
+        $resultSet = $this->table->getPagebyId($pid);
 
         // prepare edit values for view
-        while ($rowSet->valid()) {
-            $rows[$rowSet->current()['language']] = $rowSet->current();
-            $rowSet->next();
+
+        foreach ($resultSet as $row) {
+            $rows[$row['language']] = $row;
         }
+
         $view->rows = $rows;
 
         if (!$request->isPost()) {
             return $view;
         }
 
-        $i = 0;
+        $post_langs = $this->params()->fromPost('sp-lang');
         foreach ($resultSet as $row) {
+            $i = array_search(          // get index of current row's language in the post array
+                $row['language'],
+                $post_langs);
             $row->headline = $this->params()->fromPost('sp-headline')[$i];
-            $row->content = $this->params()->fromPost('sp-content')[$i];
             $row->nav_title = $this->params()->fromPost('sp-nav-title')[$i];
+            $row->content = $this->params()->fromPost('sp-content')[$i];
             $row->save();
-            $i++;
         }
 
-        return $this->redirect()->toRoute('pageadmin/preview', ['pid' => $pid]); //$this->forwardTo('staticpagesadmin', 'list');
+        return $this->redirect()->toRoute('pageadmin/preview', ['pid' => $pid]);
     }
 
     /** Action adds new static page
@@ -200,15 +206,16 @@ class PageAdminController extends AbstractAdmin
     }
 
     /**
-     * change visibility of static page.
+     * Changes visibility of page
      *
      * @return \Zend\Http\Response
+     * @throws \Exception
      */
     public function visibleAjax()
     {
+        $pid = $this->params()->fromRoute('pid');
+        $rows = $this->table->getPagebyId($pid);
         try {
-            $pid = $this->params()->fromRoute('pid');
-            $rows = $this->table->getPostByPid($pid);
             foreach ($rows as $row) {
                 $row->visible == 1 ? $row->visible = 0 : $row->visible = 1;
                 $row->save();
@@ -218,7 +225,7 @@ class PageAdminController extends AbstractAdmin
         }
 
         $this->layout()->setTemplate('pageadmin/list');
-        return $this->output($row->visible == 1, self::STATUS_OK, 200);
+        return $this->output($row->visible, self::STATUS_OK, 200);
     }
 
 
@@ -226,7 +233,7 @@ class PageAdminController extends AbstractAdmin
     {
         try {
             $pid = $this->params()->fromRoute('pid');
-            $rows = $this->table->getPostByPid($pid);
+            $rows = $this->table->getPagebyId($pid);
             foreach ($rows as $row) {
                 $row->delete();
             }

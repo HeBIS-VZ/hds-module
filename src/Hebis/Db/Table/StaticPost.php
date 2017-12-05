@@ -3,6 +3,7 @@
 namespace Hebis\Db\Table;
 
 use VuFind\Db\Table\Gateway;
+use Zend\Db\Exception\UnexpectedValueException;
 use Zend\Db\Sql\Expression;
 
 class StaticPost extends Gateway
@@ -65,16 +66,22 @@ class StaticPost extends Gateway
         return $rowSet;
     }
 
-    public function getPostByPid($pid)
+    /**
+     * get Page by di
+     * @param $pid
+     * @return \Zend\Db\ResultSet\ResultSet
+     * @throws UnexpectedValueException
+     */
+    public function getPagebyId($pid)
     {
         $select = $this->sql->select();
         $select->where(['pid' => $pid]);
         $resultSet = $this->executeSelect($select);
-        $rowSet = $resultSet;
-        if ($rowSet->count() < 1) {
-            throw new \Zend\Db\Exception\UnexpectedValueException("Could not find row(s) with PID $pid.");
+
+        if ($resultSet->count() < 1) {
+            throw new UnexpectedValueException("Could not find rows with PID $pid.");
         }
-        return $rowSet;
+        return $resultSet;
     }
 
     public function getPostByPidAndLang($pid, $lang = "en") {

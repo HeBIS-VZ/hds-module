@@ -134,23 +134,25 @@ class BroadcastAdminController extends AbstractAdmin
     }
 
 
-
+    /**
+     * toggles the broadcast's visibility via ajax
+     * @return Response
+     * @throws \Exception
+     */
     public function visibilityAjaxAction()
     {
         $this->outputMode = 'json';
+        $bcid = $this->params()->fromRoute('bcid');
+        $resultSet = $this->table->getBroadcastsById($bcid);
         try {
-            $bcid = $this->params()->fromRoute('bcid');
-            $broadcasts = $this->table->getBroadcastSetById($bcid);
-            foreach ($broadcasts as $broadcast) {
-                $broadcast->show == 1 ? $broadcast->show = 0 : $broadcast->show = 1;
-                $broadcast->save();
+            foreach ($resultSet as $row) {
+                $row->hide === 1 ? $row->hide = 0 : $row->hide = 1;
+                $row->save();
             }
         } catch (\Exception $e) {
             $this->output($e->getMessage() . '\n' . 'Change Visibility Failed!', self::STATUS_ERROR, 400);
         }
-
-        //$this->layout()->setTemplate('pageadmin/list');
-        return $this->output($broadcast->show == 1, self::STATUS_OK, 200);
+        return $this->output($resultSet->current()->hide === 1 ? 'hidden' : 'showing', self::STATUS_OK, 200);
     }
 
     /**
