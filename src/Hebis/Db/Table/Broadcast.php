@@ -75,7 +75,7 @@ class Broadcast extends Gateway
         }
         $now = date('Y-m-d H:i:s', strtotime(date("Y-m-d") . " 00:00:00"));
 
-        if (!$outOfDate) {
+        if ($outOfDate === false) {
 
             $where
                 ->NEST
