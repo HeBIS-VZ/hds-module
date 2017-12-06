@@ -202,7 +202,7 @@ $config = [
                             ]
                         ]
                     ],
-                    'add' => [
+                    'sp-add' => [
                         'type' => 'Zend\Mvc\Router\Http\Literal',
                         'options' => [
                             'route' => '/Add',
@@ -211,7 +211,7 @@ $config = [
                             ]
                         ]
                     ],
-                    'edit' => [
+                    'sp-edit' => [
                         'type' => 'Zend\Mvc\Router\Http\Segment',
                         'options' => [
                             'route' => '/Edit/:pid',

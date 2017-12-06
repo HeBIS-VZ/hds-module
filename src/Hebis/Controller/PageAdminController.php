@@ -30,6 +30,7 @@ class PageAdminController extends AbstractAdmin
     protected $table;
 
     protected $outputMode;
+    protected $allLanguages;
 
     public function __construct(StaticPost $table, $translator)
     {
@@ -46,13 +47,15 @@ class PageAdminController extends AbstractAdmin
     public function listAction()
     {
         $view = $this->createViewModel();
-        $view->setTemplate('pageadmin/list');
+        $view->setTemplate('pageadmin/sp-list');
         $allRows = $this->table->getAll();
+
         $rowsByLang = [];
         foreach ($allRows as $row) {     // group the rows as lang => rows
             $rowsByLang[$row['language']][] = $row;
         }
         $view->rows = $rowsByLang;
+
         return $view;
     }
 
@@ -72,7 +75,7 @@ class PageAdminController extends AbstractAdmin
     public function editAction()
     {
         $view = $this->createViewModel();
-        $view->setTemplate('pageadmin/edit');
+        $view->setTemplate('pageadmin/sp-edit');
 
         $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
         $view->langs = $allLanguages;
@@ -114,7 +117,7 @@ class PageAdminController extends AbstractAdmin
     public function addAction()
     {
         $view = $this->createViewModel();
-        $view->setTemplate('pageadmin/add');
+        $view->setTemplate('pageadmin/sp-add');
         $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
         $view->langs = $allLanguages;
         // $sessionManager = $this->getServiceLocator()->get('VuFind\SessionManager');
@@ -224,7 +227,7 @@ class PageAdminController extends AbstractAdmin
             $this->output($e->getMessage() . '\n' . 'Change Visibility Failed!', self::STATUS_ERROR, 400);
         }
 
-        $this->layout()->setTemplate('pageadmin/list');
+        $this->layout()->setTemplate('pageadmin/sp-list');
         return $this->output($row->visible, self::STATUS_OK, 200);
     }
 
