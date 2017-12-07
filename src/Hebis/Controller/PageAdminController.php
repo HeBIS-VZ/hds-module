@@ -66,7 +66,7 @@ class PageAdminController extends AbstractAdmin
     {
         $lang = $this->getTranslatorLocale();
         $pid = $this->params()->fromRoute('pid');
-        return $this->prepareViewStaticPages($pid, $lang, 'pageadmin/view');
+        return $this->prepareViewStaticPages($pid, $lang, 'pageadmin/sp-view');
     }
 
     /**
