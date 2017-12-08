@@ -69,48 +69,6 @@ class PageAdminController extends AbstractAdmin
         return $this->prepareViewStaticPages($pid, $lang, 'pageadmin/sp-view');
     }
 
-    /**
-     * @return mixed|\Zend\View\Model\ViewModel
-     */
-    public function editAction()
-    {
-        $view = $this->createViewModel();
-        $view->setTemplate('pageadmin/sp-edit');
-
-        $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
-        $view->langs = $allLanguages;
-
-        $request = $this->getRequest();
-
-        $pid = $this->params()->fromRoute('pid');
-        $resultSet = $this->table->getPagebyId($pid);
-
-        // prepare edit values for view
-
-        foreach ($resultSet as $row) {
-            $rows[$row['language']] = $row;
-        }
-
-        $view->rows = $rows;
-
-        if (!$request->isPost()) {
-            return $view;
-        }
-
-        $post_langs = $this->params()->fromPost('sp-lang');
-        foreach ($resultSet as $row) {
-            $i = array_search(          // get index of current row's language in the post array
-                $row['language'],
-                $post_langs);
-            $row->headline = $this->params()->fromPost('sp-headline')[$i];
-            $row->nav_title = $this->params()->fromPost('sp-nav-title')[$i];
-            $row->content = $this->params()->fromPost('sp-content')[$i];
-            $row->save();
-        }
-
-        return $this->redirect()->toRoute('pageadmin/preview', ['pid' => $pid]);
-    }
-
     /** Action adds new static page
      * @return mixed|\Zend\View\Model\ViewModel
      */
@@ -161,6 +119,48 @@ class PageAdminController extends AbstractAdmin
             );
         }
         return $this->redirect()->toRoute('pageadmin');
+    }
+
+    /**
+     * @return mixed|\Zend\View\Model\ViewModel
+     */
+    public function editAction()
+    {
+        $view = $this->createViewModel();
+        $view->setTemplate('pageadmin/sp-edit');
+
+        $allLanguages = array_slice($this->getConfig()->toArray()['Languages'], 1);
+        $view->langs = $allLanguages;
+
+        $request = $this->getRequest();
+
+        $pid = $this->params()->fromRoute('pid');
+        $resultSet = $this->table->getPagebyId($pid);
+
+        // prepare edit values for view
+
+        foreach ($resultSet as $row) {
+            $rows[$row['language']] = $row;
+        }
+
+        $view->rows = $rows;
+
+        if (!$request->isPost()) {
+            return $view;
+        }
+
+        $post_langs = $this->params()->fromPost('sp-lang');
+        foreach ($resultSet as $row) {
+            $i = array_search(          // get index of current row's language in the post array
+                $row['language'],
+                $post_langs);
+            $row->headline = $this->params()->fromPost('sp-headline')[$i];
+            $row->nav_title = $this->params()->fromPost('sp-nav-title')[$i];
+            $row->content = $this->params()->fromPost('sp-content')[$i];
+            $row->save();
+        }
+
+        return $this->redirect()->toRoute('pageadmin/preview', ['pid' => $pid]);
     }
 
     private function saveRow($pageid, $language, $headline, $navtitle, $content, $author)

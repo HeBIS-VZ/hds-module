@@ -7,7 +7,6 @@ INSERT INTO static_post (pid, language, headline, nav_title, content, author, vi
   (13, 'en', 'TestTestTestTestTest-3', 'Test-3', '<p>Hallo <b>Test-3</b></p>', 'admin1', 1),
   (13, 'de', 'ProbeProbeProbe-3', 'Probe-3', '<p>Hallo <b>Probe-3</b></p>', 'admin1', 1);
 
-
 TRUNCATE broadcasts;
 INSERT INTO broadcasts (bcid, language, message, type, startDate, expireDate, hide) VALUES
   (1, 'en', 'Some Message 1', 'warning', now(), date_add(startDate, INTERVAL 30 DAY), 1),
