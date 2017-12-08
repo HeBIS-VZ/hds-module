@@ -270,8 +270,12 @@ class Module
                     return new \Hebis\View\Helper\Record\EDS\EdsSubjectResultList();
                 },
                 'page_navigation' => 'Hebis\View\Helper\Root\Factory::getPageNavigation',
-                'broadcast_message' => 'Hebis\View\Helper\Root\Factory::getBroadcastMessage'
-            )
+                'broadcast_message' => 'Hebis\View\Helper\Root\Factory::getBroadcastMessage',
+                'search_handler' => function ($sm) {
+                    $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+                    return new \Hebis\View\Helper\Root\SearchHandler($config->get('SearchTabs'));
+                },
+            ),
         );
     }
 }

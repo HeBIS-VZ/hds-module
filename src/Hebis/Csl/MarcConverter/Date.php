@@ -27,7 +27,7 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-use \Hebis\Csl\Model;
+use Seboettg\CiteData\Csl as Model;
 
 class Date extends Record
 {
