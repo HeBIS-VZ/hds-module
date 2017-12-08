@@ -73,7 +73,7 @@ class EDS extends \VuFind\RecordDriver\EDS
 
             foreach ($bibEntity['Identifiers'] as $identifier) {
                 if (strcasecmp($identifier['Type'],"doi") === 0) {
-                    return $identifier['Value'];
+                    return mb_convert_encoding($identifier['Value'], "UTF-8");
                 }
             }
         }
@@ -146,7 +146,7 @@ class EDS extends \VuFind\RecordDriver\EDS
         if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity'])) {
             if (array_key_exists("PhysicalDescription", $bibEntity) && array_key_exists("Pagination", $bibEntity["PhysicalDescription"])) {
                 $pagination = $bibEntity["PhysicalDescription"]["Pagination"];
-                return $pagination["PageCount"];
+                return mb_convert_encoding($pagination["PageCount"], "UTF-8");
             }
         }
         return false;
@@ -157,7 +157,7 @@ class EDS extends \VuFind\RecordDriver\EDS
         if (!empty($bibEntity = $this->fields['RecordInfo']['BibRecord']['BibEntity'])) {
             if (array_key_exists("Languages", $bibEntity)) {
                 $languages = $bibEntity["Languages"];
-                return $languages[0]["Text"];
+                return mb_convert_encoding($languages[0]["Text"], "UTF-8");
             }
         }
         return false;
@@ -175,13 +175,13 @@ class EDS extends \VuFind\RecordDriver\EDS
                      as $titleRecord
             ) {
                 if (isset($titleRecord['Type']) && 'main' == $titleRecord['Type']) {
-                    return $titleRecord['TitleFull'];
+                    return mb_convert_encoding($titleRecord['TitleFull'], "UTF-8");
                 }
             }
         }
         foreach ($this->fields["Items"] as $item) {
             if ($item["Name"] === "Title") {
-                return $item["Data"];
+                return mb_convert_encoding($item["Data"], "UTF-8");
             }
         }
         return '';

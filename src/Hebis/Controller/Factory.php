@@ -27,6 +27,7 @@
 
 namespace Hebis\Controller;
 
+use Zend\Di\ServiceLocator;
 use Zend\ServiceManager\ServiceManager;
 
 /**
@@ -36,6 +37,60 @@ use Zend\ServiceManager\ServiceManager;
  */
 class Factory
 {
+
+    /**
+     * Construct the Static Pages administrator controller
+     *
+     * @param ServiceManager $sm
+     * @return PageAdminController
+     */
+    public static function getPageAdminController(ServiceManager $sm)
+    {
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('static_post');
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+
+        return new PageAdminController($table, $translator);
+    }
+
+
+    /**
+     * @param ServiceManager $sm
+     * @return PageController
+     */
+    public static function getPageController(ServiceManager $sm)
+    {
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('static_post');
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        $pageController = new PageController($table, $translator);
+        return $pageController;
+    }
+
+    /**
+     * @param ServiceManager $sm
+     * @param ServiceLocator $sl
+     * @return BroadcastAdminController
+     */
+    public static function getBroadcastAdminController(ServiceManager $sm)
+    {
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('broadcasts');
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        return new BroadcastAdminController($table, $translator);
+    }
+
+    /**
+     * @param ServiceManager $sm
+     * @return BroadcastController
+     */
+    public static function getBroadcastController(ServiceManager $sm)
+    {
+        $table = $sm->getServiceLocator()->get('VuFind\DbTablePluginManager')
+            ->get('broadcasts');
+        $translator = $sm->getServiceLocator()->get('VuFind\Translator');
+        return new BroadcastController($table, $translator);
+    }
 
     /**
      * Construct the FlashMessenger plugin.

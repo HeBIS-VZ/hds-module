@@ -7,9 +7,10 @@ use VuFindAdmin\Controller\AbstractAdmin;
 /**
  * Class shows the Logs
  *
- * @package Controller
+ * @package Hebis\Controller
+ * @author Roshak Zarhoun <roshakz@gmail.com>
  */
-class AdminLogs extends AbstractAdmin
+class AdminLogsController extends AbstractAdmin
 {
 
 
@@ -23,10 +24,10 @@ class AdminLogs extends AbstractAdmin
 
         $view = $this->createViewModel();
 
-        //$view->setTemplate('admin/logs/home');
+        $view->setTemplate('adminlogs/logs');
         $view->logContent = $this->getLogFileContent();
         $view->lineCount = $this->getLineCount();
-        $view->site = 'logs';
+        //$view->site = 'logs';
 
         return $view;
     }
@@ -58,8 +59,10 @@ class AdminLogs extends AbstractAdmin
     }
 
     /**
-     * returns the last lines of a file bottom up
+     * returns the last lines of a file (bottom-up)
      *
+     * @param int $lines number of lines to be read
+     * @param int $buffer Buffer size of
      * @return string recent log
      */
     private function tail($filepath, $lines = 200, $buffer = 4096)

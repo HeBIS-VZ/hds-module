@@ -37,11 +37,17 @@ class SearchController extends \VuFind\Controller\SearchController
     const STATUS_ERROR = 'ERROR';            // bad
     const STATUS_NEED_AUTH = 'NEED_AUTH';    // must login first
 
-
     const SPECIAL_CHARS_MAP = [
         "+" => "und",
         "&" => "und"
     ];
+
+    /**
+     * @var string
+     */
+    private $outputMode;
+
+    use SaveSearchToHistoryTrait;
 
     public function homeAction()
     {
@@ -143,17 +149,23 @@ class SearchController extends \VuFind\Controller\SearchController
      */
     public function rememberSearch($results)
     {
-        // Only save search URL if the property tells us to...
-        if ($this->rememberSearch) {
-            $searchUrl = $this->url()->fromRoute(
-                    $results->getOptions()->getSearchAction()
-                ) . $results->getUrlQuery()->getParams(false);
-            $this->getSearchMemory()->rememberLastSearchOf('Solr', $searchUrl);
-        }
+        $params = $this->params();
+        $outputMode = $params->getController()->getOutputMode();
+        // Remember the current URL as the last search.
 
-        // Always save search parameters, since these are namespaced by search
-        // class ID.
-        $this->getSearchMemory()->rememberParams($results->getParams());
+        if ($outputMode !== "json") {
+            // Only save search URL if the property tells us to...
+            if ($this->rememberSearch) {
+                $searchUrl = $this->url()->fromRoute(
+                        $results->getOptions()->getSearchAction()
+                    ) . $results->getUrlQuery()->getParams(false);
+                $this->getSearchMemory()->rememberLastSearchOf('Solr', $searchUrl);
+            }
+
+            // Always save search parameters, since these are namespaced by search
+            // class ID.
+            $this->getSearchMemory()->rememberParams($results->getParams());
+        }
     }
 
     /**
@@ -200,9 +212,34 @@ class SearchController extends \VuFind\Controller\SearchController
 
     private function solrSpecialChars($lookfor)
     {
-
         return preg_replace_callback("/\s([&+])\s/", function($matches) {
             return " ".self::SPECIAL_CHARS_MAP[$matches[1]]." ";
         }, $lookfor);
+    }
+
+    public function getOutputMode()
+    {
+        return $this->outputMode;
+    }
+
+    /**
+     * Handle search history display && purge
+     *
+     * @return mixed
+     */
+    public function historyAction()
+    {
+        // Force login if necessary
+        $user = $this->getUser();
+        if ($this->params()->fromQuery('require_login', 'no') !== 'no' && !$user) {
+            return $this->forceLogin();
+        }
+        $purge = (bool) $this->params()->fromQuery('purge');
+        /** @var \VuFind\Search\History $searchHistoryHelper */
+        $searchHistoryHelper = $this->getServiceLocator()->get('VuFind\Search\History');
+        $lastSearches = $searchHistoryHelper->getSearchHistory(is_object($user) ? $user->id : null, $purge);
+        return $this->createViewModel(
+            $lastSearches
+        );
     }
 }

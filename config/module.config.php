@@ -1,7 +1,7 @@
 <?php
+
 namespace Hebis\Module\Configuration;
 
-use Zend\ServiceManager\ServiceManager;
 
 $config = [
     'vufind' => [
@@ -15,7 +15,9 @@ $config = [
             'db_table' => [
                 'abstract_factories' => ['VuFind\Db\Table\PluginFactory'],
                 'factories' => [
-                    'user_oauth' => 'Hebis\Db\Table\Factory::getUserOAuth'
+                    'user_oauth' => 'Hebis\Db\Table\Factory::getUserOAuth',
+                    'static_post' => 'Hebis\Db\Table\Factory::getStaticPost',
+                    'broadcasts' => 'Hebis\Db\Table\Factory::getBroadcast',
                 ]
             ],
             'ils_driver' => [
@@ -116,6 +118,10 @@ $config = [
             'recordfinder' => 'Hebis\Controller\Factory::getRecordFinder',
             'Xisbn' => 'Hebis\Controller\Factory::getXisbn',
             'record' => 'Hebis\Controller\Factory::getRecordController',
+            'pageadmin' => 'Hebis\Controller\Factory::getPageAdminController',
+            'page' => 'Hebis\Controller\Factory::getPageController',
+            'broadcastadmin' => 'Hebis\Controller\Factory::getBroadcastAdminController',
+            'broadcast' => 'Hebis\Controller\Factory::getBroadcastController'
         ],
         'invokables' => [
             'ajax' => 'Hebis\Controller\AjaxController',
@@ -123,7 +129,7 @@ $config = [
             'my-research' => 'Hebis\Controller\MyResearchController',
             'search' => 'Hebis\Controller\SearchController',
             'edsrecord' => 'Hebis\Controller\EdsrecordController',
-            'adminlogs' => 'Hebis\Controller\AdminLogs'
+            'adminlogs' => 'Hebis\Controller\AdminLogsController',
         ]
     ],
     'controller_plugins' => [
@@ -163,23 +169,146 @@ $config = [
                     ]
                 ]
             ],
-            'logs' => [
+            'adminlogs' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => [
                     'route' => '/Admin/Logs',
                     'defaults' => [
-                        'controller' => 'AdminLogs',
-                        'action' => 'Home',
+                        'controller' => 'adminlogs',
+                        'action' => 'home',
+                    ],
+                ],
+            ],
+            'pageadmin' => [
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => [
+                    'route' => '/Admin/Page',
+                    'defaults' => [
+                        'controller' => 'pageadmin',
+                        'action' => 'list',
+                    ]
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'preview' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/View/:pid',
+                            'defaults' => [
+                                'action' => 'preview'
+                            ],
+                            'constraints' => [
+                                'pid' => '\d+'
+                            ]
+                        ]
+                    ],
+                    'sp-add' => [
+                        'type' => 'Zend\Mvc\Router\Http\Literal',
+                        'options' => [
+                            'route' => '/Add',
+                            'defaults' => [
+                                'action' => 'add'
+                            ]
+                        ]
+                    ],
+                    'sp-edit' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/Edit/:pid',
+                            'defaults' => [
+                                'action' => 'edit'
+                            ],
+                            'constraints' => [
+                                'id' => '\d+'
+                            ]
+                        ]
+                    ],
+                    'json' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/Json/:pid/:method',
+                            'defaults' => [
+                                'action' => 'json',
+                            ],
+                            'constraints' => [
+                                'id' => '\d+'
+                            ]
+                        ]
                     ]
                 ]
             ],
-        ],
-    ],
-
+            'broadcastadmin' => [
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => [
+                    'route' => '/Admin/Broadcasts[/:action][/:bcid]',
+                    'defaults' => [
+                        'controller' => 'broadcastadmin',
+                    ]
+                ]
+            ],
+            /*'broadcastadmin' => [
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => [
+                    'route' => '/Admin/Broadcasts',
+                    'defaults' => [
+                        'controller' => 'broadcastadmin',
+                        'action' => 'bchome',
+                    ]
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'preview' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/View/:bcid',
+                            'defaults' => [
+                                'action' => 'preview'
+                            ],
+                            'constraints' => [
+                                'bcid' => '\d+'
+                            ]
+                        ]
+                    ],
+                    'add' => [
+                        'type' => 'Zend\Mvc\Router\Http\Literal',
+                        'options' => [
+                            'route' => '/Add',
+                            'defaults' => [
+                                'action' => 'add'
+                            ]
+                        ]
+                    ],
+                    'edit' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/Edit/:bcid',
+                            'defaults' => [
+                                'action' => 'edit'
+                            ],
+                            'constraints' => [
+                                'bcid' => '\d+'
+                            ]
+                        ]
+                    ],
+                    'json' => [
+                        'type' => 'Zend\Mvc\Router\Http\Segment',
+                        'options' => [
+                            'route' => '/Json/:bcid/:method',
+                            'defaults' => [
+                                'action' => 'json',
+                            ],
+                            'constraints' => [
+                                'bcid' => '\d+'
+                            ]
+                        ]
+                    ]
+                ]
+            ]*/
+        ]
+    ]
 ];
 
 $recordRoutes = ['recordfinder' => 'RecordFinder'];
-//$ajaxRoutes = ['AJAX/XISBN'];
 
 $routeGenerator = new \VuFind\Route\RouteGenerator();
 $routeGenerator->addRecordRoutes($config, $recordRoutes);

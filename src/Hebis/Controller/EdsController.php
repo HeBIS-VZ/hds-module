@@ -52,6 +52,8 @@ class EdsController extends \VuFind\Controller\EdsController
      */
     protected static $php_errors = [];
 
+    use SaveSearchToHistoryTrait;
+
     /**
      * @return \Zend\Http\Response
      */
@@ -150,16 +152,32 @@ class EdsController extends \VuFind\Controller\EdsController
 
     public function rememberSearch($results)
     {
-        // Only save search URL if the property tells us to...
-        if ($this->rememberSearch) {
-            $searchUrl = $this->url()->fromRoute(
-                    $results->getOptions()->getSearchAction()
-                ) . $results->getUrlQuery()->getParams(false);
-            $this->getSearchMemory()->rememberLastSearchOf('EDS', $searchUrl);
-        }
+        $params = $this->params();
+        $outputMode = $params->getController()->getOutputMode();
+        // Remember the current URL as the last search.
 
-        // Always save search parameters, since these are namespaced by search
-        // class ID.
-        $this->getSearchMemory()->rememberParams($results->getParams());
+        if ($outputMode !== "json") {
+            // Only save search URL if the property tells us to...
+            if ($this->rememberSearch) {
+                $searchUrl = $this->url()->fromRoute(
+                        $results->getOptions()->getSearchAction()
+                    ) . $results->getUrlQuery()->getParams(false);
+                $this->getSearchMemory()->rememberLastSearchOf('EDS', $searchUrl);
+            }
+
+            // Always save search parameters, since these are namespaced by search
+            // class ID.
+            $this->getSearchMemory()->rememberParams($results->getParams());
+        }
     }
+
+    /**
+     * @return String
+     */
+    public function getOutputMode()
+    {
+        return $this->outputMode;
+    }
+
+
 }

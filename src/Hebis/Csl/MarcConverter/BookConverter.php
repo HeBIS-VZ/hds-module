@@ -27,7 +27,7 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-use \Hebis\Csl\Model\Record as Book;
+use Seboettg\CiteData\Csl\Record as Book;
 
 class BookConverter
 {
@@ -52,6 +52,11 @@ class BookConverter
         $book->setPublisherPlace(Record::getPublisherPlace($record));
         $book->setIssued(Date::getIssued($record));
         $book->setNumberOfPages(Record::getNumberOfPages($record));
+        $book->setDOI(Record::getDOI($record));
+        $urn = Record::getURN($record);
+        if (!empty($urn)) {
+            $book->setURL("https://nbn-resolving.org/" . $urn);
+        }
         $book->setType("book");
 
         return json_encode($book);

@@ -86,7 +86,7 @@ class AbstractRecordViewHelper extends AbstractHelper
      */
     protected function getSubFieldDataOfField(SolrMarc $record, $fieldCode, $subFieldCode)
     {
-        return Helper::getSubFieldDataOfField($record, $fieldCode, $subFieldCode);
+        return Helper::getSubFieldDataOfField($record->getMarcRecord(), $fieldCode, $subFieldCode);
     }
 
     /**

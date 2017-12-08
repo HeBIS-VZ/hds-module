@@ -29,6 +29,8 @@ namespace Hebis;
 
 use Zend\ModuleManager\ModuleManager,
     Zend\Mvc\MvcEvent;
+use Zend\Session\Config\SessionConfig;
+use Zend\Session\SessionManager;
 
 
 /**
@@ -266,8 +268,14 @@ class Module
                 },
                 'eds_subject_result_list' => function ($sm) {
                     return new \Hebis\View\Helper\Record\EDS\EdsSubjectResultList();
-                }
-            )
+                },
+                'page_navigation' => 'Hebis\View\Helper\Root\Factory::getPageNavigation',
+                'broadcast_message' => 'Hebis\View\Helper\Root\Factory::getBroadcastMessage',
+                'search_handler' => function ($sm) {
+                    $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+                    return new \Hebis\View\Helper\Root\SearchHandler($config->get('SearchTabs'));
+                },
+            ),
         );
     }
 }
