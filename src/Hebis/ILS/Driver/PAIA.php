@@ -115,7 +115,7 @@ class PAIA extends \VuFind\ILS\Driver\DAIA
     /**
      * @var string
      */
-    private $username = "";
+    protected $username = "";
 
     /**
      * Constructor
