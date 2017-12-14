@@ -2,6 +2,7 @@
 
 namespace Hebis\Search\EDS;
 
+use VuFind\Search\EDS\Options;
 use VuFind\Search\EDS\QueryAdapter;
 use VuFindSearch\Query\AbstractQuery;
 use VuFindSearch\Query\Query;
@@ -9,6 +10,15 @@ use VuFindSearch\Query\QueryGroup;
 
 class Params extends \VuFind\Search\EDS\Params
 {
+
+    public function __construct(Options $options, \VuFind\Config\PluginManager $configLoader)
+    {
+        parent::__construct($options, $configLoader);
+        $config = $configLoader->get('EDS');
+        if (isset($config->LegacyFields)) {
+            $this->facetAliases = $config->LegacyFields->toArray();
+        }
+    }
 
     public function getDisplayQueryInputField()
     {
@@ -78,5 +88,38 @@ class Params extends \VuFind\Search\EDS\Params
 
         return $output;
 
+    }
+
+    /**
+     * Does the object already contain the specified filter?
+     *
+     * @param string $filter A filter string from url : "field:value"
+     *
+     * @return bool
+     */
+    public function hasFilter($filter)
+    {
+        // Extract field and value from URL string:
+        list($field, $value) = $this->parseFilter($filter);
+
+        // Check all of the relevant fields for matches:
+        if ($alias = $this->getAliasForFacetField($field)) {
+            $current = $alias;
+        } else {
+            $current = $field;
+        }
+        if (isset($this->filterList[$current])) {
+            $value = mb_strtolower($value);
+            if (array_search($value, $this->filterList[$current]) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getAliasForFacetField($field)
+    {
+        return array_search($field, $this->facetAliases);
     }
 }
