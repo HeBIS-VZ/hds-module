@@ -27,6 +27,8 @@
 
 namespace Hebis\Controller;
 
+use VuFind\Solr\Utils as SolrUtils;
+
 /**
  * Class EdsController
  * @package Hebis\Controller
@@ -179,5 +181,30 @@ class EdsController extends \VuFind\Controller\EdsController
         return $this->outputMode;
     }
 
-
+    /**
+     * Process the publicationd date range limiter widget
+     *
+     * @param object $searchObject Saved search object (false if none)
+     *
+     * @return array               To and from dates
+     */
+    protected function processPublicationDateRange($searchObject = false)
+    {
+        $from = $to = '';
+        if ($searchObject) {
+            $filters = $searchObject->getParams()->getFilterList();
+            foreach ($filters as $key => $value) {
+                if ('PublicationDate' == $key) {
+                    if ($range = SolrUtils::parseRange($value[0]['value'])) {
+                        $from = $range['from'] == '*' ? '' : $range['from'];
+                        $to = $range['to'] == '*' ? '' : $range['to'];
+                    }
+                    $searchObject->getParams()
+                        ->removeFilter($key . ':' . $value[0]['value']);
+                    break;
+                }
+            }
+        }
+        return [$from, $to];
+    }
 }
