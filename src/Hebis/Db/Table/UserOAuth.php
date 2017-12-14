@@ -40,7 +40,6 @@ class UserOAuth extends Gateway
 {
 
     private $config;
-
     private $session;
 
     /**

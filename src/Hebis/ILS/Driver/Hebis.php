@@ -235,4 +235,15 @@ class Hebis extends PAIA
         return isset($item['storage']['href'])
             ? $item['storage']['href'] : false;
     }
+
+    public function patronLogin($username, $password)
+    {
+
+        $this->username = $username;
+
+        return [
+            'cat_username' => '300580835644',
+        ];
+
+    }
 }
