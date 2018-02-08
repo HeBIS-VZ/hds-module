@@ -12,6 +12,11 @@ $config = [
                     'eds' => 'Hebis\RecordDriver\Factory::getEDS',
                 ]
             ],
+            'search_backend' => [
+                'factories' => [
+                    'Solr' => 'Hebis\Search\Factory\SolrDefaultBackendFactory',
+                ],
+            ],
             'db_table' => [
                 'abstract_factories' => ['VuFind\Db\Table\PluginFactory'],
                 'factories' => [
