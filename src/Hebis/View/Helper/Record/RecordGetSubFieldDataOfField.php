@@ -50,6 +50,6 @@ class RecordGetSubFieldDataOfField extends AbstractRecordViewHelper
      */
     public function __invoke(SolrMarc $record, $fieldCode, $subFieldCode)
     {
-        return Helper::getSubFieldDataOfField($record, $fieldCode, $subFieldCode);
+        return Helper::getSubFieldDataOfField($record->getMarcRecord(), $fieldCode, $subFieldCode);
     }
 }

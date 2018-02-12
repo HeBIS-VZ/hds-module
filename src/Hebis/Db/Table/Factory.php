@@ -51,4 +51,18 @@ class Factory extends \VuFind\Db\Table\Factory
         }
         return new UserOAuth($config, $rowClass, $session);
     }
+
+    public static function getStaticPost(ServiceManager $sm)
+    {
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $rowClass = 'Hebis\Db\Row\StaticPost';
+        return new StaticPost($rowClass);
+    }
+
+    public static function getBroadcast(ServiceManager $sm)
+    {
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        $rowClass = 'Hebis\Db\Row\Broadcast';
+        return new Broadcast($rowClass);
+    }
 }

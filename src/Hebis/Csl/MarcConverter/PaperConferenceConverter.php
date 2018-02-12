@@ -27,7 +27,7 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-use Hebis\Csl\Model\Record as ConferencePaper;
+use Seboettg\CiteData\Csl\Record as ConferencePaper;
 
 class PaperConferenceConverter
 {

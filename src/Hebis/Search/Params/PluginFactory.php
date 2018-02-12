@@ -59,11 +59,35 @@ class PluginFactory extends \VuFind\Search\Params\PluginFactory
         // is name === solr?
         if (!strcasecmp("solr", $name)) {
             return new \Hebis\Search\Solr\Params(
-                // Clone the options instance in case caller modifies it:
+            // Clone the options instance in case caller modifies it:
                 clone($options),
                 $serviceLocator->getServiceLocator()->get('VuFind\Config')
             );
         }
+        if (!strcasecmp("EDS", $name)) {
+            return new \Hebis\Search\EDS\Params(
+            // Clone the options instance in case caller modifies it:
+                clone($options),
+                $serviceLocator->getServiceLocator()->get('VuFind\Config')
+            );
+        }
+
+        if (!strcasecmp("solrauthor", $name)) {
+            return new \Hebis\Search\SolrAuthor\Params(
+            // Clone the options instance in case caller modifies it:
+                clone($options),
+                $serviceLocator->getServiceLocator()->get('VuFind\Config')
+            );
+        }
+
+        if (!strcasecmp("favorites", $name)) {
+            return new \Hebis\Search\Favorites\Params(
+            // Clone the options instance in case caller modifies it:
+                clone($options),
+                $serviceLocator->getServiceLocator()->get('VuFind\Config')
+            );
+        }
+
         return parent::createServiceWithName($serviceLocator, $name, $requestedName);
     }
 }

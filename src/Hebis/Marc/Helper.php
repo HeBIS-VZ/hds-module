@@ -42,13 +42,11 @@ class Helper
      * @param $subFieldCode
      * @return bool|string
      */
-    public static function getSubFieldDataOfField(SolrMarc $record, $fieldCode, $subFieldCode)
+    public static function getSubFieldDataOfField(\File_MARC_Record $record, $fieldCode, $subFieldCode)
     {
-        /** @var \File_MARC_Record $marcRecord */
-        $marcRecord = $record->getMarcRecord();
 
         /** @var \File_MARC_Data_Field $field */
-        $field = $marcRecord->getField($fieldCode);
+        $field = $record->getField($fieldCode);
 
         return self::getSubFieldDataOfGivenField($field, $subFieldCode);
     }

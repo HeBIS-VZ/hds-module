@@ -27,7 +27,7 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-use Hebis\Csl\Model\Record as MusicalScore;
+use Seboettg\CiteData\Csl\Record as MusicalScore;
 
 class MusicalScoreConverter
 {

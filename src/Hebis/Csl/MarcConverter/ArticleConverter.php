@@ -27,9 +27,8 @@
 
 namespace Hebis\Csl\MarcConverter;
 
-use Hebis\Csl\MarcConverter\Name;
-use Hebis\Csl\MarcConverter\Record;
-use Hebis\Csl\Model\Record as Article;
+use Hebis\Marc\Helper;
+use Seboettg\CiteData\Csl\Record as Article;
 
 class ArticleConverter
 {
@@ -39,7 +38,7 @@ class ArticleConverter
 
         $article->setAuthor(Name::getAuthor($record));
         //$article->setAuthority(Name::getAuthority($record));
-        $article->setContainerTitle(Record::getContainerTitle($record));
+        $article->setContainerTitle(self::getContainerTitle($record));
         $article->setDimensions(Record::getDimensions($record));
         $article->setDOI(Record::getDOI($record));
         $article->setEdition(Record::getEdition($record));
@@ -52,7 +51,22 @@ class ArticleConverter
         $article->setPublisherPlace(Record::getPublisherPlace($record));
         $article->setTitle(Record::getTitle($record));
         $article->setURL(Record::getURL($record));
-        $article->setType("article");
+
+        if (!empty($issue = Record::getIssue($record))) {
+            $article->setIssue($issue);
+        }
+
+        if (!empty($volume = Record::getVolume($record))) {
+            $article->setVolume($volume);
+        }
+
+
+        $article->setType("article-journal");
         return json_encode($article);
+    }
+
+    private static function getContainerTitle($record)
+    {
+        return Helper::getSubFieldDataOfField($record, "773", "t");
     }
 }

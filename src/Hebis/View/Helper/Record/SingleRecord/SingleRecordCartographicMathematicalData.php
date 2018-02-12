@@ -42,6 +42,6 @@ class SingleRecordCartographicMathematicalData extends AbstractRecordViewHelper
 {
     public function __invoke(SolrMarc $record)
     {
-        return Helper::getSubFieldDataOfField($record, "255", "a");
+        return Helper::getSubFieldDataOfField($record->getMarcRecord(), "255", "a");
     }
 }

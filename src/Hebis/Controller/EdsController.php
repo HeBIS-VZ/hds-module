@@ -27,6 +27,8 @@
 
 namespace Hebis\Controller;
 
+use VuFind\Solr\Utils as SolrUtils;
+
 /**
  * Class EdsController
  * @package Hebis\Controller
@@ -51,6 +53,8 @@ class EdsController extends \VuFind\Controller\EdsController
      * @var array
      */
     protected static $php_errors = [];
+
+    use SaveSearchToHistoryTrait;
 
     /**
      * @return \Zend\Http\Response
@@ -150,16 +154,57 @@ class EdsController extends \VuFind\Controller\EdsController
 
     public function rememberSearch($results)
     {
-        // Only save search URL if the property tells us to...
-        if ($this->rememberSearch) {
-            $searchUrl = $this->url()->fromRoute(
-                    $results->getOptions()->getSearchAction()
-                ) . $results->getUrlQuery()->getParams(false);
-            $this->getSearchMemory()->rememberLastSearchOf('EDS', $searchUrl);
-        }
+        $params = $this->params();
+        $outputMode = $params->getController()->getOutputMode();
+        // Remember the current URL as the last search.
 
-        // Always save search parameters, since these are namespaced by search
-        // class ID.
-        $this->getSearchMemory()->rememberParams($results->getParams());
+        if ($outputMode !== "json") {
+            // Only save search URL if the property tells us to...
+            if ($this->rememberSearch) {
+                $searchUrl = $this->url()->fromRoute(
+                        $results->getOptions()->getSearchAction()
+                    ) . $results->getUrlQuery()->getParams(false);
+                $this->getSearchMemory()->rememberLastSearchOf('EDS', $searchUrl);
+            }
+
+            // Always save search parameters, since these are namespaced by search
+            // class ID.
+            $this->getSearchMemory()->rememberParams($results->getParams());
+        }
+    }
+
+    /**
+     * @return String
+     */
+    public function getOutputMode()
+    {
+        return $this->outputMode;
+    }
+
+    /**
+     * Process the publicationd date range limiter widget
+     *
+     * @param object $searchObject Saved search object (false if none)
+     *
+     * @return array               To and from dates
+     */
+    protected function processPublicationDateRange($searchObject = false)
+    {
+        $from = $to = '';
+        if ($searchObject) {
+            $filters = $searchObject->getParams()->getFilterList();
+            foreach ($filters as $key => $value) {
+                if ('PublicationDate' == $key) {
+                    if ($range = SolrUtils::parseRange($value[0]['value'])) {
+                        $from = $range['from'] == '*' ? '' : $range['from'];
+                        $to = $range['to'] == '*' ? '' : $range['to'];
+                    }
+                    $searchObject->getParams()
+                        ->removeFilter($key . ':' . $value[0]['value']);
+                    break;
+                }
+            }
+        }
+        return [$from, $to];
     }
 }

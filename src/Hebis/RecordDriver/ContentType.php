@@ -165,6 +165,11 @@ class ContentType
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
+        return $this->getContentTypeFromMarcRecord($marcRecord);
+    }
+
+    public function getContentTypeFromMarcRecord($marcRecord)
+    {
         $art = substr($marcRecord->getLeader(), 6, 1);
         $level = substr($marcRecord->getLeader(), 7, 1);
         $phys = " ";
@@ -195,13 +200,13 @@ class ContentType
         }
 
         // Exceptions for CD/DVD
-        $_300_a = Helper::getSubFieldDataOfField($record, 300, 'a');
+        $_300_a = Helper::getSubFieldDataOfField($marcRecord, 300, 'a');
         switch ($phys) {
             case 'c':
                 $phys_ = $phys . substr($marcRecord->getField('007')->getData(), 1, 1);
                 /* $materialart["a"]["m"]["c "]: … wenn 338 $bvd oder wenn 300 $aDVD:  ="dvd"; … sonst: ="cd" */
                 if ($phys_ == "c " || $phys_ == "c|") {
-                    $_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
+                    $_338_b = Helper::getSubFieldDataOfField($marcRecord, 338, 'b');
                     if ($_338_b == "vd" || strpos($_300_a, "DVD") !== false) {
                         $phys = "co";
                     } else {
@@ -219,7 +224,7 @@ class ContentType
                 }
             }
             if ($phys == "c " || $phys == "c|") {
-                $_338_b = Helper::getSubFieldDataOfField($record, 338, 'b');
+                $_338_b = Helper::getSubFieldDataOfField($marcRecord, 338, 'b');
                 if (strpos($_300_a, "DVD") !== false || strpos($_338_b, "vd") !== false) {
                     $phys = "co";
                 }
@@ -229,7 +234,7 @@ class ContentType
 
         /* Falls in 856 $3 der Inhalt "Katalogkarte" vorhanden ist UND Art=a, Level=m und Phys=xxx, dann Phys = r. */
         if ($art == "a" && $level == "m" && $phys == "xxx") {
-            $_856_3 = Helper::getSubFieldDataOfField($record, 856, '3');
+            $_856_3 = Helper::getSubFieldDataOfField($marcRecord, 856, '3');
             if (is_string($_856_3) && strpos($_856_3, "Katalogkarte") !== false) {
                 $phys = "r";
             }
