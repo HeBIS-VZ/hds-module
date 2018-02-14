@@ -61,6 +61,28 @@ trait CorporateHelperTrait
      * @param $subFields
      * @return string
      */
+    protected function getAegBlank($subFields)
+    {
+        $ret = "";
+        foreach ($subFields as $key => $subField) {
+            switch ((string)$key) {
+                case 'a':
+                    $ret .= htmlentities($subField);
+                    break;
+                case 'e':
+                    $ret .= " " . htmlentities($subField);
+                    break;
+                case 'g':
+                    $ret .= " " . htmlentities($subField);
+            }
+        }
+        return $ret;
+    }
+
+    /**
+     * @param $subFields
+     * @return string
+     */
     protected function getAbgn($subFields)
     {
         $ret = "";
@@ -80,6 +102,29 @@ trait CorporateHelperTrait
         return $ret;
     }
 
+
+    /**
+     * @param $subFields
+     * @return string
+     */
+    protected function getAbgnBlank($subFields)
+    {
+        $ret = "";
+        foreach ($subFields as $key => $subField) {
+            switch ((string)$key) {
+                case 'a':
+                    $ret .= htmlentities($subField);
+                    break;
+                case 'b':
+                    $ret .= " " . htmlentities($subField);
+                    break;
+                case 'g':
+                case 'n':
+                    $ret .= " " . htmlentities($subField);
+            }
+        }
+        return $ret;
+    }
 
     /**
      * @param $subFields

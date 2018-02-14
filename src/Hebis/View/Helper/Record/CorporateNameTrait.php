@@ -33,19 +33,23 @@ use Hebis\RecordDriver\SolrMarc;
 trait CorporateNameTrait
 {
 
-    public function getCorporateName(SolrMarc $record)
+    public function getCorporateName(SolrMarc $record, $withLink = false)
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
 
         $arr = [];
+        $arrWithLink = [];
+
         $_110 = $marcRecord->getField(110);
         if (!empty($_110)) {
             $subFields = $this->getSubfieldsAsArray($_110);
             $str = $this->getAbgn($subFields);
+            $str1 = $this->getAbgnBlank($subFields);
             $e = $this->expandSubfield($_110->getSubfields('e'));
             $str .= !empty($e) ? " ($e)" : "";
             $arr[] = $str;
+            $arrWithLink[] = ["text"=>$str, "link"=>$str1];
         }
 
         $_111 = $marcRecord->getField(111);
@@ -53,13 +57,18 @@ trait CorporateNameTrait
         if (!empty($_111)) {
             $subFields = $this->getSubfieldsAsArray($_111);
             $str = $this->getAeg($subFields);
+            $str1 = $this->getAegBlank($subFields);
 
             $ndc = $this->getNdc($subFields);
 
             $str .= " (" . implode(" : ", $ndc) . ")";
+            $str1 .= " (" . implode(" : ", $ndc) . ")";
+
             $j = $this->expandSubfield($_111->getSubfields('j'));
             $str .= !empty($j) ? " ($j)" : "";
+
             $arr[] = $str;
+            $arrWithLink[] = ["text"=>$str, "link"=>$str1];
         }
 
         /* 710 und 711 nur auswerten wenn Indikator 2 = # */
@@ -70,9 +79,11 @@ trait CorporateNameTrait
             if (!empty($_710) && ord($_710->getIndicator(2)) == 32) {
                 $subFields = $this->getSubfieldsAsArray($_710);
                 $str = $this->getAbgn($subFields);
+                $str1 = $this->getAbgnBlank($subFields);
                 $e = $this->expandSubfield($_710->getSubfields('e'));
                 $str .= !empty($e) ? " ($e)" : "";
                 $arr[] = $str;
+                $arrWithLink[] = ["text"=>$str, "link"=>$str1];
             }
         }
 
@@ -82,15 +93,25 @@ trait CorporateNameTrait
                 $subFields = $this->getSubfieldsAsArray($_711);
 
                 $str = $this->getAeg($subFields);
+                $str1 = $this->getAeg($subFields);
+
                 $ndc = $this->getNdc($subFields);
-                $str .= " (" . implode(" : ", $ndc) . ")";
+                $str .=  " (" . implode(" : ", $ndc) . ")";
+                $str1 .=  " (" . implode(" : ", $ndc) . ")";
 
                 $j = $this->expandSubfield($_711->getSubfields('j'));
                 $str .= !empty($j) ? " ($j)" : "";
 
                 $arr[] = $str;
+                $arrWithLink[] = ["text"=>$str, "link"=>$str1];
             }
         }
-        return $arr;
+
+        if ($withLink) {
+            return $arrWithLink;
+        }
+        else {
+            return $arr;
+        }
     }
 }
