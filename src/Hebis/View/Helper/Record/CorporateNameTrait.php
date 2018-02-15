@@ -33,7 +33,7 @@ use Hebis\RecordDriver\SolrMarc;
 trait CorporateNameTrait
 {
 
-    public function getCorporateName(SolrMarc $record, $withLink = false)
+    protected function getCorporateName(SolrMarc $record, $withLink = false)
     {
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
