@@ -49,6 +49,7 @@ class SingleRecordPersonalName extends ResultListPersonalName
         $field100 = $marcRecord->getField('100');
 
         $aut = $this->getFieldContents($field100);
+        $autLink = $this->getFieldContents($field100, false);
 
         if (!empty($aut)) {
             if (!$test) {
@@ -59,7 +60,7 @@ class SingleRecordPersonalName extends ResultListPersonalName
                     $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" id="wiki-' . $gnd . '" data-id="' . $gnd . '" data-container="body" data-popover-content="#gnd_' . $gnd . '"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
                 }
 
-                $arr[] = $this->addLink($record, $aut) . $wikiLink . $wiki;
+                $arr[] = $this->addLink($record, $aut, $autLink) . $wikiLink . $wiki;
             } else {
                 $arr[] = $aut;
             }
@@ -74,6 +75,8 @@ class SingleRecordPersonalName extends ResultListPersonalName
                 $this->appendMissingESubfields($field);
             }
             $addedEntryPN = $this->getFieldContents($field);
+            $addedEntryPNLink = $this->getFieldContents($field, false);
+
             if (!empty($addedEntryPN)) {
                 if (!$test) {
                     $wiki = $wikiLink = "";
@@ -82,7 +85,7 @@ class SingleRecordPersonalName extends ResultListPersonalName
                         $wiki = '<div class="hidden" id="gnd_' . $gnd . '"><div class="popover-heading"></div><div class="popover-body"></div></div>';
                         $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" id="wiki-' . $gnd . '" data-id="' . $gnd . '" data-container="body" data-popover-content="#gnd_' . $gnd . '"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
                     }
-                    $arr[] = $this->addLink($record, $addedEntryPN) . $wikiLink . $wiki;
+                    $arr[] = $this->addLink($record, $addedEntryPN,  $addedEntryPNLink) . $wikiLink . $wiki;
                 } else {
                     $arr[] = $addedEntryPN;
                 }
@@ -93,7 +96,7 @@ class SingleRecordPersonalName extends ResultListPersonalName
     }
 
 
-    private function appendMissingESubfields(\File_MARC_Data_Field &$field)
+    protected function appendMissingESubfields(\File_MARC_Data_Field &$field)
     {
         $types = [
             'aut' => 'Verfasser',
@@ -109,9 +112,9 @@ class SingleRecordPersonalName extends ResultListPersonalName
         }
     }
 
-    protected function addLink($record, $personalName)
+    protected function addLink($record, $personalName, $personalNameLink)
     {
-        $url = $this->getView()->record($record)->getLink('author', $personalName);
+        $url = $this->getView()->record($record)->getLink('author', $personalNameLink);
         return '<a title="' . $personalName . '" href="' . $url . '">' . $personalName . '</a>';
     }
 
