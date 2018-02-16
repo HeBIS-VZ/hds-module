@@ -47,7 +47,7 @@ class AbstractRecordViewHelper extends AbstractHelper
     use FieldArray;
 
     /** Search Link Pattern Full Title */
-    const URL_FULL_TITLE_SEARCH_PATTERN = '/Search/Results?lookfor0%5B%5D=';
+    const URL_FULL_TITLE_SEARCH_PATTERN = 'Search/Results?lookfor0%5B%5D=';
     const URL_FULL_TITLE_SEARCH_PATTERN_SUFFIX = '&type0%5B%5D=titlelink';
 
 
