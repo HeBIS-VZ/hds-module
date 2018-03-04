@@ -80,12 +80,13 @@ class SingleRecordTitleStatement extends AbstractRecordViewHelper
             }
         }
 
-        $ret = $a ? $this->titleSearchLink($a) : "";
-        $ret .= $h ? " $h" : "";
-        $ret .= $colon;
-        $ret .= $b ? " $b" : "";
-        $ret .= $c ? " / $c" : "";
 
+        $text2 = $h ? " $h" : "";
+        $text2 .= $colon;
+        $text2 .= $b ? " $b" : "";
+        $text2 .= $c ? " / $c" : "";
+
+        $ret = ["text"=>$a, "link"=>$a, "text2"=>$text2];
         return $ret;
     }
 

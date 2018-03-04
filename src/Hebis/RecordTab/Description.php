@@ -46,10 +46,11 @@ class Description extends \VuFind\RecordTab\Description implements TabInterface
         $record = $this->getRecordDriver();
         /** @var \File_MARC_Record $marcRecord */
         $marcRecord = $record->getMarcRecord();
-
+        $referenceNote = $this->getReferenceNote($record);
+        $notes = $this->getNotes($record);
         return
-            !empty($this->getReferenceNote($record)) ||
-            !empty($this->getNotes($record)) ||
+            !empty($referenceNote) ||
+            !empty($notes) ||
                 $this->has($marcRecord, 770) ||
                 $this->has($marcRecord, 772) ||
                 $this->has($marcRecord, 777) ||

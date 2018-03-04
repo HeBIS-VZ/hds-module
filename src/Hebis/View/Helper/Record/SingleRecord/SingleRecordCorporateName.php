@@ -43,10 +43,11 @@ class SingleRecordCorporateName extends ResultListCorporateName
 
     public function __invoke(SolrMarc $record, $asArray = false)
     {
-        $arr = $this->getCorporateName($record);
         if ($asArray === true) {
+            $arr = $this->getCorporateName($record, true);
             return $arr;
         }
+        $arr = $this->getCorporateName($record, false);
         return implode("<br />", $arr);
     }
 

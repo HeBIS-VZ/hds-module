@@ -77,7 +77,9 @@ class SingleRecordPublication extends ResultListPublication
             }
             $ab = [];
             $ab[] = implode("; ", $a);
-            $ab[] = implode("; ", $b);
+            if (!empty($b)) {
+                $ab[] = implode("; ", $b);
+            }
             $r = implode(" : ", $ab);
             $r .= empty($_264c) ? "" : (!empty($r) ? ", $_264c" : $_264c);
             $arr[] = $r;

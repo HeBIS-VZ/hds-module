@@ -27,6 +27,8 @@
 
 namespace Hebis\View\Helper\Record;
 
+use Zend\ServiceManager\ServiceManager;
+
 
 /**
  * Class Factory
@@ -36,8 +38,9 @@ namespace Hebis\View\Helper\Record;
 class Factory
 {
 
-    public static function getTabTocSummary($sm)
+    public static function getTabTocSummary(ServiceManager $sm)
     {
-        return new Tab\TabTocSummary();
+        $config = $sm->getServiceLocator()->get('VuFind\Config')->get('config');
+        return new Tab\TabTocSummary($config);
     }
 }

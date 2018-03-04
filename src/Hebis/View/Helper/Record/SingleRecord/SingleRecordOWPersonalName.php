@@ -28,7 +28,6 @@
 namespace Hebis\View\Helper\Record\SingleRecord;
 
 use Hebis\RecordDriver\SolrMarc;
-use Hebis\View\Helper\Record\ResultList\ResultListPersonalName;
 use Hebis\Marc\Helper;
 
 /**
@@ -37,7 +36,7 @@ use Hebis\Marc\Helper;
  *
  * @author Claudia Grote <grote@hebis.uni-frankfurt.de>
  */
-class SingleRecordOWPersonalName extends ResultListPersonalName
+class SingleRecordOWPersonalName extends SingleRecordPersonalName
 {
 
     public function __invoke(SolrMarc $record, $test = true)
@@ -53,6 +52,7 @@ class SingleRecordOWPersonalName extends ResultListPersonalName
             if (strncmp("100", $_880_6, 3) == 0) {
                 $_880_100 = $_880;
                 $aut = $this->getFieldContents($_880_100);
+                $autLink = $this->getFieldContents($_880_100, false);
             } else {
                 if (strncmp("700", $_880_6, 3) == 0) {
                     $_880_700_[] = $_880;
@@ -68,7 +68,7 @@ class SingleRecordOWPersonalName extends ResultListPersonalName
                     $wiki = '<div class="hidden" id="gnd_' . $gnd . '"><div class="popover-heading"></div><div class="popover-body"></div></div>';
                     $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" id="wiki-' . $gnd . '" data-id="' . $gnd . '" data-container="body" data-popover-content="#gnd_' . $gnd . '"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
                 }
-                $arr[] = $this->addLink($record, $aut) . $wikiLink . $wiki;
+                $arr[] = $this->addLink($record, $aut, $autLink) . $wikiLink . $wiki;
             } else {
                 $arr[] = $aut;
             }
@@ -78,7 +78,10 @@ class SingleRecordOWPersonalName extends ResultListPersonalName
             if (empty($_880_700->getSubfields('e'))) {
                 $this->appendMissingESubfields($_880_700);
             }
+
             $addedEntryPN = $this->getFieldContents($_880_700);
+            $addedEntryPNLink = $this->getFieldContents($_880_700, false);
+
             if (!empty($addedEntryPN)) {
                 if (!$test) {
                     $wiki = $wikiLink = "";
@@ -87,7 +90,7 @@ class SingleRecordOWPersonalName extends ResultListPersonalName
                         $wiki = '<div class="hidden" id="gnd_' . $gnd . '"><div class="popover-heading"></div><div class="popover-body"></div></div>';
                         $wikiLink = '<sup><a role="button" class="wiki-gnd-popover" id="wiki-' . $gnd . '" data-id="' . $gnd . '" data-container="body" data-popover-content="#gnd_' . $gnd . '"><span class="hds-icon-wikipedia-w"><!-- --></span></a></sup>';
                     }
-                    $arr[] = $this->addLink($record, $addedEntryPN) . $wikiLink . $wiki;
+                    $arr[] = $this->addLink($record, $addedEntryPN, $addedEntryPNLink) . $wikiLink . $wiki;
                 } else {
                     $arr[] = $addedEntryPN;
                 }
@@ -95,54 +98,5 @@ class SingleRecordOWPersonalName extends ResultListPersonalName
         }
 
         return implode("; ", $arr);
-    }
-
-
-    private function appendMissingESubfields(\File_MARC_Data_Field &$field)
-    {
-        $types = [
-            'aut' => 'Verfasser',
-            'hnr' => 'Gefeierter',
-            'prf' => 'Ausf&uuml;hrender'
-        ];
-
-        /** @var \File_MARC_Subfield $_4 */
-        foreach ($field->getSubfields('4') as $_4) {
-            if (in_array($_4->getData(), array_keys($types))) {
-                $field->appendSubfield(new \File_MARC_Subfield("e", $types[$_4->getData()]));
-            }
-        }
-    }
-
-    protected function addLink($record, $personalName)
-    {
-        $url = $this->getView()->record($record)->getLink('author', $personalName);
-        return '<a title="' . $personalName . '" href="' . $url . '">' . $personalName . '</a>';
-    }
-
-    /**
-     * @var \File_MARC_Data_Field $field
-     * @return string
-     */
-    public function getGnd($field)
-    {
-        if (!empty($field)) {
-            $subfields = $field->getSubfields(0);
-
-
-            $gndArray = array_filter($subfields, function ($field) {
-                /** @var \File_MARC_Subfield $field */
-                return strpos($field->getData(), "(DE-588)") !== false;
-            });
-
-            if (!empty($gndArray)) {
-                $gnds = [];
-                foreach ($gndArray as $gndId) {
-                    $gnds[] = str_replace("(DE-588)", "", $gndId->getData());
-                }
-                return $gnds[0];
-            }
-        }
-        return "";
     }
 }
